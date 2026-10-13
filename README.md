@@ -1,6 +1,6 @@
-# CADM — Continual Active Decision Model
+# CDM — Continual Decision Model
 
-**持续主动决策模型**
+**持续决策模型**
 
 Research toward a general-purpose model that maintains persistent cognitive state, proactively chooses what to think and do, interacts with streaming multimodal environments in real time, and learns from continuing experience.
 
@@ -8,16 +8,17 @@ Research toward a general-purpose model that maintains persistent cognitive stat
 
 如何让一个具有通用能力的模型，在可承担的计算与能耗成本下，持续维护自己的认知状态，主动决定下一步感知、思考、学习与行动，并通过长期经验改善这些决策？
 
-CADM 的研究对象是模型内在、可训练的能力。模型运行在持续的环境与经验流中；人类的一次提问、一次交流或一次任务交付，是这个持续过程中的事件。
+CDM 的研究对象是模型内在、可训练的能力。模型运行在持续的环境与经验流中；人类的一次提问、一次交流或一次任务交付，是这个持续过程中的事件。
 
 ## 名称与含义
 
 - **Continual**：认知状态、决策过程与经验学习能够跨越单次交互持续延续。这里不预设必须使用数学上的连续时间模型，也不要求每一时刻更新参数。
-- **Active**：模型依据目标、环境、记忆与自身不确定性，主动选择并发起有价值的活动，包括观察、内部推演、探索、实验与行动。
 - **Decision**：决定对外做什么，也决定内部接下来思考什么、学习什么、分配多少计算，以及何时等待。
 - **Model**：将上述能力落实为可训练、可检验的模型机制，并保持对具体神经网络架构的开放性。
 
-CADM 是本项目的研究名称；名称本身不代表已经提出或验证了一种新的模型架构。
+主动性是 CDM 的核心设计：模型依据目标、环境、记忆与自身不确定性，主动选择并发起观察、内部推演、探索、实验与行动。它体现在模型机制与训练目标中。
+
+CDM 是本项目的研究名称；名称本身不代表已经提出或验证了一种新的模型架构。
 
 ## 研究目标
 
@@ -59,9 +60,9 @@ Transformer、循环网络、状态空间模型、内部循环计算、连续时
 
 ## 与 Eidolve 的关系
 
-CADM 作为独立模型研究项目维护。[Eidolve](https://github.com/Cherish0925/eidolve) 面向持久的知识、记忆、研究资料与经验世界；它可以成为 CADM 访问和积累外部知识的一种集成对象。
+CDM 作为独立模型研究项目维护。[Eidolve](https://github.com/Cherish0925/eidolve) 面向持久的知识、记忆、研究资料与经验世界；它可以成为 CDM 访问和积累外部知识的一种集成对象。
 
-两者可以协同发展；CADM 的核心模型机制与评价不绑定某一个外部记忆系统或运行框架。目前尚未实现两者之间的集成。
+两者可以协同发展；CDM 的核心模型机制与评价不绑定某一个外部记忆系统或运行框架。目前尚未实现两者之间的集成。
 
 ## 当前状态
 
