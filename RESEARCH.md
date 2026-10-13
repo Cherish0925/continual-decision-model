@@ -1,101 +1,115 @@
-# CDM 研究计划
+# Research Programme
 
-## 目标与关键突破
+## 1. The scientific objective
 
-研究一种通用模型，使持久状态、主动发起的认知活动、实时决策与持续学习成为内在能力。最高目标是让同一个模型在长期经验流中保持有效工作，将已有知识用于新的环境，并通过反馈改善未来的判断。
+Continual Decision Model research asks how a single trainable model can sustain useful activity as observations, goals, and environmental dynamics change. The target is a model that maintains an evolving understanding, initiates purposeful activity, learns from outcomes, and transfers that learning to subsequent situations.
 
-核心问题是：模型如何持续形成和修正对世界的理解，如何选择值得进行的内部计算与外部行动，以及经验如何转化为可迁移的能力。
+The central unit of study is a **trajectory of decisions through time**. An individual answer or action captures only part of the capability. The important questions concern what the model remembers, what it chooses to investigate, how it responds to interruption, and whether experience improves later behavior.
 
-以下内容是待检验的研究计划。
+This objective joins three problems: representation of an ongoing situation, selection of external and internal activities, and adaptation across experience. Their interaction is the main research subject. A better memory may reduce the need for computation; a better experiment may simplify a decision; a better learned skill may make a previously expensive plan immediate.
 
-## 一、需要回答的模型问题
+## 2. Persistent state as an evolving belief
 
-### 1. 状态如何延续
+The model rarely observes the full state of its environment. Its internal state must therefore represent what is known, what remains uncertain, and what may have changed since the last observation.
 
-确定哪些信息需要保留在快速更新的内部状态中，哪些应存入可访问的长期记忆，哪些适合通过参数学习形成稳定能力。研究遗忘、状态污染、错误累积与历史信息重新读取之间的关系。
+Useful state includes several kinds of information:
 
-关键检验：在工作长度增加、任务切换、长时间中断和环境变化后，模型能否继续利用相关历史，同时控制状态内存与更新成本。
+- Beliefs about entities, relationships, hidden dynamics, and likely outcomes.
+- Current goals, intermediate intentions, and criteria for progress.
+- Pending actions, outstanding measurements, and unresolved dependencies.
+- Recent evidence and references to relevant earlier experience.
+- Estimates of uncertainty and the resources needed for the next activity.
 
-### 2. 活动如何由模型主动发起
+These are functional requirements for learned representations. They need not become separate prose fields or manually defined modules.
 
-将下一项认知或行动的选择作为学习对象，包括继续推演、获取观测、检索知识、提出假设、实施实验、交流和等待。活动可以由内部目标、未解决问题、不确定性与环境事件共同驱动。
+**Hypothesis:** learned recurrent state can preserve decision-relevant information over long interactions more efficiently than repeatedly reconstructing it from a fixed context window.
 
-关键检验：去掉逐步提示后，模型能否主动选择具有实际收益的活动；收益应由任务进展、有效信息获取或后续决策改善证明。
+**Evidence:** performance as the delay between relevant evidence and its use increases, together with state size, retrieval cost, and observation-to-action latency. Controlled state resets and withheld memory access reveal which mechanism carries the information. An advantage must survive comparison with a Transformer given an equivalent resource budget.
 
-### 3. 深入思考如何与实时行动共同工作
+## 3. Proactivity as activity selection
 
-研究多时间尺度、异步状态更新、可中断内部计算与可调整的计算投入。模型需要处理思考期间环境已经改变的情况，并避免长期目标在快速反馈中丢失。
+A proactive model chooses activities because they advance a goal or resolve uncertainty that matters to future decisions. It may inspect a sensor, ask a question, retrieve a previous result, think further, act immediately, or wait for an already running experiment.
 
-关键检验：同时测量行动效果与感知到有效动作的端到端延迟；报告典型延迟、尾部延迟和任务规定截止时间的错过率。输出频率与对最新信息的实际响应延迟应分别测量。
+This requires more than an internal clock that repeatedly invokes inference. The selection policy must learn the consequences of initiating, continuing, switching, and stopping activities. Choosing a productive subgoal is part of the same problem: the model should connect an intermediate investigation to the larger objective it serves.
 
-### 4. 经验如何改变长期能力
+**Hypothesis:** learning activity selection improves task progress per unit of time and information cost compared with a fixed observation and computation schedule.
 
-区分当前状态适应、外部记忆更新、策略学习与参数更新。研究世界预测、行动结果、长期回报和经验回放等学习信号的作用，以及长期运行中的稳定性与可塑性。
+**Evidence:** compare learned and fixed schedules using the same backbone, sensors, tools, and total budgets. Include situations in which further thought helps, situations in which fresh evidence helps, and situations in which immediate action is best. Evaluate waiting as a legitimate choice when the next useful event is already on its way.
 
-关键检验：改变环境后能否学会适应，恢复旧任务时能否保持能力，以及新知识是否迁移到未参与训练的任务。评价期间允许更新的内容必须明确。
+An initial training signal will value achieved outcomes and charge for consumed resources. Predicted information value can guide exploration; its contribution should be checked against actual later improvement. Otherwise, an interesting-looking signal can distract the model from the investigation it is meant to advance.
 
-### 5. 自我模型如何帮助决策
+## 4. Thought, prediction, and the world
 
-研究模型对自身能力、预测可靠性、资源成本、失败原因和研究进展的估计，如何改善计算分配、任务选择和方法调整。
+Internal computation should support actionable distinctions: which explanation fits the evidence, which outcome follows an intervention, which observation would separate two possibilities, and which plan remains useful after a change.
 
-关键检验：自我估计是否校准，是否实际改善任务表现和资源使用，能否发现并修正自己的系统性错误。
+Two forms of recurrence deserve separate study. **Recurrence across events** carries experience forward. **Recurrence within computation** develops a representation before the next external decision. Their interaction could let a model pause an investigation, incorporate new information, and resume with revised assumptions.
 
-## 二、架构选择
+**Hypothesis:** a model that can vary internal computation will achieve a better trade-off between task quality and response time than one using the same depth for every decision.
 
-不预先固定 Transformer 或其他单一路线。优先比较能够表达以下机制的候选设计：
+**Evidence:** measure complete quality–latency curves, including the cost of selecting computation depth. Compare additional latent steps, additional retrieved evidence, and additional environmental observations. Intervene on intermediate representations and predictions to determine what information makes later decisions better.
 
-- 可跨交互保留、增量更新的循环状态；
-- 对同一状态进行多轮内部推演的计算过程；
-- 按需访问原始证据与长期记忆的机制；
-- 对计算、观察、行动和等待进行联合选择的策略；
-- 将长期反馈用于模型适应和能力迁移的学习机制。
+Action-conditioned prediction provides a concrete purpose for this computation. The model should learn how interventions change future observations and task outcomes. Dreamer demonstrates learning behavior through a world model [4]; latent recurrence offers separate examples of computation beyond a single forward pass [5, 6]. CDM will investigate how these ideas work together under an advancing environmental clock.
 
-比较时明确哪些能力由模型学得，哪些由固定调度规则、外部运行环境或已有工具提供。共享接口与外部资源，避免把额外资源误计为模型机制的优势。
+## 5. Intelligence under time constraints
 
-## 三、第一项实质实验
+Inputs arrive at different rates. A camera frame, a spoken instruction, and a delayed experimental result have different temporal meanings. A model also spends time encoding observations, recalling information, computing alternatives, and transmitting actions.
 
-先建立一个具有隐藏状态、异步观测、延迟反馈和环境变化的持续交互环境。例如模拟实验平台：模型选择观测、调整参数、等待实验、分析结果并主动确定下一次实验。
+Real-time capability must therefore be defined relative to a task: a useful decision arrives before its opportunity expires. Throughput alone does not establish this. A model can process many observations while acting on an outdated situation.
 
-这个环境应同时具备：
+**Hypothesis:** persistent state and selective computation can support responsive action while preserving the benefits of deeper reasoning when time permits.
 
-1. **历史依赖**：仅看当前输入不足以正确决策，需要利用较早的观测与干预结果。
-2. **主动信息获取**：观察和实验有成本，模型必须选择是否以及何时获取新信息。
-3. **时间约束**：动作有响应期限；较长的推理可能提高判断质量，也可能错过机会。
-4. **延迟收益**：当前选择会影响未来可获得的信息与任务结果。
-5. **持续变化**：运行中发生未显式告知的环境变化，需要调整判断并学习。
-6. **可迁移结构**：训练与测试在环境参数、任务组合或观测方式上有明确差异。
+**Evidence:** vary input rates, observation delays, inference costs, and action deadlines. Report task outcomes alongside latency distributions, deadline misses, and the age of the evidence underlying executed actions. Asynchronous action execution is an established research direction [7]; CDM also asks how the model should choose what to compute while execution continues.
 
-初始环境用于检验核心机制。通用性需要随后在结构不同的任务与模态中验证。
+## 6. Experience that changes future behavior
 
-## 四、比较与证据
+Continuity has three distinct mechanisms:
 
-| 比较 | 要回答的问题 |
-| --- | --- |
-| 当前观测决策、历史上下文决策、持久状态决策 | 持久状态能否改善历史依赖任务，并降低长时间运行成本？ |
-| 固定活动规则与模型学习的活动选择 | 主动性带来的收益是否来自学得的决策能力？ |
-| 固定计算预算与自适应内部推演 | 模型能否把计算用于最有价值的时刻？ |
-| 固定参数、记忆适应与参数学习 | 持续改进由什么机制实现，各自的适应与遗忘代价如何？ |
-| 单时间尺度与异步、多时间尺度设计 | 深入思考能否与及时、稳定的行动协调？ |
+| Mechanism | What changes | How to measure its contribution |
+| --- | --- | --- |
+| State adaptation | Activations representing the current situation | Freeze parameters; compare retained and reset state. |
+| Memory accumulation | Stored episodes, observations, or reusable records | Compare access to matched relevant and irrelevant experience. |
+| Parameter learning | The functions that predict and select behavior | Reset transient state and compare performance before and after training. |
 
-采用匹配资源的比较，并报告性能—成本曲线：包括端到端任务表现、延迟、计算量、内存、运行时长，以及在实际测量条件允许时报告能耗。
+A successful programme should connect all three. Immediate adaptation keeps the current investigation coherent; memory preserves useful experience; learning makes future tasks easier.
 
-结果必须能区分：
-- 训练任务上的拟合与未见任务上的迁移；
-- 短时成功与长时间稳定工作；
-- 更多采样或更多计算的收益与模型机制的收益；
-- 运行状态的改变与参数或策略能力的改变。
+Continual learning also requires attention to both retained competence and capacity to learn new things. Loss of plasticity has been demonstrated in continual supervised and reinforcement learning settings [8]. This motivates experiments that measure the learning curve throughout a long task sequence, including revisits and genuinely new task families.
 
-## 五、推进顺序
+**Hypothesis:** combining selective experience replay with ongoing adaptation improves learning speed on later tasks while maintaining earlier skills.
 
-1. **定义任务与测量方法**：完成持续环境、事件与动作接口、数据划分、成本与延迟度量。
-2. **建立可运行基线**：复现历史上下文决策与持久状态决策，确认评价能区分关键能力。
-3. **实现第一项模型机制**：围绕持久状态与主动活动选择提出明确假设，完成训练与对照。
-4. **研究持续学习和迁移**：延长运行时间，引入环境变化、新任务和旧任务回访。
-5. **扩展到多模态与真实接口**：在模拟结果支持后，研究机器人、实验设备、边端或数字环境中的约束。
-6. **形成统一模型与理论解释**：解释机制在不同任务中成立的条件、代价和失效方式，并据此改进。
+**Evidence:** compare frozen parameters, memory-only adaptation, and parameter updates under equal interaction and training budgets. Report forward transfer, retention, adaptation speed, and performance after repeated distribution changes. State changes alone establish online adaptation; a lasting improvement that survives state reset establishes a different result.
 
-每个阶段应留下模型或代码、运行配置、数据来源与实际结果。没有验证的推测保留为假设；失败结果用于修正后续研究方向。
+## 7. Self-assessment and generalization
 
-## 六、当前待确定事项
+The model needs estimates of its own uncertainty and expected effectiveness. These estimates are useful when they change a decision appropriately: requesting a measurement, spending another computation step, revising a plan, or recognizing that a previous method already applies.
 
-首个任务、训练数据、基础模型或从零训练方案、模型规模、状态结构、学习目标与计算预算，均待首轮研究确定。当前没有预先宣称任何架构最优，也没有实测性能指标。
+We will operationalize self-assessment through predictions of task success, remaining effort, and the value of an additional activity. Calibration and intervention experiments can test these predictions directly. Verbal confidence is one possible output; the primary evidence is how accurately the model allocates effort.
+
+Generalization must cover more than unseen random seeds. Important shifts include new dynamics, new combinations of goals and tools, altered observation timing, unfamiliar sensor combinations, and transfer between task families. Experiments should distinguish performance without adaptation, performance with a fixed adaptation budget, and performance after further training.
+
+## 8. A connected experimental programme
+
+Begin with a continuously running experimental instrument whose dynamics must be inferred from costly and delayed measurements. This makes state, observation choice, intervention, internal computation, and learning measurable in one setting.
+
+Extend the same mechanisms to embodied control and digital investigations. Each extension adds a specific demand: richer perception, continuous actions, external tools, language goals, or longer dependencies. Shared mechanisms and explicit adaptation budgets make the comparison scientifically useful.
+
+The programme should produce four kinds of evidence:
+
+1. **Mechanism:** a controlled comparison shows which model component causes an improvement.
+2. **Efficiency:** the improvement persists when interaction, compute, and elapsed time are counted.
+3. **Continuity:** useful behavior and learning persist across long runs and repeated changes.
+4. **Transfer:** the mechanism remains valuable outside the task family on which it was developed.
+
+The [first technical design](DESIGN.md) turns this programme into an initial architecture and experiment. Its proposed contribution is learned coordination of persistent state, internal computation, and action under a shared time budget. Whether that coordination yields a useful model family is the empirical question.
+
+## Selected foundations
+
+These sources motivate specific design choices; this is a focused starting bibliography.
+
+1. Dao and Gu. **Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality.** 2024. [Paper](https://arxiv.org/abs/2405.21060). Structured state space computation and Mamba-2.
+2. De et al. **Griffin: Mixing Gated Linear Recurrences with Local Attention for Efficient Language Models.** 2024. [Paper](https://arxiv.org/abs/2402.19427). Combining recurrence with local attention.
+3. Peng et al. **RWKV-7 "Goose" with Expressive Dynamic State Evolution.** 2025. [Paper](https://arxiv.org/abs/2503.14456). An alternative recurrent architecture with expressive state updates.
+4. Hafner et al. **Mastering diverse control tasks through world models.** 2025. [Paper](https://www.nature.com/articles/s41586-025-08744-2). Learning prediction and behavior through imagined trajectories.
+5. Geiping et al. **Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach.** 2025. [Paper](https://arxiv.org/abs/2502.05171). Shared recurrent computation in latent space.
+6. Darlow et al. **Continuous Thought Machines.** 2025. [Research page](https://pub.sakana.ai/ctm/). Internal computation through neural dynamics and synchronization.
+7. Black, Galliker, and Levine. **Real-Time Execution of Action Chunking Flow Policies.** 2025. [Paper](https://arxiv.org/abs/2506.07339). Asynchronous execution under inference delay.
+8. Dohare et al. **Loss of plasticity in deep continual learning.** 2024. [Paper](https://www.nature.com/articles/s41586-024-07711-7) · [Authors' implementation](https://github.com/shibhansh/loss-of-plasticity). Learning capacity over extended task sequences.

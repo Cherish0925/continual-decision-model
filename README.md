@@ -1,73 +1,65 @@
-# CDM — Continual Decision Model
+# Continual Decision Model
 
-**持续决策模型**
+**CDM studies how a model can maintain an ongoing understanding of the world, choose its next activity, and learn from what happens.**
 
-Research toward a general-purpose model that maintains persistent cognitive state, proactively chooses what to think and do, interacts with streaming multimodal environments in real time, and learns from continuing experience.
+A robot keeps moving while a model computes. An experiment keeps running while a hypothesis is revised. A delayed observation may change which action matters next. Intelligence in these settings depends on carrying understanding forward and spending time well.
 
-## 核心问题
+The Continual Decision Model is a research project on persistent, proactive, real-time intelligence. Its central question is:
 
-如何让一个具有通用能力的模型，在可承担的计算与能耗成本下，持续维护自己的认知状态，主动决定下一步感知、思考、学习与行动，并通过长期经验改善这些决策？
+> Can a trainable model learn both what to do in the world and how to allocate its own observation, thought, memory, and learning over time?
 
-CDM 的研究对象是模型内在、可训练的能力。模型运行在持续的环境与经验流中；人类的一次提问、一次交流或一次任务交付，是这个持续过程中的事件。
+**Project stage:** research foundation and first architecture proposal; implementation and experimental results are forthcoming.
 
-## 名称与含义
+## The model
 
-- **Continual**：认知状态、决策过程与经验学习能够跨越单次交互持续延续。这里不预设必须使用数学上的连续时间模型，也不要求每一时刻更新参数。
-- **Decision**：决定对外做什么，也决定内部接下来思考什么、学习什么、分配多少计算，以及何时等待。
-- **Model**：将上述能力落实为可训练、可检验的模型机制，并保持对具体神经网络架构的开放性。
+A CDM maintains an evolving internal state across observations, decisions, and interactions. It receives asynchronous information, updates its understanding, selects activities, and incorporates their consequences. A conversation is one event within this longer process.
 
-主动性是 CDM 的核心设计：模型依据目标、环境、记忆与自身不确定性，主动选择并发起观察、内部推演、探索、实验与行动。它体现在模型机制与训练目标中。
+**Continual** describes continuity of state, activity, and adaptation across time. **Decision** includes external actions and internal choices: inspecting a signal, refining a hypothesis, recalling an experience, running an experiment, revising a plan, or waiting for useful evidence. **Model** places these capabilities inside the trainable computation that updates state and selects behavior.
 
-CDM 是本项目的研究名称；名称本身不代表已经提出或验证了一种新的模型架构。
+Proactivity is central to the design. Goals, uncertainty, anticipated outcomes, and available resources should influence what the model initiates next. The same process that chooses an external action should learn when additional observation or computation is worth its cost.
 
-## 研究目标
+## What continuity makes possible
 
-| 能力 | 所要求的行为 |
+| Capability | What it means in operation |
 | --- | --- |
-| 持久认知状态 | 保留并更新对世界的认识、目标、未解决问题、计划与经验，跨越一次次输入和输出继续工作。 |
-| 主动思考与行动 | 没有新的逐步指令时，仍能根据已有目标和当前判断发起下一项活动，并根据反馈调整方向。 |
-| 实时多模态交互 | 持续接收视觉、视频、声音、文字与传感器信号，通过相应接口输出决策、动作、控制信号或交流内容。 |
-| 内部推演 | 在内部状态中继续计算、预测和比较可能的未来；内部活动不必逐步转写成自然语言。 |
-| 持续学习与演化 | 从长期反馈中修正知识、预测与策略，形成能够迁移到新任务与新环境的能力。 |
-| 自我模型与调节 | 评估自身能力、不确定性、资源与进展，调节注意、计算投入、学习和行动节奏。 |
-| 通用与泛化 | 研究可跨任务、模态和环境复用的机制，并通过未见任务与长期运行实验检验。 |
+| Persistent understanding | Maintain beliefs, goals, unresolved questions, and pending actions as new events arrive. |
+| Multimodal perception | Integrate text, images, video, audio, telemetry, and other sensors with their timing and context. |
+| Self-directed activity | Choose the next observation, inference, experiment, or action without a new instruction for every step. |
+| Latent computation | Develop internal representations and predictions; use language when communication serves the task. |
+| Timely decisions | Produce useful actions within the environment's deadlines while allocating deeper computation selectively. |
+| Continual learning | Turn feedback into better predictions, transferable skills, and more effective future decisions. |
+| Self-assessment | Estimate uncertainty, expected progress, and the value of further computation or information. |
+| Generalization | Reuse mechanisms and knowledge across tasks, modalities, goals, and unfamiliar conditions. |
 
-“自我意识”在可执行研究中首先对应自我模型与元认知能力；主观体验不作为本项目已经实现的能力主张。
+Consider an instrument investigating a material. The model tracks an uncertain response curve, chooses a measurement, and uses the waiting interval to compare explanations. A new reading arrives; it updates its beliefs, changes the next experiment, and records the result. Later, a related material requires fewer measurements because earlier experience has improved its strategy. This sequence connects perception, thought, action, and learning in one research process.
 
-## 运行原则
+## Research direction
 
-外部信息到达、内部思考、对外行动与经验学习可以拥有不同的时间尺度，并共同维护一个持续的决策过程。复杂推理应能与及时反馈相协调；持续在线也包括主动等待和低活动状态。
+The first design combines a persistent recurrent core, a compact attention workspace, variable internal computation, and learned activity selection. Prediction, action, and value heads share the evolving state. Selective memory and parameter adaptation extend what the model can retain and learn.
 
-模型可以直接输出动作、策略或结构化决策。自然语言是重要的交流形式，模型内部的状态更新和快速控制无需全部通过文本完成。
+Three distinctions guide the work:
 
-持久状态、长期记忆与参数学习分别承担不同作用：状态延续当前过程，记忆提供可访问的历史与知识，学习改变未来的判断能力。具体划分与耦合方式需要通过研究确定。
+- **State and learning:** carrying information through a sequence, retaining an experience, and updating model parameters have different effects and need separate measurements.
+- **External time and internal computation:** the world advances while the model thinks. More computation is useful only when its benefit justifies its delay.
+- **Local success and transfer:** an effective controller becomes evidence for a broader model only when its mechanisms remain useful across new tasks and conditions.
 
-## 应用范围
+The research programme compares alternative mechanisms under shared information, interaction, and compute budgets. Architecture choices will follow measured improvements in decision quality, adaptation, and responsiveness.
 
-- **自主科研与物理实验**：主动提出问题、选择实验、理解反馈、调整研究路线。
-- **机器人与具身智能**：在持续感知与行动中处理变化、维持目标、学习技能。
-- **机动与机电系统**：对动态环境作出及时决策，并协调控制、规划与长期适应。
-- **边端智能与交互设备**：在受限算力、内存和能耗下保持持续在线。
-- **数字环境中的自治活动**：长期执行、主动探索、实时交互与持续改进。
+## Applications
 
-这些是研究所面向的应用范围，尚不是已验证的部署能力。
+| Setting | The opportunity |
+| --- | --- |
+| Robotics and embodied systems | Combine perception, manipulation, navigation, and task revision during continuous interaction. |
+| Mobile and electromechanical systems | Adapt decisions to changing dynamics, sensor timing, and operating conditions. |
+| Autonomous science | Select informative experiments, manage delayed outcomes, and refine explanations over long investigations. |
+| Edge intelligence | Sustain useful local decisions within limited memory, compute, and energy budgets. |
+| Digital environments | Maintain projects, investigate open questions, and respond to evolving information over time. |
 
-## 架构与研究路线
+These settings share a requirement: the model must decide while events are still unfolding.
 
-Transformer、循环网络、状态空间模型、内部循环计算、连续时间动力学及其混合结构都属于可探索的设计空间。架构选择应服从持久状态、主动性、泛化能力与计算效率的证据。
+## Read the project
 
-具体问题、实验顺序与评价方法见 [研究计划](RESEARCH.md)。
+- [Research programme](RESEARCH.md): the scientific questions, hypotheses, and evidence that would establish progress.
+- [First technical design](DESIGN.md): architecture, time semantics, data, training, optimization, and evaluation.
 
-## 与 Eidolve 的关系
-
-CDM 作为独立模型研究项目维护。[Eidolve](https://github.com/Cherish0925/eidolve) 面向持久的知识、记忆、研究资料与经验世界；它可以成为 CDM 访问和积累外部知识的一种集成对象。
-
-两者可以协同发展；CDM 的核心模型机制与评价不绑定某一个外部记忆系统或运行框架。目前尚未实现两者之间的集成。
-
-## 当前状态
-
-**2026-10-13：项目建立，处于研究定义与方案设计阶段。**
-
-当前仓库包含研究目标、范围和实验规划。尚无已训练权重、已实现模型、性能结果或已验证的通用自治能力。
-
-下一项实质工作：定义首个可复现的持续交互任务，建立匹配资源的基线，选择并实现可检验的持久状态与主动决策机制。
+CDM is an independent model research project. [Eidolve](https://github.com/Cherish0925/eidolve) is a related project and a potential integration environment for persistent knowledge, evidence, and memory. The CDM model and its experiments will have explicit interfaces so they can also operate in other environments.
