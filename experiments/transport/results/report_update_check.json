@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-14",
+  "status": "passed",
+  "source_base": "58e31606464d7b8dc6b82a8995b385503d3a58cf",
+  "changed_functions": [
+    "summarize",
+    "main"
+  ],
+  "numeric_algorithm_functions": "unchanged AST",
+  "full_rerun": true,
+  "verified_rows": {
+    "main_raw.csv": 2100,
+    "finite_progress_raw.csv.gz": 21600
+  },
+  "output_rtol": 1e-11,
+  "output_atol": 1e-13,
+  "max_abs_output_difference": 0.0,
+  "max_abs_parameter_difference": 0.0,
+  "coefficient_atol": 1e-09,
+  "excluded": "CPU timings and the timing-calibrated warm_gd_latency method/iteration count",
+  "original_result_files_unchanged": 15,
+  "reference_report": "regenerated from original raw rows and original timings"
+}

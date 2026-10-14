@@ -1,72 +1,38 @@
-# Learned transport of unfinished numerical state
+# Numerical transport experiment
 
-Run this CPU-only mechanism experiment with Python 3.12 and the pinned NumPy dependency:
+This CPU experiment fits small polynomial corrections for changing quadratic objectives and compares them with optimization baselines. A separate reconstruction test studies a finite-step gradient state.
+
+## Run
+
+The recorded environment used Python 3.12.14 and NumPy 2.3.5.
 
 ```bash
 python -m pip install -r experiments/transport/requirements.txt
-python experiments/transport/run_experiment.py
+python experiments/transport/run_experiment.py --output-dir runs/transport-local
 ```
 
-The command writes raw measurements, five frozen trained models, configuration,
-environment metadata and a generated report to this directory. It does not
-download data or use a GPU. The completed reference run used Python 3.12.14 and
-NumPy 2.3.5. Read [RESULTS.md](RESULTS.md) for measured findings and their scope.
+The output directory contains `RESULTS.md` and `results/`. Without an argument, the default is `runs/transport` relative to the working directory. Reusing a run directory replaces generated files.
 
-## What is trained
+## Models and data
 
-For a changing quadratic objective with symmetric positive definite Hessian H,
-the candidate learns a nine-parameter inverse polynomial. Its three polynomial
-coefficients each depend quadratically on clipped log condition number. Training
-uses 1,800 independent paired-context samples per seed, exact linear solves as
-supervision, and relative vector squared error with ridge regularization. A
-damping factor is selected from a fixed grid on separate validation streams.
+The inverse polynomial has nine fitted parameters. Its coefficients depend quadratically on clipped log condition number. Each of five seeds uses 1,800 paired training samples and ridge-regularized relative squared error. Damping is selected on separate validation streams.
 
-A separate 18-parameter model conditions additionally on log interruption depth.
-It learns the change in an unfinished gradient-descent state following a target
-change. Its labels recompute the same-depth trajectory from a fixed zero seed.
-The diagnostic includes interruption depths absent from training. These labels
-are different from inverse/equilibrium transport; matching them is not itself
-evidence of improved decisions.
+An 18-parameter model additionally conditions on interruption depth. It learns the change in a gradient iterate after a target change, using a fixed zero seed. Training depths are 1, 2, 4, 8, and 16; unseen test depths are 3, 6, and 12.
 
-## Evaluation and controls
+Six paired 128-tick test streams per regime cover stationary inputs, slow change, large target changes, held-out curvature, and joint shifts. All methods receive current problem parameters and spectral bounds. Test parameters are frozen after fitting.
 
-Five training seeds share six paired 128-tick evaluation streams in each of five
-regimes. Evaluation includes stationary inputs, slow changes, unseen large
-target changes, held-out curvature, and abrupt joint shifts. All policies have
-the current H, b and spectral bounds. A deliberately stale baseline ignores the
-newest three ticks. Full exact solutions and analytical inverse transfers are
-explicit accuracy references, not equal-cost competitors.
+## Comparisons and interpretation
 
-The candidate, current-residual and readout-only controls use five dense matrix
-vector products per tick. Strong alternatives include five gradient or
-Nesterov steps and four CG iterations after an initial residual. A separate GD
-budget is calibrated to approximate candidate CPU latency on validation data.
-Actual CPU wall time includes coefficient evaluation and vector operations and
-is separate from simulated environment ticks. It is not a GPU benchmark.
+Compare ordinary and accelerated gradient, conjugate gradient, approximate latency-matched gradient, the same polynomial on the whole residual, and correction applied only to the output. Report exact solutions and analytical transfer separately.
 
-`results/main_raw.csv` and `results/finite_progress_raw.csv.gz` retain all individual
-measurements. Summary files report aggregate scores; paired bootstrap intervals
-resample independent streams, not repeated deterministic baseline seeds.
-`results/config.json` fixes data seed namespaces, sample counts and hyperparameters.
-`results/frozen_models_seed_*.npz` stores all learned coefficients. Random
-initialization and synthetic data are deterministic; CPU timing and the
-latency-calibrated GD step count may vary across machines and runs.
+[RESULTS.md](RESULTS.md) records the original run. The tested correction loses to the stronger solvers. Finite-step reconstruction and task optimization also have different targets: an exactly reconstructed unfinished solution can retain substantial objective error.
 
-## Scientific interpretation
+This experiment uses exogenous problem streams and the stored iterate is also the emitted action. [EXPERIMENTS.md](../../EXPERIMENTS.md) specifies the next neural experiment with a distinct latent workspace and action-dependent observations.
 
-This construction uses established polynomial approximation and
-predictor–corrector ideas. It is a numerical probe, not an originality claim or a
-CDM prototype. The first tested equilibrium-transport mechanism loses to strong
-numerical baselines. The finite-progress experiment tests a distinct state
-target and provides a concrete next hypothesis; a recurrent model with latent
-state distinct from emitted action and outcome-based evidence is still needed.
-The main environment stream is exogenous; emitted decisions do not change future
-observations. It tests optimization tracking, not closed-loop control.
+## Reproduction
 
-Sanity assertions check positive curvature, exact target generation, causal
-prefix invariance, quadratic objective identities, zero innovation, exact
-solution accuracy, and the finite-depth sensitivity formula.
+Original raw rows, fitted coefficients, seed namespaces, configuration, timing, and summaries remain in `results/`. CPU latency and the timing-calibrated iteration budget can vary across machines.
 
-An independent full rerun reproduced fixed-work scores and fitted coefficients within
-the tolerances recorded in [reproduction.json](results/reproduction.json). Timing and
-the timing-calibrated iteration count are excluded from numerical identity checks.
+The original full-rerun record is [reproduction.json](results/reproduction.json). The documentation/output-directory revision is checked in [report_update_check.json](results/report_update_check.json). Both compare fixed-work numerical results separately from timing.
+
+The code checks positive curvature, causal prefixes, residual/objective identities, zero context innovation, exact solutions, and finite-step sensitivity.

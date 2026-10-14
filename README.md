@@ -1,80 +1,46 @@
 # Continual Decision Model
 
-**CDM studies how a model can maintain an ongoing understanding of the world, choose its next activity, and learn from what happens.**
+**CDM studies how a model can keep perceiving, reasoning, acting, and learning while the world changes.** It maintains internal state across interactions and learns both external actions and the choice of its next observation or computation. A conversation is one event in that continuing process.
 
-A robot keeps moving while a model computes. An experiment keeps running while a hypothesis is revised. A delayed observation may change which action matters next. Intelligence in these settings depends on carrying understanding forward and spending time well.
+The central problem is time: an observation can become outdated while the model is still computing. CDM investigates how to update ongoing inference, act on current observations, and spend additional computation where it improves subsequent decisions.
 
-The Continual Decision Model is a research project on persistent, proactive, real-time intelligence. Its central question is:
+## Current work
 
-> Can a trainable model learn both what to do in the world and how to allocate its own observation, thought, memory, and learning over time?
+The repository contains the research specification, a 108-source literature collection, a concrete state-update proposal, and a reproducible CPU numerical experiment. The neural CDM, closed-loop environments, and distributed training are specified for implementation.
 
-**Project stage:** research foundation, a concrete computation-transport proposal, and a reproducible numerical mechanism study. The full neural CDM remains to be trained. See the [current study](research/README.md) and its [results](experiments/transport/RESULTS.md).
+The numerical experiment found that its polynomial state correction underperformed strong optimization baselines. It also showed why reproducing an intermediate state is a poor primary training target: that state can still be far from a good decision. The next model will train continuing computation for task outcomes.
 
-## The model
+## Model
 
-A CDM maintains an evolving internal state across observations, decisions, and interactions. It receives asynchronous information, updates its understanding, selects activities, and incorporates their consequences. A conversation is one event within this longer process.
+A recurrent encoder maintains the current context. A persistent latent workspace supports repeated Transformer computation. Incoming observations update both; a fast action policy reads current context and completed workspace updates. An activity policy selects observations, computation, retrieval, subgoals, and actions. Prediction and learning connect those choices to their consequences.
 
-**Continual** describes continuity of state, activity, and adaptation across time. **Decision** includes external actions and internal choices: inspecting a signal, refining a hypothesis, recalling an experience, running an experiment, revising a plan, or waiting for useful evidence. **Model** places these capabilities inside the trainable computation that updates state and selects behavior.
+The first mechanism under study jointly learns the workspace representation, its refinement, and a small observation-conditioned revision. [DESIGN.md](DESIGN.md) specifies the complete architecture; [the mechanism note](research/COMPUTATION_TRANSPORT.md) derives this particular update.
 
-Proactivity is central to the design. Goals, uncertainty, anticipated outcomes, and available resources should influence what the model initiates next. The same process that chooses an external action should learn when additional observation or computation is worth its cost.
+## Read and run
 
-## What continuity makes possible
-
-| Capability | What it means in operation |
+| Document | Content |
 | --- | --- |
-| Persistent understanding | Maintain beliefs, goals, unresolved questions, and pending actions as new events arrive. |
-| Multimodal perception | Integrate text, images, video, audio, telemetry, and other sensors with their timing and context. |
-| Self-directed activity | Choose the next observation, inference, experiment, or action without a new instruction for every step. |
-| Latent computation | Develop internal representations and predictions; use language when communication serves the task. |
-| Timely decisions | Produce useful actions within the environment's deadlines while allocating deeper computation selectively. |
-| Continual learning | Turn feedback into better predictions, transferable skills, and more effective future decisions. |
-| Self-assessment | Estimate uncertainty, expected progress, and the value of further computation or information. |
-| Generalization | Reuse mechanisms and knowledge across tasks, modalities, goals, and unfamiliar conditions. |
+| [RESEARCH.md](RESEARCH.md) | Objectives, proactivity, continuous operation, learning, and applications |
+| [DESIGN.md](DESIGN.md) | State, computation, model interfaces, and execution |
+| [TRAINING.md](TRAINING.md) | Trajectory data, learning objectives, continual learning, and multi-GPU training |
+| [EXPERIMENTS.md](EXPERIMENTS.md) | Environments, comparison models, measurements, and scaling studies |
+| [RUNNING.md](RUNNING.md) | Server setup, runnable experiment, and implementation order |
+| [ref/](ref/README.md) | Related work and source records |
+| [Experiment results](experiments/transport/RESULTS.md) | Recorded numerical results and their interpretation |
 
-Consider an instrument investigating a material. The model tracks an uncertain response curve, chooses a measurement, and uses the waiting interval to compare explanations. A new reading arrives; it updates its beliefs, changes the next experiment, and records the result. Later, a related material requires fewer measurements because earlier experience has improved its strategy. This sequence connects perception, thought, action, and learning in one research process.
-
-## Research direction
-
-The first design combines a persistent recurrent core, a compact attention workspace, variable internal computation, and learned activity selection. Prediction, action, and value heads share the evolving state. Selective memory and parameter adaptation extend what the model can retain and learn.
-
-The current mechanism study asks whether a model can learn to **transport unfinished internal computation when its evidence changes**, then continue refinement while actions remain due. The proposal jointly learns the refiner, state representation, and inexpensive transport; classical prediction-correction and recent latent planning are explicit antecedents. The accompanying numerical study tests components rather than claiming the complete model has been demonstrated.
-
-Three distinctions guide the work:
-
-- **State and learning:** carrying information through a sequence, retaining an experience, and updating model parameters have different effects and need separate measurements.
-- **External time and internal computation:** the world advances while the model thinks. More computation is useful only when its benefit justifies its delay.
-- **Local success and transfer:** an effective controller becomes evidence for a broader model only when its mechanisms remain useful across new tasks and conditions.
-
-The research programme compares alternative mechanisms under shared information, interaction, and compute budgets. Architecture choices will follow measured improvements in decision quality, adaptation, and responsiveness.
-
-## Applications
-
-| Setting | The opportunity |
-| --- | --- |
-| Robotics and embodied systems | Combine perception, manipulation, navigation, and task revision during continuous interaction. |
-| Mobile and electromechanical systems | Adapt decisions to changing dynamics, sensor timing, and operating conditions. |
-| Autonomous science | Select informative experiments, manage delayed outcomes, and refine explanations over long investigations. |
-| Edge intelligence | Sustain useful local decisions within limited memory, compute, and energy budgets. |
-| Digital environments | Maintain projects, investigate open questions, and respond to evolving information over time. |
-
-These settings share a requirement: the model must decide while events are still unfolding.
-
-## Read the project
-
-- [Current mechanism study](research/README.md): computation transport, its mathematical basis, close prior work, and the runnable experiment.
-- [Research programme](RESEARCH.md): the scientific questions, hypotheses, and evidence that would establish progress.
-- [First technical design](DESIGN.md): architecture, time semantics, data, training, optimization, and evaluation.
-- [Research foundations and positioning](ref/README.md): six literature reviews, closest-work comparisons, architectural alternatives, experimental decisions, and a source-checked bibliography.
-
-CDM is an independent model research project. [Eidolve](https://github.com/Cherish0925/eidolve) is a related project and a potential integration environment for persistent knowledge, evidence, and memory. The CDM model and its experiments will have explicit interfaces so they can also operate in other environments.
-
-## Reproduce the numerical study
+Reproduce the existing numerical experiment with Python 3.12:
 
 ```bash
 python -m pip install -r experiments/transport/requirements.txt
-python experiments/transport/run_experiment.py
+python experiments/transport/run_experiment.py --output-dir runs/transport-local
 ```
 
-The study includes five training seeds, strong numerical controls, frozen fitted parameters, and raw evaluation records. Read the [experiment protocol](experiments/transport/README.md) and [results](experiments/transport/RESULTS.md) for the measured scope and findings.
+The command fits small numerical models and writes a new run directory. GPU model training is the next implementation stage.
 
-Original repository code and documentation are available under the [MIT License](LICENSE). Referenced papers and external implementations retain their own licenses. Cite the repository together with the commit used, as described in [CITATION.cff](CITATION.cff).
+## Applications and connections
+
+Target applications include robotics, electromechanical control, autonomous experiments, edge devices, and digital research. They share a need for timely decisions, persistent context, and learning across continued interaction.
+
+[Eidolve](https://github.com/Cherish0925/eidolve) is a related knowledge and memory project. CDM's model interfaces allow other tool and memory environments as well.
+
+Original code and documentation use the [MIT License](LICENSE). External papers and implementations retain their own licenses. [CITATION.cff](CITATION.cff) identifies this project; include the commit used when reporting an experiment.

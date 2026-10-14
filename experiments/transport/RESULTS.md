@@ -1,22 +1,22 @@
-# Transport of unfinished numerical state: CPU mechanism study
+# Numerical transport experiment
 
-This is a completed small numerical experiment, not a CDM implementation, agent benchmark, GPU benchmark, or originality claim. All learned parameters are fitted on synthetic training data and frozen before test.
+A five-seed CPU experiment on changing 16-dimensional quadratic objectives. The fitted polynomial correction underperforms the stronger solvers tested. A separate finite-step reconstruction task explains why copying unfinished computation can preserve its optimization error.
 
-## Question and candidate
+## Problem and fitted models
 
-For f_t(z) = 1/2 z^T H_t z − b_t^T z, an actor must emit a decision every environment tick. The candidate transports its prior iterate using the evidence innovation q_t = (b_t − H_t z) − r_previous, where the cached residual is evaluated at the same prior output. It applies P_theta(H_t, L_t) q_t, then one current-evidence gradient correction. P is a learned degree-two polynomial in I − H/L, with coefficients conditioned on clipped log condition number. Eigenvalue bounds (minimum 1, maximum L) are supplied equally to all methods.
+For f_t(z) = 1/2 z^T H_t z − b_t^T z, emit a decision vector at each simulated tick. H_t is symmetric positive definite. The correction uses the context innovation q_t = (b_t − H_t z) − r_previous, with the cached residual evaluated at the same prior output. Apply a learned degree-two inverse polynomial to q_t, then one gradient correction. All methods receive current H, b, and the same spectral bounds.
 
-This is an established-style predictor–corrector construction with fitted coefficients. The experiment tests a mechanism and its limitations; polynomial inverse approximation is not claimed as a new mathematical method.
+The inverse model has nine fitted parameters. A separate 18-parameter model also conditions on interruption depth and learns the change in a same-depth gradient iterate. Both use polynomial approximation and prediction-correction methods.
 
 ## Training and evaluation
 
-Five independent training seeds; 1800 paired samples per inverse model and 1800 per finite-progress model. Damping is chosen only on three validation streams. Tests share six independent streams per regime, each 128 ticks, across every method and training seed. Main test streams and diagnostic samples have separate seed namespaces from training and validation. OOD tests hold out target-shift magnitudes and/or curvature range.
+Five independent training seeds; 1800 paired samples per inverse model and 1800 per finite-step model. Damping is selected on three validation streams. Six independent test streams per regime have 128 ticks each. Training, validation, main tests, and reconstruction tests use separate random-seed namespaces. Parameters are frozen before test.
 
-The main score is cumulative excess quadratic objective divided by the cumulative excess objective of always emitting zero (lower is better). Residuals and state norms are also saved. Exact solutions are used only for labels, scoring, and explicitly labeled oracle references. They are unavailable to learned/control policies.
+The main score is cumulative excess quadratic objective divided by the cumulative excess objective of always emitting zero; lower is better. Exact solutions supply labels and scores and are separately reported as numerical reference methods.
 
 Selected damping by seed: 1101: 1.0, 2202: 1.0, 3303: 1.0, 4404: 1.0, 5505: 1.0.
 
-Validation-calibrated GD iterations at approximately the candidate CPU latency: 1101: 9, 2202: 8, 3303: 9, 4404: 8, 5505: 9. This additional control uses more matvecs where the candidate’s overhead permits them; timing noise means test latency is only approximately matched.
+Validation-calibrated gradient iterations at approximately the candidate CPU latency: 1101: 9, 2202: 8, 3303: 9, 4404: 8, 5505: 9. This iteration budget depends on machine timing.
 
 ## Main results
 
@@ -28,7 +28,9 @@ Validation-calibrated GD iterations at approximately the candidate CPU latency: 
 | curvature_ood | 0.011107 | 0.000660152 | 0.0146944 | 0.00203678 | 0.000882149 | 0.000575853 | 0.000325265 |
 | abrupt_joint_ood | 0.0304954 | 0.00812249 | 0.0973423 | 0.0223902 | 0.0104726 | 0.00720906 | 0.00355481 |
 
-Ratios are means of per-stream ratios after averaging training seeds, not ratios of the aggregate means in the preceding table. Ratios below 1 favor learned transport. Confidence intervals resample the six independent test streams after averaging training seeds; training-seed ranges are separately saved, so repeated deterministic baseline runs are not treated as independent evidence.
+The correction loses to Nesterov, CG, the same-weights current-residual control, and validation-latency-calibrated GD in all five regimes. It beats ordinary GD5 only under fast target changes. Persisting the correction helps relative to readout-only correction during changes, but does not overcome the stronger methods.
+
+Ratios below are means of per-stream ratios after averaging training seeds. They differ from ratios of the aggregate means above. Bootstrap intervals resample the six independent test streams; repeated deterministic baseline seeds are not independent replications.
 
 | Regime | Learned / CG gap | Stream-bootstrap 95% interval |
 |---|---:|---:|
@@ -38,27 +40,27 @@ Ratios are means of per-stream ratios after averaging training seeds, not ratios
 | curvature_ood | 34.1 | [30.7, 37.6] |
 | abrupt_joint_ood | 8.61 | [7.84, 9.56] |
 
-## Finite-progress diagnostic
+## Finite-step state reconstruction
 
-A separate frozen learned polynomial also conditions on interruption depth k. For fixed H and a change Δb, the exact change in the unfinished k-step gradient trajectory is (I − (I − H/L)^k) H^{-1} Δb. It generally differs from equilibrium transport H^{-1} Δb. The model trains on depths 1, 2, 4, 8, 16 and is tested on unseen depths 3, 6, 12. The score is distance to the recomputed same-depth state, normalized by the exact state displacement. This measures preservation of finite computational progress, not quality of the final action.
+For fixed H and target change Δb, the change in the k-step gradient trajectory is (I − (I − H/L)^k) H^{-1} Δb. This differs from equilibrium displacement H^{-1} Δb. The depth-conditioned model trains on k = 1, 2, 4, 8, 16 and tests on unseen k = 3, 6, 12. Relative state error divides reconstruction distance by the exact state displacement.
 
-| Diagnostic | Learned finite-progress error | Learned inverse error | Exact inverse error | Exact finite tangent error |
+| Test distribution | Learned finite-step error | Learned inverse error | Exact inverse error | Exact finite tangent error |
 |---|---:|---:|---:|---:|
 | seen_depth_id | 0.0590994 | 0.825425 | 1.22616 | 1.82961e-16 |
 | unseen_depth_curvature_ood | 0.100362 | 0.793753 | 4.80829 | 1.957e-16 |
 | unseen_depth_id | 0.0558032 | 0.371473 | 0.644856 | 1.86998e-16 |
 
-Finite-state fidelity is a diagnostic target. The objective comparison reverses the fidelity ranking on unseen in-distribution depths: learned finite-progress transport has mean objective gap 0.76091, versus 0.495945 for learned inverse transport and 0.379438 for exact equilibrium transport. Lower gap is better. This is direct evidence that matching the old computation depth alone is not the desired task objective. The exact finite tangent is computed with k gradient steps, so it is an accuracy reference with variable work.
+On unseen in-distribution depths, the same-depth reference itself has mean objective gap **0.727103**. Exact reconstruction has zero state error while retaining that gap. The learned finite-step update has mean gap 0.76091, compared with 0.495945 for the learned inverse and 0.379438 for exact equilibrium transport.
 
-## Compute accounting and timing
+The different rankings follow from the target: reproducing an unfinished iterate and improving its objective are different tasks. This experiment corrects the training choice. Neural training will optimize subsequent task outcomes, with state reconstruction as an auxiliary comparison. The exact finite tangent uses k gradient steps and is reported as a variable-work reference.
 
-Main learned transport uses five dense H-vector products per tick: current residual (1), degree-two polynomial basis (2), corrected-state residual (1), and output residual cache update (1). Warm GD and restarted Nesterov each use five; CG and Jacobi CG use one initial residual plus at most four search-direction products. Early convergence may use fewer. Scalar transport uses three, and warm GD1 uses one. Restart GD5 begins at zero. The deliberately stale baseline performs five gradient steps on evidence three ticks old, although all policies have the current evidence available.
+## Computation and timing
 
-The analytical previous/current inverse references use a dense linear solve plus three matvecs per tick; exact current solution uses a solve. These are not cost-matched winners. Candidate vector arithmetic, coefficient evaluation, and context clipping are additional work beyond matvec counting; raw wall-time measurements include them.
+The candidate uses five H-vector products per tick: current residual (1), polynomial basis (2), corrected-state residual (1), and output residual cache (1). GD5 and Nesterov5 use five; CG4 uses an initial residual and at most four search-direction products. Coefficient generation and vector operations add overhead. Equal product counts therefore require a separate latency comparison.
 
-Two additional five-product controls use exactly the same learned parameters. Current-residual correction applies the polynomial to all current residual rather than only evidence innovation. Readout-only transport emits a transported action but carries forward only its one-step untransported GD state; its last product maintains that state’s residual. These distinguish a useful learned preconditioner from evidence transport and persistent transport from a transient output correction within this toy.
+The current-residual control applies the same fitted polynomial to the whole residual. The readout-only control emits the correction but retains its uncorrected one-step state. Both use five products. Exact-solve references have a different cost.
 
-CPU wall time covers each complete algorithm loop and trace copies, excludes offline training, environment generation and scoring, and is reported separately from simulated ticks. These small NumPy timings are descriptive, not hardware-independent latency or GPU measurements. The benchmark advances the environment once per tick; it does not turn actual CPU microseconds into simulated time. The three-tick stale baseline is an explicit delay condition, not measured hardware latency.
+CPU timings include each method loop and trace copies; data generation, offline training, and scoring are separate. The simulator advances once per tick, independently of CPU microseconds. The stale baseline uses observations three ticks old by construction.
 
 | Method | Median CPU microseconds / tick |
 |---|---:|
@@ -78,14 +80,14 @@ CPU wall time covers each complete algorithm loop and trace copies, excludes off
 | analytic_current_inverse | 13.926 |
 | exact_current_solution | 6.445 |
 
-## Interpretation and limits
+## Interpretation and next experiment
 
-The learned equilibrium-style transport fails to beat Nesterov or CG in every tested regime. It beats warm GD5 only in the fast-target regime. The same-weights current-residual control beats it in every regime, and the validation-latency-calibrated GD control also beats it in every regime. Persistent transport improves on the readout-only control under changes, but this does not overcome the strong baselines. This is a negative result for the proposed main mechanism, not evidence for an effective CDM core. Stationary streams expose the cost of spending work on evidence transport: with no innovation, the candidate pays its five-product budget but advances only one correction.
+In stationary conditions, context innovation is zero and the candidate spends its five-product budget on only one corrective step. Under changes, its retained update still loses to the stronger solver controls. This polynomial construction is not selected as the neural CDM core.
 
-The finite-progress study isolates a real distinction between an unfinished trajectory and its equilibrium. Better finite-state reconstruction alone does not establish better decisions, autonomous agency, persistent learning, or a novel architecture. The next research gate is a learned finite-progress state transfer that improves closed-loop outcomes under equal measured compute, with nonlinear recurrences and changes in both evidence and objectives.
+The problems are small, fully observed quadratics with supplied spectral bounds. Streams are exogenous and the stored iterate equals the action vector. The next experiment uses a distinct learned latent workspace, nonlinear recurrence, action-dependent observations, and measured inference time.
 
-All problems are small, fully observed, strongly convex quadratics with known spectral bounds; generalization to nonlinear, partial-observation, long-horizon agents is untested. The streams are exogenous: decisions do not alter future observations, so the main experiment is optimization tracking, not closed-loop control. The persistent solver state equals its decision vector, so this does not establish communication or revision of a distinct general-purpose latent workspace. The finite diagnostic uses a fixed zero initial iterate and a linear recurrence; it does not address sensitivity identifiability for variable branch seeds. Six test streams per regime give limited distributional coverage. The current-residual, readout-only and latency controls were added after inspecting the initial result; candidate parameters, hyperparameters, seeds, and test streams were not changed. No GPU speedup is claimed.
+Current-residual, readout-only, and latency controls were added after inspecting the initial result; candidate parameters, hyperparameters, and test streams remained unchanged. The finite-step test uses a fixed zero seed. Five trained models and six test streams per regime define the replication structure.
 
-## Artifacts
+## Files
 
-`results/main_raw.csv`, `main_summary.csv`, `paired_comparisons.csv`, `finite_progress_raw.csv.gz`, `finite_progress_summary.csv`, `validation.csv`, `latency_calibration.csv`, `frozen_models_seed_*.npz`, `metadata.json`, and `config.json`. The script contains causal prefix, residual/objective, zero-innovation, finite-tangent, and exact-oracle sanity assertions.
+The results directory contains main_raw.csv, main_summary.csv, paired_comparisons.csv, finite_progress_raw.csv.gz, finite_progress_summary.csv, validation.csv, latency_calibration.csv, frozen_models_seed_*.npz, metadata.json, and config.json. The implementation checks causal prefixes, residual/objective identities, zero innovation, finite-step sensitivities, and exact solutions.

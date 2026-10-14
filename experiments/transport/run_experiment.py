@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""CPU-only numerical mechanism study. No GPU or full-agent claims.
+"""CPU numerical experiment on polynomial transport and finite-step reconstruction.
 
-Run from any directory: python run_experiment.py
-Outputs are relative to this file. NumPy alone is required.
+Run: python run_experiment.py --output-dir runs/transport-local
+NumPy alone is required.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import gzip
 import json
@@ -22,6 +23,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "results"
+REPORT = ROOT / "RESULTS.md"
 CONFIG = {
     "dimension": 16,
     "training_seeds": [1101, 2202, 3303, 4404, 5505],
@@ -97,7 +99,7 @@ def fit_model(seed, finite=False):
             gain = (1.0 - (1.0 - lam / kappa) ** depth) / lam
             target = U @ (gain * (U.T @ q))
         else:
-            # Paired evidence changes, evaluated at an unfinished prior iterate.
+            # Paired context changes, evaluated at an unfinished prior iterate.
             x0 = rng.normal(size=n)
             H0, _, _ = spd(rng, np.exp(rng.uniform(np.log(2), np.log(24))), n)
             H0 = 0.97 * H + 0.03 * H0
@@ -415,61 +417,152 @@ def summarize(main_rows, diag_rows, models):
                                ratio_across_seed_max=float(max(seed_ratios))))
     write_csv(OUT / "paired_comparisons.csv", paired)
 
-    lines = ["# Transport of unfinished numerical state: CPU mechanism study", "",
-             "This is a completed small numerical experiment, not a CDM implementation, agent benchmark, GPU benchmark, or originality claim. All learned parameters are fitted on synthetic training data and frozen before test.", "",
-             "## Question and candidate", "",
-             "For f_t(z) = 1/2 z^T H_t z − b_t^T z, an actor must emit a decision every environment tick. The candidate transports its prior iterate using the evidence innovation q_t = (b_t − H_t z) − r_previous, where the cached residual is evaluated at the same prior output. It applies P_theta(H_t, L_t) q_t, then one current-evidence gradient correction. P is a learned degree-two polynomial in I − H/L, with coefficients conditioned on clipped log condition number. Eigenvalue bounds (minimum 1, maximum L) are supplied equally to all methods.", "",
-             "This is an established-style predictor–corrector construction with fitted coefficients. The experiment tests a mechanism and its limitations; polynomial inverse approximation is not claimed as a new mathematical method.", "",
-             "## Training and evaluation", "",
-             f"Five independent training seeds; {CONFIG['train_samples_per_seed']} paired samples per inverse model and {CONFIG['finite_progress_train_samples_per_seed']} per finite-progress model. Damping is chosen only on three validation streams. Tests share six independent streams per regime, each 128 ticks, across every method and training seed. Main test streams and diagnostic samples have separate seed namespaces from training and validation. OOD tests hold out target-shift magnitudes and/or curvature range.", "",
-             "The main score is cumulative excess quadratic objective divided by the cumulative excess objective of always emitting zero (lower is better). Residuals and state norms are also saved. Exact solutions are used only for labels, scoring, and explicitly labeled oracle references. They are unavailable to learned/control policies.", "",
-             "Selected damping by seed: " + ", ".join(f"{m['seed']}: {m['damping']}" for m in models) + ".", "",
-             "Validation-calibrated GD iterations at approximately the candidate CPU latency: " + ", ".join(f"{m['seed']}: {m['latency_gd_steps']}" for m in models) + ". This additional control uses more matvecs where the candidate’s overhead permits them; timing noise means test latency is only approximately matched.", "",
-             "## Main results", "",
-             "| Regime | Learned transport | Current-residual control | Readout-only control | Warm GD (5) | Latency GD | Nesterov (5) | CG (4) |",
-             "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    target_gap = float(np.mean([
+        r["target_objective_gap"] for r in diag_rows
+        if r["regime"] == "unseen_depth_id"
+        and r["method"] == "exact_finite_progress_tangent"
+    ]))
+    objective_lookup = {
+        r["method"]: r["mean_objective_gap"] for r in diag_summary
+        if r["regime"] == "unseen_depth_id"
+    }
+    lines = [
+        "# Numerical transport experiment", "",
+        "A five-seed CPU experiment on changing 16-dimensional quadratic objectives. "
+        "The fitted polynomial correction underperforms the stronger solvers tested. "
+        "A separate finite-step reconstruction task explains why copying unfinished "
+        "computation can preserve its optimization error.", "",
+        "## Problem and fitted models", "",
+        "For f_t(z) = 1/2 z^T H_t z − b_t^T z, emit a decision vector at each simulated tick. "
+        "H_t is symmetric positive definite. The correction uses the context innovation "
+        "q_t = (b_t − H_t z) − r_previous, with the cached residual evaluated at the same prior output. "
+        "Apply a learned degree-two inverse polynomial to q_t, then one gradient correction. "
+        "All methods receive current H, b, and the same spectral bounds.", "",
+        "The inverse model has nine fitted parameters. A separate 18-parameter model also "
+        "conditions on interruption depth and learns the change in a same-depth gradient iterate. "
+        "Both use polynomial approximation and prediction-correction methods.", "",
+        "## Training and evaluation", "",
+        f"Five independent training seeds; {CONFIG['train_samples_per_seed']} paired samples "
+        f"per inverse model and {CONFIG['finite_progress_train_samples_per_seed']} per finite-step model. "
+        "Damping is selected on three validation streams. Six independent test streams per regime "
+        "have 128 ticks each. Training, validation, main tests, and reconstruction tests use "
+        "separate random-seed namespaces. Parameters are frozen before test.", "",
+        "The main score is cumulative excess quadratic objective divided by the cumulative "
+        "excess objective of always emitting zero; lower is better. Exact solutions supply labels "
+        "and scores and are separately reported as numerical reference methods.", "",
+        "Selected damping by seed: " + ", ".join(
+            f"{m['seed']}: {m['damping']}" for m in models) + ".", "",
+        "Validation-calibrated gradient iterations at approximately the candidate CPU latency: "
+        + ", ".join(f"{m['seed']}: {m['latency_gd_steps']}" for m in models)
+        + ". This iteration budget depends on machine timing.", "",
+        "## Main results", "",
+        "| Regime | Learned transport | Current-residual control | Readout-only control | Warm GD (5) | Latency GD | Nesterov (5) | CG (4) |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
     for regime in REGIMES:
-        values = [next(r["normalized_gap_mean"] for r in aggregated if r["regime"] == regime and r["method"] == m) for m in ["learned_transport", "learned_current_residual", "readout_only_transport", "warm_gd5", "warm_gd_latency", "warm_nesterov5", "warm_cg4"]]
+        values = [next(r["normalized_gap_mean"] for r in aggregated
+                       if r["regime"] == regime and r["method"] == method)
+                  for method in ["learned_transport", "learned_current_residual",
+                                 "readout_only_transport", "warm_gd5", "warm_gd_latency",
+                                 "warm_nesterov5", "warm_cg4"]]
         lines.append("| " + regime + " | " + " | ".join(f"{v:.6g}" for v in values) + " |")
-    lines += ["", "Ratios are means of per-stream ratios after averaging training seeds, not ratios of the aggregate means in the preceding table. Ratios below 1 favor learned transport. Confidence intervals resample the six independent test streams after averaging training seeds; training-seed ranges are separately saved, so repeated deterministic baseline runs are not treated as independent evidence.", "",
-              "| Regime | Learned / CG gap | Stream-bootstrap 95% interval |",
-              "|---|---:|---:|"]
+    lines += [
+        "", "The correction loses to Nesterov, CG, the same-weights current-residual control, "
+        "and validation-latency-calibrated GD in all five regimes. It beats ordinary GD5 only "
+        "under fast target changes. Persisting the correction helps relative to readout-only "
+        "correction during changes, but does not overcome the stronger methods.", "",
+        "Ratios below are means of per-stream ratios after averaging training seeds. "
+        "They differ from ratios of the aggregate means above. Bootstrap intervals resample "
+        "the six independent test streams; repeated deterministic baseline seeds are not "
+        "independent replications.", "",
+        "| Regime | Learned / CG gap | Stream-bootstrap 95% interval |",
+        "|---|---:|---:|",
+    ]
     for row in paired:
         if row["baseline"] == "warm_cg4":
-            lines.append(f"| {row['regime']} | {row['mean_paired_gap_ratio']:.3g} | [{row['stream_bootstrap_ci_low']:.3g}, {row['stream_bootstrap_ci_high']:.3g}] |")
-    lines += ["", "## Finite-progress diagnostic", "",
-              "A separate frozen learned polynomial also conditions on interruption depth k. For fixed H and a change Δb, the exact change in the unfinished k-step gradient trajectory is (I − (I − H/L)^k) H^{-1} Δb. It generally differs from equilibrium transport H^{-1} Δb. The model trains on depths 1, 2, 4, 8, 16 and is tested on unseen depths 3, 6, 12. The score is distance to the recomputed same-depth state, normalized by the exact state displacement. This measures preservation of finite computational progress, not quality of the final action.", "",
-              "| Diagnostic | Learned finite-progress error | Learned inverse error | Exact inverse error | Exact finite tangent error |",
-              "|---|---:|---:|---:|---:|"]
+            lines.append(
+                f"| {row['regime']} | {row['mean_paired_gap_ratio']:.3g} | "
+                f"[{row['stream_bootstrap_ci_low']:.3g}, {row['stream_bootstrap_ci_high']:.3g}] |")
+    lines += [
+        "", "## Finite-step state reconstruction", "",
+        "For fixed H and target change Δb, the change in the k-step gradient trajectory is "
+        "(I − (I − H/L)^k) H^{-1} Δb. This differs from equilibrium displacement H^{-1} Δb. "
+        "The depth-conditioned model trains on k = 1, 2, 4, 8, 16 and tests on unseen "
+        "k = 3, 6, 12. Relative state error divides reconstruction distance by the exact "
+        "state displacement.", "",
+        "| Test distribution | Learned finite-step error | Learned inverse error | Exact inverse error | Exact finite tangent error |",
+        "|---|---:|---:|---:|---:|",
+    ]
     for regime in sorted(set(r["regime"] for r in diag_summary)):
-        vals = [next(r["relative_finite_state_error_mean"] for r in diag_summary if r["regime"] == regime and r["method"] == m) for m in ["learned_finite_progress_transport", "learned_inverse_transport", "exact_equilibrium_transport", "exact_finite_progress_tangent"]]
-        lines.append("| " + regime + " | " + " | ".join(f"{v:.6g}" for v in vals) + " |")
-    objective_lookup = {r["method"]: r["mean_objective_gap"] for r in diag_summary if r["regime"] == "unseen_depth_id"}
-    lines += ["", "Finite-state fidelity is a diagnostic target. The objective comparison reverses the fidelity ranking on unseen in-distribution depths: learned finite-progress transport has mean objective gap "
-              + f"{objective_lookup['learned_finite_progress_transport']:.6g}, versus {objective_lookup['learned_inverse_transport']:.6g} for learned inverse transport and {objective_lookup['exact_equilibrium_transport']:.6g} for exact equilibrium transport. "
-              + "Lower gap is better. This is direct evidence that matching the old computation depth alone is not the desired task objective. The exact finite tangent is computed with k gradient steps, so it is an accuracy reference with variable work.", "",
-              "## Compute accounting and timing", "",
-              "Main learned transport uses five dense H-vector products per tick: current residual (1), degree-two polynomial basis (2), corrected-state residual (1), and output residual cache update (1). Warm GD and restarted Nesterov each use five; CG and Jacobi CG use one initial residual plus at most four search-direction products. Early convergence may use fewer. Scalar transport uses three, and warm GD1 uses one. Restart GD5 begins at zero. The deliberately stale baseline performs five gradient steps on evidence three ticks old, although all policies have the current evidence available.", "",
-              "The analytical previous/current inverse references use a dense linear solve plus three matvecs per tick; exact current solution uses a solve. These are not cost-matched winners. Candidate vector arithmetic, coefficient evaluation, and context clipping are additional work beyond matvec counting; raw wall-time measurements include them.", "",
-              "Two additional five-product controls use exactly the same learned parameters. Current-residual correction applies the polynomial to all current residual rather than only evidence innovation. Readout-only transport emits a transported action but carries forward only its one-step untransported GD state; its last product maintains that state’s residual. These distinguish a useful learned preconditioner from evidence transport and persistent transport from a transient output correction within this toy.", "",
-              "CPU wall time covers each complete algorithm loop and trace copies, excludes offline training, environment generation and scoring, and is reported separately from simulated ticks. These small NumPy timings are descriptive, not hardware-independent latency or GPU measurements. The benchmark advances the environment once per tick; it does not turn actual CPU microseconds into simulated time. The three-tick stale baseline is an explicit delay condition, not measured hardware latency.", "",
-              "| Method | Median CPU microseconds / tick |",
-              "|---|---:|"]
+        values = [next(r["relative_finite_state_error_mean"] for r in diag_summary
+                       if r["regime"] == regime and r["method"] == method)
+                  for method in ["learned_finite_progress_transport", "learned_inverse_transport",
+                                 "exact_equilibrium_transport", "exact_finite_progress_tangent"]]
+        lines.append("| " + regime + " | " + " | ".join(f"{v:.6g}" for v in values) + " |")
+    lines += [
+        "", f"On unseen in-distribution depths, the same-depth reference itself has mean "
+        f"objective gap **{target_gap:.6g}**. Exact reconstruction has zero state error "
+        "while retaining that gap. The learned finite-step update has mean gap "
+        f"{objective_lookup['learned_finite_progress_transport']:.6g}, compared with "
+        f"{objective_lookup['learned_inverse_transport']:.6g} for the learned inverse and "
+        f"{objective_lookup['exact_equilibrium_transport']:.6g} for exact equilibrium transport.", "",
+        "The different rankings follow from the target: reproducing an unfinished iterate "
+        "and improving its objective are different tasks. This experiment corrects the "
+        "training choice. Neural training "
+        "will optimize subsequent task outcomes, with state reconstruction as an auxiliary comparison. "
+        "The exact finite tangent uses k gradient steps and is reported as a variable-work reference.", "",
+        "## Computation and timing", "",
+        "The candidate uses five H-vector products per tick: current residual (1), polynomial "
+        "basis (2), corrected-state residual (1), and output residual cache (1). GD5 and "
+        "Nesterov5 use five; CG4 uses an initial residual and at most four search-direction products. "
+        "Coefficient generation and vector operations add overhead. Equal product counts "
+        "therefore require a separate latency comparison.", "",
+        "The current-residual control applies the same fitted polynomial to the whole residual. "
+        "The readout-only control emits the correction but retains its uncorrected one-step "
+        "state. Both use five products. Exact-solve references have a different cost.", "",
+        "CPU timings include each method loop and trace copies; data generation, offline training, "
+        "and scoring are separate. The simulator advances once per tick, independently of CPU "
+        "microseconds. The stale baseline uses observations three ticks old by construction.", "",
+        "| Method | Median CPU microseconds / tick |", "|---|---:|",
+    ]
     for method in METHODS:
         times = [r["microseconds_per_tick"] for r in main_rows if r["method"] == method]
         lines.append(f"| {method} | {np.median(times):.3f} |")
-    lines += ["", "## Interpretation and limits", "",
-              "The learned equilibrium-style transport fails to beat Nesterov or CG in every tested regime. It beats warm GD5 only in the fast-target regime. The same-weights current-residual control beats it in every regime, and the validation-latency-calibrated GD control also beats it in every regime. Persistent transport improves on the readout-only control under changes, but this does not overcome the strong baselines. This is a negative result for the proposed main mechanism, not evidence for an effective CDM core. Stationary streams expose the cost of spending work on evidence transport: with no innovation, the candidate pays its five-product budget but advances only one correction.", "",
-              "The finite-progress study isolates a real distinction between an unfinished trajectory and its equilibrium. Better finite-state reconstruction alone does not establish better decisions, autonomous agency, persistent learning, or a novel architecture. The next research gate is a learned finite-progress state transfer that improves closed-loop outcomes under equal measured compute, with nonlinear recurrences and changes in both evidence and objectives.", "",
-              "All problems are small, fully observed, strongly convex quadratics with known spectral bounds; generalization to nonlinear, partial-observation, long-horizon agents is untested. The streams are exogenous: decisions do not alter future observations, so the main experiment is optimization tracking, not closed-loop control. The persistent solver state equals its decision vector, so this does not establish communication or revision of a distinct general-purpose latent workspace. The finite diagnostic uses a fixed zero initial iterate and a linear recurrence; it does not address sensitivity identifiability for variable branch seeds. Six test streams per regime give limited distributional coverage. The current-residual, readout-only and latency controls were added after inspecting the initial result; candidate parameters, hyperparameters, seeds, and test streams were not changed. No GPU speedup is claimed.", "",
-              "## Artifacts", "",
-              "`results/main_raw.csv`, `main_summary.csv`, `paired_comparisons.csv`, `finite_progress_raw.csv.gz`, `finite_progress_summary.csv`, `validation.csv`, `latency_calibration.csv`, `frozen_models_seed_*.npz`, `metadata.json`, and `config.json`. The script contains causal prefix, residual/objective, zero-innovation, finite-tangent, and exact-oracle sanity assertions.", ""]
-    (ROOT / "RESULTS.md").write_text("\n".join(lines))
+    lines += [
+        "", "## Interpretation and next experiment", "",
+        "In stationary conditions, context innovation is zero and the candidate spends its "
+        "five-product budget on only one corrective step. Under changes, its retained update "
+        "still loses to the stronger solver controls. This polynomial construction is not "
+        "selected as the neural CDM core.", "",
+        "The problems are small, fully observed quadratics with supplied spectral bounds. "
+        "Streams are exogenous and the stored iterate equals the action vector. The next "
+        "experiment uses a distinct learned latent workspace, nonlinear recurrence, "
+        "action-dependent observations, and measured inference time.", "",
+        "Current-residual, readout-only, and latency controls were added after inspecting "
+        "the initial result; candidate parameters, hyperparameters, and test streams remained "
+        "unchanged. The finite-step test uses a fixed zero seed. Five trained models and "
+        "six test streams per regime define the replication structure.", "",
+        "## Files", "",
+        "The results directory contains main_raw.csv, main_summary.csv, paired_comparisons.csv, "
+        "finite_progress_raw.csv.gz, finite_progress_summary.csv, validation.csv, "
+        "latency_calibration.csv, frozen_models_seed_*.npz, metadata.json, and config.json. "
+        "The implementation checks causal prefixes, residual/objective identities, "
+        "zero innovation, finite-step sensitivities, and exact solutions.", "",
+    ]
+    REPORT.write_text("\n".join(lines))
 
 
-def main():
+def main(argv=None):
+    global OUT, REPORT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", type=Path, default=Path("runs/transport"),
+                        help="Run directory containing RESULTS.md and results/")
+    args = parser.parse_args(argv)
+    output_root = args.output_dir.resolve()
+    OUT = output_root / "results"
+    REPORT = output_root / "RESULTS.md"
     started = time.perf_counter()
-    OUT.mkdir(exist_ok=True)
+    OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "config.json").write_text(json.dumps(dict(CONFIG, regimes=REGIMES), indent=2))
     validation = [stream(CONFIG["master_validation_seed"], i, REGIMES["slow_change_id"], CONFIG["validation_ticks"]) for i in range(CONFIG["validation_streams"])]
     tests = {(regime, i): stream(CONFIG["master_test_seed"] + 100 * ridx, i, settings, CONFIG["test_ticks"])

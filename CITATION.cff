@@ -3,11 +3,12 @@ message: "Please cite the repository and the exact commit used for an experiment
 type: software
 title: "Continual Decision Model"
 authors:
-  - name: "Cherish0925"
+  - name: "leslie1007"
+    website: "https://github.com/Cherish0925"
 repository-code: "https://github.com/Cherish0925/continual-decision-model"
 url: "https://github.com/Cherish0925/continual-decision-model"
 license: MIT
 abstract: >-
-  Research on persistent, proactive decision models. This repository contains
-  a research programme, related-work studies, a computation-transport proposal,
-  and a reproducible numerical mechanism experiment with raw results.
+  Research on persistent, proactive decision models, including model design,
+  training and evaluation specifications, related-work reviews, and a
+  reproducible numerical experiment on continuing computation.

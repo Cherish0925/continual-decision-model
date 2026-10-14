@@ -4,17 +4,17 @@
 
 This index contains **108 deduplicated sources** across six research threads. A source can inform several threads while retaining one citation key.
 
-Reading depth: **35** records with specified full-paper sections inspected, **68** primary abstracts, **4** official summaries, and **1** indexed primary excerpt. These counts do not imply complete-paper reading or reproduced experiments.
+Reading depth: **35** records with specified full-paper sections inspected, **68** primary abstracts, **4** official summaries, and **1** indexed primary excerpt. 
 
-[papers.json](papers.json) records authors, mechanism, demonstrated scope, CDM relevance, evidence location, and reading priority. [references.bib](references.bib) contains matching citation entries. See [SEARCH_METHOD.md](SEARCH_METHOD.md) for scope and evidence definitions.
+[papers.json](papers.json) records authors, mechanism, demonstrated scope, CDM relevance, inspected sections, and reading priority. [references.bib](references.bib) contains matching citation entries. See [SEARCH_METHOD.md](SEARCH_METHOD.md) for scope and reading depth.
 
-Years identify the cited edition or documented initial release; they need not equal a later conference or journal year. Citation records deliberately omit unverified venue details. `core` identifies a close conceptual or experimental comparison for CDM, not a claim of greater paper quality.
+Years identify the cited edition or documented initial release; they need not equal a later conference or journal year. `core` identifies a close conceptual or experimental comparison for CDM, a project-specific reading order.
 
 ## Sequence architectures and memory
 
 [Read the review](SEQUENCE_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 1997 | [Long Short-Term Memory](https://www.bioinf.jku.at/publications/older/2604.pdf) | `abstract` | supporting | `hochreiter1997lstm` |
 | 2014 | [Neural Turing Machines](https://arxiv.org/abs/1410.5401) | `abstract` | supporting | `graves2014ntm` |
@@ -47,7 +47,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 [Read the review](INTERNAL_COMPUTATION.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 2016 | [Adaptive Computation Time for Recurrent Neural Networks](https://arxiv.org/abs/1603.08983) | `abstract` | core | `graves2016act` |
 | 2017 | [Metacontrol for Adaptive Imagination-Based Optimization](https://arxiv.org/abs/1705.02670) | `abstract` | core | `hamrick2017metacontrol` |
@@ -74,7 +74,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 [Read the review](PLANNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 1988 | [Active Perception](https://repository.upenn.edu/bitstreams/14686d28-7a8a-4554-beee-991eec61cbdd/download) | `indexed_excerpt` | core | `bajcsy1988_active_perception` |
 | 1991 | [Principles of metareasoning](https://www.sciencedirect.com/science/article/pii/000437029190015C) | `abstract` | core | `russell1991_metareasoning` |
@@ -97,7 +97,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 [Read the review](CONTINUAL_LEARNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 2016 | [Overcoming catastrophic forgetting in neural networks](https://arxiv.org/abs/1612.00796) | `abstract` | supporting | `ewc_2016` |
 | 2016 | [Using Fast Weights to Attend to the Recent Past](https://arxiv.org/abs/1610.06258) | `full_text` | supporting | `fast_weights_2016` |
@@ -122,7 +122,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 [Read the review](WORLD_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 2018 | [Unsupervised Predictive Memory in a Goal-Directed Agent](https://arxiv.org/abs/1803.10760) | `abstract` | core | `merlin-2018` |
 | 2018 | [World Models](https://arxiv.org/abs/1803.10122) | `full_text` | core | `world-models-2018` |
@@ -148,7 +148,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 [Read the review](AGENCY.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
-| Year | Source | Evidence | Priority | Citation key |
+| Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 2017 | [Intrinsically Motivated Goal Exploration Processes with Automatic Curriculum Learning](https://arxiv.org/abs/1708.02190) | `abstract` | core | `forestier2017imgep` |
 | 2017 | [Curiosity-driven Exploration by Self-supervised Prediction](https://arxiv.org/abs/1705.05363) | `abstract` | supporting | `pathak2017curiosity` |
