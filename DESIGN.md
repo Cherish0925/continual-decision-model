@@ -2,6 +2,8 @@
 
 **Status: proposed architecture and experimental specification.**
 
+This document records an initial implementation baseline. The subsequent [literature investigation](ref/README.md), [closest-work comparison](ref/COMPARISON.md), and [architecture experiments](ref/EXPERIMENTS.md) refine its research questions. The Mamba-2 core and component combination below are starting choices, not a final architecture or an originality claim.
+
 The first implementation should test one concrete proposition: a persistent recurrent model can learn to allocate observation, internal computation, and external action more effectively than the same model following a fixed schedule.
 
 The proposed starting point is a **recurrent core with an attention workspace and a learned activity policy**. It combines inexpensive state updates with selective computation. This is a CDM design hypothesis; the component literature is collected in the [research programme](RESEARCH.md#selected-foundations).

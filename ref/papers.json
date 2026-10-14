@@ -1,0 +1,2650 @@
+{
+  "schema_version": 1,
+  "review_cutoff": "2026-10-14",
+  "description": "Curated primary-source research map for Continual Decision Model. Evidence levels describe reading depth, not independent reproduction.",
+  "year_convention": "Year of the cited public edition or the initial release explicitly noted in evidence_location; preprint and venue years can differ.",
+  "paper_count": 108,
+  "papers": [
+    {
+      "id": "hochreiter1997lstm",
+      "title": "Long Short-Term Memory",
+      "authors": [
+        "Sepp Hochreiter",
+        "Jürgen Schmidhuber"
+      ],
+      "year": 1997,
+      "url": "https://www.bioinf.jku.at/publications/older/2604.pdf",
+      "evidence_level": "abstract",
+      "evidence_location": "Original paper hosted by the authors' institution, PDF page 1 abstract.",
+      "mechanism": "Gated memory cells preserve error flow across long temporal dependencies.",
+      "demonstrated_scope": "Synthetic tasks with long delays and varied input representations.",
+      "cdm_relevance": "Establishes the foundational gated-state ancestor.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "graves2014ntm",
+      "title": "Neural Turing Machines",
+      "authors": [
+        "Alex Graves",
+        "Greg Wayne",
+        "Ivo Danihelka"
+      ],
+      "year": 2014,
+      "url": "https://arxiv.org/abs/1410.5401",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "A neural controller accesses external memory through differentiable attention.",
+      "demonstrated_scope": "Copying, sorting, and associative recall.",
+      "cdm_relevance": "Establishes learned read-write memory as architectural prior art.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "graves2016dnc",
+      "title": "Hybrid computing using a neural network with dynamic external memory",
+      "authors": [
+        "Alex Graves",
+        "Greg Wayne",
+        "Malcolm Reynolds",
+        "Tim Harley",
+        "Ivo Danihelka",
+        "Agnieszka Grabska-Barwińska",
+        "Sergio Gómez Colmenarejo",
+        "Edward Grefenstette",
+        "Tiago Ramalho",
+        "John Agapiou",
+        "Adrià Puigdomènech Badia",
+        "Karl Moritz Hermann",
+        "Yori Zwols",
+        "Georg Ostrovski",
+        "Adam Cain",
+        "Helen King",
+        "Christopher Summerfield",
+        "Phil Blunsom",
+        "Koray Kavukcuoglu",
+        "Demis Hassabis"
+      ],
+      "year": 2016,
+      "url": "https://www.nature.com/articles/nature20101",
+      "evidence_level": "full_text",
+      "evidence_location": "Original paper PDF mirrored at https://gwern.net/doc/reinforcement-learning/model-free/2016-graves.pdf, pages 1-4; publisher page failed to load.",
+      "mechanism": "Differentiable memory combines content lookup, temporal links, and usage-based allocation.",
+      "demonstrated_scope": "Synthetic question answering, graph reasoning, and reinforcement-learning block puzzles.",
+      "cdm_relevance": "Precedes structured memory organization and stored plans.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "vaswani2017transformer",
+      "title": "Attention Is All You Need",
+      "authors": [
+        "Ashish Vaswani",
+        "Noam Shazeer",
+        "Niki Parmar",
+        "Jakob Uszkoreit",
+        "Llion Jones",
+        "Aidan N. Gomez",
+        "Lukasz Kaiser",
+        "Illia Polosukhin"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1706.03762",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract and bibliographic metadata, v7.",
+      "mechanism": "Attention-based encoder-decoder sequence transduction replaces recurrent sequence processing.",
+      "demonstrated_scope": "Machine translation and English constituency parsing.",
+      "cdm_relevance": "Establishes a content-addressable interaction baseline.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "santoro2018relationalrnn",
+      "title": "Relational recurrent neural networks",
+      "authors": [
+        "Adam Santoro",
+        "Ryan Faulkner",
+        "David Raposo",
+        "Jack Rae",
+        "Mike Chrzanowski",
+        "Theophane Weber",
+        "Daan Wierstra",
+        "Oriol Vinyals",
+        "Razvan Pascanu",
+        "Timothy Lillicrap"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1806.01822",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/1806.01822v2, Section 3 architecture and Sections 5-6 evidence.",
+      "mechanism": "Multi-head attention lets recurrent memory slots interact before gated updates.",
+      "demonstrated_scope": "Partially observed reinforcement learning, program evaluation, and language modeling.",
+      "cdm_relevance": "Directly precedes relational persistent workspaces.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "dai2019transformerxl",
+      "title": "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context",
+      "authors": [
+        "Zihang Dai",
+        "Zhilin Yang",
+        "Yiming Yang",
+        "Jaime Carbonell",
+        "Quoc V. Le",
+        "Ruslan Salakhutdinov"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1901.02860",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3; recurrence details also cross-checked in RMT Section 3.",
+      "mechanism": "Segment recurrence reuses hidden representations with relative positional encoding.",
+      "demonstrated_scope": "Long-context language modeling across five established datasets.",
+      "cdm_relevance": "Separates activation reuse from compact state rewriting.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "katharopoulos2020linearattention",
+      "title": "Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention",
+      "authors": [
+        "Angelos Katharopoulos",
+        "Apoorv Vyas",
+        "Nikolaos Pappas",
+        "François Fleuret"
+      ],
+      "year": 2020,
+      "url": "https://arxiv.org/abs/2006.16236",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3.",
+      "mechanism": "Kernelized attention admits an iterative recurrent computation.",
+      "demonstrated_scope": "Sequence modeling and autoregressive efficiency experiments.",
+      "cdm_relevance": "Shows that attention and recurrence are overlapping computational descriptions.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "gu2021s4",
+      "title": "Efficiently Modeling Long Sequences with Structured State Spaces",
+      "authors": [
+        "Albert Gu",
+        "Karan Goel",
+        "Christopher Ré"
+      ],
+      "year": 2021,
+      "url": "https://arxiv.org/abs/2111.00396",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3; first posted 2021, ICLR 2022.",
+      "mechanism": "Structured state-space parameterization enables efficient long-sequence computation.",
+      "demonstrated_scope": "Long Range Arena, sequential vision, and sequence generation.",
+      "cdm_relevance": "Motivates principled dynamics for persistent state.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "schlag2021fastweights",
+      "title": "Linear Transformers Are Secretly Fast Weight Programmers",
+      "authors": [
+        "Imanol Schlag",
+        "Kazuki Irie",
+        "Jürgen Schmidhuber"
+      ],
+      "year": 2021,
+      "url": "https://arxiv.org/abs/2102.11174",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3.",
+      "mechanism": "Fast-weight programming uses delta corrections and learned update rates for associative memory.",
+      "demonstrated_scope": "Synthetic retrieval, machine translation, and language modeling.",
+      "cdm_relevance": "Establishes prior art for editable matrix memory.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "bulatov2022rmt",
+      "title": "Recurrent Memory Transformer",
+      "authors": [
+        "Aydar Bulatov",
+        "Yuri Kuratov",
+        "Mikhail S. Burtsev"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2207.06881",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2207.06881v2, Sections 3-4.",
+      "mechanism": "Memory tokens carry learned representations across segments with cross-segment backpropagation.",
+      "demonstrated_scope": "Algorithmic memory tasks and language modeling.",
+      "cdm_relevance": "Provides a close persistent-workspace baseline.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "didolkar2022tlb",
+      "title": "Temporal Latent Bottleneck: Synthesis of Fast and Slow Processing Mechanisms in Sequence Learning",
+      "authors": [
+        "Aniket Didolkar",
+        "Kshitij Gupta",
+        "Anirudh Goyal",
+        "Nitesh B. Gundavarapu",
+        "Alex Lamb",
+        "Nan Rosemary Ke",
+        "Yoshua Bengio"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2205.14794",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2205.14794v2, Section 2 and experiment overview.",
+      "mechanism": "A fast Transformer stream exchanges information with a slower recurrent latent bottleneck.",
+      "demonstrated_scope": "Visual perception, sequential decision-making, and long-range tasks.",
+      "cdm_relevance": "Directly precedes two-timescale attention-recurrence architectures.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "hutchins2022blockrecurrent",
+      "title": "Block-Recurrent Transformers",
+      "authors": [
+        "DeLesley Hutchins",
+        "Imanol Schlag",
+        "Yuhuai Wu",
+        "Ethan Dyer",
+        "Behnam Neyshabur"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2203.07852",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2203.07852v3, Section 3 methods and Section 4 comparisons.",
+      "mechanism": "Attention and gated state updates implement recurrence over token blocks.",
+      "demonstrated_scope": "Long-sequence language modeling on books, papers, and source code.",
+      "cdm_relevance": "Directly precedes Transformer recurrence over persistent state vectors.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "irie2022srwm",
+      "title": "A Modern Self-Referential Weight Matrix That Learns to Modify Itself",
+      "authors": [
+        "Kazuki Irie",
+        "Imanol Schlag",
+        "Róbert Csordás",
+        "Jürgen Schmidhuber"
+      ],
+      "year": 2022,
+      "url": "https://proceedings.mlr.press/v162/irie22b.html",
+      "evidence_level": "abstract",
+      "evidence_location": "PMLR ICML 2022 abstract and bibliographic record.",
+      "mechanism": "A self-referential matrix learns delta-rule modifications to its own weights.",
+      "demonstrated_scope": "Supervised few-shot learning and multitask reinforcement learning.",
+      "cdm_relevance": "Directly precedes learned self-modification mechanisms.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "gu2023mamba",
+      "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+      "authors": [
+        "Albert Gu",
+        "Tri Dao"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2312.00752",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "Input-dependent state-space parameters select which information propagates.",
+      "demonstrated_scope": "Language, audio, and genomics sequence modeling.",
+      "cdm_relevance": "Provides selective recurrent updates for incoming events.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "sun2023retnet",
+      "title": "Retentive Network: A Successor to Transformer for Large Language Models",
+      "authors": [
+        "Yutao Sun",
+        "Li Dong",
+        "Shaohan Huang",
+        "Shuming Ma",
+        "Yuqing Xia",
+        "Jilong Xue",
+        "Jianyong Wang",
+        "Furu Wei"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2307.08621",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v4.",
+      "mechanism": "Retention supports parallel, recurrent, and chunkwise recurrent computation.",
+      "demonstrated_scope": "Language-model scaling and inference efficiency.",
+      "cdm_relevance": "Separates training computation from streaming deployment.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "yang2023gla",
+      "title": "Gated Linear Attention Transformers with Hardware-Efficient Training",
+      "authors": [
+        "Songlin Yang",
+        "Bailin Wang",
+        "Yikang Shen",
+        "Rameswar Panda",
+        "Yoon Kim"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2312.06635",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v6; first posted 2023.",
+      "mechanism": "Data-dependent gating extends hardware-aware matrix-state linear attention.",
+      "demonstrated_scope": "Moderate-scale language modeling and length generalization.",
+      "cdm_relevance": "Makes memory traffic part of architectural comparison.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "dao2024mamba2",
+      "title": "Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality",
+      "authors": [
+        "Tri Dao",
+        "Albert Gu"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2405.21060",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v1.",
+      "mechanism": "Structured state-space duality connects recurrence and attention through semiseparable matrices.",
+      "demonstrated_scope": "Efficient core computation and language modeling.",
+      "cdm_relevance": "Provides a strong scan-friendly recurrent baseline.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "de2024griffin",
+      "title": "Griffin: Mixing Gated Linear Recurrences with Local Attention for Efficient Language Models",
+      "authors": [
+        "Soham De",
+        "Samuel L. Smith",
+        "Anushan Fernando",
+        "Aleksandar Botev",
+        "George Cristian-Muraru",
+        "Albert Gu",
+        "Ruba Haroun",
+        "Leonard Berrada",
+        "Yutian Chen",
+        "Srivatsan Srinivasan",
+        "Guillaume Desjardins",
+        "Arnaud Doucet",
+        "David Budden",
+        "Yee Whye Teh",
+        "Razvan Pascanu",
+        "Nando De Freitas",
+        "Caglar Gulcehre"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2402.19427",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2402.19427v1, Sections 2.3-2.4 and 3.",
+      "mechanism": "Gated linear recurrence combines with bounded local attention.",
+      "demonstrated_scope": "Language-model scaling and inference comparisons.",
+      "cdm_relevance": "Directly tests the proposed attention-plus-recurrence starting point.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "yang2024deltanet",
+      "title": "Parallelizing Linear Transformers with the Delta Rule over Sequence Length",
+      "authors": [
+        "Songlin Yang",
+        "Bailin Wang",
+        "Yu Zhang",
+        "Yikang Shen",
+        "Yoon Kim"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2406.06484",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2406.06484v6, Sections 2-3 and abstract.",
+      "mechanism": "Compact WY representations enable chunkwise training of delta-rule matrix recurrence.",
+      "demonstrated_scope": "1.3B language models, retrieval, and attention hybrids.",
+      "cdm_relevance": "Connects expressive memory editing to scalable training.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "yang2024gateddeltanet",
+      "title": "Gated Delta Networks: Improving Mamba2 with Delta Rule",
+      "authors": [
+        "Songlin Yang",
+        "Jan Kautz",
+        "Ali Hatamizadeh"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2412.06464",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2412.06464v3, Sections 3.1-3.4 and throughput discussion.",
+      "mechanism": "Adaptive decay complements targeted delta-rule correction.",
+      "demonstrated_scope": "Language modeling, retrieval, extrapolation, and hybrid architectures.",
+      "cdm_relevance": "Provides an editable-memory baseline with practical kernels.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "kimi2025linear",
+      "title": "Kimi Linear: An Expressive, Efficient Attention Architecture",
+      "authors": [
+        "Kimi Team"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2510.26692",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2510.26692v2, Sections 1 and 3; arXiv abstract.",
+      "mechanism": "Channel-wise KDA recurrence is interleaved with global latent attention.",
+      "demonstrated_scope": "48B-total, 3B-active models with language and post-training comparisons.",
+      "cdm_relevance": "Establishes a larger-scale hybrid precedent.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "peng2025rwkv7",
+      "title": "RWKV-7 \"Goose\" with Expressive Dynamic State Evolution",
+      "authors": [
+        "Bo Peng",
+        "Ruichong Zhang",
+        "Daniel Goldstein",
+        "Eric Alcaide",
+        "Xingjian Du",
+        "Haowen Hou",
+        "Jiaju Lin",
+        "Jiaxing Liu",
+        "Janna Lu",
+        "William Merrill",
+        "Guangyu Song",
+        "Kaifeng Tan",
+        "Saiteja Utpala",
+        "Nathan Wilce",
+        "Johan S. Wind",
+        "Tianyi Wu",
+        "Daniel Wuttke",
+        "Christian Zhou-Zheng"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2503.14456",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "Generalized delta updates use vector-valued controls for state evolution.",
+      "demonstrated_scope": "Language modeling and formal state-tracking analysis.",
+      "cdm_relevance": "Provides another expressive fixed-state recurrent family.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "hatamizadeh2026gateddeltanet2",
+      "title": "Gated DeltaNet-2: Decoupling Erase and Write in Linear Attention",
+      "authors": [
+        "Ali Hatamizadeh",
+        "Yejin Choi",
+        "Jan Kautz"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2605.22791",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2605.22791v1, Sections 2-3 and Section 4 throughput comparison.",
+      "mechanism": "Independent channel-wise erase and write gates refine recurrent association editing.",
+      "demonstrated_scope": "1.3B models trained on 100B tokens and retrieval comparisons.",
+      "cdm_relevance": "Bounds novelty claims about separate forgetting and writing.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "lahoti2026mamba3",
+      "title": "Mamba-3: Improved Sequence Modeling using State Space Principles",
+      "authors": [
+        "Aakash Lahoti",
+        "Kevin Y. Li",
+        "Berlin Chen",
+        "Caitlin Wang",
+        "Aviv Bick",
+        "J. Zico Kolter",
+        "Tri Dao",
+        "Albert Gu"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.15569",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2603.15569v1, Section 3 and inference-efficiency discussion.",
+      "mechanism": "Improved discretization, complex dynamics, and MIMO updates increase recurrent expressivity.",
+      "demonstrated_scope": "State tracking, retrieval, language modeling, and kernel efficiency.",
+      "cdm_relevance": "Tests dynamics quality alongside actual decoding cost.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "lee2026memoryanalysis",
+      "title": "How Linear Attention Remembers",
+      "authors": [
+        "Kichang Lee",
+        "JaeYeon Park",
+        "Songkuk Kim",
+        "JeongGil Ko"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2609.33093",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2609.33093v1, Sections 2.3, 4, and 6.",
+      "mechanism": "Causal interventions separate recurrent writes, stored state, and read pathways.",
+      "demonstrated_scope": "Controlled recall in pretrained GLA, GDN, and selected hybrids.",
+      "cdm_relevance": "Motivates separate state and cache interventions.",
+      "reading_priority": "core",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "lee2026switchingattention",
+      "title": "Switching Linear Attention",
+      "authors": [
+        "Hyun Dong Lee",
+        "Xavier Gonzalez",
+        "Nicolas Zucchet",
+        "E. Kelly Buchanan",
+        "Emily B. Fox",
+        "Scott W. Linderman"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2609.39034",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v1, 30 September 2026.",
+      "mechanism": "Online expectation-maximization creates dynamically selected recurrent mixture components.",
+      "demonstrated_scope": "Associative recall, in-context language learning, and language modeling.",
+      "cdm_relevance": "Provides a neighbor for partitioned or specialized state proposals.",
+      "reading_priority": "supporting",
+      "topic": "sequence",
+      "topics": [
+        "sequence"
+      ]
+    },
+    {
+      "id": "graves2016act",
+      "title": "Adaptive Computation Time for Recurrent Neural Networks",
+      "authors": [
+        "Alex Graves"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1603.08983",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, revision v6; first submitted 2016.",
+      "mechanism": "A differentiable recurrent computation mechanism learns how many internal steps to perform between input and output.",
+      "demonstrated_scope": "Synthetic algorithmic tasks and character-level language modeling.",
+      "cdm_relevance": "Historical foundation for adaptive internal depth; does not establish autonomous ongoing activity selection.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "hamrick2017metacontrol",
+      "title": "Metacontrol for Adaptive Imagination-Based Optimization",
+      "authors": [
+        "Jessica B. Hamrick",
+        "Andrew J. Ballard",
+        "Razvan Pascanu",
+        "Oriol Vinyals",
+        "Nicolas Heess",
+        "Peter W. Battaglia"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1705.02670",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract; ICLR 2017 conference paper.",
+      "mechanism": "An RL metacontroller chooses both the number of internal simulations and the predictive expert used at each iteration.",
+      "demonstrated_scope": "Decision-making with nonlinear dynamics, optimizing task loss together with computation cost.",
+      "cdm_relevance": "Prior art for selecting what to compute, beyond learning when to stop.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "dehghani2018universal",
+      "title": "Universal Transformers",
+      "authors": [
+        "Mostafa Dehghani",
+        "Stephan Gouws",
+        "Oriol Vinyals",
+        "Jakob Uszkoreit",
+        "Łukasz Kaiser"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1807.03819",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3; first submitted 2018, ICLR 2019.",
+      "mechanism": "Shared self-attentive transformations recur across depth, with dynamic halting for individual positions.",
+      "demonstrated_scope": "Algorithmic tasks, language understanding, language modeling, and machine translation.",
+      "cdm_relevance": "Direct prior art for combining attention, recurrence, and adaptive computation.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "guez2019drc",
+      "title": "An Investigation of Model-Free Planning",
+      "authors": [
+        "Arthur Guez",
+        "Mehdi Mirza",
+        "Karol Gregor",
+        "Rishabh Kabra",
+        "Sébastien Racanière",
+        "Théophane Weber",
+        "David Raposo",
+        "Adam Santoro",
+        "Laurent Orseau",
+        "Tom Eccles",
+        "Greg Wayne",
+        "David Silver",
+        "Timothy Lillicrap"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1901.03559",
+      "evidence_level": "full_text",
+      "evidence_location": "HTML v2, Sections 2.1-2.2, 3, and 4.1; abstract author list.",
+      "mechanism": "Deep Repeated ConvLSTM preserves recurrent state between observations and performs multiple internal updates per environment step.",
+      "demonstrated_scope": "Combinatorial planning domains including Sokoban, Boxworld, Gridworld, and MiniPacman; selected Atari games.",
+      "cdm_relevance": "Essential baseline for combining temporal persistence and internal computation without a hand-designed planner.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "banino2021pondernet",
+      "title": "PonderNet: Learning to Ponder",
+      "authors": [
+        "Andrea Banino",
+        "Jan Balaguer",
+        "Charles Blundell"
+      ],
+      "year": 2021,
+      "url": "https://arxiv.org/abs/2107.05407",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "Learns the number of computational steps while balancing prediction accuracy, computational cost, and generalization.",
+      "demonstrated_scope": "Synthetic extrapolation and reasoning tasks, plus question answering.",
+      "cdm_relevance": "A stopping-policy baseline; stopping an existing computation is narrower than selecting the next useful activity.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "chung2023thinker",
+      "title": "Thinker: Learning to Plan and Act",
+      "authors": [
+        "Stephen Chung",
+        "Ivan Anokhin",
+        "David Krueger"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2307.14993",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract and author project summary https://stephen-c.com/projects/thinker/. Additional inspected record: arXiv v2 abstract, 26 October 2023.",
+      "mechanism": "Additional actions let an RL agent interact with a learned world model and learn its planning behavior.",
+      "demonstrated_scope": "Sokoban and Atari 2600.",
+      "cdm_relevance": "A direct baseline for learned internal action selection; world-model interaction is already an established research direction.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation",
+        "planning"
+      ],
+      "aliases": [
+        "chung2023_thinker"
+      ]
+    },
+    {
+      "id": "hao2024coconut",
+      "title": "Training Large Language Models to Reason in a Continuous Latent Space",
+      "authors": [
+        "Shibo Hao",
+        "Sainbayar Sukhbaatar",
+        "DiJia Su",
+        "Xian Li",
+        "Zhiting Hu",
+        "Jason Weston",
+        "Yuandong Tian"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2412.06769",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v4; first submitted 2024, accepted to COLM 2025.",
+      "mechanism": "Coconut feeds the last hidden state back as the next input embedding instead of decoding every intermediate step into words.",
+      "demonstrated_scope": "Logical reasoning tasks requiring search, with reported accuracy-efficiency improvements over chain-of-thought.",
+      "cdm_relevance": "A route to nonverbal intermediate computation; distinct from keeping cognitive state across environmental events.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "black2025rtc",
+      "title": "Real-Time Execution of Action Chunking Flow Policies",
+      "authors": [
+        "Kevin Black",
+        "Manuel Y. Galliker",
+        "Sergey Levine"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.07339",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "RTC generates the next action chunk during execution, preserving committed actions and filling the remainder.",
+      "demonstrated_scope": "Twelve dynamic Kinetix tasks and six real-world bimanual manipulation tasks.",
+      "cdm_relevance": "A concrete asynchronous action interface; continuous actuation and rapid response to new evidence require separate measurements.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "darlow2025ctm",
+      "title": "Continuous Thought Machines",
+      "authors": [
+        "Luke Darlow",
+        "Ciaran Regan",
+        "Sebastian Risi",
+        "Jeffrey Seely",
+        "Llion Jones"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2505.05522",
+      "evidence_level": "official_summary",
+      "evidence_location": "Official Sakana report https://pub.sakana.ai/ctm/, Method and experiment sections; arXiv v4 abstract.",
+      "mechanism": "Internal ticks update neuron-specific temporal models; synchronization of neural activity supplies representations for observation and prediction.",
+      "demonstrated_scope": "Image classification, mazes, parity, sorting, and other reasoning demonstrations with adaptive computation.",
+      "cdm_relevance": "Treats internal dynamics as a computational representation; a useful alternative to ordinary looped blocks.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "geiping2025huginn",
+      "title": "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach",
+      "authors": [
+        "Jonas Geiping",
+        "Sean McLeish",
+        "Neel Jain",
+        "John Kirchenbauer",
+        "Siddharth Singh",
+        "Brian R. Bartoldson",
+        "Bhavya Kailkhura",
+        "Abhinav Bhatele",
+        "Tom Goldstein"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2502.05171",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "A shared recurrent block expands latent computation at inference without requiring longer verbal reasoning traces.",
+      "demonstrated_scope": "A 3.5-billion-parameter language model trained on 800 billion tokens, evaluated on reasoning benchmarks.",
+      "cdm_relevance": "Evidence that recurrent latent depth can scale beyond tiny puzzle networks; not evidence of lifelong online autonomy.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "jolicoeur2025trm",
+      "title": "Less is More: Recursive Reasoning with Tiny Networks",
+      "authors": [
+        "Alexia Jolicoeur-Martineau"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2510.04871",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v1.",
+      "mechanism": "A small two-layer recursive network simplifies the hierarchical reasoning approach.",
+      "demonstrated_scope": "ARC-AGI-1 and ARC-AGI-2 puzzle evaluation with a seven-million-parameter model.",
+      "cdm_relevance": "Motivates testing whether additional architectural hierarchy earns its complexity under matched conditions.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "wang2025hrm",
+      "title": "Hierarchical Reasoning Model",
+      "authors": [
+        "Guan Wang",
+        "Jin Li",
+        "Yuhao Sun",
+        "Xing Chen",
+        "Changling Liu",
+        "Yue Wu",
+        "Meng Lu",
+        "Sen Song",
+        "Yasin Abbasi Yadkori"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.21734",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v4 dated 2026-09-30; first submitted 2025.",
+      "mechanism": "Two interacting recurrent modules operate at different update frequencies for abstract and detailed processing.",
+      "demonstrated_scope": "Task-trained Sudoku, maze, and ARC reasoning with a compact network.",
+      "cdm_relevance": "A candidate hierarchy to compare against simpler recurrence; puzzle results do not establish general continual intelligence.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "cai2026t2mlr",
+      "title": "T^2MLR: Transformer with Temporal Middle-Layer Recurrence",
+      "authors": [
+        "Ziyang Cai",
+        "Xingyu Zhu",
+        "Yihe Dong",
+        "Yinghui He",
+        "Sanjeev Arora"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2607.15178",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2.",
+      "mechanism": "A cached middle-layer representation from the previous token enters an earlier layer at the next token.",
+      "demonstrated_scope": "Language pretraining, multihop reasoning, and a reported retrofit of a pretrained 1.7-billion-parameter model.",
+      "cdm_relevance": "Direct prior art for carrying intermediate computation across decoding steps with localized recurrence.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "chen2026metareasoning",
+      "title": "Learning to Select Computations in Recurrent Neural Circuits",
+      "authors": [
+        "Sixing Chen",
+        "Frederick Callaway",
+        "Sreejan Kumar",
+        "Shira M. Lupkin",
+        "Joni D. Wallis",
+        "Vincent B. McGinty",
+        "Erin L. Rich",
+        "Marcelo G. Mattar"
+      ],
+      "year": 2026,
+      "url": "https://www.biorxiv.org/content/10.64898/2026.04.14.718499v1",
+      "evidence_level": "official_summary",
+      "evidence_location": "Author repository README https://github.com/SixingChen028/recurrent-meta-reasoning; paper full text was inaccessible in this review.",
+      "mechanism": "Official implementations use recurrent actor-critic networks for computation-selection case studies.",
+      "demonstrated_scope": "Gaze-based choice and planning, plus comparisons with recorded neural dynamics.",
+      "cdm_relevance": "Connects computation selection to learned recurrent dynamics; retain as a conceptual neighbor pending full-text review.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "engdahl2026bdhcq",
+      "title": "BDH-CQ: In-Context Learning with Recurrent Latent Reasoning",
+      "authors": [
+        "Björn Engdahl",
+        "Adrian Kosowski",
+        "Jan Chorowski",
+        "Zuzanna Stamirowska",
+        "Przemysław Uznański",
+        "Junlin Jiang",
+        "Rohan Phadke",
+        "Remigiusz Kinas",
+        "Richard Zhong"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2608.09888",
+      "evidence_level": "full_text",
+      "evidence_location": "HTML v1, Sections 3.2-3.3, 4, and 5.",
+      "mechanism": "Demonstrations update recurrent contextual memory; a separate latent workspace subsequently iterates to answer a query.",
+      "demonstrated_scope": "Public ARC-AGI-1 and controlled ARC-like tasks; detailed update rules and training recipe remain proprietary.",
+      "cdm_relevance": "Direct neighbor for memory-plus-reasoning designs; its sequential ingestion and query interface differs from ongoing asynchronous decision-making.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "lee2026autorealtime",
+      "title": "Real-Time Execution with Autoregressive Policies",
+      "authors": [
+        "Sangkyu Lee",
+        "Seohyeon Park",
+        "Tackgeun You",
+        "Avi Caciularu",
+        "Idan Szpektor",
+        "Hwasup Lim",
+        "Youngjae Yu"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2606.13355",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v1.",
+      "mechanism": "Tokenization horizon adjustment and constrained decoding support asynchronous autoregressive action execution.",
+      "demonstrated_scope": "Simulated and real-world comparisons with corresponding flow-matching policies.",
+      "cdm_relevance": "Real-time requirements do not uniquely determine the output decoder family; compare complete execution systems.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "liu2026legato",
+      "title": "Learning Native Continuation for Action Chunking Flow Policies",
+      "authors": [
+        "Yufeng Liu",
+        "Hang Yu",
+        "Juntu Zhao",
+        "Bocheng Li",
+        "Di Zhang",
+        "Mingzhu Li",
+        "Wenxuan Wu",
+        "Yingdong Hu",
+        "Junyuan Xie",
+        "Junliang Guo",
+        "Dequan Wang",
+        "Yang Gao"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2602.12978",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v2; RSS 2026 acceptance stated on the paper page.",
+      "mechanism": "Legato trains flow policies with partially known action sequences and randomized continuation schedules.",
+      "demonstrated_scope": "Five real-world manipulation tasks, evaluating trajectory smoothness and completion time.",
+      "cdm_relevance": "Shows why asynchronous continuation should inform training, rather than only deployment scheduling.",
+      "reading_priority": "supporting",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "lu2026faster",
+      "title": "FASTER: Rethinking Real-Time Flow VLAs",
+      "authors": [
+        "Yuxiang Lu",
+        "Zhe Liu",
+        "Xianzhe Fan",
+        "Zhenya Yang",
+        "Jinghua Hou",
+        "Junyi Li",
+        "Kaixin Ding",
+        "Hengshuang Zhao"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.19199",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, v3.",
+      "mechanism": "A horizon-aware flow schedule prioritizes near-term actions, combined with streaming execution.",
+      "demonstrated_scope": "Real robots including a dynamic table-tennis task; evaluates reaction latency.",
+      "cdm_relevance": "Sharpens evaluation around event-to-action response, beyond smoothness and inference throughput.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "muppidi2026planningbudgets",
+      "title": "Finding the Time to Think: Learning Planning Budgets in Real-Time RL",
+      "authors": [
+        "Aneesh Muppidi",
+        "Firas Darwish",
+        "Dylan Cope",
+        "Joao F. Henriques",
+        "Jakob Nicolaus Foerster"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/html/2606.26463v1",
+      "evidence_level": "full_text",
+      "evidence_location": "HTML Sections 1-3, 7, and 8; page identifies version of 2026-08-24.",
+      "mechanism": "A learned gate selects planning budgets for a frozen MCTS planner while a fast policy acts as the environment advances.",
+      "demonstrated_scope": "Five real-time games and asynchronous deployment on separate agent and environment GPUs.",
+      "cdm_relevance": "Direct prior art for time-aware computation allocation; joint planner training and learned dynamics are explicit extensions.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "rusch2026loopedactor",
+      "title": "Looped Actor: Depth-Recurrent Reasoning Models for Reinforcement Learning",
+      "authors": [
+        "T. Konstantin Rusch",
+        "Tim Seyde",
+        "Jared Boyer",
+        "Zach J. Patterson",
+        "Daniela Rus"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2609.37432",
+      "evidence_level": "full_text",
+      "evidence_location": "HTML v1, Sections 2, 4, 4.1, 5, and 6.",
+      "mechanism": "A shared Transformer block refines policy latents until consecutive action distributions meet a predefined KL-stability threshold.",
+      "demonstrated_scope": "Twenty-two tasks in six environments covering online and offline RL, puzzles, and robotic control.",
+      "cdm_relevance": "Closest baseline for adaptive depth in policies; threshold-based stopping is not direct optimization of computation value.",
+      "reading_priority": "core",
+      "topic": "computation",
+      "topics": [
+        "computation"
+      ]
+    },
+    {
+      "id": "bajcsy1988_active_perception",
+      "title": "Active Perception",
+      "authors": [
+        "Ruzena Bajcsy"
+      ],
+      "year": 1988,
+      "url": "https://repository.upenn.edu/bitstreams/14686d28-7a8a-4554-beee-991eec61cbdd/download",
+      "topic": "planning",
+      "evidence_level": "indexed_excerpt",
+      "evidence_location": "Indexed original MS-CIS-88-24 report title page and body passage on active-sensing feedback and local/global models; direct PDF fetch blocked. Mechanism corroborated in author's 2017 retrospective introduction; no method-level comparison relies on this excerpt alone.",
+      "mechanism": "Controls data acquisition using interpreted evidence and task-dependent models.",
+      "demonstrated_scope": "Conceptual sensor-control account; no quantitative benchmark claim used here.",
+      "cdm_relevance": "Foundation for selecting observations rather than only consuming streams.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "russell1991_metareasoning",
+      "title": "Principles of metareasoning",
+      "authors": [
+        "Stuart Russell",
+        "Eric Wefald"
+      ],
+      "year": 1991,
+      "url": "https://www.sciencedirect.com/science/article/pii/000437029190015C",
+      "topic": "planning",
+      "evidence_level": "abstract",
+      "evidence_location": "Publisher-indexed abstract; year and authors corroborated by Stuart Russell's Berkeley publications page. Direct publisher fetch returned 403.",
+      "mechanism": "Provides a decision-theoretic basis for selecting computational actions.",
+      "demonstrated_scope": "Foundational formulation; no specific benchmark claim used here.",
+      "cdm_relevance": "Conceptual foundation for learned internal action selection.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "horvitz2001_continual_computation",
+      "title": "Principles and Applications of Continual Computation",
+      "authors": [
+        "Eric Horvitz"
+      ],
+      "year": 2001,
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/cc_aij_horvitz.pdf",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Abstract, introduction, Sections 2-4; author-hosted manuscript pp. 1-9.",
+      "mechanism": "Allocates resources to possible future problems using expected value of precomputation.",
+      "demonstrated_scope": "Analytical allocation policies; diagnostic reasoning and media-transmission applications are described.",
+      "cdm_relevance": "Direct precedent for proactive computation and caching partial results.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "koenig2002_dstar_lite",
+      "title": "D* Lite",
+      "authors": [
+        "Sven Koenig",
+        "Maxim Likhachev"
+      ],
+      "year": 2002,
+      "url": "https://idm-lab.org/bib/abstracts/Koen02e.html",
+      "topic": "planning",
+      "evidence_level": "abstract",
+      "evidence_location": "Author abstract and linked AAAI paper metadata; mechanism and demonstrated scope are limited to the author abstract.",
+      "mechanism": "Adapts incremental heuristic search to navigation with newly discovered terrain.",
+      "demonstrated_scope": "Goal-directed navigation and mapping; analysis and experiments.",
+      "cdm_relevance": "Comparator for persistent planning as evidence arrives.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "koenig2004_lpa",
+      "title": "Lifelong Planning A*",
+      "authors": [
+        "Sven Koenig",
+        "Maxim Likhachev",
+        "David Furcy"
+      ],
+      "year": 2004,
+      "url": "https://idm-lab.org/bib/abstracts/Koen04a.html",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Author abstract and linked manuscript, Overview and Sections 2-3. Manuscript copy dated 24 May 2005; journal citation 2004.",
+      "mechanism": "Reuses unchanged search structure and repairs inconsistent results after graph changes.",
+      "demonstrated_scope": "Changing-graph shortest paths; route and symbolic planning.",
+      "cdm_relevance": "Key novelty boundary for selective revision of ongoing deliberation.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "diehl2005_rti",
+      "title": "A Real-Time Iteration Scheme for Nonlinear Optimization in Optimal Feedback Control",
+      "authors": [
+        "Moritz Diehl",
+        "Hans Georg Bock",
+        "Johannes P. Schlöder"
+      ],
+      "year": 2005,
+      "url": "https://epubs.siam.org/doi/10.1137/S0363012902400713",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Publisher abstract and author-uploaded ResearchGate PDF, Sections 1-2, pp. 1714-1718; the one-iteration scheme is described in Section 1.2.",
+      "mechanism": "Advances feedback control with one Newton-type update per optimization problem.",
+      "demonstrated_scope": "Contractivity and optimality-loss analysis; numerical kite-control example.",
+      "cdm_relevance": "Precedent for carrying optimization progress through ongoing control.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "hay2012_selecting_computations",
+      "title": "Selecting Computations: Theory and Applications",
+      "authors": [
+        "Nicholas Hay",
+        "Stuart Russell",
+        "David Tolpin",
+        "Solomon Eyal Shimony"
+      ],
+      "year": 2012,
+      "url": "https://arxiv.org/abs/1207.5879",
+      "topic": "planning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv v1 abstract and authors; comments identify UAI 2012.",
+      "mechanism": "Frames computation selection as Bayesian selection; develops sampling bounds and approximations.",
+      "demonstrated_scope": "One-shot decision problems and Go.",
+      "cdm_relevance": "Evaluate computation by resulting decision improvement.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "lin2015_metareasoning_planning",
+      "title": "Metareasoning for Planning Under Uncertainty",
+      "authors": [
+        "Christopher H. Lin",
+        "Andrey Kolobov",
+        "Ece Kamar",
+        "Eric Horvitz"
+      ],
+      "year": 2015,
+      "url": "https://www.ijcai.org/Proceedings/15/Papers/229.pdf",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "IJCAI paper abstract and introduction, p. 1601; formalization and BRTDP claims limited to the inspected abstract.",
+      "mechanism": "Models costly planning while environmental state can change.",
+      "demonstrated_scope": "MDP analysis and approximate BRTDP-based procedures.",
+      "cdm_relevance": "Precedent for charging deliberation against environmental time.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "klenske2016_dual_control",
+      "title": "Dual Control for Approximate Bayesian Reinforcement Learning",
+      "authors": [
+        "Edgar D. Klenske",
+        "Philipp Hennig"
+      ],
+      "year": 2016,
+      "url": "https://www.jmlr.org/papers/v17/15-162.html",
+      "topic": "planning",
+      "evidence_level": "abstract",
+      "evidence_location": "JMLR volume 17(127), authors and abstract.",
+      "mechanism": "Approximate Bayesian dual control trades present control against learning dynamics.",
+      "demonstrated_scope": "Simulated systems; regression, Gaussian-process, and neural-network examples.",
+      "cdm_relevance": "Actions in scientific experiments can also be informative probes.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "bajcsy2017_revisiting_perception",
+      "title": "Revisiting active perception",
+      "authors": [
+        "Ruzena Bajcsy",
+        "Yiannis Aloimonos",
+        "John K. Tsotsos"
+      ],
+      "year": 2017,
+      "url": "https://link.springer.com/article/10.1007/s10514-017-9615-3",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Introduction and Section 2; online publication 15 February 2017, volume 42 (2018), pp. 177-196.",
+      "mechanism": "Organizes purposeful sensing by what, how, when, and where.",
+      "demonstrated_scope": "Author retrospective and conceptual synthesis across perception research.",
+      "cdm_relevance": "Helps define CDM's learned perceptual decisions.",
+      "reading_priority": "supporting",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "lieder2017_strategy_selection",
+      "title": "Strategy selection as rational metareasoning",
+      "authors": [
+        "Falk Lieder",
+        "Thomas L. Griffiths"
+      ],
+      "year": 2017,
+      "url": "https://cocosci.princeton.edu/papers/Strategy%20selection%20as%20RM%20Preprint.pdf",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Author manuscript abstract and introduction, pp. 1-4; publication year verified with Princeton institutional record.",
+      "mechanism": "Learns strategy-performance predictions for cost-benefit selection.",
+      "demonstrated_scope": "Human strategy-choice modeling, comparisons, and four reported new experiments.",
+      "cdm_relevance": "Motivates competence-sensitive allocation of internal effort.",
+      "reading_priority": "supporting",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "pascanu2017_learning_planning",
+      "title": "Learning model-based planning from scratch",
+      "authors": [
+        "Razvan Pascanu",
+        "Yujia Li",
+        "Oriol Vinyals",
+        "Nicolas Heess",
+        "Lars Buesing",
+        "Sebastien Racanière",
+        "David Reichert",
+        "Théophane Weber",
+        "Daan Wierstra",
+        "Peter Battaglia"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1707.06170",
+      "topic": "planning",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and bibliographic record, 19 July 2017.",
+      "mechanism": "Learns variable imagination steps, accumulated plan context, and navigation among imagined states with computation costs.",
+      "demonstrated_scope": "Continuous control and discrete maze tasks.",
+      "cdm_relevance": "Close predecessor for learned management of deliberation.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "weber2017_i2a",
+      "title": "Imagination-Augmented Agents for Deep Reinforcement Learning",
+      "authors": [
+        "Théophane Weber",
+        "Sébastien Racanière",
+        "David P. Reichert",
+        "Lars Buesing",
+        "Arthur Guez",
+        "Danilo Jimenez Rezende",
+        "Adria Puigdomènech Badia",
+        "Oriol Vinyals",
+        "Nicolas Heess",
+        "Yujia Li",
+        "Razvan Pascanu",
+        "Peter Battaglia",
+        "Demis Hassabis",
+        "David Silver",
+        "Daan Wierstra"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/html/1707.06203v2",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Initial preprint 2017; inspected v2 dated 14 February 2018, Sections 1-3; experiment domains verified from abstract, introduction, and contents. Authors from arXiv metadata.",
+      "mechanism": "Encodes imagined trajectories and combines them with a direct policy path.",
+      "demonstrated_scope": "Sokoban and MiniPacman, including imperfect-model experiments.",
+      "cdm_relevance": "Precedent for learned interpretation of model-based imagination.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "callaway2018_select_computations",
+      "title": "Learning to select computations",
+      "authors": [
+        "Frederick Callaway",
+        "Sayan Gul",
+        "Paul M. Krueger",
+        "Thomas L. Griffiths",
+        "Falk Lieder"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/html/1711.06892v3",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Version 3, 7 August 2018; abstract and introduction; experiment topics verified in contents and abstract. Original preprint 2017.",
+      "mechanism": "Bayesian metalevel policy search uses value-of-information structure.",
+      "demonstrated_scope": "Stopping, allocation between options, planning, and emergency-management scenario.",
+      "cdm_relevance": "A learned scheduling baseline; include metareasoning overhead.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "godara2024_metabamdp",
+      "title": "Metareasoning in uncertain environments: a meta-BAMDP framework",
+      "authors": [
+        "Prakhar Godara",
+        "Tilman Diego Aléman",
+        "Angela J. Yu"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/html/2408.01253v2",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Initial preprint 2024; inspected v2 dated 3 February 2025, abstract and introduction. Section topics verified in contents.",
+      "mechanism": "Extends metareasoning to unknown reward and transition distributions.",
+      "demonstrated_scope": "Approximation theorems and Bernoulli-bandit applications.",
+      "cdm_relevance": "Separates uncertainty about computation from uncertainty about dynamics.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "labiosa2026_when_to_plan",
+      "title": "When to Plan: Learning to Select Between Reactive Control and Deliberative Planning",
+      "authors": [
+        "Adam Labiosa",
+        "Josiah P. Hanna"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/html/2607.16421v2",
+      "topic": "planning",
+      "evidence_level": "full_text",
+      "evidence_location": "Version 2, 6 October 2026; Sections 4-6.2.",
+      "mechanism": "Learns uncertainty-conditioned selection of reactive control or planning horizons.",
+      "demonstrated_scope": "Navigation and motion tasks; supplied accurate model, A*, depth-cost proxy, open-loop option execution.",
+      "cdm_relevance": "Close comparator for learned timing and computational allocation.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ]
+    },
+    {
+      "id": "ewc_2016",
+      "title": "Overcoming catastrophic forgetting in neural networks",
+      "authors": [
+        "James Kirkpatrick",
+        "Razvan Pascanu",
+        "Neil Rabinowitz",
+        "Joel Veness",
+        "Guillaume Desjardins",
+        "Andrei A. Rusu",
+        "Kieran Milan",
+        "John Quan",
+        "Tiago Ramalho",
+        "Agnieszka Grabska-Barwinska",
+        "Demis Hassabis",
+        "Claudia Clopath",
+        "Dharshan Kumaran",
+        "Raia Hadsell"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1612.00796",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:1612.00796v2, abstract; first preprint 2016, journal publication 2017",
+      "mechanism": "Reduces updates to weights important for previously learned tasks.",
+      "demonstrated_scope": "Sequential MNIST-derived tasks and Atari games.",
+      "cdm_relevance": "Parameter retention must be assessed separately from context retention.",
+      "reading_priority": "supporting",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "fast_weights_2016",
+      "title": "Using Fast Weights to Attend to the Recent Past",
+      "authors": [
+        "Jimmy Ba",
+        "Geoffrey Hinton",
+        "Volodymyr Mnih",
+        "Joel Z. Leibo",
+        "Catalin Ionescu"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1610.06258",
+      "topic": "learning",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/1610.06258v3, Sections 3-4",
+      "mechanism": "Decaying outer-product memory augments a slower recurrent network.",
+      "demonstrated_scope": "Associative retrieval, visual recognition, and memory-dependent reinforcement learning.",
+      "cdm_relevance": "Precedent for fast associative state and interacting timescales.",
+      "reading_priority": "supporting",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "learning_to_rl_2016",
+      "title": "Learning to reinforcement learn",
+      "authors": [
+        "Jane X Wang",
+        "Zeb Kurth-Nelson",
+        "Dhruva Tirumala",
+        "Hubert Soyer",
+        "Joel Z Leibo",
+        "Remi Munos",
+        "Charles Blundell",
+        "Dharshan Kumaran",
+        "Matt Botvinick"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1611.05763",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:1611.05763v3, abstract",
+      "mechanism": "Recurrent dynamics learn a learning algorithm through outer-loop reinforcement learning.",
+      "demonstrated_scope": "Seven proof-of-concept meta-reinforcement-learning experiments.",
+      "cdm_relevance": "Distinguishes learned adaptation dynamics from online weight changes.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "rl2_2016",
+      "title": "RL²: Fast Reinforcement Learning via Slow Reinforcement Learning",
+      "authors": [
+        "Yan Duan",
+        "John Schulman",
+        "Xi Chen",
+        "Peter L. Bartlett",
+        "Ilya Sutskever",
+        "Pieter Abbeel"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1611.02779",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:1611.02779v2, abstract",
+      "mechanism": "Outer-loop reinforcement learning trains a recurrent inner adaptation procedure.",
+      "demonstrated_scope": "Bandits, finite MDPs, and vision-based navigation.",
+      "cdm_relevance": "Cross-episode persistence and behavioral adaptation with frozen weights are established.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "gem_2017",
+      "title": "Gradient Episodic Memory for Continual Learning",
+      "authors": [
+        "David Lopez-Paz",
+        "Marc'Aurelio Ranzato"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1706.08840",
+      "topic": "learning",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/1706.08840v6, gradient projection method and abstract",
+      "mechanism": "Projects gradients using constraints derived from episodic memory.",
+      "demonstrated_scope": "MNIST variants and CIFAR-100 task sequences; transfer metrics.",
+      "cdm_relevance": "Supplies a retention baseline and explicit transfer measurements.",
+      "reading_priority": "supporting",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "maml_2017",
+      "title": "Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks",
+      "authors": [
+        "Chelsea Finn",
+        "Pieter Abbeel",
+        "Sergey Levine"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1703.03400",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:1703.03400v3, abstract",
+      "mechanism": "Trains parameter initialization for effective adaptation after few gradient steps.",
+      "demonstrated_scope": "Few-shot classification, regression, and policy-gradient adaptation.",
+      "cdm_relevance": "A baseline for preparing model parameters to learn from future experience.",
+      "reading_priority": "supporting",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "clear_2018",
+      "title": "Experience Replay for Continual Learning",
+      "authors": [
+        "David Rolnick",
+        "Arun Ahuja",
+        "Jonathan Schwarz",
+        "Timothy P. Lillicrap",
+        "Greg Wayne"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1811.11682",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:1811.11682v2, abstract; first preprint 2018, NeurIPS 2019",
+      "mechanism": "Combines replay, on/off-policy updates, and behavioral cloning.",
+      "demonstrated_scope": "Continual Atari and DMLab without supplied task boundaries.",
+      "cdm_relevance": "Strong baseline for retaining control abilities during ongoing learning.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "plasticity_2024",
+      "title": "Loss of plasticity in deep continual learning",
+      "authors": [
+        "Shibhansh Dohare",
+        "J. Fernando Hernandez-Garcia",
+        "Qingfeng Lan",
+        "Parash Rahman",
+        "A. Rupam Mahmood",
+        "Richard S. Sutton"
+      ],
+      "year": 2024,
+      "url": "https://www.nature.com/articles/s41586-024-07711-7",
+      "topic": "learning",
+      "evidence_level": "official_summary",
+      "evidence_location": "https://github.com/shibhansh/loss-of-plasticity, abstract and citation; author spelling cross-checked against arXiv:2306.13812",
+      "mechanism": "Continual backpropagation renews a fraction of low-utility units.",
+      "demonstrated_scope": "Continual ImageNet-derived classification and reinforcement-learning experiments.",
+      "cdm_relevance": "Track the ability to acquire new skills after extensive prior training.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "titans_2024",
+      "title": "Titans: Learning to Memorize at Test Time",
+      "authors": [
+        "Ali Behrouz",
+        "Peilin Zhong",
+        "Vahab Mirrokni"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2501.00663",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2501.00663v1, abstract; first submitted 31 December 2024",
+      "mechanism": "Combines attention with test-time learning in neural memory.",
+      "demonstrated_scope": "Language, commonsense reasoning, genomics, time series, and long-context retrieval.",
+      "cdm_relevance": "Close prior art for attention coupled to persistent trainable memory.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "ttt_layers_2024",
+      "title": "Learning to (Learn at Test Time): RNNs with Expressive Hidden States",
+      "authors": [
+        "Yu Sun",
+        "Xinhao Li",
+        "Karan Dalal",
+        "Jiarui Xu",
+        "Arjun Vikram",
+        "Genghan Zhang",
+        "Yann Dubois",
+        "Xinlei Chen",
+        "Xiaolong Wang",
+        "Sanmi Koyejo",
+        "Tatsunori Hashimoto",
+        "Carlos Guestrin"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2407.04620",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2407.04620v4, abstract",
+      "mechanism": "A learned model is the recurrent state; self-supervision updates it.",
+      "demonstrated_scope": "Language models from 125M to 1.3B parameters.",
+      "cdm_relevance": "Direct precedent for fast-parameter memory in a recurrent backbone.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "atlas_2025",
+      "title": "ATLAS: Learning to Optimally Memorize the Context at Test Time",
+      "authors": [
+        "Ali Behrouz",
+        "Zeman Li",
+        "Praneeth Kacham",
+        "Majid Daliri",
+        "Yuan Deng",
+        "Peilin Zhong",
+        "Meisam Razaviyayn",
+        "Vahab Mirrokni"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2505.23735",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2505.23735v1, abstract",
+      "mechanism": "Optimizes neural memory using current and past context.",
+      "demonstrated_scope": "Language modeling, reasoning, recall, and long-context understanding.",
+      "cdm_relevance": "Accumulated-evidence memory optimization is established prior work.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "c_chain_2025",
+      "title": "Mitigating Plasticity Loss in Continual Reinforcement Learning by Reducing Churn",
+      "authors": [
+        "Hongyao Tang",
+        "Johan Obando-Ceron",
+        "Pablo Samuel Castro",
+        "Aaron Courville",
+        "Glen Berseth"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.00592",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2506.00592, abstract",
+      "mechanism": "Reduces update-induced variability on out-of-batch outputs.",
+      "demonstrated_scope": "Continual Gym control, ProcGen, DeepMind Control, and MinAtar.",
+      "cdm_relevance": "Continual-RL plasticity comparator beyond retention-only methods.",
+      "reading_priority": "supporting",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "miras_2025",
+      "title": "It's All Connected: A Journey Through Test-Time Memorization, Attentional Bias, Retention, and Online Optimization",
+      "authors": [
+        "Ali Behrouz",
+        "Meisam Razaviyayn",
+        "Peilin Zhong",
+        "Vahab Mirrokni"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2504.13173",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2504.13173v1, abstract",
+      "mechanism": "Framework over associative representation, memory objective, retention, and update algorithm.",
+      "demonstrated_scope": "Language, commonsense reasoning, and recall-intensive tasks.",
+      "cdm_relevance": "Organizes the update-rule design space CDM must compare against.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "nested_learning_2025",
+      "title": "Nested Learning: The Illusion of Deep Learning Architectures",
+      "authors": [
+        "Ali Behrouz",
+        "Meisam Razaviyayn",
+        "Peilin Zhong",
+        "Vahab Mirrokni"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2512.24695",
+      "topic": "learning",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2512.24695v1, Sections 8.3 and 9.1",
+      "mechanism": "Combines self-modifying memory and parameter blocks with different update frequencies.",
+      "demonstrated_scope": "Language modeling, long-context tasks, and class-incremental text classification.",
+      "cdm_relevance": "Close precedent for multilevel learning and persistent adaptive memory.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "seal_2025",
+      "title": "Self-Adapting Language Models",
+      "authors": [
+        "Adam Zweiger",
+        "Jyothish Pari",
+        "Han Guo",
+        "Ekin Akyürek",
+        "Yoon Kim",
+        "Pulkit Agrawal"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.10943",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2506.10943v2, abstract",
+      "mechanism": "Generates finetuning data and directives, trained through post-update performance.",
+      "demonstrated_scope": "Knowledge incorporation and few-shot generalization.",
+      "cdm_relevance": "Self-directed parameter adaptation is already a concrete research line.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "ttt_e2e_2025",
+      "title": "End-to-End Test-Time Training for Long Context",
+      "authors": [
+        "Arnuv Tandon",
+        "Karan Dalal",
+        "Xinhao Li",
+        "Daniel Koceja",
+        "Marcel Rød",
+        "Sam Buchanan",
+        "Xiaolong Wang",
+        "Jure Leskovec",
+        "Sanmi Koyejo",
+        "Tatsunori Hashimoto",
+        "Carlos Guestrin",
+        "Jed McCaleb",
+        "Yejin Choi",
+        "Yu Sun"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2512.23675",
+      "topic": "learning",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2512.23675v2, Section 2 and abstract",
+      "mechanism": "Meta-trains initialization for runtime next-token updates in selected Transformer MLPs.",
+      "demonstrated_scope": "Language-model scaling, retrieval, and inference efficiency.",
+      "cdm_relevance": "Important standard-backbone alternative to architectural memory novelty.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "cmm_2026",
+      "title": "Continuous Memory Machines",
+      "authors": [
+        "Ciaran Regan",
+        "Kai Arulkumaran",
+        "Luke Darlow",
+        "Stefania Druga",
+        "Sebastian Risi",
+        "Llion Jones"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2610.07907",
+      "topic": "learning",
+      "evidence_level": "full_text",
+      "evidence_location": "https://arxiv.org/html/2610.07907v1, Sections 3-4; submitted 6 October 2026",
+      "mechanism": "Shared Transformer updates distinct short- and long-term matrix states.",
+      "demonstrated_scope": "Algorithmic tasks, maze reasoning, few-shot regression, and ImageNet-100.",
+      "cdm_relevance": "Direct neighbor of two-store persistent computation; requires explicit differentiation.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "meta_ttl_2026",
+      "title": "Meta-TTL: Meta-Learning Self-Improvement Policies for Language Agents",
+      "authors": [
+        "Zhanzhi Lou",
+        "Hui Chen",
+        "Yibo Li",
+        "Qian Wang",
+        "Bryan Hooi"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2604.00830v4",
+      "topic": "learning",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv:2604.00830v4, abstract; revised 28 September 2026",
+      "mechanism": "Meta-trains policies for improvement across repeated agent interactions.",
+      "demonstrated_scope": "Language-agent benchmarks including Jericho and WebArena-Lite, with held-out tasks.",
+      "cdm_relevance": "Comparator for learning how to improve rather than hand-coding adaptation.",
+      "reading_priority": "core",
+      "topics": [
+        "learning"
+      ]
+    },
+    {
+      "id": "merlin-2018",
+      "title": "Unsupervised Predictive Memory in a Goal-Directed Agent",
+      "authors": [
+        "Greg Wayne",
+        "Chia-Chun Hung",
+        "David Amos",
+        "Mehdi Mirza",
+        "Arun Ahuja",
+        "Agnieszka Grabska-Barwinska",
+        "Jack Rae",
+        "Piotr Mirowski",
+        "Joel Z. Leibo",
+        "Adam Santoro",
+        "Mevlana Gemici",
+        "Malcolm Reynolds",
+        "Tim Harley",
+        "Josh Abramson",
+        "Shakir Mohamed",
+        "Danilo Rezende",
+        "David Saxton",
+        "Adam Cain",
+        "Chloe Hillier",
+        "David Silver",
+        "Koray Kavukcuoglu",
+        "Matt Botvinick",
+        "Demis Hassabis",
+        "Timothy Lillicrap"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1803.10760",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract",
+      "mechanism": "Predictive modelling guides memory formation.",
+      "demonstrated_scope": "Partially observable 3D virtual tasks requiring long memories.",
+      "cdm_relevance": "Training useful state rather than adding memory capacity.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "world-models-2018",
+      "title": "World Models",
+      "authors": [
+        "David Ha",
+        "Jürgen Schmidhuber"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1803.10122",
+      "evidence_level": "full_text",
+      "evidence_location": "Author-maintained interactive paper, model components and controller sections: https://worldmodels.github.io/",
+      "mechanism": "Visual compression, recurrent prediction, and a compact control policy.",
+      "demonstrated_scope": "Car racing and transfer from a learned Doom environment.",
+      "cdm_relevance": "Historical baseline for predictive state and imagination.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "muzero-2019",
+      "title": "Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model",
+      "authors": [
+        "Julian Schrittwieser",
+        "Ioannis Antonoglou",
+        "Thomas Hubert",
+        "Karen Simonyan",
+        "Laurent Sifre",
+        "Simon Schmitt",
+        "Arthur Guez",
+        "Edward Lockhart",
+        "Demis Hassabis",
+        "Thore Graepel",
+        "Timothy Lillicrap",
+        "David Silver"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1911.08265",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract; first preprint year recorded",
+      "mechanism": "Search over learned reward, policy, and value predictions.",
+      "demonstrated_scope": "Atari and board-game performance.",
+      "cdm_relevance": "Decision-relevant prediction as an alternative to sensory reconstruction.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "poet-2019",
+      "title": "Paired Open-Ended Trailblazer (POET): Endlessly Generating Increasingly Complex and Diverse Learning Environments and Their Solutions",
+      "authors": [
+        "Rui Wang",
+        "Joel Lehman",
+        "Jeff Clune",
+        "Kenneth O. Stanley"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1901.01753",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract Additional inspected record: Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Co-develops challenges and solutions, transferring policies between problems.",
+      "demonstrated_scope": "Automatically generated challenges and stepping-stone solution transfer.",
+      "cdm_relevance": "Prior work on generating learning opportunities.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world",
+        "agency"
+      ],
+      "aliases": [
+        "wang2019poet"
+      ]
+    },
+    {
+      "id": "calvin-2022",
+      "title": "CALVIN: A Benchmark for Language-Conditioned Policy Learning for Long-Horizon Robot Manipulation Tasks",
+      "authors": [
+        "Oier Mees",
+        "Lukas Hermann",
+        "Erick Rosete-Beas",
+        "Wolfram Burgard"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2112.03227",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, revised 2022 publication version",
+      "mechanism": "Language-conditioned manipulation tasks compose over extended sequences.",
+      "demonstrated_scope": "Generalisation to new instructions, objects, and environments.",
+      "cdm_relevance": "Tests persistence and composition in an established embodied setting.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "gato-2022",
+      "title": "A Generalist Agent",
+      "authors": [
+        "Scott Reed",
+        "Konrad Zolna",
+        "Emilio Parisotto",
+        "Sergio Gomez Colmenarejo",
+        "Alexander Novikov",
+        "Gabriel Barth-Maron",
+        "Mai Gimenez",
+        "Yury Sulsky",
+        "Jackie Kay",
+        "Jost Tobias Springenberg",
+        "Tom Eccles",
+        "Jake Bruce",
+        "Ali Razavi",
+        "Ashley Edwards",
+        "Nicolas Heess",
+        "Yutian Chen",
+        "Raia Hadsell",
+        "Oriol Vinyals",
+        "Mahyar Bordbar",
+        "Nando de Freitas"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2205.06175",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract",
+      "mechanism": "Shared network and weights produce different modalities and actions.",
+      "demonstrated_scope": "Text, images, games, and real-robot tasks.",
+      "cdm_relevance": "Multimodal control alone is an established capability.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "latent-ebm-2023",
+      "title": "Introduction to Latent Variable Energy-Based Models: A Path Towards Autonomous Machine Intelligence",
+      "authors": [
+        "Anna Dawid",
+        "Yann LeCun"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2306.02572",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract; 2023 preprint, journal reference J. Stat. Mech. (2024) 104011",
+      "mechanism": "Energy-based and latent-variable formulations motivate hierarchical joint-embedding prediction.",
+      "demonstrated_scope": "Conceptual lecture notes, not a complete autonomous-agent benchmark.",
+      "cdm_relevance": "Theoretical lineage for predictive autonomous architectures.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "libero-2023",
+      "title": "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning",
+      "authors": [
+        "Bo Liu",
+        "Yifeng Zhu",
+        "Chongkai Gao",
+        "Yihao Feng",
+        "Qiang Liu",
+        "Yuke Zhu",
+        "Peter Stone"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2306.03310",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract",
+      "mechanism": "Task suites isolate forms of knowledge transfer in robot learning.",
+      "demonstrated_scope": "Lifelong manipulation, task ordering, and pretraining comparisons.",
+      "cdm_relevance": "Measure retention and transfer under sequential experience.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "moshi-2024",
+      "title": "Moshi: a speech-text foundation model for real-time dialogue",
+      "authors": [
+        "Alexandre Défossez",
+        "Laurent Mazaré",
+        "Manu Orsini",
+        "Amélie Royer",
+        "Patrick Pérez",
+        "Hervé Jégou",
+        "Edouard Grave",
+        "Neil Zeghidour"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2410.00037",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract",
+      "mechanism": "Parallel speech streams support overlapping spoken interaction.",
+      "demonstrated_scope": "Real-time full-duplex dialogue.",
+      "cdm_relevance": "Asynchronous interaction precedent; distinct from self-directed inquiry.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "openvla-2024",
+      "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+      "authors": [
+        "Moo Jin Kim",
+        "Karl Pertsch",
+        "Siddharth Karamcheti",
+        "Ted Xiao",
+        "Ashwin Balakrishna",
+        "Suraj Nair",
+        "Rafael Rafailov",
+        "Ethan Foster",
+        "Grace Lam",
+        "Pannag Sanketi",
+        "Quan Vuong",
+        "Thomas Kollar",
+        "Benjamin Burchfiel",
+        "Russ Tedrake",
+        "Dorsa Sadigh",
+        "Sergey Levine",
+        "Percy Liang",
+        "Chelsea Finn"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2406.09246",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract",
+      "mechanism": "Pretrained vision-language model learns robot actions from demonstrations.",
+      "demonstrated_scope": "Generalist manipulation and adaptation across robot settings.",
+      "cdm_relevance": "Substantive perception-to-action and transfer baseline.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "td-mpc2-2024",
+      "title": "TD-MPC2: Scalable, Robust World Models for Continuous Control",
+      "authors": [
+        "Nicklas Hansen",
+        "Hao Su",
+        "Xiaolong Wang"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2310.16828",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, ICLR 2024 version",
+      "mechanism": "Trajectory optimisation in an implicit latent world model.",
+      "demonstrated_scope": "104 control tasks; a separate single-model 80-task experiment.",
+      "cdm_relevance": "Continuous-control and multitask planning baseline.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "wu2024streambench",
+      "title": "StreamBench: Towards Benchmarking Continuous Improvement of Language Agents",
+      "authors": [
+        "Cheng-Kuang Wu",
+        "Zhi Rui Tam",
+        "Chieh-Yen Lin",
+        "Yun-Nung Chen",
+        "Hung-yi Lee"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2406.08747v2",
+      "topic": "world",
+      "topics": [
+        "world",
+        "learning"
+      ],
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv v2 abstract and bibliographic record, inspected 2026-10-14.",
+      "mechanism": "Evaluates language-agent improvement over successive inputs and feedback.",
+      "demonstrated_scope": "Online feedback sequences with simple streaming adaptation baselines.",
+      "cdm_relevance": "Tests improvement through experience; distinct from the StreamChat video benchmark with the same short name.",
+      "reading_priority": "supporting"
+    },
+    {
+      "id": "dreamerv3-2025",
+      "title": "Mastering Diverse Control Tasks through World Models",
+      "authors": [
+        "Danijar Hafner",
+        "Jurgis Pasukonis",
+        "Jimmy Ba",
+        "Timothy Lillicrap"
+      ],
+      "year": 2025,
+      "url": "https://www.nature.com/articles/s41586-025-08744-2",
+      "evidence_level": "official_summary",
+      "evidence_location": "Author project abstract and benchmarks: https://danijar.com/project/dreamerv3/; earlier preprint https://arxiv.org/abs/2301.04104",
+      "mechanism": "Learns dynamics and improves behaviour through imagined experience.",
+      "demonstrated_scope": "One algorithm configuration across diverse control tasks.",
+      "cdm_relevance": "World-model training baseline; algorithm generality differs from one lifelong agent.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "longmemeval-2025",
+      "title": "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory",
+      "authors": [
+        "Di Wu",
+        "Hongwei Wang",
+        "Wenhao Yu",
+        "Yuwei Zhang",
+        "Kai-Wei Chang",
+        "Dong Yu"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2410.10813",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, ICLR 2025 version",
+      "mechanism": "Questions probe multiple memory abilities across interaction histories.",
+      "demonstrated_scope": "Recall, temporal and cross-session reasoning, and knowledge updates.",
+      "cdm_relevance": "Component evaluation; history QA does not establish improved control.",
+      "reading_priority": "supporting",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "streamchat-2025",
+      "title": "Streaming Video Understanding and Multi-round Interaction with Memory-enhanced Knowledge",
+      "authors": [
+        "Haomiao Xiong",
+        "Zongxin Yang",
+        "Jiazuo Yu",
+        "Yunzhi Zhuge",
+        "Lu Zhang",
+        "Jiawen Zhu",
+        "Huchuan Lu"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2501.13468",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract, ICLR 2025",
+      "mechanism": "Hierarchical memory and parallel execution without additional training.",
+      "demonstrated_scope": "Streaming video dialogue and the video StreamBench benchmark.",
+      "cdm_relevance": "Separates execution-system improvements from learned model mechanisms.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "v-jepa2-2025",
+      "title": "V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning",
+      "authors": [
+        "Mahmoud Assran",
+        "Adrien Bardes",
+        "David Fan",
+        "Quentin Garrido",
+        "Russell Howes",
+        "Mojtaba Komeili",
+        "Matthew Muckley",
+        "Ammar Rizvi",
+        "Claire Roberts",
+        "Koustuv Sinha",
+        "Artem Zholus",
+        "Sergio Arnaud",
+        "Abha Gejji",
+        "Ada Martin",
+        "Francois Robert Hogan",
+        "Daniel Dugas",
+        "Piotr Bojanowski",
+        "Vasil Khalidov",
+        "Patrick Labatut",
+        "Francisco Massa",
+        "Marc Szafraniec",
+        "Kapil Krishnakumar",
+        "Yong Li",
+        "Xiaodong Ma",
+        "Sarath Chandar",
+        "Franziska Meier",
+        "Yann LeCun",
+        "Michael Rabbat",
+        "Nicolas Ballas"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.09985",
+      "evidence_level": "full_text",
+      "evidence_location": "HTML introduction, training overview, and sections 4.2–4.3: https://arxiv.org/html/2506.09985v1; names from full-text author list",
+      "mechanism": "Video representation pretraining followed by action-conditioned latent prediction.",
+      "demonstrated_scope": "Video understanding and image-goal robot manipulation.",
+      "cdm_relevance": "Compare useful predictions, planning expense, and long-horizon error.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "atlasvla-2026",
+      "title": "AtlasVLA: Persistent World-Ego State Modeling for Vision-Language-Action Models",
+      "authors": [
+        "Guiyu Zhao",
+        "Longteng Guo",
+        "Yanghong Mei",
+        "Zilin Zhu",
+        "Yu Zhang",
+        "Bin Cao",
+        "Mingming Yu",
+        "Xingjian He",
+        "Jie Jiang",
+        "Jing Liu"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2608.06729",
+      "evidence_level": "full_text",
+      "evidence_location": "Sections 3 and 4.5, Table 5: https://arxiv.org/html/2608.06729v1",
+      "mechanism": "Spatial and ego-working memories condition diffusion action generation.",
+      "demonstrated_scope": "Wrist-camera manipulation, with memory-component ablations.",
+      "cdm_relevance": "Closest embodied comparison to a persistent dual-state proposal.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "longmemeval-v2-2026",
+      "title": "LongMemEval-V2: Evaluating Long-Term Agent Memory Toward Experienced Colleagues",
+      "authors": [
+        "Di Wu",
+        "Zixiang Ji",
+        "Asmi Kawatkar",
+        "Bryan Kwan",
+        "Jia-Chen Gu",
+        "Nanyun Peng",
+        "Kai-Wei Chang"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2605.12493",
+      "evidence_level": "abstract",
+      "evidence_location": "arXiv abstract; labelled Work in Progress",
+      "mechanism": "Memory gathers evidence from web-agent environment histories.",
+      "demonstrated_scope": "Questions about states, workflows, and environment-specific experience.",
+      "cdm_relevance": "Tests retained experience; downstream execution needs separate measurement.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "streamready-2026",
+      "title": "StreamReady: Learning What to Answer and When in Long Streaming Videos",
+      "authors": [
+        "Shehreen Azad",
+        "Vibhav Vineet",
+        "Yogesh Singh Rawat"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2603.08620",
+      "evidence_level": "full_text",
+      "evidence_location": "Sections 3.1–3.4 and 4.1–4.2: https://arxiv.org/html/2603.08620",
+      "mechanism": "Learned readiness token and head gate answers using evolving evidence.",
+      "demonstrated_scope": "ProReady-QA measures answer content and timing.",
+      "cdm_relevance": "Direct precedent for learned response timing, with externally supplied questions.",
+      "reading_priority": "core",
+      "topic": "world",
+      "topics": [
+        "world"
+      ]
+    },
+    {
+      "id": "forestier2017imgep",
+      "title": "Intrinsically Motivated Goal Exploration Processes with Automatic Curriculum Learning",
+      "authors": [
+        "Sébastien Forestier",
+        "Rémy Portelas",
+        "Yoan Mollard",
+        "Pierre-Yves Oudeyer"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1708.02190",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Self-generated goals and intrinsic selection organize exploration and cross-goal reuse.",
+      "demonstrated_scope": "Includes autonomous robot skill discovery; inspected v3 record also reports JMLR 2022 publication.",
+      "cdm_relevance": "Compare learned selection of subgoals and learning opportunities.",
+      "reading_priority": "core",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "pathak2017curiosity",
+      "title": "Curiosity-driven Exploration by Self-supervised Prediction",
+      "authors": [
+        "Deepak Pathak",
+        "Pulkit Agrawal",
+        "Alexei A. Efros",
+        "Trevor Darrell"
+      ],
+      "year": 2017,
+      "url": "https://arxiv.org/abs/1705.05363",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Prediction error in inverse-dynamics features supplies intrinsic reward.",
+      "demonstrated_scope": "Visual exploration experiments in VizDoom and Super Mario Bros.",
+      "cdm_relevance": "Baseline for selecting observations and exploration.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "burda2018rnd",
+      "title": "Exploration by Random Network Distillation",
+      "authors": [
+        "Yuri Burda",
+        "Harrison Edwards",
+        "Amos Storkey",
+        "Oleg Klimov"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1810.12894",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Error predicting a fixed random network supplies a novelty bonus.",
+      "demonstrated_scope": "Hard-exploration Atari experiments.",
+      "cdm_relevance": "Separate novelty from decision-relevant information value.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "eysenbach2018diayn",
+      "title": "Diversity is All You Need: Learning Skills without a Reward Function",
+      "authors": [
+        "Benjamin Eysenbach",
+        "Abhishek Gupta",
+        "Julian Ibarz",
+        "Sergey Levine"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1802.06070",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Information-theoretic skill discovery with maximum-entropy policies.",
+      "demonstrated_scope": "Unsupervised skill acquisition and downstream use in simulated control.",
+      "cdm_relevance": "Compare acquisition of reusable skills before specific task rewards.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "yao2022react",
+      "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+      "authors": [
+        "Shunyu Yao",
+        "Jeffrey Zhao",
+        "Dian Yu",
+        "Nan Du",
+        "Izhak Shafran",
+        "Karthik Narasimhan",
+        "Yuan Cao"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2210.03629",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Interleaves language reasoning and external actions.",
+      "demonstrated_scope": "Knowledge tasks, ALFWorld, and WebShop.",
+      "cdm_relevance": "Compare learned cognitive and external actions within a trajectory.",
+      "reading_priority": "core",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "packer2023memgpt",
+      "title": "MemGPT: Towards LLMs as Operating Systems",
+      "authors": [
+        "Charles Packer",
+        "Sarah Wooders",
+        "Kevin Lin",
+        "Vivian Fang",
+        "Shishir G. Patil",
+        "Ion Stoica",
+        "Joseph E. Gonzalez"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2310.08560",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Memory-tier management and interrupts organize a language agent.",
+      "demonstrated_scope": "Document analysis and multi-session chat.",
+      "cdm_relevance": "Compare external memory operations with learned persistent-state mechanisms.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "park2023generativeagents",
+      "title": "Generative Agents: Interactive Simulacra of Human Behavior",
+      "authors": [
+        "Joon Sung Park",
+        "Joseph C. O'Brien",
+        "Carrie J. Cai",
+        "Meredith Ringel Morris",
+        "Percy Liang",
+        "Michael S. Bernstein"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2304.03442",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Experience retrieval, reflection, and planning sustain simulated behavior.",
+      "demonstrated_scope": "Interactive town simulation and behavioral believability evaluation.",
+      "cdm_relevance": "Precedent for persistent agendas and initiated activity.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "shinn2023reflexion",
+      "title": "Reflexion: Language Agents with Verbal Reinforcement Learning",
+      "authors": [
+        "Noah Shinn",
+        "Federico Cassano",
+        "Edward Berman",
+        "Ashwin Gopinath",
+        "Karthik Narasimhan",
+        "Shunyu Yao"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2303.11366",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Feedback becomes verbal reflections retained in episodic memory.",
+      "demonstrated_scope": "Decision-making, coding, and language reasoning.",
+      "cdm_relevance": "Separate experience-memory adaptation from parameter learning.",
+      "reading_priority": "supporting",
+      "topics": [
+        "agency"
+      ]
+    },
+    {
+      "id": "wang2023voyager",
+      "title": "Voyager: An Open-Ended Embodied Agent with Large Language Models",
+      "authors": [
+        "Guanzhi Wang",
+        "Yuqi Xie",
+        "Yunfan Jiang",
+        "Ajay Mandlekar",
+        "Chaowei Xiao",
+        "Yuke Zhu",
+        "Linxi Fan",
+        "Anima Anandkumar"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2305.16291",
+      "topic": "agency",
+      "evidence_level": "abstract",
+      "evidence_location": "Primary arXiv abstract and publication record, inspected 2026-10-14; year records the initial public release.",
+      "mechanism": "Automatic curriculum, executable skill memory, and feedback-driven program improvement.",
+      "demonstrated_scope": "Minecraft exploration and skill transfer between worlds.",
+      "cdm_relevance": "Baseline for sustained self-directed learning at the system level.",
+      "reading_priority": "core",
+      "topics": [
+        "agency"
+      ]
+    }
+  ]
+}

@@ -61,5 +61,6 @@ These settings share a requirement: the model must decide while events are still
 
 - [Research programme](RESEARCH.md): the scientific questions, hypotheses, and evidence that would establish progress.
 - [First technical design](DESIGN.md): architecture, time semantics, data, training, optimization, and evaluation.
+- [Research foundations and positioning](ref/README.md): six literature reviews, closest-work comparisons, architectural alternatives, experimental decisions, and a source-checked bibliography.
 
 CDM is an independent model research project. [Eidolve](https://github.com/Cherish0925/eidolve) is a related project and a potential integration environment for persistent knowledge, evidence, and memory. The CDM model and its experiments will have explicit interfaces so they can also operate in other environments.

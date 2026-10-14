@@ -1,5 +1,7 @@
 # Research Programme
 
+The [reference collection](ref/README.md) develops the background for this programme, including [research positioning](ref/POSITIONING.md), [closest-work comparisons](ref/COMPARISON.md), and [experiments for choosing the architecture](ref/EXPERIMENTS.md).
+
 ## 1. The scientific objective
 
 Continual Decision Model research asks how a single trainable model can sustain useful activity as observations, goals, and environmental dynamics change. The target is a model that maintains an evolving understanding, initiates purposeful activity, learns from outcomes, and transfers that learning to subsequent situations.
