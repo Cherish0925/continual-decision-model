@@ -2,6 +2,8 @@
 
 **Status: proposed architecture and experimental specification.**
 
+**Current research:** [Transporting unfinished computation](research/COMPUTATION_TRANSPORT.md) now specifies a concrete mechanism candidate and distinguishes it from the [closest existing methods](research/TRANSPORT_PRIOR_ART.md). The [numerical study](experiments/transport/README.md) supplies component-level evidence. The architecture below remains the initial engineering baseline; it is not an implemented or trained full CDM.
+
 This document records an initial implementation baseline. The subsequent [literature investigation](ref/README.md), [closest-work comparison](ref/COMPARISON.md), and [architecture experiments](ref/EXPERIMENTS.md) refine its research questions. The Mamba-2 core and component combination below are starting choices, not a final architecture or an originality claim.
 
 The first implementation should test one concrete proposition: a persistent recurrent model can learn to allocate observation, internal computation, and external action more effectively than the same model following a fixed schedule.

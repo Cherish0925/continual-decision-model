@@ -2,6 +2,8 @@
 
 The [reference collection](ref/README.md) develops the background for this programme, including [research positioning](ref/POSITIONING.md), [closest-work comparisons](ref/COMPARISON.md), and [experiments for choosing the architecture](ref/EXPERIMENTS.md).
 
+The [current mechanism study](research/README.md) makes one hypothesis concrete: jointly learn a persistent refiner, its internal representation, and an inexpensive transport of unfinished computation across evidence changes. It includes an explicit update rule, conditional analysis, a close-prior-art audit, and a numerical experiment. This study is one part of the complete programme below.
+
 ## 1. The scientific objective
 
 Continual Decision Model research asks how a single trainable model can sustain useful activity as observations, goals, and environmental dynamics change. The target is a model that maintains an evolving understanding, initiates purposeful activity, learns from outcomes, and transfers that learning to subsequent situations.

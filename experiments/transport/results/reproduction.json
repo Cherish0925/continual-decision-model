@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-14",
+  "status": "passed",
+  "independent_full_rerun": true,
+  "output_rtol": 1e-11,
+  "output_atol": 1e-13,
+  "verified_rows": {
+    "main_raw.csv": 2100,
+    "finite_progress_summary.csv": 18
+  },
+  "frozen_parameter_max_abs_difference": 4.728661906483467e-11,
+  "coefficient_check_atol": 1e-09,
+  "excluded": "CPU timings and warm_gd_latency recalibration. Fitted coefficients and fixed-work numerical outputs are checked; timing-dependent iteration choices need not be identical."
+}

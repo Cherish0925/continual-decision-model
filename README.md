@@ -8,7 +8,7 @@ The Continual Decision Model is a research project on persistent, proactive, rea
 
 > Can a trainable model learn both what to do in the world and how to allocate its own observation, thought, memory, and learning over time?
 
-**Project stage:** research foundation and first architecture proposal; implementation and experimental results are forthcoming.
+**Project stage:** research foundation, a concrete computation-transport proposal, and a reproducible numerical mechanism study. The full neural CDM remains to be trained. See the [current study](research/README.md) and its [results](experiments/transport/RESULTS.md).
 
 ## The model
 
@@ -37,6 +37,8 @@ Consider an instrument investigating a material. The model tracks an uncertain r
 
 The first design combines a persistent recurrent core, a compact attention workspace, variable internal computation, and learned activity selection. Prediction, action, and value heads share the evolving state. Selective memory and parameter adaptation extend what the model can retain and learn.
 
+The current mechanism study asks whether a model can learn to **transport unfinished internal computation when its evidence changes**, then continue refinement while actions remain due. The proposal jointly learns the refiner, state representation, and inexpensive transport; classical prediction-correction and recent latent planning are explicit antecedents. The accompanying numerical study tests components rather than claiming the complete model has been demonstrated.
+
 Three distinctions guide the work:
 
 - **State and learning:** carrying information through a sequence, retaining an experience, and updating model parameters have different effects and need separate measurements.
@@ -59,8 +61,20 @@ These settings share a requirement: the model must decide while events are still
 
 ## Read the project
 
+- [Current mechanism study](research/README.md): computation transport, its mathematical basis, close prior work, and the runnable experiment.
 - [Research programme](RESEARCH.md): the scientific questions, hypotheses, and evidence that would establish progress.
 - [First technical design](DESIGN.md): architecture, time semantics, data, training, optimization, and evaluation.
 - [Research foundations and positioning](ref/README.md): six literature reviews, closest-work comparisons, architectural alternatives, experimental decisions, and a source-checked bibliography.
 
 CDM is an independent model research project. [Eidolve](https://github.com/Cherish0925/eidolve) is a related project and a potential integration environment for persistent knowledge, evidence, and memory. The CDM model and its experiments will have explicit interfaces so they can also operate in other environments.
+
+## Reproduce the numerical study
+
+```bash
+python -m pip install -r experiments/transport/requirements.txt
+python experiments/transport/run_experiment.py
+```
+
+The study includes five training seeds, strong numerical controls, frozen fitted parameters, and raw evaluation records. Read the [experiment protocol](experiments/transport/README.md) and [results](experiments/transport/RESULTS.md) for the measured scope and findings.
+
+Original repository code and documentation are available under the [MIT License](LICENSE). Referenced papers and external implementations retain their own licenses. Cite the repository together with the commit used, as described in [CITATION.cff](CITATION.cff).

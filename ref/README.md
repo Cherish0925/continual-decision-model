@@ -8,6 +8,8 @@ The central distinction is between **the capability we want**, **the mechanism w
 
 ## Start here
 
+For the subsequent mechanism proposal and its running experiment, see the [current research study](../research/README.md). Its [targeted prior-art audit](../research/TRANSPORT_PRIOR_ART.md) extends the comparisons below without changing the 108-source catalogue's recorded coverage.
+
 | Question | Document |
 | --- | --- |
 | What exactly are we trying to build and understand? | [Research positioning](POSITIONING.md) |

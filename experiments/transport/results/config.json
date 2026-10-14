@@ -1,0 +1,88 @@
+{
+  "dimension": 16,
+  "training_seeds": [
+    1101,
+    2202,
+    3303,
+    4404,
+    5505
+  ],
+  "train_samples_per_seed": 1800,
+  "finite_progress_train_samples_per_seed": 1800,
+  "validation_streams": 3,
+  "validation_ticks": 64,
+  "test_streams_per_regime": 6,
+  "test_ticks": 128,
+  "diagnostic_samples_per_regime": 240,
+  "train_condition_number_range": [
+    2.0,
+    24.0
+  ],
+  "transport_polynomial_degree": 2,
+  "ridge": 1e-07,
+  "validation_damping_candidates": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "finite_progress_train_depths": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "finite_progress_unseen_depths": [
+    3,
+    6,
+    12
+  ],
+  "main_budget_dense_matrix_vector_products": 5,
+  "master_validation_seed": 818181,
+  "master_test_seed": 919191,
+  "master_diagnostic_seed": 717171,
+  "regimes": {
+    "stationary_control": {
+      "drift": 0.0,
+      "rotate": 0.0,
+      "kappa": [
+        4.0,
+        20.0
+      ]
+    },
+    "slow_change_id": {
+      "drift": 0.08,
+      "rotate": 0.015,
+      "kappa": [
+        4.0,
+        20.0
+      ]
+    },
+    "fast_target_ood": {
+      "drift": 0.8,
+      "rotate": 0.015,
+      "kappa": [
+        4.0,
+        20.0
+      ]
+    },
+    "curvature_ood": {
+      "drift": 0.08,
+      "rotate": 0.22,
+      "kappa": [
+        40.0,
+        80.0
+      ]
+    },
+    "abrupt_joint_ood": {
+      "drift": 0.8,
+      "rotate": 0.22,
+      "kappa": [
+        40.0,
+        80.0
+      ],
+      "abrupt": true
+    }
+  }
+}
