@@ -42,6 +42,12 @@ Planning and observation consume time while the environment changes. The methods
 
 **Diehl, Bock, and Schlöder, 2005 — [A Real-Time Iteration Scheme for Nonlinear Optimization in Optimal Feedback Control](https://epubs.siam.org/doi/10.1137/S0363012902400713).** Newton-type updates refine control solutions while the process runs. The inspected scheme advances after one iteration per problem, with analysis and a kite-control example. Reusing optimization work while producing timely actions also has a mature control-theoretic lineage.
 
+## Structured reuse and computational uncertainty
+
+[Successor features](https://arxiv.org/abs/1606.05312) express a policy's value as $Q^\pi(s,a)=\psi^\pi(s,a)^\top w$. With unchanged dynamics, changing reward weights revalues that policy. Generalized policy improvement combines the available policies; reweighting alone does not produce an optimal policy for an arbitrary new goal. The [deep SF and GPI extension](https://proceedings.mlr.press/v80/barreto18a.html) learns reusable features from task rewards and expands the skill library. Include SF and GPI as a structured goal-transfer baseline.
+
+[Posterior and Computational Uncertainty in Gaussian Processes](https://arxiv.org/abs/2205.15449) separates finite-data uncertainty from uncertainty introduced by approximate computation within a defined GP family. Its covariance results depend on that formulation. For CDM, repeated reasoning processes existing observations; it does not supply additional independent observations. A record's source label alone does not implement this distinction: the memory-reading and state-update operations must specify how repeated use is handled.
+
 ## CDM planning choices
 
 Compare an implicit latent workspace with an explicit world model and learned planning control. Both should retain relevant observations and ongoing computation across real events. Use tasks where an action changes the physical process and can reveal its hidden dynamics.

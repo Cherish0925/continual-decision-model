@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "continual-decision-model"
+version = "0.1.0"
+description = "Persistent context, continuing computation, and action under changing observations"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = ["numpy>=2.3.5,<3"]
+
+[project.optional-dependencies]
+neural = ["torch>=2.14,<2.15"]
+
+[tool.setuptools.packages.find]
+include = ["cdm*"]

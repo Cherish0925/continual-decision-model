@@ -1,63 +1,93 @@
-# Continue on a research server
+# Run and extend CDM
 
-## Repository state
-
-| Component | State |
-| --- | --- |
-| Research, architecture, training, and experiment specifications | Written |
-| Literature collection | 108 sources with recorded reading depth |
-| Quadratic transport experiment | Implemented and run on CPU |
-| Neural CDM and instrument environment | To implement |
-| GPU kernels and distributed training | To implement and profile |
-| Multimodal, tool-use, and long-term learning experiments | Planned |
-
-Start with [RESEARCH.md](RESEARCH.md), [DESIGN.md](DESIGN.md), [TRAINING.md](TRAINING.md), and [EXPERIMENTS.md](EXPERIMENTS.md). [research/COMPUTATION_TRANSPORT.md](research/COMPUTATION_TRANSPORT.md) derives the current revision candidate.
-
-## Run the available experiment
-
-Use Python 3.12 for the recorded dependency configuration.
+## Install
 
 ```bash
 git clone https://github.com/Cherish0925/continual-decision-model.git
 cd continual-decision-model
 python3.12 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r experiments/transport/requirements.txt
+python -m pip install -e .
+```
+
+This installs the NumPy dependency for the analytical experiments. For the recorded CPU neural environment:
+
+```bash
+python -m pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -e '.[neural]'
+```
+
+For GPU work, first install the PyTorch 2.14 build appropriate to the server's CUDA setup using the [official installer](https://pytorch.org/get-started/locally/), then install the neural extra. The completed runs used Python 3.12, NumPy 2.3.5, and PyTorch 2.14.1+cpu. GPU latency and distributed throughput have yet to be measured.
+
+## Reproduce the three studies
+
+### Dynamic planning
+
+```bash
+python experiments/continual_grid/run_experiment.py --output-dir runs/continual-grid
+```
+
+Defaults: five seeds, three change regimes, two cell-backup budgets, 192 decisions per episode. Each computation block advances the world; actions use fresh observations. The run contains 150 tested-planner episodes plus 30 current-map reference episodes. Configuration, episode/phase rows, decision traces, and summaries are written under the selected output directory. Read the [experiment description](experiments/continual_grid/README.md) and [recorded results](experiments/continual_grid/RESULTS.md).
+
+### Neural training
+
+```bash
+python experiments/neural_pilot/train.py --device cpu --output-dir runs/neural-pilot
+```
+
+Defaults: five seeds, three methods, 120 optimizer updates per run, 32 episodes per batch, and 512 held-out episodes. The full twelve-event sequence participates in backpropagation. Action readouts are supervised after both shared Transformer refinements. Activity and value heads are not trained by this loss.
+
+To run on one GPU and retain weights:
+
+```bash
+python experiments/neural_pilot/train.py --device cuda --save-checkpoints --output-dir runs/neural-pilot-cuda
+```
+
+Independent seeds can run on separate GPUs with distinct output directories. For example, assign `CUDA_VISIBLE_DEVICES=0` and `--seeds 11` to one process, and another device and seed to another. This is independent-seed parallelism. A distributed optimizer is not part of the current pilot.
+
+The [pilot report](experiments/neural_pilot/results/REPORT.md) contains the actual CPU results. This small task is a training baseline; increase task difficulty and connect the environment clock before allocating a large training run.
+
+### Numerical state revision
+
+```bash
 python experiments/transport/run_experiment.py --output-dir runs/transport-local
 ```
 
-The output directory contains a generated `RESULTS.md` and a `results/` directory with fitted coefficients, raw measurements, configuration, and runtime metadata. Choose a different directory for another retained run.
+This preserves the earlier polynomial transport study. Fixed-work numerical outputs should agree within floating-point tolerance; CPU timings and latency-calibrated iteration counts depend on the machine. Its original raw data and interpretation remain under [experiments/transport/](experiments/transport/README.md).
 
-The original reference data remains under `experiments/transport/results/`. Fixed-work numerical results should agree within floating-point tolerance. CPU timings and the latency-calibrated iteration budget vary with the machine.
+## Measure the complete neural step
 
-## Build the neural experiment
+```bash
+python experiments/profile_core.py --device cpu --output runs/core-profile.json
+python experiments/profile_core.py --device cuda --batch-size 32 --hidden-dim 128 --output runs/core-profile-cuda.json
+```
 
-Implement this sequence, keeping each stage runnable:
+The profiler measures assimilation, workspace initialization or memory reading, shared refinement, output, and memory writing. It compares restart, persistent workspace, and memory modes with one model. It records per-step times, p50/p95/p99, parameter count, persistent-state bytes, software versions, and CUDA allocation where available.
 
-1. **Environment and time.** Add the nonlinear instrument, observation delays, action application, and computation-duration handling. Run simple controllers and save trajectories.
-2. **Persistent baseline.** Implement observation encoding, a recurrent policy, prediction heads, fixed-depth inference, and recurrent training.
-3. **Workspace and revision.** Add shared Transformer refinement and the candidate revision alongside restart, initializer, ordinary recurrence, and action-only correction.
-4. **Active observation and computation.** Train activity selection under the same task and compute budgets.
-5. **Continual learning.** Add retained experience, replay, parameter updates, and evaluation across task sequences.
-6. **Transfer and scale.** Add a second domain, multimodal encoders, longer runs, and distributed training.
+Inputs are already on the device and weights are untrained. These measurements isolate model execution; sensor capture, transfer, environment execution, and actuator latency must be added in a deployment experiment. CUDA measurements synchronize around each complete step. The [recorded CPU profile](experiments/profiles/cpu_20261015.json) is a small-batch implementation measurement.
 
-A compact source layout for those implementations is `cdm/` for model and learner, `environments/` for interaction, `configs/` for run definitions, and `experiments/` for evaluation. Add modules as they become executable.
+## Check model and environment behavior
 
-The first complete neural run should contain a trained baseline and candidate, five independent seeds, held-out dynamics, action-dependent observations, and measured observation-to-action timing. The cluster plan in [TRAINING.md](TRAINING.md) then distributes training, collection, and evaluation.
+```bash
+python -m unittest discover -s tests -p 'test_*.py'
+python -m unittest discover -s experiments/continual_grid -p 'test_*.py'
+python -m unittest discover -s experiments/neural_pilot -p 'test_*.py'
+```
 
-## Retained research decisions
+These checks cover persistent computation, fresh-context actions, batched memory and gradients, observation-prefix metadata, parameter-version selection, world-time advancement, planning budgets, and labels reconstructed from observed cue history.
 
-- Keep the full target: persistent perception, proactive activity, continuing reasoning, and learning across tasks.
-- Treat the recurrent backbone as an implementation choice to compare.
-- Train ongoing computation for subsequent task outcomes. Same-depth state reconstruction is auxiliary.
-- Compare persistent revision with ordinary recurrence, learned initialization, and action-only correction.
-- Preserve negative numerical results and source attribution alongside new experiments.
-- Record each implemented model and measured result at the commit that produced it.
+## Continue on the server
 
-The research specification includes offline consolidation and learning-operation selection. Their implementation follows the fixed-parameter and ordinary-update comparisons so their effects can be measured.
+| Next implementation | Result to produce |
+| --- | --- |
+| Neural dynamic navigation | Trained recurrent, workspace, snapshot, and conditional-memory policies on the same changing environment |
+| Operation-value learning | Paired rollouts that measure the return from another observation or computation |
+| Activity policy | Learned observation/computation/action selection under elapsed time |
+| Richer computational reuse | Per-slot reading and revision compared with the existing shared record reader |
+| Continual learning | Online parameter updates and background replay across task sequences |
+| Second domain | Nonlinear instrument with delayed, action-dependent observations |
+| Scale | Measured GPU execution, larger tasks, longer sequences, distributed training |
 
-## Hardware and run records
+Record GPU model/count, memory, interconnect, driver, CUDA, framework version, environment throughput, and model-step timing at setup. Profile state length and environment batch size before choosing a distributed layout. [TRAINING.md](TRAINING.md) specifies the training stages and data fields; [EXPERIMENTS.md](EXPERIMENTS.md) defines the comparisons.
 
-At setup, record GPU models and count, device memory, interconnect, CPU/RAM, driver, CUDA, Python, framework version, and available simulator throughput. Fit sequence length and environment batch size to measured memory. Use the distributed strategy described in [TRAINING.md](TRAINING.md) after profiling the actual implementation.
-
-Retain source, configurations, analysis, and result summaries in GitHub. Store large datasets and checkpoints with versioned locations and hashes referenced from the corresponding experiment.
+Retain source, configurations, raw small-run measurements, and analysis in GitHub. Large datasets and checkpoints should have versioned locations and hashes linked from their experiment. Use a separate output directory for each retained run.

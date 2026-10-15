@@ -1,6 +1,6 @@
 # Internal computation and real-time decisions
 
-This review covers twenty primary sources on repeated computation, latent reasoning, computation selection, and asynchronous execution. Source editions and inspected sections are in [papers.json](papers.json).
+This review covers primary sources on repeated computation, latent reasoning, computation selection, and asynchronous execution. Source editions and inspected sections are in [papers.json](papers.json).
 
 ## Four distinctions that determine the architecture
 
@@ -69,10 +69,18 @@ For CDM, the remaining question is how these choices participate in a single ada
 
 CDM should evaluate the complete observation-to-action path. A rapid policy head can still use stale visual features; an efficient reasoning block can still monopolize the accelerator; a long action chunk can continue smoothly after its assumptions become obsolete. Measure when new observation changes the action actually applied, alongside task outcome, resource use, and useful internal progress.
 
+## Reusing computation under changing inputs
+
+[Incrementally-Computable Neural Networks](https://arxiv.org/abs/2307.14988) discretizes intermediate activations to limit recomputation after input edits. Its document-classification setting isolates computational reuse from control. CDM should measure whether retained calculations improve later actions, alongside their update cost.
+
+[LAP](https://arxiv.org/abs/2505.03077) retains a latent-plan posterior and updates it with each new observation segment. Its reported replanning uses one gradient step after a longer initialization. [A2C2](https://arxiv.org/abs/2509.23224) instead corrects each action from fresh observations while keeping the base policy fixed. Compare persistent internal revision with this direct correction path.
+
+[Are Large Reasoning Models Interruptible?](https://arxiv.org/abs/2510.11713) evaluates mathematics and programming under interrupted generation and in-flight context changes. This motivates varying when an observation arrives, rather than evaluating only a completed answer under a fixed input.
+
 ## CDM computation choices
 
 Compare persistent recurrence, shared latent refinement, explicit imagined trajectories, and observation-conditioned revision. Train their use on tasks where uncertainty can come from missing observations or from calculations that have not yet been performed.
 
 Additional computation is valued through later decisions and its elapsed time. The model should continue useful work, revise assumptions after observations, and request information when further inference cannot resolve the missing quantity. Test both fixed-depth and learned activity policies.
 
-The concrete revision mechanism is in [COMPUTATION_TRANSPORT.md](../research/COMPUTATION_TRANSPORT.md). The full model also includes active observation and continuing learning, as specified in [DESIGN.md](../DESIGN.md).
+The current computational-memory comparison is in [COMPARISON.md](COMPARISON.md), and the integrated architecture is in [DESIGN.md](../DESIGN.md). The earlier low-rank revision study remains in [COMPUTATION_TRANSPORT.md](../research/COMPUTATION_TRANSPORT.md).

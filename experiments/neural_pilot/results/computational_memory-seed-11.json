@@ -1,0 +1,67 @@
+{
+  "seed": 11,
+  "method": "computational_memory",
+  "model_config": {
+    "observation_dim": 5,
+    "action_dim": 4,
+    "goal_dim": 2,
+    "environment_dim": 4,
+    "hidden_dim": 32,
+    "slots": 4,
+    "memory_size": 8,
+    "heads": 4,
+    "expansion": 2,
+    "dropout": 0.0
+  },
+  "parameters": 26764,
+  "training_updates": 120,
+  "training_episodes": 3840,
+  "training_seconds": 7.270763361000718,
+  "learning_curve": [
+    {
+      "update": 1,
+      "cross_entropy": 1.4581485986709595
+    },
+    {
+      "update": 20,
+      "cross_entropy": 1.3210620880126953
+    },
+    {
+      "update": 40,
+      "cross_entropy": 1.2460646629333496
+    },
+    {
+      "update": 60,
+      "cross_entropy": 1.1436558961868286
+    },
+    {
+      "update": 80,
+      "cross_entropy": 1.02027428150177
+    },
+    {
+      "update": 100,
+      "cross_entropy": 0.8807942271232605
+    },
+    {
+      "update": 120,
+      "cross_entropy": 0.745413601398468
+    }
+  ],
+  "held_out": {
+    "all_accuracy": 0.71923828125,
+    "visible_accuracy": 0.98779296875,
+    "query_accuracy": 0.5849609375,
+    "cross_entropy": 0.7280304692685604,
+    "episodes": 512,
+    "query_decisions": 4096,
+    "evaluation_seconds": 0.29104896699936944,
+    "batched_event_ms": 0.047371251139220284
+  },
+  "trained_outputs": [
+    "action_logits"
+  ],
+  "untrained_outputs": [
+    "activity_logits",
+    "value"
+  ]
+}

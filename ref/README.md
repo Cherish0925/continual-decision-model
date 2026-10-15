@@ -1,8 +1,8 @@
 # Related research
 
-**Literature cutoff: 14 October 2026.**
+**Literature cutoff: 15 October 2026.**
 
-The collection contains 108 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
+The collection contains 118 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
 
 | Area | Review |
 | --- | --- |
@@ -13,8 +13,8 @@ The collection contains 108 primary-source records across six research areas. It
 | World models, embodied interaction, and benchmarks | [WORLD_MODELS.md](WORLD_MODELS.md) |
 | Exploration, subgoals, and language-model agents | [AGENCY.md](AGENCY.md) |
 
-[COMPARISON.md](COMPARISON.md) maps the closest methods to CDM experiments. [The focused revision review](../research/TRANSPORT_PRIOR_ART.md) adds ten direct comparisons for the current mechanism.
+[COMPARISON.md](COMPARISON.md) maps the closest methods to computational memory, current-context reuse, and activity selection. [The focused revision review](../research/TRANSPORT_PRIOR_ART.md) covers the earlier low-rank update experiment.
 
 [BIBLIOGRAPHY.md](BIBLIOGRAPHY.md) is the reading index. [papers.json](papers.json) stores bibliographic records, mechanisms, evaluated tasks, relevance, reading priority, and inspected sections. [references.bib](references.bib) contains the corresponding citation entries.
 
-Reading depth: 35 records use specified full-text sections, 68 use abstracts, four use official summaries, and one uses an indexed excerpt. The detailed revision review records additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.
+Reading depth: 41 records use specified full-text sections, 72 use abstracts, four use official summaries, and one uses an indexed excerpt. The detailed revision review records additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.

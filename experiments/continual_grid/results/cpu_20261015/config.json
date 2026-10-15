@@ -1,0 +1,39 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "ticks": 192,
+  "budget_fractions": [
+    0.25,
+    1.0
+  ],
+  "regimes": [
+    "full_return",
+    "partial_return",
+    "continuous"
+  ],
+  "methods": [
+    "restart",
+    "carry",
+    "snapshot",
+    "nearest",
+    "factorized"
+  ],
+  "grid_side": 9,
+  "phase_length": 24,
+  "memory_capacity": 32,
+  "local_radius": 2,
+  "gamma": 0.97,
+  "step_cost": 0.02,
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "clock": "One bounded cell-backup block advances the world by one tick; one action follows.",
+  "timing": "CPU wall time, including context preparation, memory, backup and action head; reference metrics excluded.",
+  "reference": "Exact stationary current-map planner; extra planning work, no future context.",
+  "parameters_learned": false
+}

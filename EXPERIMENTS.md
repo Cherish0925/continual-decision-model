@@ -1,10 +1,76 @@
 # Experiments
 
-The programme tests whether persistent state, continuing inference, proactive activity selection, and learning improve decisions under physical time constraints. The first complete model uses a nonlinear instrument; later studies add a second domain and richer modalities.
+The central question is whether preserving and adapting intermediate computation improves decisions while observations, goals, and available computation change. Three executable studies lead into the full neural control experiment: numerical state revision, analytical planning reuse, and supervised training of the neural core.
 
-## 1. Nonlinear instrument
+## 1. Dynamic grid: reuse under changing conditions
 
-Implement a partially observed process with controllable input, unknown parameters, sensor bias, delayed measurements, and disturbances. One starting family is a two-state thermal system:
+[experiments/continual_grid/](experiments/continual_grid/README.md) implements the first closed-loop planning study. A fully observed grid contains changing doors, moving obstacles, and changing goals. A bounded block of internal computation advances environment time; each method then receives the current context and emits an action. Computation uses the observation available when it starts. Action selection uses the observation available when it finishes.
+
+| Regime | Change | What it tests |
+| --- | --- | --- |
+| Full return | A previous map and goal return | Reusing a whole computational state |
+| Partial return | Some earlier conditions return while others differ | Reusing parts of earlier computation |
+| Continuous change | Conditions keep changing | Updating computation without exact recurrence |
+
+The agent's position and observations are always current. Retrieving an old plan never restores an old physical state.
+
+Compare restart on context change, continued computation, exact-context snapshots, nearest-context retrieval, and factorized computational memory. All use the same Bellman operator, initialization family, action space, fresh-context action interface, and computation budgets. The factorized method assembles a warm start from records with matching goal and local map conditions. It is an explicit analytical construction; the neural model must learn its representation and reading rule in a subsequent comparison.
+
+Measure return, goals reached, blocked moves, action regret against a current-map reference planner, cell backups, retained memory, and end-to-end CPU time. Count memory reading and writing. A complete reference solve is used only for evaluation, outside the candidate's computation. Simulated computation durations and measured wall-clock durations are reported separately.
+
+Use paired exogenous traces for five seeds and more than one computation budget. Actions create different positions; pairing matches the external change sequence, not the resulting observations. Archive individual run rows, configuration, and summaries.
+
+## 2. Neural core: sequential learning
+
+[experiments/neural_pilot/](experiments/neural_pilot/README.md) trains the recurrent context, shared Transformer workspace, memory readout, and action head on a small sequential task. Random context-specific cues appear first and are queried later under changing goals. Held-out episodes resample cue assignments and query order.
+
+Compare the same model with a restarted workspace, a persistent workspace, and persistent workspace plus computational memory. Every variant retains its recurrent observation context and sees the same input sequences. Supervise action readouts at each refinement depth. Report held-out queries separately from visible cues, together with training steps, parameters, and runtime per seed.
+
+This study measures trainability and sequential task performance. Activity selection, action-dependent observations, and environment change during neural inference enter the next study. Action cross-entropy does not train the activity or value heads.
+
+## 3. Neural control: the primary model comparison
+
+Connect the neural core to the grid, keeping the environment clock independent of observation, refinement, memory access, and action. First imitate a planner restricted to the model's observations. Then train action and activity policies for return under elapsed time.
+
+The activity policy chooses observation, computation, or external action. The action head remains available after every completed computation block. Introduce partial observation and measurement cost before drawing conclusions about proactive sensing.
+
+| Comparison | Purpose |
+| --- | --- |
+| Recurrent action policy | What ordinary recurrent state can learn |
+| Restarted workspace | Effect of discarding previous computation |
+| Persistent workspace | Value of continuing computation |
+| Snapshot retrieval with fresh context | Value of restoring a complete previous workspace |
+| Nearest-context retrieval | Value of ordinary similarity-based reuse |
+| Action-only correction | Correcting output without revising retained computation |
+| Successor features with generalized policy improvement | Reward-conditioned reuse of policy-dependent predictions |
+| Condition-factorized computational memory | Selective, context-conditioned reuse and revision |
+| Larger one-pass model | Additional capacity versus repeated shared computation |
+
+The analytical grid implements the planning-reuse subset. Action-only neural correction and successor features are specified comparisons, not existing implementations. Attribute each reimplementation and its differences from the original method.
+
+Match training interactions and tuning budgets. Report parameter counts, actual inference time, and performance across computation budgets. Better performance at equal refinement count may still cost more after memory access.
+
+### Learning the choice of computation
+
+Fork two rollouts from identical environment state, model state, and future exogenous randomness. One performs an additional computation; the other follows a specified alternative. Both advance the environment by their operation durations and receive only observations available at their respective times. Compare subsequent return over the same elapsed-time horizon.
+
+Use these differences to train activity selection. An action change alone is not an improvement. A larger distance from a reference policy does not imply that additional computation can recover that distance cheaply. The deployed policy selects from predicted achievable improvements and their costs.
+
+### Changes and ablations
+
+- Change goals, dynamics, observation availability, and interruption depth separately and jointly.
+- Reset or shuffle the workspace while retaining current recurrent context.
+- Compare whole-record retrieval, factorized retrieval, revision, and no memory.
+- Compare fixed schedules, tuned heuristics, and learned activity selection.
+- Compare task-return training with intermediate-state reconstruction as an auxiliary loss.
+- Repeat computation on the same observation stream; measure accuracy and probability calibration without treating repeated reads as new observations.
+- After parameter updates, compare unchanged, migrated, and rebuilt computational memory.
+
+Interpret results at matched budgets. If snapshots and factorized memory perform similarly, retain the simpler mechanism until a task demonstrates a benefit from finer reuse. If ordinary recurrence is sufficient, concentrate on activity selection and longer tasks. If all reuse methods lose to restart, examine change frequency, computation depth, and representation learning before scaling. A gain in one regime identifies where a mechanism helps; generalization requires additional regimes and tasks.
+
+## 4. Autonomous instrument
+
+After neural navigation, add different observations and actions: a partially observed nonlinear process with delayed sensors and controllable inputs. One starting family is a two-state thermal system:
 
 \[
 C_1\dot T_1=\eta u-k_{12}(T_1-T_2)-k_1(T_1-T_{\rm amb})+d_1(t),
@@ -13,83 +79,27 @@ C_1\dot T_1=\eta u-k_{12}(T_1-T_2)-k_1(T_1-T_{\rm amb})+d_1(t),
 C_2\dot T_2=k_{12}(T_1-T_2)-k_2(T_2-T_{\rm amb})+d_2(t).
 \]
 
-Add a nonlinear actuator response or temperature-dependent heat transfer, with model parameters sampled across runs. Use a reproducible numerical integrator and record its step size. The learning task observes delayed sensor readings rather than the full simulator state.
+Add nonlinear actuator response or temperature-dependent heat transfer. Sample dynamics, sensor bias, delays, and disturbances. Record the integrator and step size. Inputs are delayed sensor readings, not hidden simulator state.
 
-Actions include changing power, requesting a cheap noisy measurement, requesting a more accurate delayed measurement, calibrating a sensor, or waiting. The model may refine its internal state while a measurement is pending. The simulator advances during every model operation.
+Actions change power, request measurements of differing cost and delay, calibrate a sensor, or wait. Refine predictions while measurements are pending. Tasks include identification, tracking, and experimental search. Hold out complete parameter combinations. Include warm-start model-predictive control and real-time optimization, distinguishing supplied from learned dynamics.
 
-Use three related tasks:
+## 5. Long-term learning and scale
 
-| Task | Objective |
-| --- | --- |
-| Identification | Estimate a response property within measurement and elapsed-time budgets |
-| Adaptive control | Track target conditions while hidden dynamics or disturbances change |
-| Experimental search | Choose interventions to locate a desired response efficiently |
+Compare frozen parameters, retrieval, online updates, and background replay across task sequences. Measure adaptation, performance on earlier tasks, transfer after transient-state reset, and learning compute. Separate state updates from parameter updates.
 
-Vary dynamics, sensor noise, delay, cost, disturbances, and goals independently. Include local changes that leave much of a plan useful and changes that require extensive recomputation. Hold out whole parameter regimes and combinations.
-
-Calibrate simulated compute durations from measured model operations. Then evaluate selected policies with actual wall-clock inference and action application. Report these two timing modes separately.
-
-## 2. Architecture comparisons
-
-Use shared observation encoders and output spaces where compatible, and report parameter counts and total training resources.
-
-| Model | Comparison |
-| --- | --- |
-| Generic recurrent policy with extra internal steps | Whether the training distribution already teaches useful continuing inference |
-| Attention–recurrence hybrid | Whether the context backbone improves state capacity and cost |
-| Restarted workspace | Cost and quality of rebuilding computation after an observation |
-| Persistent workspace with ordinary updates | Benefit of continuing from prior state without a dedicated revision operation |
-| Learned initializer from current context | Whether prior workspace adds useful information beyond a good starting state |
-| Action-only correction | Whether persistent revision improves later decisions beyond a fast corrected output |
-| Unconstrained residual revision | Whether the low-rank form helps beyond a matched learned update |
-| Low-rank revision candidate | Joint learning of representation, refinement, and observation-conditioned revision |
-| Explicit world-model planner | Whether imagined trajectories and learned planning control outperform implicit refinement |
-
-For action-only correction, use A2C2's principle of current-observation correction with older policy features. Attribute the original method and describe any reimplementation. Include warm-start MPC or real-time iteration when an explicit model is available; specify whether that model is learned or supplied.
-
-Give every applicable action policy the current observations. Match total actor latency in addition to parameters, and plot performance across budgets. Include a large one-pass model to compare extra capacity with repeated shared computation.
-
-## 3. What to vary
-
-**Persistent computation.** Reset, shuffle, or bypass the workspace while retaining the same observation context. Compare actions immediately after an observation and after subsequent refinement. This measures whether the workspace carries reusable computation.
-
-**Observation and inference.** Compare fixed, tuned heuristic, and learned schedules. Some tasks require a new measurement; others can be resolved from existing information. Measure task return, measurement use, and time, including activity-selection overhead.
-
-**Revision and training.** Vary rank, interruption depth, event rate, goal changes, and shared-refinement depth. Compare task-outcome training, auxiliary branch matching, and their combination. Include stationary periods to measure overhead.
-
-**Continual learning.** Compare frozen parameters, memory retrieval, parameter updates, and background replay. Measure adaptation to successive changes, performance on earlier tasks, and transfer after transient state resets.
-
-For fixed-stream comparisons, use identical observations and timing. For active observation, use the same initial information, available sensors, and budgets; policies may then collect different observations as a consequence of their choices.
-
-## 4. Measurements
+Extend operation from episodes to hours before adding modalities. Record retained memory, throughput, latency drift, parameter versions, and task quality. Introduce image, audio, tool, and sensor encoders through the timestamped event interface.
 
 | Aspect | Measurements |
 | --- | --- |
-| Task quality | Return, success, tracking error, identification error, measurement efficiency |
-| Response | Observation-arrival-to-applied-action latency, capture-to-action age, p50/p95/p99, deadline misses |
-| Computation | Actor device time, total training GPU-hours, FLOPs when available, transfers, parameter count |
-| State | Retained bytes, memory growth, effect of resets and workspace substitutions |
-| Learning | Acquisition speed after each change, forgetting, forward transfer, later-task performance |
-| Activity selection | Return from requested observations and extra computation; prediction calibration |
-| Operation | Long-run throughput, latency drift, state growth, task quality over time |
-| Energy | Measured device energy where instrumented, reported separately from compute proxies |
+| Task quality | Return, success, time to goal, tracking or prediction error |
+| Response | Observation-to-applied-action latency, observation age, p50/p95/p99 |
+| Computation | Device time, training GPU-hours, transfers, memory access, model size |
+| Learning | Adaptation, forgetting, transfer, performance after state resets |
+| Activity | Benefit of requested observations and additional computation |
+| Resources | Persistent-state bytes, retained records, measured energy where available |
 
-Use independent training seeds and paired environment conditions. Start with five training seeds for the primary model comparison. Report variation across both trained models and evaluation environments; successive events from one trajectory are correlated.
+Use five independent training seeds for the primary comparison and separate held-out environment seeds. Consecutive events are not independent experimental repetitions. Report variation across models and environments. Scale model size, interactions, sequence length, and modality complexity separately.
 
-Report immediate response and later action quality together. A method can react quickly while discarding useful planning, or reason accurately while reacting too late.
+## 6. Earlier numerical study
 
-## 5. Transfer and scale
-
-After the instrument study, choose a second domain whose observations and actions differ. Candidates are partially observed navigation, manipulation, or an executable digital investigation environment. [The benchmark review](ref/WORLD_MODELS.md) maps existing tasks to these requirements.
-
-For digital research, reconstruct executable tasks from versioned tools and environments before using archived trajectories to evaluate new actions. Track interruption, resumption, tool cost, and whether retained computation helps across changing results.
-
-Increase model size, training interactions, sequence length, modality complexity, and run duration separately. Use logarithmically spaced operation horizons extending from episodes to multi-hour or longer runs. Report what carries across each task boundary.
-
-At cluster scale, retain comparisons at equal interactions and compute as well as absolute best performance. The main research result is the task-quality versus response-time relationship, together with transfer and learning behavior.
-
-## 6. Completed numerical study
-
-[experiments/transport/RESULTS.md](experiments/transport/RESULTS.md) records the existing CPU experiment on changing quadratic objectives. The tested polynomial correction underperformed strong solvers. A separate finite-step reconstruction task demonstrated the consequences of matching an incomplete reference solution.
-
-That study supplies a reproducible calculation and a training-target correction. The experiments above implement the proposed neural model, action-dependent observations, and real-time execution.
+[experiments/transport/RESULTS.md](experiments/transport/RESULTS.md) retains the changing-quadratic experiment. Its polynomial correction underperformed strong optimization baselines. Matching a finite-depth reference improved reconstruction while worsening task quality relative to some alternatives. These results motivate task-based learning of ongoing computation and remain unchanged alongside the new studies.

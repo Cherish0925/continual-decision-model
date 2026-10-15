@@ -1,16 +1,15 @@
-# Continuing computation under new observations
+# Continual computation
 
-The current study asks how a model should revise unfinished inference when observations or goals change. The proposed neural model jointly learns a persistent workspace, shared refinement, and a small observation-conditioned update. Its training objective is subsequent task performance under elapsed-time costs.
+The current research asks how intermediate computation can remain useful while observations, goals, and the environment change. CDM combines a fresh recurrent context, persistent workspace, computation records, and learned reading and revision. The complete model and learning sequence are specified in [DESIGN.md](../DESIGN.md) and [TRAINING.md](../TRAINING.md).
 
-| Document | Content |
+| Study | Contents |
 | --- | --- |
-| [Mechanism](COMPUTATION_TRANSPORT.md) | Update equations, sensitivity analysis, and training |
-| [Related methods](TRANSPORT_PRIOR_ART.md) | Prediction-correction, latent planning, action correction, and recurrent derivatives |
-| [Numerical experiment](../experiments/transport/README.md) | Runnable polynomial-correction experiment |
-| [Results](../experiments/transport/RESULTS.md) | Solver comparisons and finite-step reconstruction |
+| [Continual computation](CONTINUAL_COMPUTATION.md) | Central hypothesis, condition-factorized reading, operation values, and comparisons |
+| [Neural prototype](../cdm/model.py) | GRU context, shared Transformer workspace, bounded record memory, action/activity/value heads |
+| [Supervised pilot](../experiments/neural_pilot/README.md) | Sequential action learning with restart, carry, and memory reading; [five-seed results](../experiments/neural_pilot/results/REPORT.md) |
+| [Changing grid](../experiments/continual_grid/README.md) | Explicit planning-state reuse while the environment advances |
+| [Transport mechanism](COMPUTATION_TRANSPORT.md) | Earlier context-correction candidate and sensitivity derivations |
+| [Transport related work](TRANSPORT_PRIOR_ART.md) | Prediction-correction, latent planning, action correction, and recurrent derivatives |
+| [Transport results](../experiments/transport/RESULTS.md) | Completed quadratic solver comparisons and finite-step reconstruction |
 
-The numerical correction loses to the stronger solvers tested. In the separate reconstruction test, an exact same-depth reference retains an average objective gap of 0.727103 on unseen depths. Recovering that state accurately therefore retains its unfinished optimization. This explains why state fidelity and task performance can rank methods differently.
-
-The next experiment trains nonlinear latent computation in an action-dependent environment. It compares ordinary recurrence, a learned initializer, action-only correction, and persistent revision under matched information and measured runtime.
-
-The full CDM programme, including proactive observation and continuing learning, is specified in [RESEARCH.md](../RESEARCH.md). Server continuation starts at [RUNNING.md](../RUNNING.md).
+The analytical grid comparison and supervised neural pilot address different questions. The next experiment trains the neural model inside the changing environment, followed by learned activity selection and continued parameter adaptation. [RUNNING.md](../RUNNING.md) contains the executable commands and current results.

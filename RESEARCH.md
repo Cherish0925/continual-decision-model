@@ -1,85 +1,79 @@
 # Research objective
 
-Continual Decision Model (CDM) is a research programme for a trainable model that maintains an ongoing understanding of its environment, chooses its own next activity, produces timely decisions, and improves through experience. Its scope spans perception, reasoning, action, and learning over extended operation.
+Continual Decision Model (CDM) is a research programme for models that maintain an ongoing interaction process: perceiving, computing, choosing activities, acting, and learning. A conversation is one source of events in that process. Goals and unfinished work continue across outputs and intervals without input.
 
-**The scientific objective is to learn how information and computation should change future decisions while the environment continues to evolve.** The model must learn what to retain, what to investigate, what to compute, when to act, and how to turn experience into reusable ability.
+**The central question is how to make past and ongoing computation useful for the next decision while observations, goals, and the environment change.**
 
-## Capabilities
+## Required behavior
 
 | Capability | Model behavior |
 | --- | --- |
-| Persistent state | Goals, observations, pending actions, and unfinished inference remain available across outputs and input gaps. |
-| Multimodal interaction | Text, images, video, audio, sensor streams, and action feedback enter with their timestamps and source information. |
-| Proactive behavior | The model initiates measurements, tool calls, investigations, subgoals, and actions from its objectives and current understanding. |
-| Continuing inference | Internal computation proceeds without a new prompt and incorporates observations that arrive during that computation. |
-| Timely output | Control signals, decisions, plans, and communication are produced at the cadence required by the task. |
-| Continuing learning | Current experience improves predictions and behavior; accumulated training improves performance on future tasks. |
-| Self-assessment | Predictions of uncertainty, progress, cost, and expected success guide the next activity. |
-| Transfer | Shared mechanisms work under new goals, dynamics, modalities, timing conditions, and task combinations. |
+| Persistent state | Retain goals, observations, pending operations, and unfinished inference across outputs. |
+| Multimodal interaction | Incorporate text, images, audio, video, sensors, and tool results with source and timing information. |
+| Proactive activity | Choose the next observation, computation, tool call, action, or wait from the current goal and state. |
+| Continuing inference | Develop an internal calculation without another prompt; incorporate new input before the calculation finishes. |
+| Timely action | Produce control signals, decisions, plans, and communication at the task's required cadence. |
+| Continued learning | Use experience to improve later predictions, decisions, and adaptation to new tasks. |
+| Compute allocation | Predict the benefit and duration of available operations and choose among them. |
+| Transfer | Reuse learned behavior under unfamiliar goals, dynamics, observation delays, and task combinations. |
 
-The model should support both requested tasks and self-initiated activity. A user instruction can set or revise a goal without resetting the process. Given an ongoing goal, the model can work through several observations and actions without further prompting. Subgoals and learning activities should be selected for their contribution to that goal or to later competence.
+An instruction can set or change a goal. The model then selects activities toward that goal without requiring a separate instruction for each step. A runtime delivers events, maintains time, and executes requests; the learned model determines what to request, how to use it, and when to act.
 
-## A continuous decision process
+Continuous operation does not require maximum computation at all times. A model may use a small action path during routine operation, deepen its inference when needed, or rehearse experience while waiting. Compact decisions reduce decoding work, but perception, reasoning, and memory access still contribute to response time.
 
-An instrument offers a concrete example. The model maintains uncertain estimates of a process, chooses a measurement, and uses the delay before its arrival to compare candidate explanations. The result updates its understanding and ongoing inference. It chooses the next intervention, observes its consequences, and retains the experience. On a related process, the acquired knowledge reduces the measurements or computation needed.
+## Scientific hypothesis
 
-The runtime delivers observations, maintains clocks, and executes requests. The learned model determines which observations to request, how to update its internal state, how much to compute, and which action to take. A language-model agent can also make these choices. The CDM question concerns how to train and execute them through persistent state and continuing latent computation, including their quality and cost.
+A useful intermediate result often depends on only part of the current situation. A map relation can remain useful after a goal changes; a goal-specific plan can remain useful after an unrelated observation; a previous calculation can become useful again when operating conditions return.
 
-Continuous operation describes continuity of this process. Computation intensity may vary: fast response during changes, deeper inference when useful, and replay or consolidation during quiet periods. The model may wait for a pending result while maintaining state. A compact action message can reduce output-generation cost, but perception and reasoning may still dominate response time.
+**Hypothesis:** a model trained to store intermediate computation together with its generating conditions, and to adapt it to the current context, can obtain higher return within the same time budget than restarting, carrying an undifferentiated state, or retrieving whole snapshots.
 
-## The coupled learning problem
+The proposed mechanism combines a recurrent context, persistent latent workspace, shared refinement, and bounded computation memory. A learned reader conditions reuse on observations, dynamics, goals, and computation progress. An action policy uses the latest context throughout. An activity policy chooses where additional observation or computation is worthwhile.
 
-An observation can make more thinking useful, or make previous thinking obsolete. Computation can reveal which measurement to request. Experience can make a previously expensive decision immediate. These interactions motivate joint learning rather than optimizing each component only in isolation.
+This is a specific research claim about representation, reuse, and learning. Recurrence, attention, memory, planning, and metareasoning supply established components. The experiments compare the proposed combination with strong forms of those alternatives. The detailed formulation is in [research/CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md).
 
-For activities occurring at times \(\tau_i\), use task utility integrated over physical time, with observation and computation costs:
+## Objective over physical time
+
+For activities beginning at times \(\tau_i\), optimize task utility accumulated over physical time together with specified sensing and computation costs:
 
 \[
 J(\theta)=\mathbb E_\theta\left[
 \int_0^T e^{-\beta t}u(x_t,a_t,g_t)\,dt
 -\sum_i e^{-\beta\tau_i}
-\bigl(\lambda_o C_i^{\rm obs}+\lambda_c C_i^{\rm compute}\bigr)
+\left(\lambda_o C_i^{\mathrm{obs}}+\lambda_c C_i^{\mathrm{compute}}\right)
 \right].
 \]
 
-The environment state \(x_t\) is available to the simulator for scoring; the policy acts on its observations and retained state. Activities have duration, so the environment changes before their benefits become available. The utility and costs must have specified units and normalization. Report them separately as well as through the training objective.
+The policy uses received observations and retained state. The simulator state \(x_t\) is available for scoring and reference planners, according to each experiment's specified information access. An operation takes time, during which the environment and previously applied actions continue.
 
-This duration-aware decision objective draws on control, reinforcement learning, active perception, and metareasoning. The proposed model contribution concerns the learned state transitions and their effect on behavior.
+This objective measures both useful decisions and their timing. Utility, elapsed time, observation cost, and computation cost are also reported separately. Cost coefficients specify the task tradeoff rather than hiding it in a single score.
 
-## Architecture research
+The choice between sensing and computation depends on their achievable improvement and duration. Decomposing performance into an information limitation and a computation limitation can help describe a task, but the size of either term is not itself the value of the next operation.
 
-The current design combines a recurrent context state and a persistent Transformer workspace. The focused question is whether an observation-conditioned update can retain useful ongoing computation while changing the parts affected by a new observation or goal.
+## First research sequence
 
-The candidate jointly learns:
+1. **Explicit computation reuse.** A changing grid environment separates exact context return, partial return, and continuous change. Explicit planning states make restart, carry, snapshot retrieval, and conditional reuse directly comparable.
+2. **Learned continuing computation.** Train a recurrent context and shared Transformer workspace, then add computation records and condition-factorized reading. Supervise actions at several computation depths and optimize later return.
+3. **Learned activity.** Give the model control over observation, retrieval, refinement, and action timing. Train operation values from continuations beginning at the same interaction state.
+4. **Continued learning and transfer.** Add online parameter adaptation and background consolidation. Extend evaluation to nonlinear instruments, delayed tools, and richer observation modalities.
 
-- the representation in which partial computation is stored;
-- the shared operation that develops that computation;
-- the operation that revises it after a context change;
-- the actions and activity choices that use it.
-
-Its competing explanations are ordinary recurrence, additional memory capacity, a better initializer, improved action correction, and explicit world-model planning. [EXPERIMENTS.md](EXPERIMENTS.md) specifies these comparisons. Alternative architectures remain part of the programme; the low-rank update is one candidate mechanism.
+The explicit grid experiment and the neural prototype are separate implementations. The [five-seed supervised pilot](experiments/neural_pilot/results/REPORT.md) measures learned memory use on sequential action prediction. Neural control of the changing grid and activity-policy learning are the next experiments. Instruments and embodied tasks then test more complex dynamics, partial observations, and measured computation delays. The [experiment plan](EXPERIMENTS.md) and [running guide](RUNNING.md) give the executable scope and commands.
 
 ## Learning across timescales
 
-| Timescale | What changes | Intended benefit |
+| Timescale | What changes | Intended effect |
 | --- | --- | --- |
-| Current interaction | Recurrent state and workspace | Integrate observations, update beliefs, continue inference |
-| Accumulated experience | Retrieved records and optional fast parameters | Reuse observations, outcomes, and task-specific adaptations |
-| Training across tasks | Shared predictive and policy parameters | Acquire skills and faster adaptation on future problems |
+| Current interaction | Context and workspace | Incorporate observations and continue inference |
+| Revisited contexts | Computation records and retrieved experience | Reduce repeated work and improve adaptation |
+| Across tasks | Prediction, policy, and state-update parameters | Acquire reusable skills and faster learning |
 
-Background computation can replay experience, compare hypotheses with a learned world model, improve predictive representations, and distill useful deeper decisions into a fast policy. This gives an explicit learning interpretation to the proposed sleep-like or dreaming behavior. Imagined outcomes are model predictions; measured outcomes supply additional information about the environment. Evaluate background learning by its effect on subsequent real interactions.
+During quiet intervals, replay can improve prediction, imagined rollouts can compare candidate actions, and distillation can turn expensive calculations into fast behavior. Received outcomes and model predictions remain distinguishable in the data. Background learning is evaluated by subsequent interaction performance and its total computation cost.
 
-Persistent state, experience retrieval, and parameter updates need separate experiments because each can produce improvement. Test learning after state resets, on revisited tasks, and on unfamiliar tasks; track both retained competence and the ability to learn again.
+Experiments separate memory retention from parameter learning. They measure behavior after state resets, on revisited tasks, and on unfamiliar tasks, with specified adaptation budgets.
 
-## Generalization and applications
+## Applications
 
-Robots need responsive perception and actions while a longer task continues. Instruments need active measurement and reasoning during delayed experiments. Edge devices need bounded state and useful decisions within power and memory limits. Digital researchers need tools, long investigations, and the reuse of prior work.
+Robots need current control while a long task continues. Instruments need active measurements and reasoning during delayed experiments. Edge devices need bounded memory and useful output within a power budget. Digital researchers need tool use, persistent investigations, and the ability to resume earlier work.
 
-The same model interface should support these settings through different encoders and output heads. Generalization experiments change dynamics, goals, observation delays, sensor combinations, and task families. Distinguish transfer with frozen parameters, adaptation with a fixed budget, and additional training.
+These applications share an observation–computation–action process but differ in encoders, outputs, costs, and timing. CDM uses one model interface with task-specific input and output modules. Generality is evaluated through transfer across those differences.
 
-The initial nonlinear instrument task establishes a complete learning and interaction loop. A second environment tests whether the mechanism transfers beyond that task. Larger multimodal models and longer training extend this programme after those implementations are available.
-
-## Current result and next model
-
-The completed numerical experiment fits small polynomial corrections for changing quadratic objectives. The tested correction loses to strong solvers. Its state-reconstruction test further illustrates that a training target can preserve an unfinished solution's error. These results motivate task-outcome training and stronger comparisons; the nonlinear neural architecture remains to be implemented.
-
-The complete specification is in [DESIGN.md](DESIGN.md), [TRAINING.md](TRAINING.md), and [EXPERIMENTS.md](EXPERIMENTS.md). The [literature collection](ref/README.md) attributes the existing architectures and algorithms used by this programme.
+The completed [quadratic transport experiment](experiments/transport/RESULTS.md) found that its fitted correction lost to stronger numerical solvers. It also showed why faithfully reconstructing an unfinished optimization state can preserve its error. The present design therefore trains reusable computation for task outcomes and measures the cost of the complete decision path.

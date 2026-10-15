@@ -1,0 +1,33 @@
+{
+  "device": "cpu",
+  "seeds": [
+    11,
+    22,
+    33,
+    44,
+    55
+  ],
+  "methods": [
+    "restart_workspace",
+    "persistent_workspace",
+    "computational_memory"
+  ],
+  "updates": 120,
+  "batch_size": 32,
+  "hidden_dim": 32,
+  "refinements": 2,
+  "query_steps": 8,
+  "learning_rate": 0.001,
+  "eval_episodes": 512,
+  "eval_seed": 900001,
+  "threads": 1,
+  "output_dir": "/workspace/scratch/4732d1e25307/continual-decision-model/experiments/neural_pilot/results",
+  "save_checkpoints": false,
+  "torch_version": "2.14.1+cpu",
+  "python_version": "3.12.14",
+  "task": "sequential_contextual_recall",
+  "chance_query_accuracy": 0.25,
+  "memory_schedule": "read every event; write only the first four cue events",
+  "gradient_window": "entire episode; state resets between episodes",
+  "eval_random_stream": "fixed and disjoint from all training seeds"
+}

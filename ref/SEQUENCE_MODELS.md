@@ -83,6 +83,10 @@ These developments connect naturally to TTT, Titans, and MIRAS, reviewed in the 
 
 For CDM, this suggests a clear experiment: intervene separately on recurrent state, attention storage, and adaptive parameters while preserving the remainder of a trajectory. Measure what information and behavior each intervention changes. Distinguish accurate recall, revising an obsolete belief, maintaining an unresolved objective, and learning a reusable strategy.
 
+## Selective state updates
+
+[Recurrent Independent Mechanisms](https://arxiv.org/abs/1909.10893) uses interacting recurrent modules that update when relevant. [GateL0RD](https://arxiv.org/abs/2110.15949) combines rectified gates with an L0 penalty on state changes. Both study task performance and generalization, making them direct comparisons for selective workspace updates. Measure complete runtime: fewer changed latent coordinates need not reduce GPU execution time.
+
 ## CDM architecture choices
 
 Compare gated-delta recurrence, selective state-space recurrence, and a recurrent-memory Transformer with shared observation encoders and action heads. Measure decision quality, observation-to-action latency, retained bytes, and training cost.

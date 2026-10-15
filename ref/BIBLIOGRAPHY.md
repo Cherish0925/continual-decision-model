@@ -1,10 +1,10 @@
 # Bibliography and Reading Index
 
-**Review cutoff: 14 October 2026.**
+**Review cutoff: 15 October 2026.**
 
-This index contains **108 deduplicated sources** across six research threads. A source can inform several threads while retaining one citation key.
+This index contains **118 deduplicated sources** across six research threads. A source can inform several threads while retaining one citation key.
 
-Reading depth: **35** records with specified full-paper sections inspected, **68** primary abstracts, **4** official summaries, and **1** indexed primary excerpt. 
+Reading depth: **41** records with specified full-paper sections inspected, **72** primary abstracts, **4** official summaries, and **1** indexed primary excerpt.
 
 [papers.json](papers.json) records authors, mechanism, demonstrated scope, CDM relevance, inspected sections, and reading priority. [references.bib](references.bib) contains matching citation entries. See [SEARCH_METHOD.md](SEARCH_METHOD.md) for scope and reading depth.
 
@@ -22,9 +22,11 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2017 | [Attention Is All You Need](https://arxiv.org/abs/1706.03762) | `abstract` | supporting | `vaswani2017transformer` |
 | 2018 | [Relational recurrent neural networks](https://arxiv.org/abs/1806.01822) | `full_text` | core | `santoro2018relationalrnn` |
 | 2019 | [Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context](https://arxiv.org/abs/1901.02860) | `abstract` | supporting | `dai2019transformerxl` |
+| 2019 | [Recurrent Independent Mechanisms](https://arxiv.org/abs/1909.10893) | `abstract` | core | `goyal2019rim` |
 | 2020 | [Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention](https://arxiv.org/abs/2006.16236) | `abstract` | supporting | `katharopoulos2020linearattention` |
 | 2021 | [Efficiently Modeling Long Sequences with Structured State Spaces](https://arxiv.org/abs/2111.00396) | `abstract` | supporting | `gu2021s4` |
 | 2021 | [Linear Transformers Are Secretly Fast Weight Programmers](https://arxiv.org/abs/2102.11174) | `abstract` | core | `schlag2021fastweights` |
+| 2021 | [Sparsely Changing Latent States for Prediction and Planning in Partially Observable Domains](https://arxiv.org/abs/2110.15949) | `full_text` | core | `gumbsch2021gatel0rd` |
 | 2022 | [Recurrent Memory Transformer](https://arxiv.org/abs/2207.06881) | `full_text` | core | `bulatov2022rmt` |
 | 2022 | [Temporal Latent Bottleneck: Synthesis of Fast and Slow Processing Mechanisms in Sequence Learning](https://arxiv.org/abs/2205.14794) | `full_text` | core | `didolkar2022tlb` |
 | 2022 | [Block-Recurrent Transformers](https://arxiv.org/abs/2203.07852) | `full_text` | core | `hutchins2022blockrecurrent` |
@@ -55,12 +57,16 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2019 | [An Investigation of Model-Free Planning](https://arxiv.org/abs/1901.03559) | `full_text` | core | `guez2019drc` |
 | 2021 | [PonderNet: Learning to Ponder](https://arxiv.org/abs/2107.05407) | `abstract` | core | `banino2021pondernet` |
 | 2023 | [Thinker: Learning to Plan and Act](https://arxiv.org/abs/2307.14993) | `abstract` | core | `chung2023thinker` |
+| 2023 | [Incrementally-Computable Neural Networks: Efficient Inference for Dynamic Inputs](https://arxiv.org/abs/2307.14988) | `abstract` | core | `sharir2023incremental` |
 | 2024 | [Training Large Language Models to Reason in a Continuous Latent Space](https://arxiv.org/abs/2412.06769) | `abstract` | supporting | `hao2024coconut` |
 | 2025 | [Real-Time Execution of Action Chunking Flow Policies](https://arxiv.org/abs/2506.07339) | `abstract` | core | `black2025rtc` |
 | 2025 | [Continuous Thought Machines](https://arxiv.org/abs/2505.05522) | `official_summary` | core | `darlow2025ctm` |
 | 2025 | [Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach](https://arxiv.org/abs/2502.05171) | `abstract` | core | `geiping2025huginn` |
 | 2025 | [Less is More: Recursive Reasoning with Tiny Networks](https://arxiv.org/abs/2510.04871) | `abstract` | supporting | `jolicoeur2025trm` |
 | 2025 | [Hierarchical Reasoning Model](https://arxiv.org/abs/2506.21734) | `abstract` | supporting | `wang2025hrm` |
+| 2025 | [Are Large Reasoning Models Interruptible?](https://arxiv.org/abs/2510.11713) | `abstract` | core | `wu2025interruptible` |
+| 2025 | [Latent Adaptive Planner for Dynamic Manipulation](https://arxiv.org/abs/2505.03077) | `full_text` | core | `noh2025lap` |
+| 2025 | [Leave No Observation Behind: Real-time Correction for VLA Action Chunks](https://arxiv.org/abs/2509.23224) | `full_text` | core | `sendai2025a2c2` |
 | 2026 | [T^2MLR: Transformer with Temporal Middle-Layer Recurrence](https://arxiv.org/abs/2607.15178) | `abstract` | core | `cai2026t2mlr` |
 | 2026 | [Learning to Select Computations in Recurrent Neural Circuits](https://www.biorxiv.org/content/10.64898/2026.04.14.718499v1) | `official_summary` | supporting | `chen2026metareasoning` |
 | 2026 | [BDH-CQ: In-Context Learning with Recurrent Latent Reasoning](https://arxiv.org/abs/2608.09888) | `full_text` | core | `engdahl2026bdhcq` |
@@ -89,7 +95,9 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2017 | [Strategy selection as rational metareasoning](https://cocosci.princeton.edu/papers/Strategy%20selection%20as%20RM%20Preprint.pdf) | `full_text` | supporting | `lieder2017_strategy_selection` |
 | 2017 | [Learning model-based planning from scratch](https://arxiv.org/abs/1707.06170) | `abstract` | core | `pascanu2017_learning_planning` |
 | 2017 | [Imagination-Augmented Agents for Deep Reinforcement Learning](https://arxiv.org/html/1707.06203v2) | `full_text` | core | `weber2017_i2a` |
+| 2017 | [Successor Features for Transfer in Reinforcement Learning](https://arxiv.org/abs/1606.05312) | `full_text` | core | `barreto2017successorfeatures` |
 | 2018 | [Learning to select computations](https://arxiv.org/html/1711.06892v3) | `full_text` | core | `callaway2018_select_computations` |
+| 2022 | [Posterior and Computational Uncertainty in Gaussian Processes](https://arxiv.org/abs/2205.15449) | `abstract` | core | `wenger2022computationaluncertainty` |
 | 2024 | [Metareasoning in uncertain environments: a meta-BAMDP framework](https://arxiv.org/html/2408.01253v2) | `full_text` | core | `godara2024_metabamdp` |
 | 2026 | [When to Plan: Learning to Select Between Reactive Control and Deliberative Planning](https://arxiv.org/html/2607.16421v2) | `full_text` | core | `labiosa2026_when_to_plan` |
 
@@ -106,6 +114,7 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2017 | [Gradient Episodic Memory for Continual Learning](https://arxiv.org/abs/1706.08840) | `full_text` | supporting | `gem_2017` |
 | 2017 | [Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks](https://arxiv.org/abs/1703.03400) | `abstract` | supporting | `maml_2017` |
 | 2018 | [Experience Replay for Continual Learning](https://arxiv.org/abs/1811.11682) | `abstract` | core | `clear_2018` |
+| 2018 | [Transfer in Deep Reinforcement Learning Using Successor Features and Generalised Policy Improvement](https://proceedings.mlr.press/v80/barreto18a.html) | `full_text` | core | `barreto2018deepgpi` |
 | 2024 | [Loss of plasticity in deep continual learning](https://www.nature.com/articles/s41586-024-07711-7) | `official_summary` | core | `plasticity_2024` |
 | 2024 | [Titans: Learning to Memorize at Test Time](https://arxiv.org/abs/2501.00663) | `abstract` | core | `titans_2024` |
 | 2024 | [Learning to (Learn at Test Time): RNNs with Expressive Hidden States](https://arxiv.org/abs/2407.04620) | `abstract` | core | `ttt_layers_2024` |
@@ -118,7 +127,7 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2026 | [Continuous Memory Machines](https://arxiv.org/abs/2610.07907) | `full_text` | core | `cmm_2026` |
 | 2026 | [Meta-TTL: Meta-Learning Self-Improvement Policies for Language Agents](https://arxiv.org/abs/2604.00830v4) | `abstract` | core | `meta_ttl_2026` |
 
-## World models and embodied interaction
+## World models, embodiment, and evaluation
 
 [Read the review](WORLD_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
@@ -144,7 +153,7 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2026 | [LongMemEval-V2: Evaluating Long-Term Agent Memory Toward Experienced Colleagues](https://arxiv.org/abs/2605.12493) | `abstract` | core | `longmemeval-v2-2026` |
 | 2026 | [StreamReady: Learning What to Answer and When in Long Streaming Videos](https://arxiv.org/abs/2603.08620) | `full_text` | core | `streamready-2026` |
 
-## Proactivity, exploration, and agent systems
+## Exploration, goals, and agents
 
 [Read the review](AGENCY.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
@@ -159,3 +168,4 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2023 | [Generative Agents: Interactive Simulacra of Human Behavior](https://arxiv.org/abs/2304.03442) | `abstract` | supporting | `park2023generativeagents` |
 | 2023 | [Reflexion: Language Agents with Verbal Reinforcement Learning](https://arxiv.org/abs/2303.11366) | `abstract` | supporting | `shinn2023reflexion` |
 | 2023 | [Voyager: An Open-Ended Embodied Agent with Large Language Models](https://arxiv.org/abs/2305.16291) | `abstract` | core | `wang2023voyager` |
+| 2026 | [Learning What to Investigate Next: Meta-Reasoning for Long-Horizon Research Agents](https://arxiv.org/abs/2610.02525) | `full_text` | core | `samanta2026mira` |

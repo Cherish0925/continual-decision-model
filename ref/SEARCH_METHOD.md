@@ -1,6 +1,6 @@
 # Literature collection
 
-Review date: 14 October 2026.
+Review date: 15 October 2026.
 
 ## Scope and collection
 
@@ -19,13 +19,15 @@ For each source, the catalogue records its mechanism, evaluated tasks, relevance
 | `official_summary` | Original account maintained by the authors or institution |
 | `indexed_excerpt` | Indexed primary-source passage when direct retrieval was unavailable |
 
-The collection has 108 records: 35 section-level full-text readings, 68 abstracts, four official summaries, and one indexed excerpt. This is a curated collection. It records reading rather than independent reproduction.
+The collection has 118 records: 41 section-level full-text readings, 72 abstracts, four official summaries, and one indexed excerpt. This is a curated collection. It records reading rather than independent reproduction.
 
 Schema version 2 records reading depth in `reading_depth` and source sections in `inspected_sections`.
 
 ## Continuing the survey
 
 Read method, training, and experiment sections before implementing a close baseline. Pin the paper edition and code revision. Expand abstract-level records as that reading is completed.
+
+The 15 October update added ten records on selective recurrence, incremental computation, latent replanning, action correction, successor features, computational uncertainty, interruptible reasoning, and research allocation. All 108 earlier identities and reading-depth records were retained.
 
 Add a paper when it changes an architecture choice, comparison, training method, or experiment. Update the corresponding review and model plan. Repeat recent-work searches before manuscript submission and record which comparisons were actually run.
 
