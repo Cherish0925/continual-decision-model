@@ -1,5 +1,5 @@
 <p>
-  <img src="assets/readme-header.png" alt="Continual Decision Model — Persistent state, continual computation." width="1280">
+  <img src="assets/readme-header.png" alt="Continual Decision Model — Continual operation, decision, and evolution." width="1280">
 </p>
 
 [Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
