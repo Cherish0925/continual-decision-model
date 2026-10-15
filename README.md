@@ -1,4 +1,8 @@
-# Continual Decision Model
+<p>
+  <img src="assets/readme-header.png" alt="Continual Decision Model — Persistent state, continual computation." width="1280">
+</p>
+
+[Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
 
 **CDM studies how a model can keep perceiving, reasoning, acting, and learning while the world changes.** Internal state persists across interactions. The model learns external actions and the choice of its next observation or computation. A conversation is one event in that continuing process.
 
