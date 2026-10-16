@@ -58,6 +58,19 @@ python experiments/dynamic_maze/evaluate_all.py --root runs/dynamic_maze/main --
 
 The launcher trains every variant for five seeds, starts a run only when its GPU has the requested free memory, and skips finished runs and runs already in progress. Each run writes `config.json`, `train_log.jsonl`, and `model.pt` under `runs/dynamic_maze/main/<variant>/seed<k>/`. Evaluation, latency, the controlled-change probe, shared-budget allocation, action fields, and the report are listed in the [study README](experiments/dynamic_maze/README.md#run); the measurements are in [RESULTS.md](experiments/dynamic_maze/RESULTS.md).
 
+### Continual model over process lifetimes
+
+```bash
+python experiments/lifetime/launch.py --output-root runs/lifetime/c4 --seeds 0 1 2 3 4 \
+    --variants full "full_meta=full --meta 0.5" frozen fixed_learn world_model predict_only recurrent -- \
+    --streams 1024 --width 1024 --hidden 1024 --interactions 2e7 --lifetime 16384
+python experiments/lifetime/evaluate.py --model runs/lifetime/c4/full/seed0/model.pt --also frozen discard \
+    --devices 512 --ticks 16384 --output runs/lifetime/eval/full_seed0.json
+python experiments/lifetime/realtime.py --model runs/lifetime/c4/full/seed0/model.pt --output runs/lifetime/realtime.json
+```
+
+One model, [`cdm/core.py`](cdm/core.py), acts, measures, refines and learns over instrument and thermal process lifetimes; settings switch its learned activities and its learning on and off. The trainer, evaluation settings, two-family runs, timing measurements and the controller against an independently advancing process are described in the [experiment README](experiments/lifetime/README.md); results are in [RESULTS.md](experiments/lifetime/RESULTS.md). One training run of 2·10⁷ transitions at 35.9 M parameters saturates an H100 at about 11,000 transitions per second.
+
 ### Numerical state revision
 
 ```bash
@@ -89,15 +102,15 @@ These checks cover persistent computation, fresh-context actions, batched memory
 
 ## Next integrated implementation
 
-The next target is the shared sequence core acting and learning throughout a changing lifetime. Its specification is in [DESIGN.md](DESIGN.md#next-integrated-model), training budgets and objectives in [TRAINING.md](TRAINING.md), and comparisons in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign). The commands above reproduce existing studies; they do not yet launch this integrated model.
+The shared sequence core acting and learning throughout a changing lifetime is implemented for two process families ([experiment](experiments/lifetime/README.md)). Its specification is in [DESIGN.md](DESIGN.md#next-integrated-model), training budgets and objectives in [TRAINING.md](TRAINING.md), and comparisons in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign).
 
-| Implementation | Required output |
+| Implementation | State |
 | --- | --- |
-| Persistent model and event interface | Recurrent/Transformer core, action-conditioned prediction, continuing goal/state, pending results, and action/activity outputs |
-| Lifetime trainer | Joint representation/action/activity training, learning choices, instance-specific adapters, and continuation across backpropagation windows |
-| Execution | Environment time advancing during operations; fast control while inference or learning continues; measured end-to-end timing |
-| Shared task adapters | Changing navigation, nonlinear instrument, and executable delayed tools using the same core and activity interface |
-| Main campaign | Matched external baselines, acquisition/retention curves, independent-instance long runs, and model/data scale comparisons |
+| Persistent model and event interface | GRU fast state, a persistent Transformer workspace over experience records, action-conditioned prediction with instance adapters, control and activity heads ([`cdm/core.py`](cdm/core.py)). Retrieval of computation records, subgoals and language remain open |
+| Lifetime trainer | Recurrent PPO over lifetimes whose state, experience and adapters persist across windows; trained choice of measurement, refinement and learning; optional training through the learning step |
+| Execution | Activities with simulated durations in training; [`realtime.py`](experiments/lifetime/realtime.py) runs control against processes on their own clock with learning on a separate stream |
+| Shared task adapters | Instrument and thermal families on one event and action interface, trained jointly; navigation and delayed digital tools remain |
+| Main campaign | Seven settings with five seeds each, held-out dynamics, acquisition and retention curves, and two-family runs; external baselines and scale comparisons remain |
 
 Develop these against one common state/event/action interface. Task adapters and timed execution can be implemented while the model and trainer are developed. Existing maze retraining is a comparison workload, not a prerequisite for the core integration. Implement one reference recurrence first; additional backbones should answer a measured limitation of that reference.
 
