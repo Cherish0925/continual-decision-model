@@ -9,6 +9,7 @@ result is skipped. A family is a name, the process family, and changes to its sp
 Families named in ``--main`` (by default ``training``) use ``--devices`` processes over ``--ticks``; every other
 family a quarter of each.
 At most ``--per-gpu`` evaluations run on a GPU, and one starts only when ``--min-free-gb`` are free.
+Arguments after ``--`` are passed to every evaluation, for example ``-- --adapter-lr 0.015``.
 """
 from __future__ import annotations
 
@@ -37,6 +38,9 @@ def finished_models(roots):
 
 
 def main():
+    argv = sys.argv[1:]
+    extra = argv[argv.index("--") + 1:] if "--" in argv else []
+    argv = argv[:argv.index("--")] if "--" in argv else argv
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--runs", type=Path, nargs="+", required=True)
     p.add_argument("--families", nargs="+", default=["training=instrument"])
@@ -48,7 +52,7 @@ def main():
     p.add_argument("--per-gpu", type=int, default=3)
     p.add_argument("--min-free-gb", type=float, default=8.0)
     p.add_argument("--output", type=Path, required=True)
-    args = p.parse_args()
+    args = p.parse_args(argv)
     jobs = []
     for model in finished_models(args.runs):
         for family in args.families:
@@ -62,6 +66,7 @@ def main():
                    "--devices", str(devices), "--ticks", str(ticks), "--output", str(out)]
             cmd += ["--also", *args.also] if args.also else []
             cmd += ["--instrument", *changes] if changes else []
+            cmd += extra
             jobs.append((cmd, out))
     running = {g: [] for g in args.gpus}
     print(f"{len(jobs)} evaluations", flush=True)
