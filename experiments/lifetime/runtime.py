@@ -21,7 +21,7 @@ from cdm.core import REFINEMENTS, ContinualCore, adapter_step
 from cdm.instrument import InstrumentFleet, InstrumentSpec
 
 SCALAR_DIM = 8
-MODES = ("full", "fixed_learn", "frozen", "world_model", "recurrent")
+MODES = ("full", "fixed_learn", "frozen", "world_model", "predict_only", "recurrent")
 LEARN = len(REFINEMENTS)                  # index of the learning option among the compute options
 
 
@@ -118,9 +118,9 @@ def masks(agent: Agent, pending: Tensor, mode: str, tick: int, every: int) -> Te
     busy = agent.busy > 0
     m[:, 3:] &= ~busy.unsqueeze(1)                        # a running learning step occupies the compute
     m[:, k] &= agent.filled >= 8
-    if mode in ("frozen", "recurrent"):
+    if mode in ("frozen", "predict_only", "recurrent"):
         m[:, k] = False
-    if mode == "recurrent":
+    if mode in ("predict_only", "recurrent"):
         m[:, 3:k] = False
     if mode in ("fixed_learn", "world_model"):            # learn on a fixed schedule whenever possible
         due = m[:, k] & (tick % every == 0)

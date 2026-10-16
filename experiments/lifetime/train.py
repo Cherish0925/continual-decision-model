@@ -18,6 +18,7 @@ import argparse
 import json
 import math
 import platform
+import subprocess
 import sys
 import time
 from dataclasses import asdict
@@ -226,6 +227,8 @@ def main(argv=None):
     meta = {"args": {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
             "config": asdict(model.config), "instrument": asdict(spec),
             "parameters": sum(q.numel() for q in model.parameters()),
+            "revision": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+                                       text=True).stdout.strip() or None,
             "torch": torch.__version__, "python": platform.python_version(),
             "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else "cpu"}
     (out / "config.json").write_text(json.dumps(meta, indent=2))
@@ -240,6 +243,8 @@ def main(argv=None):
                     "args": meta["args"]}, out / "model.pt")
 
     window_adapters = previous_adapters = (agent.A, agent.B)   # when the window began / before the last tick
+    collection = update_time = 0.0
+    mark = time.perf_counter()
     for t in range(ticks):
         model.eval()
         previous_adapters = (agent.A, agent.B)           # tick() replaces these tensors rather than editing them
@@ -260,8 +265,16 @@ def main(argv=None):
             obs = clear_observation(obs, done)
         steps.append(step)
         if len(steps) == args.window + 1:
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            collection += time.perf_counter() - mark
+            mark = time.perf_counter()
             model.train()
             stats = ppo_update(model, optimizer, steps[:-1], steps[-1]["value"], window_adapters, args)
+            if device.type == "cuda":
+                torch.cuda.synchronize(device)
+            update_time += time.perf_counter() - mark
+            mark = time.perf_counter()
             steps, window_adapters = steps[-1:], previous_adapters
             window += 1
             k = args.window
@@ -273,7 +286,8 @@ def main(argv=None):
                    "prediction_error": sums["prediction_error"] / k,
                    "workspace_norm": float(agent.z.norm(dim=-1).mean()), "adapter_norm": float(agent.A.norm(dim=(1, 2)).mean()),
                    **{f"loss_{a}": round(b, 5) for a, b in stats.items()},
-                   "seconds": round(time.perf_counter() - start, 1)}
+                   "seconds": round(time.perf_counter() - start, 1), "collection_seconds": round(collection, 1),
+                   "update_seconds": round(update_time, 1)}
             if device.type == "cuda":
                 row["peak_memory_gb"] = round(torch.cuda.max_memory_allocated(device) / 1e9, 2)
             sums = dict.fromkeys(keys, 0.0)

@@ -20,7 +20,7 @@ STYLE = {
     "world_model": ("World model, fixed schedules", "#eda100", "D"),
     "recurrent": ("Recurrent policy", "#e87ba4", "v"),
     "full_meta": ("CDM trained through its learning step", "#008300", "*"),
-    "full_no_goal": ("CDM without the goal term", "#4a3aa7", "h"),
+    "predict_only": ("Predictions without workspace computation or learning", "#4a3aa7", "h"),
 }
 METRICS = ("error_while_active", "reward_per_100_ticks", "response_ticks_median", "prediction_error",
            "shared_prediction_error", "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")

@@ -1,0 +1,36 @@
+{
+ "training": {
+  "instrument": {},
+  "random": 0.30686750700093146,
+  "true_response_greedy": 0.11076203047188467
+ },
+ "slow_narrow": {
+  "instrument": {
+   "time_constant": [
+    8.0,
+    16.0
+   ],
+   "width": [
+    0.15,
+    0.25
+   ]
+  },
+  "random": 0.3882792458891423,
+  "true_response_greedy": 0.21838622589091758
+ },
+ "noisy": {
+  "instrument": {
+   "cheap_noise": 0.4
+  },
+  "random": 0.30686750700093146,
+  "true_response_greedy": 0.11076203047188467
+ },
+ "fast_change": {
+  "instrument": {
+   "dwell": 150.0,
+   "novel": 0.5
+  },
+  "random": 0.3091620185979851,
+  "true_response_greedy": 0.11158162744261617
+ }
+}

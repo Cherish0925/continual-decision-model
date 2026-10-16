@@ -135,9 +135,9 @@ class RuntimeTests(unittest.TestCase):
                 self.assertFalse(m[1, 1])                                   # measurement in flight
                 self.assertTrue(torch.equal(m[2, 2:], torch.tensor([True, False, False, False, False])))
                 learn = m[:, 2 + LEARN]
-                if mode in ("frozen", "recurrent"):
+                if mode in ("frozen", "predict_only", "recurrent"):
                     self.assertFalse(learn.any())
-                if mode == "recurrent":
+                if mode in ("predict_only", "recurrent"):
                     self.assertFalse(m[:, 3:2 + LEARN].any())
                 if mode in ("fixed_learn", "world_model"):
                     self.assertEqual(bool(learn[0]), t == 0)
