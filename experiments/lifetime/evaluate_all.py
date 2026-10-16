@@ -6,7 +6,8 @@ result is skipped. A family is a name, the process family, and changes to its sp
 
     training=instrument  thermal=thermal  slow_narrow=instrument:time_constant=8,16:width=0.15,0.25
 
-The training family uses ``--devices`` instruments over ``--ticks``; every other family a quarter of each.
+Families named in ``--main`` (by default ``training``) use ``--devices`` processes over ``--ticks``; every other
+family a quarter of each.
 At most ``--per-gpu`` evaluations run on a GPU, and one starts only when ``--min-free-gb`` are free.
 """
 from __future__ import annotations
@@ -39,6 +40,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--runs", type=Path, nargs="+", required=True)
     p.add_argument("--families", nargs="+", default=["training=instrument"])
+    p.add_argument("--main", nargs="*", default=["training"], help="families evaluated at full size")
     p.add_argument("--also", nargs="*", default=["frozen", "discard"])
     p.add_argument("--devices", type=int, default=512)
     p.add_argument("--ticks", type=int, default=16384)
@@ -55,7 +57,7 @@ def main():
             out = args.output / name / f"{model.parent.parent.name}_{model.parent.name}.json"
             if out.exists():
                 continue
-            devices, ticks = (args.devices, args.ticks) if name == "training" else (args.devices // 4, args.ticks // 4)
+            devices, ticks = (args.devices, args.ticks) if name in args.main else (args.devices // 4, args.ticks // 4)
             cmd = [sys.executable, str(HERE / "evaluate.py"), "--model", str(model), "--family", kind,
                    "--devices", str(devices), "--ticks", str(ticks), "--output", str(out)]
             cmd += ["--also", *args.also] if args.also else []
