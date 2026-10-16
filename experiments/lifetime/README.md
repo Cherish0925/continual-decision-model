@@ -38,7 +38,7 @@ Reward per tick is minus the absolute tracking error while a request is active, 
 | Fast state | Event features (readings, setpoint, request flags, previous control and activities, pending measurement, time since the last measurement, last prediction error) → MLP → GRU |
 | Workspace | 8 latent slots; a refinement applies one shared Transformer block: slot self-attention, attention to the fast state and the 32 most recent experience records, MLP |
 | Predictor | Mean and log-variance of the next reading for every action, from the fast state, the slot mean and learned action features. Its first layer carries an instance-owned rank-8 adapter |
-| Control | Scores every action from the shared trunk, the action's features and the action's own predicted reading relative to the setpoint, with weights shared across actions |
+| Control | Scores every action from the shared trunk, the action's features and the action's own predicted reading relative to the setpoint, with weights shared across actions, minus a learned multiple of the action's predicted distance from the setpoint |
 | Activities | Precise measurement (yes, no); compute (0, 1, 2 or 4 refinements, or a learning step) |
 | Value | Critic over the shared trunk |
 

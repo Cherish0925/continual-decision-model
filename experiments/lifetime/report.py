@@ -99,7 +99,8 @@ def training_curves(run_root: Path, out: Path, smooth: int = 5):
     style_axes(ax)
     ax.set_xlabel("interactions (millions)")
     ax.set_ylabel("tracking error while a request is active")
-    ax.legend(frameon=False)
+    if ax.get_legend_handles_labels()[0]:
+        ax.legend(frameon=False)
     fig.tight_layout()
     fig.savefig(out, dpi=200)
     plt.close(fig)

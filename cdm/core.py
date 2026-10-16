@@ -10,7 +10,8 @@ operations, elapsed-time features). Its parts:
                 its first layer carries an instance-owned low-rank adapter that a
                 learning step updates from the instance's own experience
 ``control``     scores every action from the state, the action's features and the
-                action's own predicted reading, with weights shared across actions
+                action's own predicted reading, with weights shared across actions,
+                plus a learned preference for actions predicted to reach the goal
 ``activity``    heads for precise measurement and for the use of compute: a number
                 of workspace refinements or one learning step
 ``value``       critic for the outer reinforcement learning
@@ -23,6 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import torch
+import torch.nn.functional as F
 from torch import Tensor, nn
 
 REFINEMENTS = (0, 1, 2, 4)     # compute options before the learning option
@@ -86,6 +88,7 @@ class ContinualCore(nn.Module):
         self.control_state, self.control_action = nn.Linear(trunk, a), nn.Linear(w, a, bias=False)
         self.control_pred = nn.Linear(2, a, bias=False)
         self.control_out = nn.Sequential(nn.GELU(), nn.Linear(a, a), nn.GELU(), nn.Linear(a, 1))
+        self.goal_weight = nn.Parameter(torch.tensor(1.8))      # softplus(1.8) = 1.95
         self.activity = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options))
         self.value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 1))
 
@@ -157,14 +160,16 @@ class ContinualCore(nn.Module):
         return out[..., 0], out[..., 1].clamp(-8.0, 4.0)
 
     # ------------------------------------------------------------ heads
-    def trunk(self, h: Tensor, z: Tensor, pred_mean: Tensor, pred_logvar: Tensor, scalars: Tensor) -> Tensor:
-        return torch.cat((self.norm_h(h), self.norm_z(z.mean(1)), pred_mean, pred_logvar / 4, scalars), -1)
+    def trunk(self, h: Tensor, z: Tensor, pred_offset: Tensor, pred_logvar: Tensor, scalars: Tensor) -> Tensor:
+        """Shared input of the heads; ``pred_offset`` [n, actions] is each action's predicted reading minus the goal."""
+        return torch.cat((self.norm_h(h), self.norm_z(z.mean(1)), pred_offset, pred_logvar / 4, scalars), -1)
 
-    def heads(self, trunk: Tensor, pred_mean: Tensor, pred_logvar: Tensor) -> tuple[Tensor, Tensor, Tensor]:
+    def heads(self, trunk: Tensor, pred_offset: Tensor, pred_logvar: Tensor) -> tuple[Tensor, Tensor, Tensor]:
         """Control logits [n, actions], activity logits [n, 2 + compute options], value [n]."""
         scores = self.control_state(trunk).unsqueeze(1) + self.control_action(self.action_features()).unsqueeze(0) \
-            + self.control_pred(torch.stack((pred_mean, pred_logvar / 4), -1))
-        return self.control_out(scores).squeeze(-1), self.activity(trunk), self.value(trunk).squeeze(-1)
+            + self.control_pred(torch.stack((pred_offset, pred_logvar / 4), -1))
+        control = self.control_out(scores).squeeze(-1) - F.softplus(self.goal_weight) * pred_offset.abs()
+        return control, self.activity(trunk), self.value(trunk).squeeze(-1)
 
 
 def gaussian_nll(mean: Tensor, logvar: Tensor, target: Tensor) -> Tensor:

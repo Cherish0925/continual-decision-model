@@ -12,8 +12,8 @@ own state, experience and adapters; nothing is reset. Reported:
   conditions met before in the lifetime (acquisition and retention);
 - tracking and prediction error as functions of time in the lifetime.
 
-``--also`` evaluates each model a second time under other modes, for example
-a model trained to learn with learning switched off.
+``--also`` evaluates each model that learns a second time under other modes,
+for example with learning switched off.
 """
 from __future__ import annotations
 
@@ -126,7 +126,8 @@ def main(argv=None):
     rows = []
     for path in args.model:
         model, targs, spec = load(path, device)
-        for mode in dict.fromkeys([targs["mode"], *args.also]):
+        learns = targs["mode"] in ("full", "fixed_learn", "world_model")
+        for mode in dict.fromkeys([targs["mode"], *(args.also if learns else [])]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
                    "seed": targs["seed"],
                    **evaluate(model, targs, spec, args.devices, args.ticks, args.seed, device, mode, args.greedy)}
