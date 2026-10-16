@@ -4,6 +4,26 @@ The CDM target architecture combines a recurrent context, a persistent latent wo
 
 The [PyTorch prototype](cdm/model.py) implements the recurrent context, shared workspace refinement, factor-conditioned memory reading, and action/activity/value heads. The [dynamic-grid experiment](experiments/continual_grid/README.md) separately compares explicit planning states. [RUNNING.md](RUNNING.md) lists executable commands; [TRAINING.md](TRAINING.md) specifies the progression from supervised learning to learned activity and continued adaptation.
 
+## Next integrated model
+
+The next main implementation extends the sequence core into an acting and learning model. Its running state is
+
+\[
+S_t=(h_t,Z_t,M_t,D_t,\eta_t,q_t,g_t),
+\]
+
+where \(h_t\) is the current recurrent context, \(Z_t\) the unfinished latent computation, \(M_t\) reusable records, \(D_t\) received experience, \(\eta_t\) instance-specific adaptive parameters and optimizer state, \(q_t\) pending operations and elapsed-time information, and \(g_t\) the continuing goal and current subgoals. Shared parameters \(\theta\) are optimized across training lifetimes.
+
+Use the existing GRU as the reference fast update and a shared Transformer block over persistent slots as the refinement core. Compare a gated matrix recurrence at matched model size and runtime after the common trainer works. Input/output modules map structured sensors, images, instructions, and tool events into this same state. A language decoder is invoked for communication; ordinary control reads the current context and completed workspace directly.
+
+An action-conditioned prediction head models future received observations, task outcomes, and elapsed durations. It supports measurement selection, action comparison, and learning from received results. Prediction learning and the activity policy share the context/workspace representation. A goal-conditioned readout proposes subgoals or measurement settings, with their contribution trained through subsequent task return.
+
+The activity output specifies an operation, its target, and its work budget: which sensor or tool to query; which workspace slots or prediction branch to refine; which memories to retrieve; which experience and parameter group to update; or when to reconsider. Physical control remains a separate output available at fast update boundaries. Concurrent background activity and external action therefore need not be exclusive categorical choices.
+
+The first online parameter group \(\eta_t\) consists of prediction and action adapters. Keeping the shared state-producing coordinates fixed within an adaptation interval allows those updates to use the current workspace. The outer training still optimizes the shared recurrence, refinement, world prediction, and activity policy together. Subsequent consolidation can update \(\theta\); it must also account for the cost of bringing retained state into the updated representation. Retention through a parameter update is part of the model design.
+
+One model means shared trained representations, objectives, and persistent state, not a requirement that every operation execute in one kernel. Frozen image or language encoders can provide initial features, with their costs and training status reported. The current convolutional maze planner remains a comparison; it is not silently substituted for the GRU/Transformer core.
+
 ## State
 
 | State | Contents | Update |
@@ -11,9 +31,11 @@ The [PyTorch prototype](cdm/model.py) implements the recurrent context, shared w
 | Context \(h_t\) | Received observations, executed actions, elapsed time, current goal, pending requests | On arriving events and elapsed time |
 | Workspace \(Z_t\) | A fixed number of latent slots holding ongoing inference | Context-conditioned reading, revision, and shared refinement |
 | Computation memory \(M_t\) | Selected intermediate states and the conditions under which they were computed | After useful computation; bounded retention |
-| Progress \(p_t\) | Computation depth, timing, recent operations, predicted operation value | At operation boundaries |
+| Operations \(q_t\) | Computation depth, timing, pending requests, recent operations, predicted operation value | At operation boundaries |
 | Experience \(D\) | Observation–action–outcome trajectories | During interaction; consumed by training |
-| Parameters \(\theta\) | Encoders, recurrence, refinement, memory operations, and policy heads | Offline training and later online updates |
+| Goals \(g_t\) | Continuing objective and proposed subgoals | On received instructions and learned subgoal choices |
+| Local adaptation \(\eta_t\) | Prediction/action adapters and their optimizer state | Model-selected learning operations within one lifetime |
+| Shared parameters \(\theta\) | Encoders, recurrence, refinement, memory operations, and policy heads | Training across lifetimes and measured consolidation |
 
 Computation memory and experience have different roles. A computation record helps resume or adapt an unfinished calculation. An experience supplies observations and outcomes for prediction and learning. They may refer to the same interaction without being interchangeable.
 
@@ -66,7 +88,7 @@ In the prototype, refinement adds a projected current context to each slot and a
 
 At each short computation boundary, new events update \(c_t\). Further refinement uses that context. The workspace is consequently a state of ongoing calculation, rather than a sequence that must finish before another input can enter.
 
-An optional action-conditioned prediction head estimates future observations, rewards, and outcomes. Explicit imagined rollouts are a comparison with the same interaction budget; they are not required to define the workspace.
+The next integrated model includes action-conditioned prediction of future received observations, rewards, and outcomes. Explicit imagined rollouts remain a comparison at the same interaction budget; prediction can also be read directly without expanding a search tree.
 
 ## Computation records
 
@@ -128,7 +150,7 @@ where \(m(\gamma)\) is the map workspace read at the goal cell \(\gamma\) and br
 
 ## Activity policy
 
-The prototype provides observation, computation, and action logits together with a value head. The full activity interface below adds explicit retrieval and waiting. Its policy inputs will also include timing and pending requests when trained in an event-driven environment.
+The existing sequence prototype provides observation, computation, and action logits together with a value head. The next integrated model trains the full interface below, using the same context, workspace, goal, pending requests, and summaries of its learning state. Useful self-assessment quantities include predicted task success, prediction uncertainty, operation duration, and expected improvement from an operation; observed outcomes train these estimates.
 
 | Activity | Output | Effect |
 | --- | --- | --- |
@@ -136,6 +158,8 @@ The prototype provides observation, computation, and action logits together with
 | Compute | Refinement depth or a prediction branch | Develops the current workspace |
 | Retrieve | Query and record budget | Makes earlier computation available for adaptation |
 | Act | Control, tool arguments, or communication request | Changes the environment or communicates a result |
+| Learn | Experience selection, parameter group, and update budget | Updates prediction or action adapters; later task return trains the choice |
+| Set subgoal | Intermediate target, experiment, or information objective | Directs subsequent work within the continuing task |
 | Wait | Reconsideration interval | Keeps the present action while requests or physical processes proceed |
 
 The fast action readout remains available at every boundary, including when the selected activity is internal computation. The runtime supplies clocks, inputs, and operation execution. The trained policy decides which operation to perform and what to do with its result.
@@ -157,18 +181,21 @@ output = model.readout(state)
 state = model.write_memory(state)
 ```
 
-The neural actor will first use short serial blocks in the changing environment: assimilate arriving events, read or revise state, complete a bounded refinement block, then emit an action and choose the next activity. Its environment advances during operations. Capture, arrival, incorporation, action generation, and action application receive separate timestamps in this integration.
+The integrated actor uses short bounded blocks and a fast action path. Event-time training advances the environment through every operation's duration while applied control continues; it also models new observations arriving during that interval. A separate execution mode runs the environment clock independently of neural computation and learning. Capture, arrival, incorporation, action generation, and action application receive separate timestamps. An uninterrupted GPU kernel cannot be instantly preempted by the model, so refinement block size determines the earliest point at which new input can change that computation.
 
 Use fixed slot count, fixed memory capacity, and fixed retrieval count for dense batched kernels. Gathered records feed ordinary projections and attention. Selective activity does not imply lower latency by itself; factor construction, lookup, padding, data movement, and action readout are included in end-to-end timing.
 
 Larger neural configurations retain this layout. Scale width, recurrent depth, and environment batch size after measuring quality against computation. Training batches parallelize independent trajectories. Within one trajectory, context recurrence and successive refinement retain their temporal dependence.
 
-Separate perception and control streams or devices can be evaluated after the serial actor. Parameter version, state version, and transfer time accompany such execution. Batch-one action latency is measured independently from training throughput.
+Implement continuing control alongside refinement and learning in the same development cycle. Streams alone do not guarantee concurrency when a long GPU kernel occupies the device; measure kernel duration and action delay under the actual workload. Parameter publication occurs at operation boundaries, with transfer and state-update time included. Batch-one action latency is measured independently from training throughput. Quiet intervals may select little compute or useful replay; measure device energy to distinguish reduced work from a lower-power operating mode.
 
 ## Learning during extended operation
 
-Deploy with fixed parameters first, while recurrent state, workspace, and computation memory continue to change. Then train selected prediction or policy heads online, followed by adapters or shared-core updates.
+Training learns both shared parameters \(\theta\) and an activity policy for updating the instance-specific parameters \(\eta_t\) from experience. At deployment, \(\eta_t\), state, memory, and experience persist across requests and changes of operating conditions. Each independently evaluated agent owns its adaptation state.
 
-A background learner can replay received experience, train predictions, compare imagined trajectories, and distill deeper decisions into a faster policy. Its benefit is measured on later interaction. Stored computation carries its parameter version; updates to state-producing parameters require state reconstruction or a tested conversion between versions.
+An online learning operation has a duration and a chosen input batch. It may train prediction from delayed observations and executed actions, rehearse earlier experience, or distill deeper computation into a fast readout. Prediction loss supplies an update direction; improvement in later task return supplies the value of choosing that update. The activity policy is not rewarded just for executing an update or reducing loss on its training batch.
 
-This separates three processes that can each improve behavior: retained activation state, reusable computation records, and learned parameter changes. [TRAINING.md](TRAINING.md) defines their training order and comparisons; [CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md) develops the central scientific hypothesis.
+Consolidation evaluates newly acquired abilities on later and returning tasks. When shared state-producing parameters change, reconstruct from a retained event prefix or use a trained state conversion and include its latency. A reconstruction for an explicitly measured parameter conversion differs from silently clearing state whenever a task changes.
+
+The existing operation script pools several streams and triggers learning from accumulated compute credits. It implements useful comparisons, but does not yet implement the learned per-instance adaptation specified here. [TRAINING.md](TRAINING.md) defines the optimization and [EXPERIMENTS.md](EXPERIMENTS.md) the acquisition, retention, and transfer comparisons.
+

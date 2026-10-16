@@ -87,19 +87,21 @@ python -m unittest discover -s experiments/neural_pilot -p 'test_*.py'
 
 These checks cover persistent computation, fresh-context actions, batched memory and gradients, observation-prefix metadata, parameter-version selection, world-time advancement, planning budgets, and labels reconstructed from observed cue history.
 
-## Next implementations
+## Next integrated implementation
 
-| Next implementation | Result to produce |
+The next target is the shared sequence core acting and learning throughout a changing lifetime. Its specification is in [DESIGN.md](DESIGN.md#next-integrated-model), training budgets and objectives in [TRAINING.md](TRAINING.md), and comparisons in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign). The commands above reproduce existing studies; they do not yet launch this integrated model.
+
+| Implementation | Required output |
 | --- | --- |
-| Learned premises beyond map and goal | The keep-or-rebuild gate of the maze planner applied to workspaces whose inputs have no fixed spatial split, and an account of which channels depend on which input |
-| Learning as an activity | The continual agent's activity head also decides when to spend compute on learning, with the planner and the head trained together |
-| Learning under a partial view | Anchored online learning that improves the partially observing agent's reward: more recorded experience, hindsight from every survey, replay across sites |
-| Activity policy in the sequence core | The continual agent's learned choice of computation, observation and action applied to the GRU/Transformer core on non-spatial tasks |
-| Richer computational reuse | Per-slot reading and revision compared with the existing shared record reader |
-| Continual learning across tasks | Online updates and background replay across task sequences, measured as learning speed, retention and transfer |
-| Second domain | Nonlinear instrument with delayed, action-dependent observations |
-| Scale | Measured GPU execution, larger tasks, longer sequences, distributed training |
+| Persistent model and event interface | Recurrent/Transformer core, action-conditioned prediction, continuing goal/state, pending results, and action/activity outputs |
+| Lifetime trainer | Joint representation/action/activity training, learning choices, instance-specific adapters, and continuation across backpropagation windows |
+| Execution | Environment time advancing during operations; fast control while inference or learning continues; measured end-to-end timing |
+| Shared task adapters | Changing navigation, nonlinear instrument, and executable delayed tools using the same core and activity interface |
+| Main campaign | Matched external baselines, acquisition/retention curves, independent-instance long runs, and model/data scale comparisons |
 
-Record GPU model/count, memory, interconnect, driver, CUDA, PyTorch version, environment throughput, and model-step timing at setup. Profile state length and environment batch size before choosing a distributed layout. [TRAINING.md](TRAINING.md) specifies the training stages and data fields; [EXPERIMENTS.md](EXPERIMENTS.md) defines the comparisons.
+Develop these against one common state/event/action interface. Task adapters and timed execution can be implemented while the model and trainer are developed. Existing maze retraining is a comparison workload, not a prerequisite for the core integration. Implement one reference recurrence first; additional backbones should answer a measured limitation of that reference.
 
-Retain source, configurations, raw small-run measurements, and analysis in GitHub. Large datasets and checkpoints should have versioned locations and hashes linked from their experiment. Use a separate output directory for each retained run.
+Record GPU model/count, memory, interconnect, driver, CUDA, PyTorch version, environment throughput, and model-step timing at setup. Separate collection parallelism from backpropagation batch size and single-instance deployment latency. The research campaign uses measured throughput to allocate the available devices.
+
+Retain source, configurations, raw measurements, and analysis in GitHub. Large datasets and checkpoints have versioned locations and hashes linked from their experiment. Use a separate output directory for each run and retain unsuccessful training attempts alongside completed ones.
+

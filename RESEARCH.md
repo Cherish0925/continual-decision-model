@@ -2,7 +2,9 @@
 
 Continual Decision Model (CDM) is a research programme for models that maintain an ongoing interaction process: perceiving, computing, choosing activities, acting, and learning. A conversation is one source of events in that process. Goals and unfinished work continue across outputs and intervals without input.
 
-**The central question is how to make past and ongoing computation useful for the next decision while observations, goals, and the environment change.**
+**The central question is how a continuously operating model can learn to choose its observations, internal computation, actions, and learning so that it acts effectively now and acquires abilities useful later, while the environment continues to change.**
+
+The next main experiment trains these choices in the same persistent model. Navigation, instruments, and delayed digital tools supply different interactions for that model. They are applications and comparisons, not successive replacements for the research objective.
 
 ## Required behavior
 
@@ -28,13 +30,26 @@ Continuous operation does not require maximum computation at all times. A model 
 
 ## Scientific hypothesis
 
-A useful intermediate result often depends on only part of the current situation. A map relation can remain useful after a goal changes; a goal-specific plan can remain useful after an unrelated observation; a previous calculation can become useful again when operating conditions return.
+An internal operation changes the model's ability to act: observation changes available information, refinement develops a current inference, retrieval recovers earlier work, and learning changes future predictions or policies. Their benefits have different durations. Training must account for the external actions and opportunities that occur while an operation runs, as well as the tasks on which its result will later be used.
 
-**Hypothesis:** a model trained to store intermediate computation together with its generating conditions, and to adapt it to the current context, can obtain higher return within the same time budget than restarting, carrying an undifferentiated state, or retrieving whole snapshots.
+**Primary hypothesis:** jointly training persistent state updates and choices of observation, inference, action, and experience-based parameter updates can improve task performance across a changing lifetime at the same elapsed-time and resource budget as strong recurrent policies, fixed learning schedules, or activity policies over frozen models.
 
-The proposed mechanism combines a recurrent context, persistent latent workspace, shared refinement, and bounded computation memory. A learned reader conditions reuse on observations, dynamics, goals, and computation progress. An action policy uses the latest context throughout. An activity policy chooses where additional observation or computation is worthwhile.
+The claim requires both timely decisions and retained improvement. A higher reward produced solely by a cheaper calculation is useful compute allocation; acquisition requires improved later behavior from experience. State, retrieved experience, and adapted parameters can all support acquisition, and their contributions must be measured separately. In stationary conditions where the model already performs well, useful behavior may involve little additional learning.
 
-This is a specific research claim about representation, reuse, and learning. Recurrence, attention, memory, planning, and metareasoning supply established components. The experiments compare the proposed combination with strong forms of those alternatives. The detailed formulation is in [research/CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md).
+The existing computation-reuse hypothesis remains a component of this programme: intermediate results conditioned on their generating observations and goals may be reused or revised more efficiently than restarting or retrieving whole snapshots. Its formulation and completed studies remain in [research/CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md). Maze-specific map/goal splitting does not define the general model.
+
+### Relation to existing work
+
+| Existing work | Established direction | CDM comparison |
+| --- | --- | --- |
+| [RL²](https://arxiv.org/abs/1611.02779) | A recurrent policy can learn an adaptation procedure encoded in its activation state across episodes. | Strong recurrent adaptation with persistent state and fixed deployment weights. |
+| [Dreamer](https://www.nature.com/articles/s41586-025-08744-2) | Learned action-conditioned world models support policy learning from imagined trajectories across varied tasks. | A model-based learner under the same observation, interaction, and computation budgets. |
+| [Finding the Time to Think](https://arxiv.org/abs/2606.26463) | A learned gate selects planning budgets over a frozen planner while environment time advances. | Learned compute allocation alone, including its independently timed execution. |
+| [Latent Adaptive Planner](https://arxiv.org/abs/2505.03077) | A latent plan is revised as new observations arrive during manipulation. | Continuing and revising inference without learning the full set of activities. |
+| [Titans](https://arxiv.org/abs/2501.00663) | Neural memory is updated at test time alongside attention. | Adaptive memory versus acquired prediction or action skills. |
+| [Dejavu](https://arxiv.org/abs/2510.10181) | Retrieved execution experience improves a frozen embodied policy. | Experience-based improvement with fixed weights. |
+
+These papers motivate concrete alternatives. Combining their components does not by itself establish a new result. The proposed contribution must specify the state update or training rule responsible for improvement and show its effect at equal resources across task families. The comparison above identifies the relevant overlap for the main experiment.
 
 ## Objective over physical time
 
@@ -54,14 +69,15 @@ This objective measures both useful decisions and their timing. Utility, elapsed
 
 The choice between sensing and computation depends on their achievable improvement and duration. Decomposing performance into an information limitation and a computation limitation can help describe a task, but the size of either term is not itself the value of the next operation.
 
-## First research sequence
+## Current execution priority
 
-1. **Explicit computation reuse.** A changing grid environment separates exact context return, partial return, and continuous change. Explicit planning states make restart, carry, snapshot retrieval, and conditional reuse directly comparable.
-2. **Learned continuing computation.** Train a recurrent context and shared Transformer workspace, then add computation records and condition-factorized reading. Supervise actions at several computation depths and optimize later return.
-3. **Learned activity.** Give the model control over observation, retrieval, refinement, and action timing. Train operation values from continuations beginning at the same interaction state.
-4. **Continued learning and transfer.** Add online parameter adaptation and background consolidation. Extend evaluation to nonlinear instruments, delayed tools, and richer observation modalities.
+Build and train one integrated CDM with a recurrent context, shared Transformer refinement, action-conditioned prediction, bounded memory, a fast action readout, and a policy that can choose learning as well as observation and inference. The architecture is specified in [DESIGN.md](DESIGN.md), its optimization in [TRAINING.md](TRAINING.md), and the main training campaign in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign).
 
-The explicit grid experiment and the neural prototype are separate implementations. The [five-seed supervised pilot](experiments/neural_pilot/results/REPORT.md) measures learned memory use on sequential action prediction. [Neural planners in a changing maze](experiments/dynamic_maze/RESULTS.md) measure which computation to keep after a change, and a [continual agent](experiments/continual_agent/RESULTS.md) learns how much to compute and when to look while it acts. Instruments and embodied tasks then test more complex dynamics, partial observations, and measured computation delays. The [experiment plan](EXPERIMENTS.md) and [running guide](RUNNING.md) give the executable scope and commands.
+The shared model and timestamped event interface are implemented together. Learning choices, continuing action during slower work, and state retention across task changes belong in that implementation. Instrument and tool tasks connect to the same interface and weights; their construction can proceed while model training and GPU execution are developed. A further increase in maze score is not a prerequisite.
+
+Use one reference recurrence initially and one matched matrix-recurrence comparison. Keep learned memory refinement and detailed channel interpretation subordinate to the main task-return experiment. Reuse existing planner checkpoints as comparisons and initialization sources where their observation and action interfaces apply.
+
+The next deliverable is a trainable model with the full activity set, a long-lifetime trainer, independent-time execution, and measured acquisition and retention. Proposed features and training allocations below are specifications, not completed capabilities. [STATUS.md](STATUS.md) records completed results.
 
 ## Learning across timescales
 
@@ -69,11 +85,12 @@ The explicit grid experiment and the neural prototype are separate implementatio
 | --- | --- | --- |
 | Current interaction | Context and workspace | Incorporate observations and continue inference |
 | Revisited contexts | Computation records and retrieved experience | Reduce repeated work and improve adaptation |
-| Across tasks | Prediction, policy, and state-update parameters | Acquire reusable skills and faster learning |
+| Within one deployment lifetime | Instance-specific prediction/action adapters and selected experience | Acquire local dynamics or skills from that instance's interactions |
+| Across training lifetimes | Shared prediction, policy, and state-update parameters | Learn transferable skills and useful adaptation procedures |
 
 During quiet intervals, replay can improve prediction, imagined rollouts can compare candidate actions, and distillation can turn expensive calculations into fast behavior. Received outcomes and model predictions remain distinguishable in the data. Background learning is evaluated by subsequent interaction performance and its total computation cost.
 
-Experiments separate memory retention from parameter learning. They measure behavior after state resets, on revisited tasks, and on unfamiliar tasks, with specified adaptation budgets.
+Experiments separate memory retention from parameter learning. They measure behavior on revisited and unfamiliar tasks, and use separate reset comparisons to determine where an acquired ability is stored. A continuously running evaluation retains state across requests and scenario changes. Parallel training may pool experience; a single-instance adaptation evaluation uses only that instance's experience and parameters. Collective learning is reported as a separate setting.
 
 ## Applications
 
