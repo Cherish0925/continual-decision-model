@@ -58,34 +58,58 @@ def readouts(path, devices, ticks, seed, device):
 
 @torch.no_grad()
 def decisions(path, devices, ticks, seed, device):
+    """Same trajectory, two predictors: the instance's adapted predictor and the shared predictor alone.
+
+    Against the noise-free next output of every action (from the simulator's state), each tick records the
+    residual error of the action taken and the mean residual over all actions; while a request is active it
+    records how often the two predictors would choose different actions greedily, the one-step regret of each
+    choice, and the steady-response gap of each choice.
+    """
     model, targs, specs = load(path, device)
     family = targs.get("family", "instrument")
     assert family != "mixed", "decisions scores one process family at a time"
     env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"])
     agent, obs = new_agent(model, devices, targs["buffer"], device), first_observation(env)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
-    nb, rows = len(SWITCH_BINS) - 1, torch.arange(devices, device=device)
-    acc = {k: torch.zeros(nb, device=device) for k in ("adapted", "shared", "best", "count")}
+    nb, rows, table = len(SWITCH_BINS) - 1, torch.arange(devices, device=device), env.table.expand(devices, -1, -1)
+    keys = ("taken_adapted", "taken_shared", "map_adapted", "map_shared", "all",
+            "differ", "regret_adapted", "regret_shared", "steady_adapted", "steady_shared", "steady_best", "active")
+    acc = {k: torch.zeros(nb, device=device) for k in keys}
+    torch.manual_seed(seed)
     for _ in range(ticks):
         with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
             h = model.fast(agent.h, event_features(obs, agent, env.pending.clone()))
             state = model.state_features(h, agent.z)
             adapted = model.predict_actions(state, agent.A, agent.B)[0].float()
             shared = model.predict_actions(state)[0].float()
-        r = env.steady(env.current(), env.table.expand(devices, -1, -1))
+        truth = env.expected_next(table)
         goal = obs["setpoint"].unsqueeze(1)
-        gap = (r - goal).abs()
-        active = obs["active"].float()
+        steady = (env.steady(env.current(), table) - goal).abs()
+        one_step = (truth - goal).abs()
+        pick_a, pick_s = (adapted - goal).abs().argmin(1), (shared - goal).abs().argmin(1)
         b = torch.bucketize(env.since_switch, bins, right=True)
-        for key, value in (("adapted", gap[rows, (adapted - goal).abs().argmin(1)]),
-                           ("shared", gap[rows, (shared - goal).abs().argmin(1)]),
-                           ("best", gap.min(1).values), ("count", torch.ones_like(active))):
-            acc[key].index_add_(0, b, value * active)
-        agent, obs, _ = tick(model, agent, env, obs, targs["mode"], Costs(), targs["adapter_lr"], targs["every"],
-                             learn_ticks=targs["learn_ticks"])
-    count = acc["count"].clamp_min(1)
-    return {"switch_bins": list(SWITCH_BINS), **{k: (acc[k] / count).tolist() for k in ("adapted", "shared", "best")},
-            **{f"{k}_overall": float(acc[k].sum() / acc["count"].sum()) for k in ("adapted", "shared", "best")}}
+        agent, nobs, step = tick(model, agent, env, obs, targs["mode"], Costs(), targs["adapter_lr"], targs["every"],
+                                 learn_ticks=targs["learn_ticks"])
+        taken = step["action"]
+        active = obs["active"].float()
+        for key, value in (("taken_adapted", (adapted - truth).abs()[rows, taken]),
+                           ("taken_shared", (shared - truth).abs()[rows, taken]),
+                           ("map_adapted", (adapted - truth).abs().mean(1)), ("map_shared", (shared - truth).abs().mean(1)),
+                           ("all", torch.ones_like(active)), ("active", active),
+                           ("differ", (pick_a != pick_s).float() * active),
+                           ("regret_adapted", (one_step[rows, pick_a] - one_step.min(1).values) * active),
+                           ("regret_shared", (one_step[rows, pick_s] - one_step.min(1).values) * active),
+                           ("steady_adapted", steady[rows, pick_a] * active), ("steady_shared", steady[rows, pick_s] * active),
+                           ("steady_best", steady.min(1).values * active)):
+            acc[key].index_add_(0, b, value)
+        obs = nobs
+    per_tick = ("taken_adapted", "taken_shared", "map_adapted", "map_shared")
+    out = {"switch_bins": list(SWITCH_BINS)}
+    for key in keys[:4] + keys[5:11]:
+        base = acc["all"] if key in per_tick else acc["active"]
+        out[key] = (acc[key] / base.clamp_min(1)).tolist()
+        out[f"{key}_overall"] = float(acc[key].sum() / base.sum().clamp_min(1))
+    return out
 
 
 def main():

@@ -99,6 +99,16 @@ class ThermalTests(unittest.TestCase):
                 gap = (r - env.setpoint.unsqueeze(1)).abs().min(1).values[out["started"]]
                 self.assertLess(float(gap.max()), 1e-5)
 
+    def test_expected_next_matches_a_noise_free_step(self):
+        for fleet in (InstrumentFleet(32, InstrumentSpec(process_noise=0.0, drift=0.0, dwell=1e9), seed=3),
+                      ThermalFleet(32, ThermalSpec(process_noise=0.0, drift=0.0, dwell=1e9), seed=3)):
+            for _ in range(20):
+                fleet.step(torch.randint(0, fleet.spec.actions, (32,)), torch.zeros(32, dtype=torch.bool))
+            action = torch.randint(0, fleet.spec.actions, (32,))
+            expected = fleet.expected_next(fleet.table.expand(32, -1, -1))[torch.arange(32), action]
+            out = fleet.step(action, torch.zeros(32, dtype=torch.bool))
+            torch.testing.assert_close(out["output"], expected, rtol=0, atol=1e-5)
+
     def test_mixed_fleet_keeps_its_blocks(self):
         mixed = MixedFleet([InstrumentFleet(3, seed=0), ThermalFleet(5, seed=1)])
         out = mixed.step(torch.zeros(8, dtype=torch.long), torch.zeros(8, dtype=torch.bool))

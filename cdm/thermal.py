@@ -107,5 +107,21 @@ class ThermalFleet(ProcessFleet):
         self.body = self.body + s.process_noise * torch.randn(self.n, generator=g, device=d)
         self.output = self.body.clone()
 
+    def expected_next(self, values):
+        p, k = self.current().unsqueeze(1), values.shape[1]
+        command, c = (values[..., 0] + 1) / 2, (values[..., 1] + 1) / 2
+        history = torch.cat((command.unsqueeze(-1), self.heater[:, None, :-1].expand(-1, k, -1)), -1)
+        h = history.gather(-1, p[..., 9].long().unsqueeze(-1).expand(-1, k, 1)).squeeze(-1)
+        k12, k1 = p[..., 0], p[..., 1]
+        cooled, eta, c1, c2 = self._plant(p, c)
+        heat = eta * h ** p[..., 5]
+        ambient = p[..., 6] + self.drift.unsqueeze(1)
+        block, body = self.block.unsqueeze(1).expand_as(c), self.body.unsqueeze(1).expand_as(c)
+        for _ in range(4):
+            exchange = k12 * (block - body)
+            block, body = (block + 0.25 * (heat - exchange - k1 * (block - ambient)) / c1,
+                           body + 0.25 * (exchange - cooled * (body - ambient)) / c2)
+        return body
+
     def on_switch(self, switch):
         self.drift = torch.where(switch, torch.zeros_like(self.drift), self.drift)

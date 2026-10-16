@@ -143,6 +143,10 @@ class ProcessFleet:
     def setpoint_weights(self, p: torch.Tensor) -> torch.Tensor:
         return torch.ones(self.n, self.spec.actions, device=self.device)
 
+    def expected_next(self, values: torch.Tensor) -> torch.Tensor:
+        """Noise-free output after one tick for actuator targets values [n, actions, dims], state unchanged."""
+        raise NotImplementedError
+
     # ------------------------------------------------------------ shared machinery
     def current(self) -> torch.Tensor:
         return self.params[torch.arange(self.n, device=self.device), self.condition]
@@ -259,6 +263,15 @@ class InstrumentFleet(ProcessFleet):
         if values.dim() == 3:                                        # every action: [n, actions, dims]
             return response(self.spec, p.unsqueeze(1), values, self.drift.unsqueeze(1))
         return response(self.spec, p, values, self.drift)
+
+    def expected_next(self, values):
+        p = self.current().unsqueeze(1)
+        backlash, actuator = p[..., 6:7], self.actuator.unsqueeze(1)
+        moved = torch.where(values - actuator > backlash, values - backlash,
+                            torch.where(values - actuator < -backlash, values + backlash, actuator))
+        target = response(self.spec, p, moved, self.drift.unsqueeze(1))
+        y = self.output.unsqueeze(1)
+        return y + (target - y) / p[..., 5]
 
     def setpoint_weights(self, p):
         """Setpoints come from actions where a peak is visible."""
