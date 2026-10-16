@@ -1,6 +1,6 @@
 # Continual agent: one running process that acts, looks, thinks and learns
 
-This experiment puts the CDM operations into one continuously running agent and trains the choice among them. It builds on the planners of the [changing-maze study](../dynamic_maze/README.md).
+This experiment puts perception, refinement, action, and parameter updates in one simulation process. It trains the choice of refinement count, surveys, and movement; the learning-update schedule remains a program rule. It builds on the planners of the [changing-maze study](../dynamic_maze/README.md).
 
 ## Task
 
@@ -15,13 +15,15 @@ A long stream of room-maze sites. Doors toggle and obstacles move continually. R
 | Activity head | Policy and value over `{0, 1, 2, 4} refinements × {survey, no survey} × {move, stay}` from the planner's state at the agent's cell, its readout, and counters (ticks since survey, since request, pending survey, mean map age) | PPO on reward minus costs over 2,048 parallel streams |
 | Parameters | Planner weights | Online learning steps paid from unused compute ([`operate.py`](operate.py)) |
 
-Computation and action happen in the same tick: the chosen refinements run, then the agent moves along the refreshed plan or stays. Surveys are asynchronous.
+Computation and action happen in the same simulated tick: the chosen refinements run, then the agent moves along the refreshed plan or stays. Surveys return after a specified number of ticks. The environment does not run on an independent clock during refinement or gradient updates.
+
+Each site starts from the full map with a newly initialized planner and 16 warm-up refinements; observations become partial after initialization. Workspace and belief persist across requests and idle periods within that site. A new site resets them; `operate.py` retains learned weights and replay across sites. The reported activity evaluations use four sites of 128 ticks, not one uninterrupted long-running state.
 
 [`agent.py`](agent.py) trains the activity head with the planner fixed and compares it with hand-written schedules: one refinement and a step every tick; four refinements every tick; one refinement with a survey every 16 ticks; and a scaled schedule that computes and surveys only while a request is pending, with four refinements right after a request arrives or while the readout is still changing.
 
-[`operate.py`](operate.py) runs one long stream with a shared compute budget of two refinements per stream per tick. Refinements the activity head leaves unused pay for learning steps of the planner. The stream changes its rules in phases: the training distribution, then doors that change three times faster, then 9×9 mazes, then the training distribution again. Learning targets:
+[`operate.py`](operate.py) runs one long stream with a shared compute budget of two refinements per stream per tick. Refinements the activity head leaves unused pay for learning steps of the planner. The stream changes its rules in phases: the training distribution, then doors that change three times faster, then 9×9 mazes, then the training distribution again. The published operation results use the hand-written `scaled` schedule; loading a trained activity head is supported by `--policy` but has not supplied the reported online-learning result. Learning targets:
 
-- **distill**: on replayed sequences of the agent's own beliefs and goals, each one-refinement readout moves toward the same network's readout 16 refinements deeper. This makes existing computation faster to use.
+- **distill**: on replayed sequences of the agent's own beliefs and goals, each one-refinement readout moves toward a frozen copy's readout 16 refinements deeper by default. The live learner as teacher is a separate comparison. This trains existing deep computation into a faster readout.
 - **hindsight**: when a survey returns, the belief, ages and goal held when it was requested are paired with the optimal actions on the returned map. This carries what the world actually did, including a change in how fast doors change.
 
 Conditions: no learning; learning from unused compute with each target and with both; learning at a fixed rate regardless of the activity head.

@@ -14,7 +14,7 @@ The activity head chooses each tick how many refinements to run (0, 1, 2 or 4), 
 | Hand-written: compute and look only for a pending request, four refinements right after it arrives | 1.575 | 1.578 | 1.581 | 0.68 | 3.5 |
 | Learned activity head | 1.587 | 1.562 | 1.556 | 0.32–0.51 | 7.7–8.9 |
 
-The learned head matches the best hand-written schedule (−0.025 to +0.012) with 24–54% fewer refinements, and beats the fixed one-refinement schedule by 0.08–0.13. Where it spends its operations (carry with goal read and gate, two fresh sites):
+The learned head reaches a net return close to the best hand-written schedule (−0.025 to +0.012) with 24–54% fewer refinements, and beats the fixed one-refinement schedule by 0.08–0.13. It requests more surveys; the reduction in refinements is not a measurement of total runtime or power savings. Request completion is 80.92–82.54% across the three learned heads. On the gated planner it is 82.54%, compared with 82.00% for the hand-written schedule and 80.01% for fixed one-refinement operation. Where it spends its operations (carry with goal read and gate, two fresh sites):
 
 | State | Refinements per tick | Surveys per 100 ticks | Moves per tick |
 |---|---:|---:|---:|
@@ -47,6 +47,8 @@ In this stream none of the anchored learning signals changed reward beyond site-
 
 ## What this establishes and what it does not
 
-Established in this task: one running process acts every tick, keeps its computation and information state across requests and idle periods, receives survey results asynchronously, and allocates computation and observation through a learned head trained only on reward minus costs; that head reproduces the best hand-designed allocation with less computation. A deployed planner improves on a new maze size from its own operation when its learning target is anchored (exact solver or frozen copy), and collapses when it is its own moving target.
+Measured in this task: the agent chooses move/stay every simulated tick, keeps computation and information state across requests and idle periods within a site, receives surveys after a tick delay, and selects refinement and observation through a learned head trained on reward minus costs. Its net return is close to the hand-written schedule with fewer refinements and more surveys. A separate full-view adaptation experiment improves a deployed planner on a new maze size with exact-solver or frozen-copy targets; the tested live-self-distillation runs collapse.
+
+A new site resets the workspace and starts with a full map and 16 warm-up refinements. Weights and replay can persist across sites during online learning. The current serial simulation does not establish independently timed control during GPU computation or learning. The released activity training also uses the last pre-action feature at nonterminal PPO rollout boundaries where the next decision state's value is required; a corrected training comparison remains to run (see [STATUS.md](../../STATUS.md)).
 
 Not yet: learning during operation that improves the partially observing agent's reward; a learned decision about when to spend compute on learning; the activity head and the planner trained together; a second domain.

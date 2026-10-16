@@ -1,6 +1,6 @@
 # Model architecture
 
-Continual Decision Model (CDM) combines a recurrent context, a persistent latent workspace, bounded memory of previous computation, and learned action and activity policies. The model keeps working across observations and outputs. Its action head can respond to the current situation while a shared Transformer continues an unfinished computation.
+The CDM target architecture combines a recurrent context, a persistent latent workspace, bounded memory of previous computation, and learned action and activity policies. It should retain goals and unfinished inference across outputs and keep decisions available during further computation. Current operations execute in serial blocks; concurrent real-time action and learning remain an implementation step. [STATUS.md](STATUS.md) distinguishes the target from the trained models.
 
 The [PyTorch prototype](cdm/model.py) implements the recurrent context, shared workspace refinement, factor-conditioned memory reading, and action/activity/value heads. The [dynamic-grid experiment](experiments/continual_grid/README.md) separately compares explicit planning states. [RUNNING.md](RUNNING.md) lists executable commands; [TRAINING.md](TRAINING.md) specifies the progression from supervised learning to learned activity and continued adaptation.
 

@@ -10,12 +10,17 @@ Continual Decision Model (CDM) is a research programme for models that maintain 
 | --- | --- |
 | Persistent state | Retain goals, observations, pending operations, and unfinished inference across outputs. |
 | Multimodal interaction | Incorporate text, images, audio, video, sensors, and tool results with source and timing information. |
-| Proactive activity | Choose the next observation, computation, tool call, action, or wait from the current goal and state. |
+| Proactive activity | Choose the next observation, computation, retrieval, tool call, action, learning update, or wait from the current goal and state. |
+| Goal-directed initiative | Form and revise subgoals and useful investigations within a continuing objective, including intervals without a new request. |
 | Continuing inference | Develop an internal calculation without another prompt; incorporate new input before the calculation finishes. |
 | Timely action | Produce control signals, decisions, plans, and communication at the task's required cadence. |
-| Continued learning | Use experience to improve later predictions, decisions, and adaptation to new tasks. |
+| Action-conditioned prediction | Predict future observations, outcomes, and rewards under candidate actions; use these predictions to choose actions and experiments. |
+| Continued learning | Use experience to improve later predictions, decisions, and adaptation to new tasks; consolidate repeated inference into faster skills. |
+| Self-assessment | Maintain learned estimates of capabilities, uncertainty, resource use, and progress, and use them to choose activities and research direction. |
 | Compute allocation | Predict the benefit and duration of available operations and choose among them. |
 | Transfer | Reuse learned behavior under unfamiliar goals, dynamics, observation delays, and task combinations. |
+
+Reactive use and proactive operation belong to the same model: an instruction or conversation can enter an existing process, and the process can continue useful activity between such events. The current implementation of each capability is listed in [STATUS.md](STATUS.md).
 
 An instruction can set or change a goal. The model then selects activities toward that goal without requiring a separate instruction for each step. A runtime delivers events, maintains time, and executes requests; the learned model determines what to request, how to use it, and when to act.
 

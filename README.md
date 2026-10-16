@@ -2,7 +2,7 @@
   <img src="assets/readme-header.png" alt="Continual Decision Model — Continual operation, decision, and evolution." width="1280">
 </p>
 
-[Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
+[Status](STATUS.md) · [Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
 
 **CDM studies how a model can keep perceiving, reasoning, acting, and learning while the world changes.** Internal state persists across interactions. The model learns external actions and the choice of its next observation or computation. A conversation is one event in that continuing process.
 
@@ -10,7 +10,7 @@ An observation can become outdated while inference is still running. The researc
 
 ## Model
 
-Two implementations share the CDM state and operations.
+Two model implementations and a navigation agent exercise the CDM state and operations.
 
 - **Sequence core** ([cdm/model.py](cdm/model.py)): a GRU context over observations, goals, environment descriptors, previous actions and elapsed time; a workspace of latent slots refined by one shared Transformer block; a bounded record bank that stores intermediate work with its generating context, goal, observation-prefix index, parameter version and depth; conditioned reading with slotwise reuse, revision and initialization gates; action, activity and value heads.
 - **Spatial planner** ([cdm/planner.py](cdm/planner.py)): a convolutional workspace over a grid, refined by one gated block and read out as an action and a distance for every cell. After a change it can restart, carry, retrieve stored workspaces, or read them with learned attention; it can read its workspace at the goal cell, rebuild channels through a learned keep-or-rebuild gate, split its workspace into map and goal parts, and read the age of every cell of a partial map.
@@ -26,7 +26,9 @@ Two implementations share the CDM state and operations.
 | [Dynamic grid](experiments/continual_grid/RESULTS.md) | Five seeds, three change regimes, two computation budgets; world advances during planning | Reuse helps at low budgets; this local factorization does not outperform nearest-context retrieval |
 | [Numerical transport](experiments/transport/RESULTS.md) | Changing quadratic objectives and finite-depth state reconstruction | Tested correction loses to strong solvers; reconstruction quality and task quality differ |
 | [Changing maze](experiments/dynamic_maze/RESULTS.md) | Neural latent planners act every tick while doors, obstacles and goals change; 14 variants with five seeds and 3 partial-view variants with three; shared budgets | A read of the workspace at the goal cell lets a goal change reach every cell in one refinement (affected cells right: 92.6% against 43.0% for carry); a learned keep-or-rebuild gate makes 83% right before any refinement without a hand-made split; at the training size the best planner earns the optimal policy's return within 0.01 with one refinement per tick |
-| [Continual agent](experiments/continual_agent/RESULTS.md) | One running process over a stream of changing sites: partial view, asynchronous surveys, requests with idle periods; PPO-trained choice of refinements, surveys and moves; learning from unused compute | The learned activity head matches the best hand-written schedule with 24–54% fewer refinements, bursting computation when a request arrives and surveying more as its map ages; anchored online learning improves a deployed planner on larger mazes, learning toward its own live output collapses |
+| [Continual agent](experiments/continual_agent/RESULTS.md) | One running process over a stream of changing sites: partial view, asynchronous surveys, requests with idle periods; PPO-trained choice of refinements, surveys and moves; learning from unused compute | The learned activity head reaches a net return close to the best hand-written schedule with 24–54% fewer refinements and more surveys. Separate full-view online adaptation improves a planner; online learning has not improved the integrated partial-view agent's return |
+
+[STATUS.md](STATUS.md) maps the full objective to code, measured results, and remaining work. The current agent preserves state within each site, uses simulated ticks, and has no trained learning-operation choice or second domain. The released checkpoints and evaluations are available in [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0).
 
 The neural pilot trains action prediction with a fixed memory-write schedule. The changing-maze planners and the continual agent run on GPUs; their training, evaluation and analysis commands are in the [maze](experiments/dynamic_maze/README.md#run) and [agent](experiments/continual_agent/README.md#run) READMEs.
 
@@ -45,6 +47,7 @@ Each command writes configuration and raw measurements to its run directory. Arc
 
 | Document | Contents |
 | --- | --- |
+| [STATUS.md](STATUS.md) | Capability coverage, measured performance, released artifacts, remaining research |
 | [RESEARCH.md](RESEARCH.md) | Objectives, proactivity, continuous operation, learning, applications |
 | [DESIGN.md](DESIGN.md) | State, model operations, interfaces, and execution |
 | [TRAINING.md](TRAINING.md) | Data, losses, activity learning, adaptation, GPU training |
