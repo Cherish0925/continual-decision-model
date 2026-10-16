@@ -36,10 +36,20 @@ import torch.nn.functional as F
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from agent import Policy, act, begin, features, fixed, make_sites, perceive  # noqa: E402
+from replay import sample_rows  # noqa: E402
 from cdm.maze import distance_maps, optimal_actions  # noqa: E402
 from evaluate import load  # noqa: E402
 from train import step_losses  # noqa: E402
 from train_partial import age_plane  # noqa: E402
+
+
+def replay_batch(buf, picks, batch_size, rng):
+    """Sample across the selected records and all of their recorded streams."""
+    records = [buf[int(i)] for i in picks]
+    selected = [(i, torch.as_tensor(rows, device=records[i][0].device))
+                for i, rows in sample_rows([len(r[0]) for r in records], batch_size, rng)]
+    return tuple(torch.cat([records[i][j].index_select(0, rows) for i, rows in selected])
+                 for j in range(len(records[0])))
 
 
 def hindsight_loss(model, belief, age, goal, true):
@@ -191,15 +201,13 @@ def main(argv=None):
                         if "distill" in args.targets:
                             buf = replay[k]
                             picks = rng.choice(len(buf), size=min(len(buf), 4), replace=False)
-                            belief, age, goals = (torch.cat([buf[i][j] for i in picks])[:args.learn_batch]
-                                                  for j in range(3))
+                            belief, age, goals = replay_batch(buf, picks, args.learn_batch, rng)
                             with torch.autocast("cuda", dtype=torch.bfloat16):
                                 loss = loss + distill_loss(model, belief, age, goals, args.depth, teacher) / len(sides)
                         if "hindsight" in args.targets and len(hindsight.get(k, [])) >= 2:
                             buf = hindsight[k]
                             picks = rng.choice(len(buf), size=min(len(buf), 16), replace=False)
-                            belief, age, goals, true = (torch.cat([buf[i][j] for i in picks])[:args.hindsight_batch]
-                                                        for j in range(4))
+                            belief, age, goals, true = replay_batch(buf, picks, args.hindsight_batch, rng)
                             with torch.autocast("cuda", dtype=torch.bfloat16):
                                 loss = loss + hindsight_loss(model, belief, age, goals, true) / len(sides)
                     if not torch.is_tensor(loss):
@@ -227,3 +235,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+
