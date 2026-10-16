@@ -169,8 +169,9 @@ def after_switch(rows, field, ylabel, out, keys, groups=("new", "returned")):
         ax.set_xlabel("ticks since the operating condition changed")
         ax.set_title("new condition" if group == "new" else "condition met before in the lifetime")
     np.atleast_1d(axes)[0].set_ylabel(ylabel)
-    np.atleast_1d(axes)[-1].legend(frameon=False)
-    fig.tight_layout()
+    handles, labels = np.atleast_1d(axes)[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=min(3, len(labels)), frameon=False)
+    fig.tight_layout(rect=(0, 0.07 * ((len(labels) + 2) // 3), 1, 1))
     fig.savefig(out, dpi=200)
     plt.close(fig)
 
