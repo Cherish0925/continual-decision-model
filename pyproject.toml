@@ -12,7 +12,8 @@ license = "MIT"
 dependencies = ["numpy>=2.3.5,<3"]
 
 [project.optional-dependencies]
-neural = ["torch>=2.14,<2.15"]
+neural = ["torch>=2.11,<2.15"]
+plots = ["matplotlib>=3.8"]
 
 [tool.setuptools.packages.find]
 include = ["cdm*"]
