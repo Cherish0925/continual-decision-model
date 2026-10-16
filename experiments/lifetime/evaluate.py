@@ -41,6 +41,42 @@ from train import first_observation  # noqa: E402
 SWITCH_BINS = (0, 10, 25, 50, 100, 200, 400, 800, 10 ** 9)
 
 
+class ResponseTimes:
+    """Count executed controls until first reaching a request, with failures capped at its duration."""
+
+    def __init__(self, devices, device, request_ticks):
+        self.start = torch.full((devices,), -1, dtype=torch.long, device=device)
+        self.reached = torch.zeros(devices, dtype=torch.bool, device=device)
+        self.request_ticks = request_ticks
+        self.values = []
+        self.successes = 0
+
+    def add(self, t, step):
+        # started belongs to the request served by this action; next_started
+        # belongs to a request that can first be served on the following tick.
+        started, active = step["started"], step["active"]
+        self.start = torch.where(started, torch.full_like(self.start, t), self.start)
+        self.reached = torch.where(started, torch.zeros_like(self.reached), self.reached)
+        hit = (self.start >= 0) & ~self.reached & active & (step["error"] < 0.1)
+        if hit.any():
+            times = (t - self.start[hit] + 1).tolist()
+            self.values.extend(times)
+            self.successes += len(times)
+        self.reached |= hit
+        ended = active & (~step["next_active"] | step["next_started"])
+        failed = ended & (self.start >= 0) & ~self.reached
+        if failed.any():
+            self.values.extend([self.request_ticks] * int(failed.sum()))
+        self.start = torch.where(ended, torch.full_like(self.start, -1), self.start)
+        self.reached &= ~ended
+
+    def summary(self):
+        return {"response_ticks_median": float(np.median(self.values)) if self.values else None,
+                "response_ticks_mean": float(np.mean(self.values)) if self.values else None,
+                "requests": len(self.values), "successful_requests": self.successes,
+                "unfinished_requests": int(((self.start >= 0) & ~self.reached).sum())}
+
+
 def load(path: Path, device):
     blob = torch.load(path, map_location=device, weights_only=False)
     weights = blob["model"]       # earlier checkpoints predate these options; their weights tell which they used
@@ -58,13 +94,11 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
     obs = first_observation(env)
     costs = Costs()
     nb = len(SWITCH_BINS) - 1
-    life_bins = max(1, ticks // 1000)
+    life_bins = max(1, (ticks + 999) // 1000)
     acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "shared", "all", "learn", "refine")}
     life = {key: torch.zeros(life_bins, device=device) for key in ("err", "active", "pred", "reward")}
     totals = dict.fromkeys(("reward", "refine", "measure", "learn", "err", "active", "pred", "shared"), 0.0)
-    request_start = torch.full((devices,), -1, dtype=torch.long, device=device)
-    reached = torch.zeros(devices, dtype=torch.bool, device=device)
-    response = []
+    response = ResponseTimes(devices, device, spec.request_ticks)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
@@ -87,29 +121,19 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
         totals["active"] += float(active.sum())
         totals["pred"] += float(perr.sum())
         totals["shared"] += float(serr.sum())
-        started, on = step["started"], step["active"]
-        finished = (request_start >= 0) & ~reached & on & (err < 0.1)
-        if finished.any():
-            response.extend((t - request_start[finished]).tolist())
-        reached |= finished
-        ended = (request_start >= 0) & ~on
-        if ended.any():
-            response.extend([spec.request_ticks] * int((ended & ~reached).sum()))
-        request_start = torch.where(started, torch.full_like(request_start, t),
-                                    torch.where(ended, torch.full_like(request_start, -1), request_start))
-        reached = torch.where(started | ended, torch.zeros_like(reached), reached)
+        response.add(t, step)
     n = devices * ticks
     ratio = lambda a, b: (a / b.clamp_min(1)).cpu().tolist()
     predicts = mode != "recurrent"
+    life_samples = devices * torch.tensor([min(1000, ticks - 1000 * i) for i in range(life_bins)],
+                                          device=device).clamp_min(1)
     return {"reward_per_100_ticks": 100 * totals["reward"] / n,
             "error_while_active": totals["err"] / max(totals["active"], 1),
             "prediction_error": totals["pred"] / n if predicts else None,
             "shared_prediction_error": totals["shared"] / n if predicts else None,
             "refinements_per_tick": totals["refine"] / n, "measurements_per_100_ticks": 100 * totals["measure"] / n,
             "learning_per_100_ticks": 100 * totals["learn"] / n,
-            "response_ticks_median": float(np.median(response)) if response else None,
-            "response_ticks_mean": float(np.mean(response)) if response else None,
-            "requests": len(response),
+            **response.summary(),
             "switch_bins": list(SWITCH_BINS),
             **{f"{name}_after_switch_{group}": ratio(acc[a][g], acc[b][g])
                for name, a, b in (("error", "err", "active"), ("prediction_error", "pred", "all"),
@@ -119,8 +143,8 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
             "active_ticks_after_switch_new": acc["active"][0].cpu().tolist(),
             "active_ticks_after_switch_returned": acc["active"][1].cpu().tolist(),
             "error_by_thousand_ticks": ratio(life["err"], life["active"]),
-            "prediction_error_by_thousand_ticks": (life["pred"] / (devices * 1000)).cpu().tolist(),
-            "reward_per_100_by_thousand_ticks": (100 * life["reward"] / (devices * 1000)).cpu().tolist()}
+            "prediction_error_by_thousand_ticks": (life["pred"] / life_samples).cpu().tolist(),
+            "reward_per_100_by_thousand_ticks": (100 * life["reward"] / life_samples).cpu().tolist()}
 
 
 def main(argv=None):
@@ -164,3 +188,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+

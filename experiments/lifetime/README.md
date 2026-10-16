@@ -1,6 +1,6 @@
 # Lifetime: one model that keeps acting, measuring, computing and learning
 
-A single model runs each instrument for a whole lifetime. It keeps one state throughout, chooses at every tick how to act, whether to request a precise measurement, and how to spend the compute until the next tick: on refinements of its latent workspace or on a learning step that updates its own adapter. The world does not wait for any of these. This is the integrated campaign of [EXPERIMENTS.md](../../EXPERIMENTS.md#primary-comparisons): the same model under five settings that switch its learned activities and its learning on and off.
+A single model runs each instrument for a whole lifetime. It keeps one state throughout, chooses at every tick how to act, whether to request a precise measurement, and how to spend the compute until the next tick: on refinements of its latent workspace or on a learning step that updates its own adapter. These activities have simulated durations; control is produced every simulator tick. This is the integrated campaign of [EXPERIMENTS.md](../../EXPERIMENTS.md#primary-comparisons): the same model under settings that switch its learned activities and its learning on and off.
 
 ## Task
 
@@ -54,7 +54,7 @@ Control is produced every tick from the fast state, the workspace completed so f
 
 Recurrent PPO over lifetimes ([`train.py`](train.py), [`runtime.py`](runtime.py)). 1,024 streams run lifetimes of 16,384 ticks with staggered starts. Fast state, workspace, experience records, adapters and learning buffers persist across 128-tick training windows; only the end of a lifetime resets them, and only that end is terminal for the value targets, which otherwise bootstrap from the next decision state.
 
-For each window: four epochs over minibatches of 64 streams; backpropagation through the fast state over the whole window from its stored starting state; every tick's refinement recomputed from the stored workspace before it; γ = 0.995, λ = 0.95, clip 0.2, entropy 0.003, rewards scaled by 0.1 for the critic, Adam at 3·10⁻⁴. The shared predictor is trained on the readings that followed each action (Gaussian likelihood, weight 0.5). Policy probabilities are recomputed with the predictions the instance actually had, which include its adapter at that tick.
+For each window: four epochs over minibatches of 64 streams; backpropagation through the fast state over the window from its stored starting state, with each stream reset at its collected lifetime boundaries; every tick's refinement recomputed from the stored workspace before it, with workspace gradients extending to the next tick only; γ = 0.995, λ = 0.95, clip 0.2, entropy 0.003, rewards scaled by 0.1 for the critic, Adam at 3·10⁻⁴. The shared predictor is trained on the readings that followed each action (Gaussian likelihood, weight 0.5). Policy probabilities use the predictions cached during collection, which include the instance's adapter at that tick; PPO does not differentiate through those cached predictions.
 
 | Setting | Measurement | Compute | Predictions |
 | --- | --- | --- | --- |
@@ -70,7 +70,11 @@ Each setting has five seeds of 2·10⁷ interactions, 10⁸ per setting.
 
 ## Evaluation
 
-[`evaluate.py`](evaluate.py) runs each trained model through one uninterrupted lifetime per instrument on newly sampled instruments, with nothing reset. It reports tracking error, reward, response time to a new setpoint, prediction error and activity rates. It also gives tracking error, prediction error, learning and refinement as functions of time since the last condition change, separately for new and returning conditions, and error across the lifetime. `--also frozen` repeats the evaluation of a learning model with learning switched off, which isolates what its adapter steps contribute. [`latency.py`](latency.py) times the control path, a refinement and a learning step on the GPU, and measures control latency while learning runs concurrently on a second CUDA stream.
+[`evaluate.py`](evaluate.py) runs each trained model through one uninterrupted lifetime per instrument on newly sampled instruments, with nothing reset. It reports tracking error, reward, response time to a new setpoint, prediction error and activity rates. Tracking error and condition-switch statistics use the request and condition under which the action was applied; the following observation describes the next decision. Response time counts executed controls, starting at one. Requests that expire without reaching the tolerance are assigned their duration; unfinished requests without a first hit at the end of evaluation are counted separately. Partial final lifetime bins use their actual number of samples.
+
+`--also frozen` repeats the evaluation with learning disabled. This measures the combined effect of removing learning and changing subsequent computation choices and trajectories; it does not hold the activity schedule fixed. [`latency.py`](latency.py) measures service time and response time relative to scheduled starts, including accumulated lateness, with a learner on a second CUDA stream. It repeatedly uses fixed inputs and discards adapter updates, so it measures GPU contention rather than an evolving instrument lifetime. Control against an independently advancing environment remains a separate experiment.
+
+The corrections in [issue #1](https://github.com/Cherish0925/continual-decision-model/issues/1) change PPO state reconstruction at resets and evaluation accounting. Previously trained checkpoints can be reevaluated with corrected metrics; their training still used the earlier reset handling. Compare them separately from models trained after the correction.
 
 ## Run
 
@@ -87,3 +91,4 @@ python experiments/lifetime/probe.py --model runs/lifetime/main/full/seed0/model
 python experiments/lifetime/latency.py --model runs/lifetime/main/full/seed0/model.pt \
     --output experiments/lifetime/results/latency.json
 ```
+

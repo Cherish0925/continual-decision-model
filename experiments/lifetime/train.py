@@ -62,6 +62,34 @@ def clear_observation(obs: dict, mask: torch.Tensor) -> dict:
     return {k: clear(v) for k, v in obs.items()}
 
 
+def recompute_states(model, h_prev, z_prev, event, records, counts, dones):
+    """Recompute a PPO chunk, resetting each row at its collected lifetime boundaries.
+
+    Inputs have leading dimensions [time, streams]. A done at t resets the
+    state read at t+1. Workspace gradients retain the existing one-tick
+    truncation; fast-state gradients span the chunk except across a reset.
+    """
+    length, streams = event.shape[:2]
+    reset_times = (dones[:-1].bool().any(1).nonzero().flatten() + 1).tolist()
+    boundaries = [0, *reset_times, length]
+    h, parts = h_prev[0], []
+    for begin, end in zip(boundaries[:-1], boundaries[1:]):
+        if begin:
+            h = torch.where(dones[begin - 1].bool().unsqueeze(-1), h_prev[begin], h)
+        hs = model.fast_sequence(h, event[begin:end])
+        parts.append(hs)
+        h = hs[-1]
+    H = torch.cat(parts, 0)
+    zin = z_prev.float()
+    zout = checkpoint(model.refine, zin.flatten(0, 1), H.flatten(0, 1), records.flatten(0, 1),
+                      counts.flatten(0, 1), use_reentrant=False).view_as(zin)
+    zread = torch.cat((zin[:1], zout[:-1]), 0)
+    reset_before = torch.cat((torch.zeros(1, streams, dtype=torch.bool, device=dones.device),
+                              dones[:-1].bool()), 0)
+    zread = torch.where(reset_before[..., None, None], zin, zread)
+    return H, zread
+
+
 def ppo_update(model, optimizer, steps, bootstrap, start, args):
     """PPO on one window. ``start`` holds the adapters each stream had when the window began."""
     L = len(steps)
@@ -95,12 +123,10 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                 T = c1 - c0
                 part = lambda a: flat(a[c0:c1, mb])
                 with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
-                    H = flat(model.fast_sequence(h_prev[c0, mb], event[c0:c1, mb]))   # backpropagation through the chunk
-                    zin = z_prev[c0:c1, mb].float()              # workspace before each tick's refinement
-                    zout = checkpoint(model.refine, flat(zin), H, part(records), part(counts),
-                                      use_reentrant=False).view_as(zin)
-                    # tick t reads the workspace completed at t-1: recomputed (with gradient) inside the chunk
-                    zread = flat(torch.cat((zin[:1], zout[:-1]), 0))
+                    H, zread = recompute_states(model, h_prev[c0:c1, mb], z_prev[c0:c1, mb],
+                                               event[c0:c1, mb], records[c0:c1, mb], counts[c0:c1, mb],
+                                               dones[c0:c1, mb])
+                    H, zread = flat(H), flat(zread)
                     o, lv = part(offset), part(logvar)
                     cl, al, v = model.heads(model.trunk(H, zread, o, lv, part(scalars)), o, lv)
                     if args.mode != "recurrent":
@@ -264,3 +290,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+

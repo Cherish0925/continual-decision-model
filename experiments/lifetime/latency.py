@@ -72,6 +72,17 @@ def time_op(fn, repeats=50):
     return float(np.median(out))
 
 
+def clock_statistics(service_ms, response_ms, period_ms):
+    """Service time excludes queueing; scheduled response time includes any accumulated lateness."""
+    service, response = np.asarray(service_ms), np.asarray(response_ms)
+    return {"latency_ms_median": float(np.median(service)),
+            "latency_ms_p99": float(np.percentile(service, 99)),
+            "response_ms_median": float(np.median(response)),
+            "response_ms_p95": float(np.percentile(response, 95)),
+            "response_ms_p99": float(np.percentile(response, 99)),
+            "missed_periods": int((response > period_ms).sum())}
+
+
 def actor_latency(model, n, device, period_ms, ticks, with_learner):
     ops = operations(model, n, device)
     actor, learner = torch.cuda.Stream(device), torch.cuda.Stream(device)
@@ -88,7 +99,7 @@ def actor_latency(model, n, device, period_ms, ticks, with_learner):
     if thread:
         thread.start()
         time.sleep(0.5)
-    latency, start = [], time.perf_counter()
+    latency, response, start = [], [], time.perf_counter()
     with torch.cuda.stream(actor):
         for t in range(ticks):
             due = start + t * period_ms / 1000
@@ -96,15 +107,15 @@ def actor_latency(model, n, device, period_ms, ticks, with_learner):
                 time.sleep(0.0002)
             t0 = time.perf_counter()
             ops["control"]().cpu()                      # control on the host: waits only for the actor stream
-            latency.append(1000 * (time.perf_counter() - t0))
+            completed = time.perf_counter()
+            latency.append(1000 * (completed - t0))
+            response.append(1000 * (completed - due))
     elapsed = time.perf_counter() - start
     if thread:
         stop.set()
         thread.join()
-    lat = np.array(latency)
     return {"instances": n, "period_ms": period_ms, "learner": with_learner,
-            "latency_ms_median": float(np.median(lat)), "latency_ms_p99": float(np.percentile(lat, 99)),
-            "missed_periods": int((lat > period_ms).sum()), "ticks": ticks,
+            **clock_statistics(latency, response, period_ms), "ticks": ticks,
             "learning_steps_per_tick": steps[0] / ticks if with_learner else 0.0,
             "seconds": round(elapsed, 2)}
 
@@ -142,3 +153,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

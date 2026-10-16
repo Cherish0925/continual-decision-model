@@ -226,10 +226,13 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     step = {"event": event, "scalars": scalars, "allowed": allowed, "records": records, "offset": offset,
             "logvar": logvar, "action": action, "measure": measure, "compute": compute, "counts": counts,
             "learn": learn, "logp": logp, "value": value.float(), "reward": reward, "target": nxt["cheap"],
-            "h_prev": h_prev, "z_prev": z_prev.to(torch.bfloat16), "error": nxt["error"], "active": nxt["active"],
-            "accepted": nxt["accepted"], "since_switch": nxt["since_switch"], "returned": nxt["returned"],
-            "started": nxt["started"], "output": nxt["output"], "setpoint": nxt["setpoint"],
+            "h_prev": h_prev, "z_prev": z_prev.to(torch.bfloat16), "error": nxt["error"],
+            "active": nxt["transition_active"], "accepted": nxt["accepted"],
+            "since_switch": nxt["transition_since_switch"], "returned": nxt["transition_returned"],
+            "started": obs["started"], "output": nxt["output"], "setpoint": nxt["transition_setpoint"],
+            "next_active": nxt["active"], "next_started": nxt["started"],
             "prediction_error": error}
     if shared and mode != "recurrent":
         step["shared_prediction_error"] = shared_error
     return agent, nxt, step
+

@@ -173,8 +173,12 @@ class InstrumentFleet:
         return start
 
     def step(self, action: torch.Tensor, measure: torch.Tensor) -> dict[str, torch.Tensor]:
-        """Apply actions [n] (indices) and precise-measurement requests [n] (bool); advance one tick."""
+        """Advance one tick; keep completed-transition metadata separate from the next observation."""
         s, g, d = self.spec, self.gen, self.device
+        transition = {"transition_active": self.active.clone(),
+                      "transition_setpoint": self.setpoint.clone(),
+                      "transition_since_switch": self.since_switch.clone(),
+                      "transition_returned": self.returned.clone()}
         u = self.table[action]                                       # [n, dims]
         p = self.current()
         backlash = p[:, 6:7]
@@ -199,4 +203,5 @@ class InstrumentFleet:
                 "arrived": arrived, "accepted": accepted, "setpoint": self.setpoint.clone(),
                 "active": self.active.clone(), "started": started, "error": error,
                 "output": self.output.clone(), "since_switch": self.since_switch.clone(),
-                "returned": self.returned.clone(), "control": u}
+                "returned": self.returned.clone(), "control": u, **transition}
+
