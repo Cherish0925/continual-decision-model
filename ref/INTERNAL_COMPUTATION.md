@@ -1,6 +1,6 @@
 # Internal computation and real-time decisions
 
-This review covers primary sources on repeated computation, latent reasoning, computation selection, and asynchronous execution. Source editions and inspected sections are in [papers.json](papers.json).
+This survey covers primary sources on repeated computation, latent reasoning, computation selection, and asynchronous execution. Source editions and inspected sections are in [papers.json](papers.json).
 
 ## Four distinctions that determine the architecture
 
@@ -49,9 +49,9 @@ The consequential design choice is what persists and what that persistence is tr
 
 [Thinker](https://arxiv.org/abs/2307.14993) gives agents actions for interacting with a learned world model and learns planning behavior through reinforcement learning. It supplies a natural reference for deciding which imagined trajectories to explore.
 
-[Learning to Select Computations in Recurrent Neural Circuits](https://www.biorxiv.org/content/10.64898/2026.04.14.718499v1) offers a complementary cognitive-modeling direction. The inspected [author repository](https://github.com/SixingChen028/recurrent-meta-reasoning) provides recurrent actor-critic implementations for choice and planning case studies. This review uses that official description; the paper's full text was inaccessible.
+[Learning to Select Computations in Recurrent Neural Circuits](https://www.biorxiv.org/content/10.64898/2026.04.14.718499v1) offers a complementary cognitive-modeling direction. The inspected [author repository](https://github.com/SixingChen028/recurrent-meta-reasoning) provides recurrent actor-critic implementations for choice and planning case studies. This survey uses that official description; the paper's full text was inaccessible.
 
-[Looped Actor](https://arxiv.org/abs/2609.37432) brings adaptive Transformer depth directly into reinforcement-learning policies. It stops when consecutive action distributions satisfy a predefined KL-stability threshold and evaluates across twenty-two tasks. Distributional stability is a useful operational criterion, but it is not the same as estimating the expected benefit of another computation.
+[Looped Actor](https://arxiv.org/abs/2609.37432) brings adaptive Transformer depth directly into reinforcement-learning policies. It stops when consecutive action distributions satisfy a predefined KL-stability threshold and evaluates across twenty-two tasks. Distributional stability is a useful stopping rule, but it is not the same as estimating the expected benefit of another computation.
 
 [Finding the Time to Think](https://arxiv.org/html/2606.26463v1) studies planning while the environment continues advancing. A learned gate assigns budgets to a frozen MCTS planner while a fast policy supplies actions. Its explicit extensions include joint planner training and learned dynamics.
 

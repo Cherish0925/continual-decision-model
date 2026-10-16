@@ -1,6 +1,6 @@
 # Sequence architectures and associative memory
 
-Recurrent architectures differ in what they store, how they overwrite information, and what each update costs. This review covers persistent attention, state-space recurrence, and editable matrix memory. Reading depth and source sections are recorded in [papers.json](papers.json).
+Recurrent architectures differ in what they store, how they overwrite information, and what each update costs. This survey covers persistent attention, state-space recurrence, and editable matrix memory. Reading depth and source sections are recorded in [papers.json](papers.json).
 
 ## 1. The distinctions that determine an architecture
 
@@ -73,7 +73,7 @@ The distinction is intuitive. Additive memory repeatedly deposits associations i
 
 [Self-Referential Weight Matrices](https://proceedings.mlr.press/v162/irie22b.html) learn to modify their own weights using outer products and delta updates, evaluated on few-shot learning and multitask reinforcement learning. This is a direct precedent for learning the state-update process itself, extending the relevant comparison beyond language backbones.
 
-These developments connect naturally to TTT, Titans, and MIRAS, reviewed in the learning and adaptation part of this survey. A state can itself parameterize a learned function. The research question then includes the online objective and update algorithm, rather than only the shape of the stored tensor.
+These developments connect naturally to TTT, Titans, and MIRAS, covered in the learning and adaptation part of this survey. A state can itself parameterize a learned function. The research question then includes the online objective and update algorithm, rather than only the shape of the stored tensor.
 
 ## 5. Hybrid architectures and component analysis
 

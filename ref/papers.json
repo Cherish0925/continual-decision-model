@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
-  "review_cutoff": "2026-10-15",
+  "reading_cutoff": "2026-10-15",
   "description": "Primary-source literature for Continual Decision Model, with mechanisms, evaluated tasks, and recorded reading depth.",
   "year_convention": "Year of the cited edition or initial release recorded in inspected_sections; preprint and publication years can differ.",
-  "paper_count": 118,
+  "paper_count": 122,
   "papers": [
     {
       "id": "hochreiter1997lstm",
@@ -958,14 +958,14 @@
       "url": "https://www.biorxiv.org/content/10.64898/2026.04.14.718499v1",
       "mechanism": "Official implementations use recurrent actor-critic networks for computation-selection case studies.",
       "demonstrated_scope": "Gaze-based choice and planning, plus comparisons with recorded neural dynamics.",
-      "cdm_relevance": "Connects computation selection to learned recurrent dynamics; retain as a conceptual neighbor pending full-text review.",
+      "cdm_relevance": "Connects computation selection to learned recurrent dynamics; retain as a conceptual neighbor pending a full-text reading.",
       "reading_priority": "supporting",
       "topic": "computation",
       "topics": [
         "computation"
       ],
       "reading_depth": "official_summary",
-      "inspected_sections": "Author repository README https://github.com/SixingChen028/recurrent-meta-reasoning; paper full text was inaccessible in this review."
+      "inspected_sections": "Author repository README https://github.com/SixingChen028/recurrent-meta-reasoning; paper full text was inaccessible in this survey."
     },
     {
       "id": "engdahl2026bdhcq",
@@ -2893,6 +2893,97 @@
       ],
       "reading_depth": "full_text",
       "inspected_sections": "arXiv:2509.23224v1 HTML, Sections 2 and 3.1; abstract and bibliographic record."
+    },
+    {
+      "id": "dayan1993_successor_representation",
+      "title": "Improving Generalization for Temporal Difference Learning: The Successor Representation",
+      "authors": [
+        "Peter Dayan"
+      ],
+      "year": 1993,
+      "url": "https://doi.org/10.1162/neco.1993.5.4.613",
+      "topic": "planning",
+      "mechanism": "Represents a state by the expected discounted future occupancy of all states; values follow from a linear read of reward.",
+      "demonstrated_scope": "Temporal-difference learning of representations in a navigation task.",
+      "cdm_relevance": "Goal-independent computation that a goal change re-targets by one global read; reference for the factorized maze planner.",
+      "reading_priority": "supporting",
+      "topics": [
+        "planning",
+        "learning"
+      ],
+      "reading_depth": "abstract",
+      "inspected_sections": "Neural Computation 5(4):613-624 abstract and bibliographic record."
+    },
+    {
+      "id": "schaul2015_uvfa",
+      "title": "Universal Value Function Approximators",
+      "authors": [
+        "Tom Schaul",
+        "Daniel Horgan",
+        "Karol Gregor",
+        "David Silver"
+      ],
+      "year": 2015,
+      "url": "https://proceedings.mlr.press/v37/schaul15.html",
+      "topic": "planning",
+      "mechanism": "Learns V(s, g) over states and goals, including factorization into separate state and goal embeddings.",
+      "demonstrated_scope": "Gridworld and Pacman goals, including generalization to unseen goals.",
+      "cdm_relevance": "State-goal factorization behind reading the map workspace at the goal cell; the maze study adds map changes and continued refinement.",
+      "reading_priority": "supporting",
+      "topics": [
+        "planning",
+        "learning"
+      ],
+      "reading_depth": "abstract",
+      "inspected_sections": "PMLR 37:1312-1320 abstract and publication page."
+    },
+    {
+      "id": "tamar2016_vin",
+      "title": "Value Iteration Networks",
+      "authors": [
+        "Aviv Tamar",
+        "Yi Wu",
+        "Garrett Thomas",
+        "Sergey Levine",
+        "Pieter Abbeel"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1602.02867",
+      "topic": "planning",
+      "mechanism": "Differentiable approximation of value iteration as a recurrent convolutional planning module trained end to end.",
+      "demonstrated_scope": "Discrete and continuous path planning and a language-based search task.",
+      "cdm_relevance": "Architecture lineage of the convolutional maze planners; static maps, one goal per plan.",
+      "reading_priority": "core",
+      "topics": [
+        "planning",
+        "computation"
+      ],
+      "reading_depth": "abstract",
+      "inspected_sections": "arXiv abstract (v4) and NeurIPS 2016 bibliographic record."
+    },
+    {
+      "id": "lee2018_gppn",
+      "title": "Gated Path Planning Networks",
+      "authors": [
+        "Lisa Lee",
+        "Emilio Parisotto",
+        "Devendra Singh Chaplot",
+        "Eric Xing",
+        "Ruslan Salakhutdinov"
+      ],
+      "year": 2018,
+      "url": "https://arxiv.org/abs/1806.06408",
+      "topic": "planning",
+      "mechanism": "Replaces the max-pooling update of value iteration networks with gated recurrent convolutional updates.",
+      "demonstrated_scope": "2D mazes with several movement rules and sizes; 3D navigation from first-person images.",
+      "cdm_relevance": "Closest planner block to the maze study's gated convolutional refinement; trained on fixed maps and goals.",
+      "reading_priority": "core",
+      "topics": [
+        "planning",
+        "computation"
+      ],
+      "reading_depth": "abstract",
+      "inspected_sections": "arXiv abstract, ICML 2018 dblp record (pp. 2953-2961), and official repository README."
     }
   ]
 }

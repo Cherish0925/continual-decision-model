@@ -2,9 +2,9 @@
 
 **Literature cutoff: 15 October 2026.**
 
-The collection contains 118 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
+The collection contains 122 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
 
-| Area | Review |
+| Area | Survey |
 | --- | --- |
 | Recurrent architectures, attention, and associative memory | [SEQUENCE_MODELS.md](SEQUENCE_MODELS.md) |
 | Latent reasoning, repeated computation, and real-time execution | [INTERNAL_COMPUTATION.md](INTERNAL_COMPUTATION.md) |
@@ -13,8 +13,8 @@ The collection contains 118 primary-source records across six research areas. It
 | World models, embodied interaction, and benchmarks | [WORLD_MODELS.md](WORLD_MODELS.md) |
 | Exploration, subgoals, and language-model agents | [AGENCY.md](AGENCY.md) |
 
-[COMPARISON.md](COMPARISON.md) maps the closest methods to computational memory, current-context reuse, and activity selection. [The focused revision review](../research/TRANSPORT_PRIOR_ART.md) covers the earlier low-rank update experiment.
+[COMPARISON.md](COMPARISON.md) maps the closest methods to computational memory, current-context reuse, and activity selection. [A focused survey](../research/TRANSPORT_PRIOR_ART.md) covers the methods behind the earlier low-rank update experiment.
 
 [BIBLIOGRAPHY.md](BIBLIOGRAPHY.md) is the reading index. [papers.json](papers.json) stores bibliographic records, mechanisms, evaluated tasks, relevance, reading priority, and inspected sections. [references.bib](references.bib) contains the corresponding citation entries.
 
-Reading depth: 41 records use specified full-text sections, 72 use abstracts, four use official summaries, and one uses an indexed excerpt. The detailed revision review records additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.
+Reading depth: 41 records use specified full-text sections, 76 use abstracts, four use official summaries, and one uses an indexed excerpt. The focused survey records its additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.

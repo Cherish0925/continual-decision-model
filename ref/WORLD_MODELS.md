@@ -1,6 +1,6 @@
 # World models, embodied state, and interaction
 
-This review connects action-conditioned prediction, persistent embodied memory, streaming interaction, and task evaluation. Source editions and inspected sections are in [papers.json](papers.json).
+This survey connects action-conditioned prediction, persistent embodied memory, streaming interaction, and task evaluation. Source editions and inspected sections are in [papers.json](papers.json).
 
 ## Predictive state and learned control
 

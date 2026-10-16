@@ -1,6 +1,6 @@
 # Continual learning, memory, and adaptation
 
-Learning methods differ in what changes during experience and what carries into future tasks. This review covers recurrent adaptation, parameter memory, replay, learned improvement procedures, and retention. Source sections are recorded in [papers.json](papers.json).
+Learning methods differ in what changes during experience and what carries into future tasks. This survey covers recurrent adaptation, parameter memory, replay, learned improvement procedures, and retention. Source sections are recorded in [papers.json](papers.json).
 
 ## The distinction CDM needs
 

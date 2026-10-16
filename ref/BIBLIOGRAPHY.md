@@ -1,8 +1,8 @@
 # Bibliography and Reading Index
 
-**Review cutoff: 15 October 2026.**
+**Reading cutoff: 15 October 2026.**
 
-This index contains **118 deduplicated sources** across six research threads. A source can inform several threads while retaining one citation key.
+This index contains **122 deduplicated sources** across six research threads. A source can inform several threads while retaining one citation key.
 
 Reading depth: **41** records with specified full-paper sections inspected, **72** primary abstracts, **4** official summaries, and **1** indexed primary excerpt.
 
@@ -12,7 +12,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 ## Sequence architectures and memory
 
-[Read the review](SEQUENCE_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](SEQUENCE_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
@@ -47,7 +47,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 ## Internal computation and real time
 
-[Read the review](INTERNAL_COMPUTATION.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](INTERNAL_COMPUTATION.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
@@ -78,32 +78,36 @@ Years identify the cited edition or documented initial release; they need not eq
 
 ## Planning and metareasoning
 
-[Read the review](PLANNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](PLANNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
 | 1988 | [Active Perception](https://repository.upenn.edu/bitstreams/14686d28-7a8a-4554-beee-991eec61cbdd/download) | `indexed_excerpt` | core | `bajcsy1988_active_perception` |
 | 1991 | [Principles of metareasoning](https://www.sciencedirect.com/science/article/pii/000437029190015C) | `abstract` | core | `russell1991_metareasoning` |
+| 1993 | [Improving Generalization for Temporal Difference Learning: The Successor Representation](https://doi.org/10.1162/neco.1993.5.4.613) | `abstract` | supporting | `dayan1993_successor_representation` |
 | 2001 | [Principles and Applications of Continual Computation](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/11/cc_aij_horvitz.pdf) | `full_text` | core | `horvitz2001_continual_computation` |
 | 2002 | [D* Lite](https://idm-lab.org/bib/abstracts/Koen02e.html) | `abstract` | core | `koenig2002_dstar_lite` |
 | 2004 | [Lifelong Planning A*](https://idm-lab.org/bib/abstracts/Koen04a.html) | `full_text` | core | `koenig2004_lpa` |
 | 2005 | [A Real-Time Iteration Scheme for Nonlinear Optimization in Optimal Feedback Control](https://epubs.siam.org/doi/10.1137/S0363012902400713) | `full_text` | core | `diehl2005_rti` |
 | 2012 | [Selecting Computations: Theory and Applications](https://arxiv.org/abs/1207.5879) | `abstract` | core | `hay2012_selecting_computations` |
 | 2015 | [Metareasoning for Planning Under Uncertainty](https://www.ijcai.org/Proceedings/15/Papers/229.pdf) | `full_text` | core | `lin2015_metareasoning_planning` |
+| 2015 | [Universal Value Function Approximators](https://proceedings.mlr.press/v37/schaul15.html) | `abstract` | supporting | `schaul2015_uvfa` |
 | 2016 | [Dual Control for Approximate Bayesian Reinforcement Learning](https://www.jmlr.org/papers/v17/15-162.html) | `abstract` | core | `klenske2016_dual_control` |
+| 2016 | [Value Iteration Networks](https://arxiv.org/abs/1602.02867) | `abstract` | core | `tamar2016_vin` |
 | 2017 | [Revisiting active perception](https://link.springer.com/article/10.1007/s10514-017-9615-3) | `full_text` | supporting | `bajcsy2017_revisiting_perception` |
 | 2017 | [Strategy selection as rational metareasoning](https://cocosci.princeton.edu/papers/Strategy%20selection%20as%20RM%20Preprint.pdf) | `full_text` | supporting | `lieder2017_strategy_selection` |
 | 2017 | [Learning model-based planning from scratch](https://arxiv.org/abs/1707.06170) | `abstract` | core | `pascanu2017_learning_planning` |
 | 2017 | [Imagination-Augmented Agents for Deep Reinforcement Learning](https://arxiv.org/html/1707.06203v2) | `full_text` | core | `weber2017_i2a` |
 | 2017 | [Successor Features for Transfer in Reinforcement Learning](https://arxiv.org/abs/1606.05312) | `full_text` | core | `barreto2017successorfeatures` |
 | 2018 | [Learning to select computations](https://arxiv.org/html/1711.06892v3) | `full_text` | core | `callaway2018_select_computations` |
+| 2018 | [Gated Path Planning Networks](https://arxiv.org/abs/1806.06408) | `abstract` | core | `lee2018_gppn` |
 | 2022 | [Posterior and Computational Uncertainty in Gaussian Processes](https://arxiv.org/abs/2205.15449) | `abstract` | core | `wenger2022computationaluncertainty` |
 | 2024 | [Metareasoning in uncertain environments: a meta-BAMDP framework](https://arxiv.org/html/2408.01253v2) | `full_text` | core | `godara2024_metabamdp` |
 | 2026 | [When to Plan: Learning to Select Between Reactive Control and Deliberative Planning](https://arxiv.org/html/2607.16421v2) | `full_text` | core | `labiosa2026_when_to_plan` |
 
 ## Continual and meta-learning
 
-[Read the review](CONTINUAL_LEARNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](CONTINUAL_LEARNING.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
@@ -129,7 +133,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 ## World models, embodiment, and evaluation
 
-[Read the review](WORLD_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](WORLD_MODELS.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |
@@ -155,7 +159,7 @@ Years identify the cited edition or documented initial release; they need not eq
 
 ## Exploration, goals, and agents
 
-[Read the review](AGENCY.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
+[Read the survey](AGENCY.md). Sources are listed once under their primary thread; cross-topic tags are in the catalogue.
 
 | Year | Source | Reading depth | Priority | Citation key |
 | --- | --- | --- | --- | --- |

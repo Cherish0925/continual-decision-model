@@ -44,7 +44,7 @@ Measure complete trajectories through task utility, observation and experiment c
 
 ## Reading depth
 
-The ten source descriptions in this review are based on their primary abstracts and publication records. They establish the reported mechanisms and broad evaluation settings. Reproducing a specific agent or exploration algorithm requires reading and pinning its method, prompts or objectives, implementation, and evaluation configuration before using it as an experimental baseline.
+The ten source descriptions in this survey are based on their primary abstracts and publication records. They establish the reported mechanisms and broad evaluation settings. Reproducing a specific agent or exploration algorithm requires reading and pinning its method, prompts or objectives, implementation, and evaluation configuration before using it as an experimental baseline.
 
 ## Learned research allocation
 
