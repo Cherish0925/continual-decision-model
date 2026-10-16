@@ -41,6 +41,9 @@ class InstrumentSpec:
     delay: int = 3               # ticks until a precise measurement returns
     process_noise: float = 0.01
     drift: float = 0.004         # random-walk step of the response offset
+    width: tuple[float, float] = (0.25, 0.6)        # peak width (dims=2)
+    time_constant: tuple[float, float] = (2.0, 8.0)  # ticks
+    backlash: float = 0.15       # largest actuator backlash
 
     @property
     def actions(self) -> int:
@@ -68,10 +71,11 @@ def sample_conditions(spec: InstrumentSpec, shape, generator, device) -> torch.T
         p[..., 0] = 0.8 + 0.7 * u[..., 0]                                                 # height
         p[..., 1] = -0.7 + 1.4 * u[..., 1]                                                # peak position, axis 1
         p[..., 2] = -0.7 + 1.4 * u[..., 2]                                                # peak position, axis 2
-        p[..., 3] = 0.25 + 0.35 * u[..., 3]                                               # width
+        p[..., 3] = spec.width[0] + (spec.width[1] - spec.width[0]) * u[..., 3]            # width
         p[..., 4] = -0.3 + 0.4 * u[..., 4]                                                # floor
-    p[..., 5] = 2.0 + 6.0 * u[..., 5]                                                     # time constant (ticks)
-    p[..., 6] = 0.15 * u[..., 6]                                                          # backlash
+    tau = spec.time_constant
+    p[..., 5] = tau[0] + (tau[1] - tau[0]) * u[..., 5]                                    # time constant (ticks)
+    p[..., 6] = spec.backlash * u[..., 6]                                                 # backlash
     return p
 
 

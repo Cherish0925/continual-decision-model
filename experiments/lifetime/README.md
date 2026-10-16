@@ -64,10 +64,7 @@ For each window: four epochs over minibatches of 64 streams; backpropagation thr
 | `world_model` | every 8 ticks | a learning step every 8 ticks, one refinement otherwise | yes |
 | `recurrent` | learned | none | not supplied, no prediction loss |
 
-All settings share the network and the training procedure; the recurrent policy leaves the workspace and predictor unused. Two further variants of the full setting:
-
-- `full_meta` adds a loss that trains the shared network through the learning step itself: from the adapter each stream held when the window began, one step on the first half of the window, then the prediction loss on the second half, with gradients through the step (weight 0.5, `--meta 0.5`).
-- `full_no_goal` drops the goal term from the control head (one seed). It is the first run of the campaign, kept as an ablation.
+All settings share the network and the training procedure; the recurrent policy leaves the workspace and predictor unused. A sixth setting, `full_meta`, adds a loss that trains the shared network through the learning step itself: from the adapter each stream held when the window began, one step on the first half of the window, then the prediction loss on the second half, with gradients through the step (weight 0.5, `--meta 0.5`).
 
 Each setting has five seeds of 2·10⁷ interactions, 10⁸ per setting.
 

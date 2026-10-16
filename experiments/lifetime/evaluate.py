@@ -15,11 +15,14 @@ own state, experience and adapters; nothing is reset. Reported:
 - tracking and prediction error as functions of time in the lifetime.
 
 ``--also`` evaluates each model that learns a second time under other modes,
-for example with learning switched off.
+for example with learning switched off. ``--instrument`` changes the instrument
+family, for example ``time_constant=8,16 width=0.15,0.25`` for dynamics outside
+the training ranges.
 """
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import sys
 from pathlib import Path
@@ -128,18 +131,26 @@ def main(argv=None):
     p.add_argument("--ticks", type=int, default=20000)
     p.add_argument("--seed", type=int, default=777)
     p.add_argument("--greedy", action="store_true")
+    p.add_argument("--instrument", nargs="*", default=[], metavar="FIELD=VALUE",
+                   help="instrument fields to change; a pair of values for a range")
     p.add_argument("--device", default="cuda")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args(argv)
+    changes = {}
+    for item in args.instrument:
+        key, value = item.split("=")
+        values = tuple(float(v) for v in value.split(","))
+        changes[key] = values if len(values) > 1 else values[0]
     device = torch.device(args.device)
     configure_backends()
     rows = []
     for path in args.model:
         model, targs, spec = load(path, device)
+        spec = dataclasses.replace(spec, **changes)
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
         for mode in dict.fromkeys([targs["mode"], *(args.also if learns else [])]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
-                   "seed": targs["seed"],
+                   "seed": targs["seed"], "instrument": changes,
                    **evaluate(model, targs, spec, args.devices, args.ticks, args.seed, device, mode, args.greedy)}
             rows.append(row)
             print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in row.items()
