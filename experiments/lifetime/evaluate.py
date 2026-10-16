@@ -169,6 +169,7 @@ def main(argv=None):
     p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard"),
                    help="further settings to evaluate each learning model under")
     p.add_argument("--family", choices=FAMILIES, help="process family to evaluate on; by default the training family")
+    p.add_argument("--adapter-lr", type=float, help="learning-step size during evaluation; by default the training one")
     p.add_argument("--devices", type=int, default=1024)
     p.add_argument("--ticks", type=int, default=20000)
     p.add_argument("--seed", type=int, default=777)
@@ -188,6 +189,8 @@ def main(argv=None):
     rows = []
     for path in args.model:
         model, targs, specs = load(path, device)
+        if args.adapter_lr is not None:
+            targs = {**targs, "adapter_lr": args.adapter_lr}
         family = args.family or targs.get("family", "instrument")
         specs = {name: dataclasses.replace(spec, **{k: v for k, v in changes.items() if hasattr(spec, k)})
                  for name, spec in specs.items()}
@@ -196,7 +199,7 @@ def main(argv=None):
         also = [m for m in args.also if learns and not (targs["mode"] == "world_model" and m == "frozen")]
         for mode in dict.fromkeys([targs["mode"], *also]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
-                   "seed": targs["seed"], "family": family, "instrument": changes,
+                   "seed": targs["seed"], "family": family, "instrument": changes, "adapter_lr": targs["adapter_lr"],
                    **evaluate(model, targs, specs, family, args.devices, args.ticks, args.seed, device, mode,
                               args.greedy)}
             rows.append(row)
