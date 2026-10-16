@@ -21,6 +21,11 @@ STYLE = {
     "recurrent": ("Recurrent policy", "#e87ba4", "v"),
     "full_meta": ("CDM trained through its learning step", "#008300", "*"),
     "predict_only": ("Predictions without workspace computation or learning", "#4a3aa7", "h"),
+    # the two-family runs are reported on their own, so they reuse the first hues of the same order
+    "mixed_full": ("CDM on both families", "#2a78d6", "o"),
+    "mixed_frozen": ("CDM on both families, without learning", "#1baf7a", "^"),
+    "mixed_recurrent": ("Recurrent policy on both families", "#e87ba4", "v"),
+    "thermal_full": ("CDM on thermal processes only", "#eb6834", "s"),
 }
 METRICS = ("error_while_active", "reward_per_100_ticks", "response_ticks_median", "prediction_error",
            "shared_prediction_error", "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")
@@ -176,6 +181,19 @@ def after_switch(rows, field, ylabel, out, keys, groups=("new", "returned")):
     plt.close(fig)
 
 
+def families_table(groups):
+    """Own-setting error of every variant on every family: groups maps a family name to its rows."""
+    variants = [v for v in STYLE if any((v, "own") in rows for rows in groups.values())]
+    lines = ["| Model | " + " | ".join(groups) + " |", "|" + "---|" * (len(groups) + 1)]
+    for v in variants:
+        cells = []
+        for rows in groups.values():
+            mean, se, n = mean_se([r["error_while_active"] for r in rows.get((v, "own"), [])])
+            cells.append("—" if mean is None else f"{mean:.4f} ± {se:.4f} ({n})")
+        lines.append(f"| {STYLE[v][0]} | " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
 LADDER = ("recurrent", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta")
 
 
@@ -223,6 +241,8 @@ def compute_figure(rows, cost, out):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--evaluations", type=Path, nargs="+", required=True)
+    p.add_argument("--families", nargs="*", default=[], metavar="NAME=DIR",
+                   help="also tabulate own-setting error per family from evaluation directories")
     p.add_argument("--runs", type=Path, help="training output root with <mode>/seed<k>/train_log.jsonl")
     p.add_argument("--latency", type=Path, help="latency.py output, to express activity in GPU time")
     p.add_argument("--output", type=Path, required=True)
@@ -242,6 +262,11 @@ def main():
                      args.output / "prediction_after_switch.png", learners)
         after_switch(rows, "learning_rate", "learning steps per tick", args.output / "learning_after_switch.png",
                      [k for k in learners if k[1] == "own"])
+    if args.families:
+        groups = {name: collect(sorted(Path(d).glob("*.json"))) for name, d in (f.split("=") for f in args.families)}
+        md_families = families_table(groups)
+        (args.output / "families.md").write_text(md_families + "\n")
+        print(md_families)
     ladder(rows, args.output / "ladder.png")
     compute_figure(rows, cost, args.output / "compute.png")
     if args.runs:
