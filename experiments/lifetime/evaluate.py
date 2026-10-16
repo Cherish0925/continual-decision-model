@@ -38,12 +38,11 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import CoreConfig, ContinualCore  # noqa: E402
 from cdm.instrument import InstrumentSpec  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
-from runtime import FAMILIES, MODES, Costs, configure_backends, make_fleet, new_agent, tick  # noqa: E402
-from train import first_observation  # noqa: E402
+from experiments.lifetime.runtime import FAMILIES, MODES, Costs, configure_backends, make_fleet, new_agent, tick  # noqa: E402
+from experiments.lifetime.train import first_observation  # noqa: E402
 
 SWITCH_BINS = (0, 10, 25, 50, 100, 200, 400, 800, 10 ** 9)
 

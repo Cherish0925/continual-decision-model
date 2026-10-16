@@ -31,12 +31,11 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import REFINEMENTS, adapter_step  # noqa: E402
-from evaluate import load  # noqa: E402
-from runtime import (LEARN, configure_backends, distributions, event_features, make_fleet, masks,  # noqa: E402
+from experiments.lifetime.evaluate import load  # noqa: E402
+from experiments.lifetime.runtime import (LEARN, configure_backends, distributions, event_features, make_fleet, masks,  # noqa: E402
                      new_agent, scalar_features)
-from train import first_observation  # noqa: E402
+from experiments.lifetime.train import first_observation  # noqa: E402
 
 
 class Fleet(threading.Thread):
@@ -198,10 +197,11 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
     fleet.join()
     learner.join()
     seconds = steps * period_ms / 1000
-    lat = np.asarray(response[10:])
-    return {"instances": n, "period_ms": period_ms, "learning": learn, "fleet_steps": steps,
-            "response_ms_median": float(np.median(lat)), "response_ms_p95": float(np.percentile(lat, 95)),
-            "response_ms_p99": float(np.percentile(lat, 99)), "held_steps": int(fleet.held),
+    lat = np.asarray(response[10:] if len(response) > 20 else response)          # the first actions warm up
+    quantile = lambda q: float(np.percentile(lat, q)) if len(lat) else None
+    return {"instances": n, "period_ms": period_ms, "learning": learn, "fleet_steps": steps, "actions": len(response),
+            "response_ms_median": quantile(50), "response_ms_p95": quantile(95),
+            "response_ms_p99": quantile(99), "held_steps": int(fleet.held),
             "error_while_active": fleet.err / max(fleet.active, 1),
             "refinements_per_second": refinements / seconds, "learning_steps_per_second": learner.completed / seconds}
 

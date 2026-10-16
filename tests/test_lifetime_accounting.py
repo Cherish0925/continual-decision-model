@@ -1,21 +1,17 @@
 """Lifetime boundaries must describe the same states in collection, training and evaluation."""
-import sys
 import unittest
-from pathlib import Path
 from unittest.mock import patch
 
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "lifetime"))
-
-import evaluate as evaluation
+import experiments.lifetime.evaluate as evaluation
 from cdm.core import ContinualCore, CoreConfig
 from cdm.instrument import InstrumentFleet, InstrumentSpec, action_values
 from cdm.thermal import ThermalSpec
-from evaluate import ResponseTimes
-from latency import clock_statistics
-from runtime import Costs, distributions, feature_dims, new_agent, tick
-from train import first_observation, recompute_states
+from experiments.lifetime.evaluate import ResponseTimes
+from experiments.lifetime.latency import clock_statistics
+from experiments.lifetime.runtime import Costs, distributions, feature_dims, new_agent, tick
+from experiments.lifetime.train import first_observation, recompute_states
 
 
 def small_core():

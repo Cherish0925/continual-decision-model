@@ -30,11 +30,10 @@ from torch.utils.checkpoint import checkpoint
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import CoreConfig, ContinualCore, adaptation_loss, gaussian_nll  # noqa: E402
 from cdm.instrument import InstrumentSpec, action_values  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
-from runtime import (FAMILIES, MODES, SCALAR_DIM, Costs, configure_backends, distributions, feature_dims,  # noqa: E402
+from experiments.lifetime.runtime import (FAMILIES, MODES, SCALAR_DIM, Costs, configure_backends, distributions, feature_dims,  # noqa: E402
                      make_fleet, new_agent, reset_agents, tick)
 
 

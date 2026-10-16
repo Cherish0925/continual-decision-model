@@ -25,9 +25,8 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import adapter_step  # noqa: E402
-from runtime import configure_backends  # noqa: E402
+from experiments.lifetime.runtime import configure_backends  # noqa: E402
 
 
 def operations(model, n, device):
@@ -130,7 +129,7 @@ def main():
     args = p.parse_args()
     configure_backends()
     device = torch.device("cuda")
-    from evaluate import load
+    from experiments.lifetime.evaluate import load
     model, _, _ = load(args.model, device)
     model.requires_grad_(False)
     timing = []

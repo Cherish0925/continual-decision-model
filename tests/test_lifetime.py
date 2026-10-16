@@ -1,17 +1,13 @@
 """Instrument invariants, equivalences inside the continual core, and the timing of activities."""
-import sys
 import unittest
 from dataclasses import replace
-from pathlib import Path
 
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "lifetime"))
-
-from cdm.core import CoreConfig, ContinualCore  # noqa: E402
-from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, action_values, response  # noqa: E402
-from cdm.thermal import ThermalFleet, ThermalSpec  # noqa: E402
-from runtime import LEARN, MODES, Costs, feature_dims, masks, new_agent, tick  # noqa: E402
+from cdm.core import CoreConfig, ContinualCore
+from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, action_values, response
+from cdm.thermal import ThermalFleet, ThermalSpec
+from experiments.lifetime.runtime import LEARN, MODES, Costs, feature_dims, masks, new_agent, tick
 
 QUIET = InstrumentSpec(precise_noise=0.0, cheap_noise=0.0, process_noise=0.0, drift=0.0)
 

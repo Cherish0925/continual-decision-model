@@ -13,10 +13,9 @@ from pathlib import Path
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.instrument import InstrumentSpec  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
-from runtime import make_fleet  # noqa: E402
+from experiments.lifetime.runtime import make_fleet  # noqa: E402
 
 
 @torch.no_grad()

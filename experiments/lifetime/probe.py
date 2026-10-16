@@ -23,10 +23,9 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from evaluate import SWITCH_BINS, evaluate, load  # noqa: E402
-from runtime import Costs, configure_backends, event_features, make_fleet, new_agent, tick  # noqa: E402
-from train import first_observation  # noqa: E402
+from experiments.lifetime.evaluate import SWITCH_BINS, evaluate, load  # noqa: E402
+from experiments.lifetime.runtime import Costs, configure_backends, event_features, make_fleet, new_agent, tick  # noqa: E402
+from experiments.lifetime.train import first_observation  # noqa: E402
 
 KEYS = ("error_while_active", "prediction_error", "shared_prediction_error", "refinements_per_tick",
         "learning_per_100_ticks", "response_ticks_median", "reward_per_100_ticks")
