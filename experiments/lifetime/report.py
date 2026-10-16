@@ -176,6 +176,50 @@ def after_switch(rows, field, ylabel, out, keys, groups=("new", "returned")):
     plt.close(fig)
 
 
+LADDER = ("recurrent", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta")
+
+
+def ladder(rows, out):
+    """Error of every setting in its own mode: one point per seed, mean and standard error."""
+    names = [v for v in LADDER if (v, "own") in rows]
+    if not names:
+        return
+    fig, ax = plt.subplots(figsize=(5.6, 3.0))
+    for i, v in enumerate(names):
+        ys = np.array([r["error_while_active"] for r in rows[(v, "own")]])
+        colour = STYLE[v][1]
+        ax.scatter(np.full(len(ys), i) + np.linspace(-0.12, 0.12, len(ys)), ys, s=14, color=colour, alpha=0.55,
+                   linewidths=0)
+        mean, se, _ = mean_se(ys)
+        ax.errorbar(i + 0.28, mean, yerr=se, color=colour, marker=STYLE[v][2], markersize=5, capsize=0, linewidth=1.5)
+    style_axes(ax)
+    ax.set_xticks(range(len(names)), [STYLE[v][0] for v in names], rotation=30, ha="right")
+    ax.set_ylabel("tracking error while active")
+    fig.savefig(out, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+
+
+def compute_figure(rows, cost, out):
+    """Measured GPU time per instance and tick against error, for every setting evaluated."""
+    keys = [k for v in STYLE for k in sorted(rows, key=lambda k: (k[1] != "own", k[1])) if k[0] == v]
+    if not keys or not cost:
+        return
+    fig, ax = plt.subplots(figsize=(5.2, 3.2))
+    for v, setting in keys:
+        xs = [compute_per_tick(r, cost) for r in rows[(v, setting)]]
+        ys = [r["error_while_active"] for r in rows[(v, setting)]]
+        (mx, sx, _), (my, sy, _) = mean_se(xs), mean_se(ys)
+        hollow = setting != "own"
+        ax.errorbar(mx, my, xerr=sx, yerr=sy, color=STYLE[v][1], marker=STYLE[v][2], markersize=5, capsize=0,
+                    linewidth=1.0, markerfacecolor="white" if hollow else STYLE[v][1], label=label(v, setting))
+    style_axes(ax)
+    ax.set_xlabel("GPU time per instance and tick (µs, batch 1,024)")
+    ax.set_ylabel("tracking error while active")
+    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False, fontsize=6.5)
+    fig.savefig(out, dpi=200, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--evaluations", type=Path, nargs="+", required=True)
@@ -185,7 +229,8 @@ def main():
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     rows = collect(args.evaluations)
-    stats, md = table(rows, compute_cost(args.latency))
+    cost = compute_cost(args.latency)
+    stats, md = table(rows, cost)
     (args.output / "summary.json").write_text(json.dumps(stats, indent=1))
     (args.output / "table.md").write_text(md + "\n")
     print(md)
@@ -197,6 +242,8 @@ def main():
                      args.output / "prediction_after_switch.png", learners)
         after_switch(rows, "learning_rate", "learning steps per tick", args.output / "learning_after_switch.png",
                      [k for k in learners if k[1] == "own"])
+    ladder(rows, args.output / "ladder.png")
+    compute_figure(rows, cost, args.output / "compute.png")
     if args.runs:
         training_curves(args.runs, args.output / "training.png")
 
