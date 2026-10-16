@@ -193,7 +193,9 @@ def main(argv=None):
         specs = {name: dataclasses.replace(spec, **{k: v for k, v in changes.items() if hasattr(spec, k)})
                  for name, spec in specs.items()}
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
-        for mode in dict.fromkeys([targs["mode"], *(args.also if learns else [])]):
+        # a model trained on fixed schedules has untrained activity heads: switch its learning off with discard
+        also = [m for m in args.also if learns and not (targs["mode"] == "world_model" and m == "frozen")]
+        for mode in dict.fromkeys([targs["mode"], *also]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
                    "seed": targs["seed"], "family": family, "instrument": changes,
                    **evaluate(model, targs, specs, family, args.devices, args.ticks, args.seed, device, mode,

@@ -1,11 +1,19 @@
 {
  "training": {
-  "instrument": {},
-  "random": 0.30686750700093146,
-  "true_response_greedy": 0.11076203047188467
+  "kind": "instrument",
+  "changes": {},
+  "random": 0.3054612699864029,
+  "true_response_greedy": 0.11460367377411747
+ },
+ "thermal": {
+  "kind": "thermal",
+  "changes": {},
+  "random": 0.2688554084704766,
+  "true_response_greedy": 0.09118257692584607
  },
  "slow_narrow": {
-  "instrument": {
+  "kind": "instrument",
+  "changes": {
    "time_constant": [
     8.0,
     16.0
@@ -15,22 +23,24 @@
     0.25
    ]
   },
-  "random": 0.3882792458891423,
-  "true_response_greedy": 0.21838622589091758
+  "random": 0.38941700701899734,
+  "true_response_greedy": 0.22402876956857232
  },
  "noisy": {
-  "instrument": {
+  "kind": "instrument",
+  "changes": {
    "cheap_noise": 0.4
   },
-  "random": 0.30686750700093146,
-  "true_response_greedy": 0.11076203047188467
+  "random": 0.3054612699864029,
+  "true_response_greedy": 0.11460367377411747
  },
  "fast_change": {
-  "instrument": {
+  "kind": "instrument",
+  "changes": {
    "dwell": 150.0,
    "novel": 0.5
   },
-  "random": 0.3091620185979851,
-  "true_response_greedy": 0.11158162744261617
+  "random": 0.3110059187623837,
+  "true_response_greedy": 0.112937127563291
  }
 }

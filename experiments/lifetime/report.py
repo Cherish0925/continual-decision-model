@@ -53,6 +53,8 @@ def collect(paths):
     rows = defaultdict(list)
     for path in paths:
         for r in json.loads(Path(path).read_text())["runs"]:
+            if r["trained"] == "world_model" and r["mode"] == "frozen":
+                continue                             # its activity heads were never trained; discard is the comparison
             rows[(r["variant"], "own" if r["mode"] == r["trained"] else r["mode"])].append(r)
     return rows
 
@@ -62,22 +64,62 @@ def label(variant, setting):
         return STYLE[variant][0]
     if setting == "frozen":
         return f"{STYLE[variant][0]}, learning switched off"
+    if setting == "discard":
+        return f"{STYLE[variant][0]}, learning steps kept, updates discarded"
     return f"{STYLE[variant][0]}, run in mode {setting}"
 
 
-def table(rows):
+OTHER = {"frozen": "learning switched off", "discard": "learning steps kept, updates discarded"}
+
+
+def compute_cost(latency_file: Path | None):
+    """GPU microseconds per instance for the control path, one refinement and one learning step, measured at the
+    largest batch in the latency file."""
+    if latency_file is None or not latency_file.exists():
+        return None
+    row = max(json.loads(latency_file.read_text())["timing"], key=lambda r: r["instances"])
+    return {k: 1000 * row[f"{k}_ms"] / row["instances"] for k in ("control", "refinement", "learning")}
+
+
+def compute_per_tick(r, cost):
+    return cost["control"] + cost["refinement"] * r["refinements_per_tick"] + \
+        cost["learning"] * r["learning_per_100_ticks"] / 100
+
+
+def paired(rows, variant, a, b, metric):
+    """Mean and standard error over seeds of metric(setting a) - metric(setting b) for one trained variant."""
+    first = {r["seed"]: r[metric] for r in rows.get((variant, a), [])}
+    second = {r["seed"]: r[metric] for r in rows.get((variant, b), [])}
+    return mean_se([first[k] - second[k] for k in first if k in second])
+
+
+def table(rows, cost=None):
     order = [k for v in STYLE for k in sorted(rows, key=lambda k: (k[1] != "own", k[1])) if k[0] == v]
     stats = {f"{t}/{m}": {metric: mean_se([r[metric] for r in rows[(t, m)]]) for metric in METRICS} for t, m in order}
+    if cost:
+        for t, m in order:
+            stats[f"{t}/{m}"]["compute_us_per_tick"] = mean_se([compute_per_tick(r, cost) for r in rows[(t, m)]])
     head = ["Model", "seeds", "error", "reward/100", "response", "prediction", "shared alone", "refine/tick",
-            "measure/100", "learn/100"]
+            "measure/100", "learn/100"] + (["GPU µs/tick"] if cost else [])
     lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
     for t, m in order:
         s = stats[f"{t}/{m}"]
         cells = [label(t, m), str(s["error_while_active"][2])]
-        for metric, digits in zip(METRICS, (4, 2, 1, 4, 4, 2, 1, 1)):
+        for metric, digits in zip(METRICS + (("compute_us_per_tick",) if cost else ()), (4, 2, 1, 4, 4, 2, 1, 1, 2)):
             mean, se, _ = s[metric]
             cells.append("—" if mean is None else f"{mean:.{digits}f} ± {se:.{digits}f}")
         lines.append("| " + " | ".join(cells) + " |")
+    learners = [v for v in STYLE if (v, "frozen") in rows or (v, "discard") in rows]
+    if learners:
+        lines += ["", "Paired differences over seeds, own setting minus the other (negative: lower with learning):", "",
+                  "| Model | other setting | error | reward/100 |", "|---|---|---|---|"]
+        for v in learners:
+            for other in ("frozen", "discard"):
+                if (v, other) in rows:
+                    e, r = paired(rows, v, "own", other, "error_while_active"), paired(rows, v, "own", other,
+                                                                                         "reward_per_100_ticks")
+                    lines.append(f"| {STYLE[v][0]} | {OTHER[other]} | "
+                                 f"{e[0]:+.4f} ± {e[1]:.4f} (n={e[2]}) | {r[0]:+.2f} ± {r[1]:.2f} |")
     return stats, "\n".join(lines)
 
 
@@ -137,11 +179,12 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--evaluations", type=Path, nargs="+", required=True)
     p.add_argument("--runs", type=Path, help="training output root with <mode>/seed<k>/train_log.jsonl")
+    p.add_argument("--latency", type=Path, help="latency.py output, to express activity in GPU time")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     rows = collect(args.evaluations)
-    stats, md = table(rows)
+    stats, md = table(rows, compute_cost(args.latency))
     (args.output / "summary.json").write_text(json.dumps(stats, indent=1))
     (args.output / "table.md").write_text(md + "\n")
     print(md)

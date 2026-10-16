@@ -1,0 +1,23 @@
+{
+ "full": {
+  "collection_s": 2.28,
+  "update_s": 9.56,
+  "window_transitions": 131072,
+  "alone_transitions_per_s": 11071,
+  "peak_gb": 15.9
+ },
+ "full_meta": {
+  "collection_s": 2.12,
+  "update_s": 11.21,
+  "window_transitions": 131072,
+  "alone_transitions_per_s": 9830,
+  "peak_gb": 17.1
+ },
+ "recurrent": {
+  "collection_s": 0.8,
+  "update_s": 1.48,
+  "window_transitions": 131072,
+  "alone_transitions_per_s": 57574,
+  "peak_gb": 9.4
+ }
+}
