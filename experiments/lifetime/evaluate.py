@@ -49,14 +49,17 @@ SWITCH_BINS = (0, 10, 25, 50, 100, 200, 400, 800, 10 ** 9)
 
 
 class ResponseTimes:
-    """Count executed controls until first reaching a request, with failures capped at its duration."""
+    """Count executed controls until first reaching a request, with failures capped at its duration.
+
+    Counts accumulate on the device as a histogram, so recording a tick needs no host synchronisation.
+    """
 
     def __init__(self, devices, device, request_ticks):
         self.start = torch.full((devices,), -1, dtype=torch.long, device=device)
         self.reached = torch.zeros(devices, dtype=torch.bool, device=device)
         self.request_ticks = request_ticks
-        self.values = []
-        self.successes = 0
+        self.counts = torch.zeros(request_ticks + 1, device=device)   # by response time in ticks
+        self.successes = torch.zeros((), device=device)
 
     def add(self, t, step):
         # started belongs to the request served by this action; next_started
@@ -65,22 +68,25 @@ class ResponseTimes:
         self.start = torch.where(started, torch.full_like(self.start, t), self.start)
         self.reached = torch.where(started, torch.zeros_like(self.reached), self.reached)
         hit = (self.start >= 0) & ~self.reached & active & (step["error"] < 0.1)
-        if hit.any():
-            times = (t - self.start[hit] + 1).tolist()
-            self.values.extend(times)
-            self.successes += len(times)
+        self.counts.index_put_(((t - self.start + 1).clamp(0, self.request_ticks),), hit.float(), accumulate=True)
+        self.successes += hit.sum()
         self.reached |= hit
         ended = active & (~step["next_active"] | step["next_started"])
         failed = ended & (self.start >= 0) & ~self.reached
-        if failed.any():
-            self.values.extend([self.request_ticks] * int(failed.sum()))
+        self.counts[self.request_ticks] += failed.sum()
         self.start = torch.where(ended, torch.full_like(self.start, -1), self.start)
         self.reached &= ~ended
 
+    @property
+    def values(self) -> list[int]:
+        """Response times of completed requests, in increasing order."""
+        return [k for k, c in enumerate(self.counts.round().long().tolist()) for _ in range(c)]
+
     def summary(self):
-        return {"response_ticks_median": float(np.median(self.values)) if self.values else None,
-                "response_ticks_mean": float(np.mean(self.values)) if self.values else None,
-                "requests": len(self.values), "successful_requests": self.successes,
+        values = self.values
+        return {"response_ticks_median": float(np.median(values)) if values else None,
+                "response_ticks_mean": float(np.mean(values)) if values else None,
+                "requests": len(values), "successful_requests": int(self.successes),
                 "unfinished_requests": int(((self.start >= 0) & ~self.reached).sum())}
 
 
@@ -112,7 +118,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
     life_bins = max(1, (ticks + 999) // 1000)
     acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "shared", "all", "learn", "refine")}
     life = {key: torch.zeros(life_bins, device=device) for key in ("err", "active", "pred", "reward")}
-    totals = dict.fromkeys(("reward", "refine", "measure", "learn", "err", "active", "pred", "shared"), 0.0)
+    totals = torch.zeros(8, device=device)           # reward, refine, measure, learn, err, active, pred, shared
     response = ResponseTimes(devices, device, spec.request_ticks)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
@@ -129,26 +135,21 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
         lb = min(t // 1000, life_bins - 1)
         for key, value in (("err", err * active), ("active", active), ("pred", perr), ("reward", step["reward"])):
             life[key][lb] += value.sum()
-        totals["reward"] += float(step["reward"].sum())
-        totals["refine"] += float(step["counts"].float().sum())
-        totals["measure"] += float(step["accepted"].float().sum())
-        totals["learn"] += float(step["learn"].float().sum())
-        totals["err"] += float((err * active).sum())
-        totals["active"] += float(active.sum())
-        totals["pred"] += float(perr.sum())
-        totals["shared"] += float(serr.sum())
+        totals += torch.stack((step["reward"].sum(), step["counts"].float().sum(), step["accepted"].float().sum(),
+                               step["learn"].float().sum(), (err * active).sum(), active.sum(), perr.sum(), serr.sum()))
         response.add(t, step)
     n = devices * ticks
+    reward, refine, measure, learn, err_sum, active_sum, pred, shared = totals.tolist()
     ratio = lambda a, b: (a / b.clamp_min(1)).cpu().tolist()
     predicts = mode != "recurrent"
     life_samples = devices * torch.tensor([min(1000, ticks - 1000 * i) for i in range(life_bins)],
                                           device=device).clamp_min(1)
-    return {"reward_per_100_ticks": 100 * totals["reward"] / n,
-            "error_while_active": totals["err"] / max(totals["active"], 1),
-            "prediction_error": totals["pred"] / n if predicts else None,
-            "shared_prediction_error": totals["shared"] / n if predicts else None,
-            "refinements_per_tick": totals["refine"] / n, "measurements_per_100_ticks": 100 * totals["measure"] / n,
-            "learning_per_100_ticks": 100 * totals["learn"] / n,
+    return {"reward_per_100_ticks": 100 * reward / n,
+            "error_while_active": err_sum / max(active_sum, 1),
+            "prediction_error": pred / n if predicts else None,
+            "shared_prediction_error": shared / n if predicts else None,
+            "refinements_per_tick": refine / n, "measurements_per_100_ticks": 100 * measure / n,
+            "learning_per_100_ticks": 100 * learn / n,
             **response.summary(),
             "switch_bins": list(SWITCH_BINS),
             **{f"{name}_after_switch_{group}": ratio(acc[a][g], acc[b][g])

@@ -160,7 +160,7 @@ class EvaluationTests(unittest.TestCase):
         response.add(2, self.step(next_started=True))  # failed request replaced without an idle tick
         response.add(3, self.step(started=True, error=0.02))
         response.add(4, self.step(next_active=False))
-        self.assertEqual(response.values, [3, 1])
+        self.assertEqual(response.values, [1, 3])
         self.assertEqual(response.summary()["successful_requests"], 1)
         self.assertEqual(response.summary()["unfinished_requests"], 0)
         last = ResponseTimes(1, "cpu", 3)
@@ -186,7 +186,8 @@ class EvaluationTests(unittest.TestCase):
                          ("returned", "learn", "accepted", "started", "next_started")})
             step["since_switch"] = torch.zeros(devices, dtype=torch.long)
             return None, None, step
-        with patch.object(evaluation, "make_fleet"), patch.object(evaluation, "new_agent"), \
+        with patch.object(evaluation, "make_fleet", **{"return_value.spec.request_ticks": 60}), \
+                patch.object(evaluation, "new_agent"), \
                 patch.object(evaluation, "first_observation"), patch.object(evaluation, "tick", fake_tick):
             result = evaluation.evaluate(None, dict(mode="full", buffer=8, adapter_lr=0.05, every=8, learn_ticks=2),
                                          {"instrument": InstrumentSpec(), "thermal": ThermalSpec()}, "instrument",
