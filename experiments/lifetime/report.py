@@ -20,9 +20,10 @@ STYLE = {
     "world_model": ("World model, fixed schedules", "#eda100", "D"),
     "recurrent": ("Recurrent policy", "#e87ba4", "v"),
     "full_meta": ("CDM trained through its learning step", "#008300", "*"),
+    "full_no_goal": ("CDM without the goal term", "#4a3aa7", "h"),
 }
 METRICS = ("error_while_active", "reward_per_100_ticks", "response_ticks_median", "prediction_error",
-           "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")
+           "shared_prediction_error", "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")
 INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e6e5e0"
 plt.rcParams.update({"font.size": 8, "axes.titlesize": 8.5, "axes.labelsize": 8, "legend.fontsize": 7.5,
                      "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.titlecolor": INK,
@@ -67,12 +68,13 @@ def label(variant, setting):
 def table(rows):
     order = [k for v in STYLE for k in sorted(rows, key=lambda k: (k[1] != "own", k[1])) if k[0] == v]
     stats = {f"{t}/{m}": {metric: mean_se([r[metric] for r in rows[(t, m)]]) for metric in METRICS} for t, m in order}
-    head = ["Model", "seeds", "error", "reward/100", "response", "prediction", "refine/tick", "measure/100", "learn/100"]
+    head = ["Model", "seeds", "error", "reward/100", "response", "prediction", "shared alone", "refine/tick",
+            "measure/100", "learn/100"]
     lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
     for t, m in order:
         s = stats[f"{t}/{m}"]
         cells = [label(t, m), str(s["error_while_active"][2])]
-        for metric, digits in zip(METRICS, (4, 2, 1, 4, 2, 1, 1)):
+        for metric, digits in zip(METRICS, (4, 2, 1, 4, 4, 2, 1, 1)):
             mean, se, _ = s[metric]
             cells.append("—" if mean is None else f"{mean:.{digits}f} ± {se:.{digits}f}")
         lines.append("| " + " | ".join(cells) + " |")

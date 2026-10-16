@@ -5,7 +5,9 @@ operations, elapsed-time features). Its parts:
 
 ``gru``         fast state update from every event
 ``workspace``   latent slots refined by one shared Transformer block that attends
-                to the fast state and to the instance's recent experience records
+                to the fast state and to the instance's recent experience records;
+                every refinement ends with a normalisation of each slot, so the
+                workspace keeps one scale over an unbounded number of refinements
 ``predictor``   action-conditioned prediction of the next reading for every action;
                 its first layer carries an instance-owned low-rank adapter that a
                 learning step updates from the instance's own experience
@@ -43,6 +45,8 @@ class CoreConfig:
     rank: int = 8              # adapter rank
     hidden: int = 512          # predictor width
     action_width: int = 256    # width of the per-action control scores
+    goal_term: bool = True     # control prefers actions predicted to reach the goal, with a learned weight
+    bounded_workspace: bool = True   # normalise slots after every refinement
     scalar_dim: int = 8        # extra features for the activity and value heads
 
     @property
@@ -79,6 +83,7 @@ class ContinualCore(nn.Module):
         self.slots = nn.Parameter(0.02 * torch.randn(c.slots, w))
         self.record = nn.Sequential(nn.Linear(c.record_dim + 1, w), nn.GELU(), nn.Linear(w, w))
         self.block = Block(w, c.heads)
+        self.norm_slots = nn.LayerNorm(w) if c.bounded_workspace else nn.Identity()
         self.action = nn.Sequential(nn.Linear(c.action_dim, w), nn.GELU(), nn.Linear(w, w))
         self.pred_in = nn.Linear(3 * w, c.hidden)
         self.pred_out = nn.Sequential(nn.GELU(), nn.Linear(c.hidden, c.hidden), nn.GELU(), nn.Linear(c.hidden, 2))
@@ -88,7 +93,7 @@ class ContinualCore(nn.Module):
         self.control_state, self.control_action = nn.Linear(trunk, a), nn.Linear(w, a, bias=False)
         self.control_pred = nn.Linear(2, a, bias=False)
         self.control_out = nn.Sequential(nn.GELU(), nn.Linear(a, a), nn.GELU(), nn.Linear(a, 1))
-        self.goal_weight = nn.Parameter(torch.tensor(1.8))      # softplus(1.8) = 1.95
+        self.goal_weight = nn.Parameter(torch.tensor(1.8)) if c.goal_term else None   # softplus(1.8) = 1.95
         self.activity = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options))
         self.value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 1))
 
@@ -124,7 +129,7 @@ class ContinualCore(nn.Module):
         ctx, zr, cr = self.context(h[rows], records[rows]), z[rows], counts[rows]
         for step in range(int(cr.max())):
             sel = (cr > step).nonzero().squeeze(1)
-            zr = zr.index_copy(0, sel, self.block(zr[sel], ctx[sel]).to(zr.dtype))
+            zr = zr.index_copy(0, sel, self.norm_slots(self.block(zr[sel], ctx[sel])).to(zr.dtype))
         return z.index_copy(0, rows, zr.to(z.dtype))
 
     # ------------------------------------------------------------ prediction with instance adapters
@@ -168,7 +173,9 @@ class ContinualCore(nn.Module):
         """Control logits [n, actions], activity logits [n, 2 + compute options], value [n]."""
         scores = self.control_state(trunk).unsqueeze(1) + self.control_action(self.action_features()).unsqueeze(0) \
             + self.control_pred(torch.stack((pred_offset, pred_logvar / 4), -1))
-        control = self.control_out(scores).squeeze(-1) - F.softplus(self.goal_weight) * pred_offset.abs()
+        control = self.control_out(scores).squeeze(-1)
+        if self.goal_weight is not None:
+            control = control - F.softplus(self.goal_weight) * pred_offset.abs()
         return control, self.activity(trunk), self.value(trunk).squeeze(-1)
 
 

@@ -245,6 +245,7 @@ def main(argv=None):
                    "refinements_per_tick": sums["refine"] / k, "measurements_per_100_ticks": 100 * sums["measure"] / k,
                    "learning_per_100_ticks": 100 * sums["learn"] / k,
                    "prediction_error": sums["prediction_error"] / k,
+                   "workspace_norm": float(agent.z.norm(dim=-1).mean()), "adapter_norm": float(agent.A.norm(dim=(1, 2)).mean()),
                    **{f"loss_{a}": round(b, 5) for a, b in stats.items()},
                    "seconds": round(time.perf_counter() - start, 1)}
             if device.type == "cuda":

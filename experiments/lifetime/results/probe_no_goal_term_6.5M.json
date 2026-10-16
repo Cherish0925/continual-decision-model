@@ -1,0 +1,98 @@
+{
+ "model": "full",
+ "seed": "seed0",
+ "devices": 256,
+ "ticks": 3000,
+ "readout": [
+  {
+   "control": "policy",
+   "learning": true,
+   "error_while_active": 0.2353762240842139,
+   "prediction_error": 0.22343888712426027,
+   "shared_prediction_error": 0.31550611376265686,
+   "refinements_per_tick": 1.1877447916666666,
+   "learning_per_100_ticks": 16.964713541666665,
+   "response_ticks_median": 5.0,
+   "reward_per_100_ticks": -15.257962154783309
+  },
+  {
+   "control": "policy",
+   "learning": false,
+   "error_while_active": 0.2414704995038878,
+   "prediction_error": 0.29501540347437066,
+   "shared_prediction_error": 0.29503832596043744,
+   "refinements_per_tick": 1.7489192708333334,
+   "learning_per_100_ticks": 0.0,
+   "response_ticks_median": 6.0,
+   "reward_per_100_ticks": -15.423647817286353
+  },
+  {
+   "control": "greedy",
+   "learning": true,
+   "error_while_active": 0.19416968440953436,
+   "prediction_error": 0.22913564287126065,
+   "shared_prediction_error": 0.3599764587332805,
+   "refinements_per_tick": 1.1691796875,
+   "learning_per_100_ticks": 16.834505208333333,
+   "response_ticks_median": 4.0,
+   "reward_per_100_ticks": -12.710660042334348
+  },
+  {
+   "control": "greedy",
+   "learning": false,
+   "error_while_active": 0.3150143457722116,
+   "prediction_error": 0.3609395724982023,
+   "shared_prediction_error": 0.36101024387280145,
+   "refinements_per_tick": 1.7383971354166667,
+   "learning_per_100_ticks": 0.0,
+   "response_ticks_median": 9.0,
+   "reward_per_100_ticks": -19.956089444831015
+  }
+ ],
+ "decisions": {
+  "switch_bins": [
+   0,
+   10,
+   25,
+   50,
+   100,
+   200,
+   400,
+   800,
+   1000000000
+  ],
+  "adapted": [
+   0.3813279867172241,
+   0.3583429753780365,
+   0.3423989415168762,
+   0.32546448707580566,
+   0.3085610866546631,
+   0.28873077034950256,
+   0.2840767800807953,
+   0.286219984292984
+  ],
+  "shared": [
+   0.3878050148487091,
+   0.38302409648895264,
+   0.37020811438560486,
+   0.3596232831478119,
+   0.3615112900733948,
+   0.36872249841690063,
+   0.372275710105896,
+   0.377679705619812
+  ],
+  "best": [
+   0.032216716557741165,
+   0.025527119636535645,
+   0.016660407185554504,
+   0.008274315856397152,
+   0.007831236347556114,
+   0.007888159714639187,
+   0.00793053675442934,
+   0.008088874630630016
+  ],
+  "adapted_overall": 0.3042348325252533,
+  "shared_overall": 0.3689679503440857,
+  "best_overall": 0.009816644713282585
+ }
+}

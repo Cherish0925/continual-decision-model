@@ -29,6 +29,8 @@ Reward per tick is minus the absolute tracking error while a request is active, 
 | Centre action | 0.353 |
 | Knows the condition and drift, picks the action whose response is closest to the setpoint | 0.112 |
 
+The last reference ignores the relaxation and the backlash, so a policy that anticipates them can do better; it is a reference point, not a bound.
+
 ## Model
 
 [`cdm/core.py`](../../cdm/core.py), one network for every setting:
@@ -62,7 +64,12 @@ For each window: four epochs over minibatches of 64 streams; backpropagation thr
 | `world_model` | every 8 ticks | a learning step every 8 ticks, one refinement otherwise | yes |
 | `recurrent` | learned | none | not supplied, no prediction loss |
 
-All settings share the network and the training procedure; the recurrent policy leaves the workspace and predictor unused. Each setting has five seeds of 2·10⁷ interactions, 10⁸ per setting.
+All settings share the network and the training procedure; the recurrent policy leaves the workspace and predictor unused. Two further variants of the full setting:
+
+- `full_meta` adds a loss that trains the shared network through the learning step itself: from the adapter each stream held when the window began, one step on the first half of the window, then the prediction loss on the second half, with gradients through the step (weight 0.5, `--meta 0.5`).
+- `full_no_goal` drops the goal term from the control head (one seed). It is the first run of the campaign, kept as an ablation.
+
+Each setting has five seeds of 2·10⁷ interactions, 10⁸ per setting.
 
 ## Evaluation
 
@@ -71,12 +78,15 @@ All settings share the network and the training procedure; the recurrent policy 
 ## Run
 
 ```bash
-python experiments/lifetime/launch.py --output-root runs/lifetime/main --seeds 0 1 2 3 4 -- \
+python experiments/lifetime/launch.py --output-root runs/lifetime/main --seeds 0 1 2 3 4 \
+    --variants full fixed_learn frozen world_model recurrent "full_meta=full --meta 0.5" -- \
     --streams 1024 --width 1024 --hidden 1024 --interactions 2e7 --lifetime 16384
-python experiments/lifetime/evaluate.py --model runs/lifetime/main/*/seed*/model.pt --also frozen \
-    --devices 512 --ticks 16384 --output runs/lifetime/evaluation.json
-python experiments/lifetime/report.py --evaluations runs/lifetime/evaluation.json --runs runs/lifetime/main \
+python experiments/lifetime/evaluate.py --model runs/lifetime/main/full/seed0/model.pt --also frozen \
+    --devices 512 --ticks 16384 --output runs/lifetime/eval/full_seed0.json      # one file per model
+python experiments/lifetime/report.py --evaluations runs/lifetime/eval/*.json --runs runs/lifetime/main \
     --output experiments/lifetime/results
+python experiments/lifetime/probe.py --model runs/lifetime/main/full/seed0/model.pt \
+    --output experiments/lifetime/results/probe.json
 python experiments/lifetime/latency.py --model runs/lifetime/main/full/seed0/model.pt \
     --output experiments/lifetime/results/latency.json
 ```

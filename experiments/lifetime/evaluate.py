@@ -6,6 +6,8 @@ own state, experience and adapters; nothing is reset. Reported:
 
 - tracking error while a request is active, reward, and the rates of
   refinements, measurements and learning steps;
+- prediction error of the next reading for the action taken, with the instance
+  adapter and, on the same states, with the shared predictor alone;
 - time to bring the output within 0.1 of a new setpoint;
 - tracking error, prediction error, learning and refinement as functions of
   ticks since the last condition switch, separately for new conditions and
@@ -38,7 +40,9 @@ SWITCH_BINS = (0, 10, 25, 50, 100, 200, 400, 800, 10 ** 9)
 
 def load(path: Path, device):
     blob = torch.load(path, map_location=device, weights_only=False)
-    config = CoreConfig(**blob["config"])
+    weights = blob["model"]       # earlier checkpoints predate these options; their weights tell which they used
+    config = CoreConfig(**{**blob["config"], "goal_term": "goal_weight" in weights,
+                           "bounded_workspace": "norm_slots.weight" in weights})
     model = ContinualCore(config, torch.zeros(config.actions, config.action_dim)).to(device)
     model.load_state_dict(blob["model"])
     return model.eval(), blob["args"], InstrumentSpec(**blob["instrument"])
@@ -52,19 +56,21 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
     costs = Costs()
     nb = len(SWITCH_BINS) - 1
     life_bins = max(1, ticks // 1000)
-    acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "all", "learn", "refine")}
+    acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "shared", "all", "learn", "refine")}
     life = {key: torch.zeros(life_bins, device=device) for key in ("err", "active", "pred", "reward")}
-    totals = dict.fromkeys(("reward", "refine", "measure", "learn", "err", "active", "pred"), 0.0)
+    totals = dict.fromkeys(("reward", "refine", "measure", "learn", "err", "active", "pred", "shared"), 0.0)
     request_start = torch.full((devices,), -1, dtype=torch.long, device=device)
     reached = torch.zeros(devices, dtype=torch.bool, device=device)
     response = []
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
-                                learn_ticks=args_train["learn_ticks"], greedy=greedy)
+                                learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True)
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
+        serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
-        for key, value in (("err", err * active), ("active", active), ("pred", perr), ("all", torch.ones_like(perr)),
+        for key, value in (("err", err * active), ("active", active), ("pred", perr), ("shared", serr),
+                           ("all", torch.ones_like(perr)),
                            ("learn", step["learn"].float()), ("refine", step["counts"].float())):
             acc[key].index_put_(where, value, accumulate=True)
         lb = min(t // 1000, life_bins - 1)
@@ -77,6 +83,7 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
         totals["err"] += float((err * active).sum())
         totals["active"] += float(active.sum())
         totals["pred"] += float(perr.sum())
+        totals["shared"] += float(serr.sum())
         started, on = step["started"], step["active"]
         finished = (request_start >= 0) & ~reached & on & (err < 0.1)
         if finished.any():
@@ -90,9 +97,11 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
         reached = torch.where(started | ended, torch.zeros_like(reached), reached)
     n = devices * ticks
     ratio = lambda a, b: (a / b.clamp_min(1)).cpu().tolist()
+    predicts = mode != "recurrent"
     return {"reward_per_100_ticks": 100 * totals["reward"] / n,
             "error_while_active": totals["err"] / max(totals["active"], 1),
-            "prediction_error": totals["pred"] / n,
+            "prediction_error": totals["pred"] / n if predicts else None,
+            "shared_prediction_error": totals["shared"] / n if predicts else None,
             "refinements_per_tick": totals["refine"] / n, "measurements_per_100_ticks": 100 * totals["measure"] / n,
             "learning_per_100_ticks": 100 * totals["learn"] / n,
             "response_ticks_median": float(np.median(response)) if response else None,
@@ -101,6 +110,7 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
             "switch_bins": list(SWITCH_BINS),
             **{f"{name}_after_switch_{group}": ratio(acc[a][g], acc[b][g])
                for name, a, b in (("error", "err", "active"), ("prediction_error", "pred", "all"),
+                                  ("shared_prediction_error", "shared", "all"),
                                   ("learning_rate", "learn", "all"), ("refinements", "refine", "all"))
                for g, group in enumerate(("new", "returned"))},
             "active_ticks_after_switch_new": acc["active"][0].cpu().tolist(),

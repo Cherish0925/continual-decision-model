@@ -146,8 +146,13 @@ def distributions(control_logits: Tensor, activity_logits: Tensor, allowed: Tens
 
 @torch.no_grad()
 def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mode: str, costs: Costs,
-         learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32):
-    """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick."""
+         learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32,
+         shared: bool = False):
+    """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick.
+
+    With ``shared`` the record also holds the error of the shared predictor alone, without the instance adapter,
+    for the action taken.
+    """
     n = agent.h.shape[0]
     device = agent.h.device
     rows = torch.arange(n, device=device)
@@ -207,6 +212,10 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             busy[idx] = learn_ticks - 1
     pred_taken = mean.float()[rows, action]
     error = (nxt["cheap"] - pred_taken).abs()
+    if shared and mode != "recurrent":
+        with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
+            alone = model.predict(torch.cat((state, model.action_features(action)), -1).unsqueeze(1))[0]
+        shared_error = (nxt["cheap"] - alone.float().squeeze(1)).abs()
     agent = Agent(h=h, z=z, A=A, B=B, next_A=next_A, next_B=next_B, records=records, learn_s=learn_s,
                   learn_a=learn_a, learn_y=learn_y, filled=filled, busy=busy,
                   last=torch.cat((nxt["control"], torch.stack((measure.float(), counts.float() / 4, learn.float()), 1)), 1),
@@ -221,4 +230,6 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             "accepted": nxt["accepted"], "since_switch": nxt["since_switch"], "returned": nxt["returned"],
             "started": nxt["started"], "output": nxt["output"], "setpoint": nxt["setpoint"],
             "prediction_error": error}
+    if shared and mode != "recurrent":
+        step["shared_prediction_error"] = shared_error
     return agent, nxt, step

@@ -101,8 +101,16 @@ class CoreTests(unittest.TestCase):
         counts = torch.tensor([0, 1, 2, 4, 0, 4, 2, 1, 0])
         dense, ctx = z, model.context(h, records)
         for step in range(4):
-            dense = torch.where((counts > step).view(-1, 1, 1), model.block(dense, ctx), dense)
+            dense = torch.where((counts > step).view(-1, 1, 1), model.norm_slots(model.block(dense, ctx)), dense)
         torch.testing.assert_close(model.refine(z, h, records, counts), dense, rtol=1e-5, atol=1e-5)
+
+    def test_workspace_keeps_its_scale(self):
+        model = small_model()
+        z, h, records = model.initial(3, "cpu")["z"], torch.randn(3, 32), torch.randn(3, 8, model.config.record_dim)
+        with torch.no_grad():
+            for _ in range(500):
+                z = model.refine(z, h, records, torch.full((3,), 4))
+        self.assertLess(float(z.norm(dim=-1).max()), 4 * 32 ** 0.5)
 
     def test_sequence_and_tick_fast_states_agree(self):
         model = small_model()
