@@ -137,6 +137,8 @@ Add nonlinear actuator response or temperature-dependent heat transfer. Sample d
 
 Actions change power, request measurements of differing cost and delay, calibrate a sensor, or wait. Refine predictions while measurements are pending. Tasks include identification, tracking, and experimental search. Hold out complete parameter combinations. Include warm-start model-predictive control and real-time optimization, distinguishing supplied from learned dynamics.
 
+[The lifetime experiment](experiments/lifetime/README.md) implements two families on one event and action interface: a two-actuator instrument with a peaked response, backlash and drift, and this thermal system with a delayed nonlinear heater and coolant-dependent loss (Euler integration, four quarter-tick steps per tick). Both have cheap noisy readings every tick, precise measurements that cost and return after three ticks, setpoint requests with idle periods between them, and operating conditions that change and return without announcement. One model is trained on either family or on both together; held-out dynamics vary the time constants, peak widths, sensor noise and frequency of change. Sensor calibration, identification and search tasks, and model-predictive control references remain to be added.
+
 ## 5. Long-term learning and scale
 
 Compare frozen parameters, retrieval, online updates, and background replay across task sequences. Measure adaptation, performance on earlier tasks, transfer after transient-state reset, and learning compute. Separate state updates from parameter updates.
