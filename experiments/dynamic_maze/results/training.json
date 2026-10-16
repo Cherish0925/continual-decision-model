@@ -1,0 +1,1562 @@
+[
+ {
+  "variant": "carry",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34745,
+  "final_map_accuracy": 0.98339,
+  "train_seconds": 1409.3,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.35048,
+  "final_map_accuracy": 0.98263,
+  "train_seconds": 1411.3,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.35185,
+  "final_map_accuracy": 0.98216,
+  "train_seconds": 1406.5,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.3459,
+  "final_map_accuracy": 0.98411,
+  "train_seconds": 1728.2,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.35187,
+  "final_map_accuracy": 0.98197,
+  "train_seconds": 1687.8,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_gate",
+  "seed": 0,
+  "parameters": 664872,
+  "steps": 3000,
+  "final_loss": 0.29838,
+  "final_map_accuracy": 0.99586,
+  "train_seconds": 1769.0,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_gate",
+  "seed": 1,
+  "parameters": 664872,
+  "steps": 3000,
+  "final_loss": 0.29981,
+  "final_map_accuracy": 0.9956,
+  "train_seconds": 1779.3,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_gate",
+  "seed": 2,
+  "parameters": 664872,
+  "steps": 3000,
+  "final_loss": 0.30137,
+  "final_map_accuracy": 0.99516,
+  "train_seconds": 1802.3,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_gate",
+  "seed": 3,
+  "parameters": 664872,
+  "steps": 3000,
+  "final_loss": 0.29766,
+  "final_map_accuracy": 0.99605,
+  "train_seconds": 2219.8,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_gate",
+  "seed": 4,
+  "parameters": 664872,
+  "steps": 3000,
+  "final_loss": 0.30155,
+  "final_map_accuracy": 0.99511,
+  "train_seconds": 2179.1,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_read",
+  "seed": 0,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.30741,
+  "final_map_accuracy": 0.99436,
+  "train_seconds": 2921.6,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_read",
+  "seed": 1,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.30918,
+  "final_map_accuracy": 0.9941,
+  "train_seconds": 2910.3,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_read",
+  "seed": 2,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.31057,
+  "final_map_accuracy": 0.99379,
+  "train_seconds": 2887.0,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_read",
+  "seed": 3,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.30586,
+  "final_map_accuracy": 0.99475,
+  "train_seconds": 2941.3,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_read",
+  "seed": 4,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.31086,
+  "final_map_accuracy": 0.99358,
+  "train_seconds": 2944.7,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_static",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.27513,
+  "final_map_accuracy": 0.99995,
+  "train_seconds": 2258.5,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_static",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.27516,
+  "final_map_accuracy": 0.99996,
+  "train_seconds": 2243.5,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_static",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.27558,
+  "final_map_accuracy": 0.99991,
+  "train_seconds": 2395.5,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_static",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.27552,
+  "final_map_accuracy": 0.99991,
+  "train_seconds": 2373.1,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "carry_static",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.27506,
+  "final_map_accuracy": 0.99994,
+  "train_seconds": 2323.1,
+  "config": {
+   "mode": "carry",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized",
+  "seed": 0,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29941,
+  "final_map_accuracy": 0.99606,
+  "train_seconds": 3236.2,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized",
+  "seed": 1,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29807,
+  "final_map_accuracy": 0.99626,
+  "train_seconds": 3118.3,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized",
+  "seed": 2,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29803,
+  "final_map_accuracy": 0.99626,
+  "train_seconds": 3613.9,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized",
+  "seed": 3,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29784,
+  "final_map_accuracy": 0.99643,
+  "train_seconds": 3539.7,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized",
+  "seed": 4,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29825,
+  "final_map_accuracy": 0.99623,
+  "train_seconds": 3476.5,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_carry",
+  "seed": 0,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.30116,
+  "final_map_accuracy": 0.99591,
+  "train_seconds": 2814.2,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": false,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_carry",
+  "seed": 1,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.30164,
+  "final_map_accuracy": 0.99569,
+  "train_seconds": 3479.9,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_carry",
+  "seed": 2,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.30176,
+  "final_map_accuracy": 0.99572,
+  "train_seconds": 2066.0,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": false,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_carry",
+  "seed": 3,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.30177,
+  "final_map_accuracy": 0.99585,
+  "train_seconds": 2753.8,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": false,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_carry",
+  "seed": 4,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.30216,
+  "final_map_accuracy": 0.99561,
+  "train_seconds": 3403.6,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_local",
+  "seed": 0,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.34561,
+  "final_map_accuracy": 0.98066,
+  "train_seconds": 3234.6,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_local",
+  "seed": 1,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.34433,
+  "final_map_accuracy": 0.98103,
+  "train_seconds": 3081.1,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_local",
+  "seed": 2,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.34583,
+  "final_map_accuracy": 0.98044,
+  "train_seconds": 3404.5,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": false,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_local",
+  "seed": 3,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.34086,
+  "final_map_accuracy": 0.98238,
+  "train_seconds": 3560.4,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": false,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_local",
+  "seed": 4,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.34708,
+  "final_map_accuracy": 0.97999,
+  "train_seconds": 3381.2,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": false,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_memory",
+  "seed": 0,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29934,
+  "final_map_accuracy": 0.99605,
+  "train_seconds": 3325.4,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 8,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_memory",
+  "seed": 1,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29845,
+  "final_map_accuracy": 0.99624,
+  "train_seconds": 3357.2,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 8
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_memory",
+  "seed": 2,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29746,
+  "final_map_accuracy": 0.99643,
+  "train_seconds": 3351.9,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 8,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_memory",
+  "seed": 3,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29754,
+  "final_map_accuracy": 0.99649,
+  "train_seconds": 3299.1,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 8,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "factorized_memory",
+  "seed": 4,
+  "parameters": 475626,
+  "steps": 3000,
+  "final_loss": 0.29844,
+  "final_map_accuracy": 0.99618,
+  "train_seconds": 3381.9,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 8,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "goal_restart",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33139,
+  "final_map_accuracy": 0.98487,
+  "train_seconds": 2542.8,
+  "config": {
+   "mode": "goal_restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "goal_restart",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33282,
+  "final_map_accuracy": 0.98457,
+  "train_seconds": 2384.5,
+  "config": {
+   "mode": "goal_restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "goal_restart",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33422,
+  "final_map_accuracy": 0.98401,
+  "train_seconds": 2595.6,
+  "config": {
+   "mode": "goal_restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "goal_restart",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.32895,
+  "final_map_accuracy": 0.98589,
+  "train_seconds": 2640.8,
+  "config": {
+   "mode": "goal_restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "goal_restart",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33354,
+  "final_map_accuracy": 0.98409,
+  "train_seconds": 2639.5,
+  "config": {
+   "mode": "goal_restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_global",
+  "seed": 0,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.32922,
+  "final_map_accuracy": 0.98718,
+  "train_seconds": 3186.5,
+  "config": {
+   "mode": "memory_global",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_global",
+  "seed": 1,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.33017,
+  "final_map_accuracy": 0.98701,
+  "train_seconds": 3239.4,
+  "config": {
+   "mode": "memory_global",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_global",
+  "seed": 2,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.33117,
+  "final_map_accuracy": 0.98642,
+  "train_seconds": 3129.5,
+  "config": {
+   "mode": "memory_global",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_global",
+  "seed": 3,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.32626,
+  "final_map_accuracy": 0.98803,
+  "train_seconds": 3322.3,
+  "config": {
+   "mode": "memory_global",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_global",
+  "seed": 4,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.33042,
+  "final_map_accuracy": 0.98657,
+  "train_seconds": 3191.7,
+  "config": {
+   "mode": "memory_global",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_local",
+  "seed": 0,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.32819,
+  "final_map_accuracy": 0.9874,
+  "train_seconds": 3609.4,
+  "config": {
+   "mode": "memory_local",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_local",
+  "seed": 1,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.32988,
+  "final_map_accuracy": 0.987,
+  "train_seconds": 3447.5,
+  "config": {
+   "mode": "memory_local",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_local",
+  "seed": 2,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.33041,
+  "final_map_accuracy": 0.98668,
+  "train_seconds": 3275.5,
+  "config": {
+   "mode": "memory_local",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_local",
+  "seed": 3,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.32578,
+  "final_map_accuracy": 0.98828,
+  "train_seconds": 3337.8,
+  "config": {
+   "mode": "memory_local",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "memory_local",
+  "seed": 4,
+  "parameters": 643177,
+  "steps": 3000,
+  "final_loss": 0.33152,
+  "final_map_accuracy": 0.98638,
+  "train_seconds": 3230.7,
+  "config": {
+   "mode": "memory_local",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "nearest",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33961,
+  "final_map_accuracy": 0.98554,
+  "train_seconds": 3140.0,
+  "config": {
+   "mode": "nearest",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "nearest",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34357,
+  "final_map_accuracy": 0.98465,
+  "train_seconds": 4071.1,
+  "config": {
+   "mode": "nearest",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "nearest",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34433,
+  "final_map_accuracy": 0.98433,
+  "train_seconds": 4127.5,
+  "config": {
+   "mode": "nearest",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "nearest",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.33974,
+  "final_map_accuracy": 0.98584,
+  "train_seconds": 3407.7,
+  "config": {
+   "mode": "nearest",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "nearest",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34489,
+  "final_map_accuracy": 0.98395,
+  "train_seconds": 2971.1,
+  "config": {
+   "mode": "nearest",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "partial_factorized_age",
+  "seed": 0,
+  "parameters": 476166,
+  "steps": 3000,
+  "final_loss": 0.4544,
+  "final_map_accuracy": 0.94622,
+  "train_seconds": 5864.6,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_factorized_age",
+  "seed": 1,
+  "parameters": 476166,
+  "steps": 3000,
+  "final_loss": 0.45523,
+  "final_map_accuracy": 0.94589,
+  "train_seconds": 7046.3,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_factorized_age",
+  "seed": 2,
+  "parameters": 476166,
+  "steps": 3000,
+  "final_loss": 0.45562,
+  "final_map_accuracy": 0.94574,
+  "train_seconds": 5810.4,
+  "config": {
+   "mode": "factorized",
+   "channels": 60,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": false,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read",
+  "seed": 0,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.46527,
+  "final_map_accuracy": 0.94733,
+  "train_seconds": 6611.4,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": false
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read",
+  "seed": 2,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.46935,
+  "final_map_accuracy": 0.94653,
+  "train_seconds": 6664.9,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": false
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read",
+  "seed": 3,
+  "parameters": 612842,
+  "steps": 3000,
+  "final_loss": 0.46547,
+  "final_map_accuracy": 0.94749,
+  "train_seconds": 5810.9,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": false
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read_age",
+  "seed": 0,
+  "parameters": 613616,
+  "steps": 3000,
+  "final_loss": 0.44942,
+  "final_map_accuracy": 0.9485,
+  "train_seconds": 5893.8,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read_age",
+  "seed": 1,
+  "parameters": 613616,
+  "steps": 3000,
+  "final_loss": 0.45339,
+  "final_map_accuracy": 0.94748,
+  "train_seconds": 6670.1,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "partial_read_age",
+  "seed": 3,
+  "parameters": 613616,
+  "steps": 3000,
+  "final_loss": 0.4511,
+  "final_map_accuracy": 0.9482,
+  "train_seconds": 4904.5,
+  "config": {
+   "mode": "carry",
+   "channels": 86,
+   "key_dim": 32,
+   "memory_size": 0,
+   "warmup": 16,
+   "goal_broadcast": true,
+   "reseed": true,
+   "map_memory": 0,
+   "goal_read": true,
+   "change_gate": false,
+   "age_input": true
+  },
+  "script": "train_partial.py"
+ },
+ {
+  "variant": "restart",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.37588,
+  "final_map_accuracy": 0.96805,
+  "train_seconds": 1414.3,
+  "config": {
+   "mode": "restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "restart",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.37826,
+  "final_map_accuracy": 0.96719,
+  "train_seconds": 1407.7,
+  "config": {
+   "mode": "restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "restart",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.3769,
+  "final_map_accuracy": 0.96744,
+  "train_seconds": 1418.3,
+  "config": {
+   "mode": "restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "restart",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.37199,
+  "final_map_accuracy": 0.97005,
+  "train_seconds": 1418.7,
+  "config": {
+   "mode": "restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "restart",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.37822,
+  "final_map_accuracy": 0.96673,
+  "train_seconds": 1418.2,
+  "config": {
+   "mode": "restart",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "snapshot",
+  "seed": 0,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34214,
+  "final_map_accuracy": 0.98474,
+  "train_seconds": 2642.3,
+  "config": {
+   "mode": "snapshot",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "snapshot",
+  "seed": 1,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34697,
+  "final_map_accuracy": 0.98358,
+  "train_seconds": 2781.8,
+  "config": {
+   "mode": "snapshot",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "snapshot",
+  "seed": 2,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34756,
+  "final_map_accuracy": 0.98322,
+  "train_seconds": 2648.7,
+  "config": {
+   "mode": "snapshot",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "snapshot",
+  "seed": 3,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34164,
+  "final_map_accuracy": 0.98519,
+  "train_seconds": 2826.8,
+  "config": {
+   "mode": "snapshot",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ },
+ {
+  "variant": "snapshot",
+  "seed": 4,
+  "parameters": 597414,
+  "steps": 3000,
+  "final_loss": 0.34619,
+  "final_map_accuracy": 0.98346,
+  "train_seconds": 2788.5,
+  "config": {
+   "mode": "snapshot",
+   "channels": 96,
+   "key_dim": 32,
+   "memory_size": 8,
+   "warmup": 16
+  },
+  "script": "train.py"
+ }
+]

@@ -163,3 +163,5 @@ Most of the gain arrives within the first 40 updates; 400 updates give no more. 
 | Carry with goal read (86 channels) | 0.61 M | 332,820 | 1.01 | 2.34 |
 | Goal read and learned rebuild gate | 0.66 M | 332,820, plus 51,772 at ticks where the input changed | 1.24 | 3.14 |
 | Factorized (2 × 60 channels) | 0.48 M | 324,540 | 1.44 | 2.65 |
+
+Training time, final loss and map accuracy of every run: [results/training.json](results/training.json). Trained weights: release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0).

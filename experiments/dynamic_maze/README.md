@@ -98,6 +98,24 @@ Every model meets the same 1,024 held-out episodes of 96 ticks per regime and ma
 
 [`allocate.py`](allocate.py) runs 1,024 agents with one planner. Each tick every agent gets one refinement and a further `(b − 1)·N` refinements go, in four rounds, to the agents with the highest priority. The priority signals are: none (the same number for every agent), random, refinements since the last change, low action probability at the agent's cell, the change of the action distribution at the agent's cell in its latest refinement, and, as a reference that reads the labels, whether the current action is wrong.
 
+## Trained models
+
+Release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0) holds every trained planner and activity head of this study and of the [continual agent](../continual_agent/README.md):
+
+| File | Contents | SHA-256 |
+|---|---|---|
+| `cdm-maze-checkpoints-v0.2.0.tar.gz` (170 MB) | `runs/dynamic_maze/main/<variant>/seed<k>/` with `model.pt`, `config.json` and `train_log.jsonl` for all 79 planners; `runs/continual_agent/<planner>_s0.pt` for the three activity heads | `0f9559b1cf9084c65f9dca72e18587a4f75e2148008a30c31e656aea9feca5f7` |
+| `cdm-maze-evaluations-v0.2.0.tar.gz` (5 MB) | `runs/dynamic_maze/eval/<variant>/seed<k>.json` and `oracle.json`: every evaluation file with its recovery curves | `c69c97c2d200fe1f138a9bd65d1c818a6525bcea27edcde1adc7716d25933081` |
+
+Extracted at the repository root, the files land where the commands below expect them:
+
+```bash
+curl -LO https://github.com/Cherish0925/continual-decision-model/releases/download/v0.2.0/cdm-maze-checkpoints-v0.2.0.tar.gz
+tar -xzf cdm-maze-checkpoints-v0.2.0.tar.gz
+```
+
+`evaluate.load(path, device)` rebuilds a planner from its `model.pt`. [results/training.json](results/training.json) lists the parameters, configuration, final training loss and map accuracy, and training time of every run.
+
 ## Run
 
 ```bash

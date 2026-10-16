@@ -26,6 +26,10 @@ Computation and action happen in the same tick: the chosen refinements run, then
 
 Conditions: no learning; learning from unused compute with each target and with both; learning at a fixed rate regardless of the activity head.
 
+## Trained activity heads
+
+The three activity heads of the results are in release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0) as `runs/continual_agent/<planner>_s0.pt`, together with the planners they run on; [`behaviour.py`](behaviour.py) and `operate.py --policy` read them.
+
 ## Run
 
 ```bash
