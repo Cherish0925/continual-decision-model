@@ -1,10 +1,10 @@
 # CDM: objective, implementation, and results
 
-Status at **16 October 2026**, based on source commit [d23aca5](https://github.com/Cherish0925/continual-decision-model/tree/d23aca54dafdf2849fdd86740b894d3ea9e8d4cc) and release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0). Numbers below are from the published experiments; this status update adds no training runs.
+Status at **16 October 2026**. Planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present result is a trained navigation prototype with persistent computation and learned choices of observation and refinement. Online adaptation improves a separate full-view planner. Learning has not improved the return of the integrated partial-view agent. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present result is a trained navigation prototype with persistent computation and learned choices of observation and refinement. Online adaptation improves a separate full-view planner, and the integrated agent improves on larger mazes when it sees the whole map. Learning has not improved the return of the integrated partial-view agent. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## The intended model
 
@@ -50,7 +50,7 @@ The sequence core and spatial planner are separate models. The continual agent w
 | Reuse of computation | Ring-buffer records, snapshot and learned readers; controlled comparisons. Useful on returning contexts, with limited additional benefit in the strongest maze planner. | Selective reuse beyond fixed map/goal structure, learned writing/eviction, longer retention, reuse after parameter updates, and transfer to other tasks. |
 | Experience and knowledge | Recent belief/goal sequences and survey outcomes are replayed; old-size experience can be retained across sites. | Durable experience abstraction, a transferable knowledge/skill store, and external knowledge retrieval. |
 | Offline training | Supervised sequence/planner training and PPO activity training run successfully. | Unified training distribution and objectives across model operations and domains; larger sequence and model scales. |
-| Learning during operation | Replay, frozen-teacher distillation, solver supervision, and hindsight from surveys are implemented. Separate full-view adaptation improves performance. | Improve the integrated partial-view agent's later return, retention, and adaptation under the same total time/compute budget. |
+| Learning during operation | Replay, frozen-teacher distillation, solver supervision, and hindsight from surveys are implemented. Separate full-view adaptation improves performance; in the integrated stream with a full view, learning from unused compute raises 9×9 reward by 0.026 per 100 ticks without loss on 5×5. | Improve the integrated partial-view agent's later return, retention, and adaptation under the same total time/compute budget. |
 | Choosing when and what to learn | Unused refinement credits trigger a gradient step at a fixed threshold. | A trained learning activity, choice of experiences/targets, and joint adaptation of the activity head and planner. |
 | Quiet-period consolidation | Low-activity observation is learned; replay and deeper-to-shallower distillation can run from spare credits. | Show that idle work improves subsequent tasks; longer-term skill consolidation, broader knowledge acquisition, and measured power reduction. |
 | Long-term self-improvement | A frozen copy's deeper computation improves its fast student on larger mazes. | Repeated acquisition of new skills and knowledge from interaction, retained improvements across tasks, and multi-stage self-improvement. |
@@ -76,27 +76,27 @@ See [maze results](experiments/dynamic_maze/RESULTS.md), [training records](expe
 
 ### Learned activities
 
-Each of three planner variants has **one PPO training seed**, 120 iterations, and 2,048 parallel streams. The held-out evaluation contains four sites of 128 ticks each per stream.
+Each of three planner variants has **three PPO training seeds**, 120 iterations, and 2,048 parallel streams; the value bootstrap at each segment end uses the decision state after the segment's last action. The held-out evaluation contains four sites of 128 ticks each per stream.
 
 | Activity policy, on the gated planner | Net reward per 100 ticks | Refinements per tick | Surveys per 100 ticks | Requests reached |
 | --- | ---: | ---: | ---: | ---: |
 | One refinement every tick | 1.453 | 1.000 | 0.00 | 80.01% |
 | Hand-written adaptive schedule | 1.575 | 0.678 | 3.47 | 82.00% |
-| Learned activity head | 1.587 | 0.508 | 8.30 | 82.54% |
+| Learned activity head (three seeds) | 1.623 ± 0.005 | 0.378 | 6.77 | 82.45% |
 
-Across the three planners, learned heads earn 1.556–1.587, compared with 1.575–1.581 for the hand-written schedule and 1.449–1.478 for fixed one-refinement operation. They use 24–54% fewer refinements than the hand-written schedule but request more surveys; total hardware savings have not been measured. Their request completion ranges from **80.92% to 82.54%**.
+Across the three planners, learned heads earn 1.623, 1.571 and 1.595, compared with 1.575–1.581 for the hand-written schedule and 1.449–1.478 for fixed one-refinement operation: better on two planners, equal on the third. They use 42–51% fewer refinements than the hand-written schedule and request about twice as many surveys; total hardware savings have not been measured. Request completion is 81.03–82.45%. The single-seed heads of release v0.2.0, trained with the earlier boundary bootstrap, earned 1.556–1.587.
 
-For the gated planner, computation averages 2.59 refinements on a request-arrival tick and 0.27 when idle. Surveys increase as the stored map ages. These are learned task behaviors. The three activity policies are not three independent training repetitions of one model.
+For the gated planner, computation averages 2.18 refinements on a request-arrival tick and 0.06 when idle, and surveys increase as the stored map ages; all three seeds learn this pattern.
 
 The approximately one million evaluation agent-ticks are parallel samples, not one uninterrupted million-tick run. Each site starts with a full map, a new workspace, and 16 warm-up refinements; subsequent observations are partial. Within a site, state persists through requests and idle periods.
 
-Source: [activity results](experiments/continual_agent/RESULTS.md), [gated-policy measurements](experiments/continual_agent/results/carry_gate_s0.json), and [execution code](experiments/continual_agent/agent.py).
+Source: [activity results](experiments/continual_agent/RESULTS.md) and [execution code](experiments/continual_agent/agent.py).
 
 ### Learning during operation
 
 A separate two-seed full-view experiment adapts a 5×5-trained split planner to 9×9 mazes. After 200 updates, non-optimal moves fall from **1.90% to 0.91%** with a frozen copy making deeper predictions, or to **0.73%** with the exact solver. Replaying old-size episodes with solver supervision retains the old-size error near 0.39%, versus 0.38% initially.
 
-In the integrated partial-view stream, replay, frozen-copy distillation, and survey hindsight produce no return improvement beyond the reported site variation of about ±0.03. This experiment uses a hand-written schedule (`policy: null`, `schedule: scaled`), not the trained activity head. It carries weights and replay across sites while reinitializing the current workspace.
+In the integrated stream with a full view on 9×9 mazes, frozen-copy distillation paid from unused compute raises reward by 0.026 per 100 ticks on average over six paired runs (two planners, three seeds; standard error 0.0075), with no change on 5×5 afterwards. In the integrated partial-view stream, replay, frozen-copy distillation, and survey hindsight produce no return improvement beyond the reported site variation of about ±0.03. This experiment uses a hand-written schedule (`policy: null`, `schedule: scaled`), not the trained activity head. It carries weights and replay across sites while reinitializing the current workspace.
 
 Distillation toward the learner's own changing deeper output severely degrades both tested planners; fixed teachers work better in these runs. This comparison concerns the tested targets and optimization settings, not a general impossibility of learning from self-generated computations.
 
@@ -138,7 +138,7 @@ Recurrence, gating, memory, iterative planning, active observation, and computat
 
 **Extend the learned behavior across tasks.** Connect activity learning to the sequence core and add a nonlinear instrument with delayed, action-dependent measurements. Preserve the current objective while changing observations, actions, and dynamics. Train prediction, information gathering, subgoal selection, and skill retention on those interactions.
 
-Before expanding PPO training, correct its nonterminal rollout-boundary bootstrap: `ppo.update()` currently uses `policy(xs[-1])[1]`, the value of the last pre-action feature, where the continuation value should use the next decision state after the transition. Existing evaluation scores remain measurements of the published checkpoints; the corrected training run should be reported separately. Also report all partial-view training attempts, including the two replaced runs, when comparing training reliability.
+The PPO rollout-boundary bootstrap now uses the next decision state after each segment's last transition; the activity results above come from the corrected training. Report all partial-view training attempts, including the two replaced runs, when comparing training reliability.
 
 The remaining comparison set includes an ordinary recurrent action policy, output-only correction, a larger one-pass network, established gated planning/state-update models, and successor-feature reuse where applicable. Match observation access, training/tuning budgets, and actual runtime. Hours-long operation, distributed training, multimodal learning, tools, robotics, edge hardware, and autonomous physical/digital research remain subsequent implementations with distinct measurements.
 

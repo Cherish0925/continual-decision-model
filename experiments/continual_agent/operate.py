@@ -100,6 +100,8 @@ def main(argv=None):
     p.add_argument("--sequence", type=int, default=8)
     p.add_argument("--replay", type=int, default=64, help="sequences kept")
     p.add_argument("--learn-batch", type=int, default=32)
+    p.add_argument("--hindsight-batch", type=int, default=128, help="returned surveys per learning step")
+    p.add_argument("--hindsight-keep", type=int, default=256, help="ticks of returned surveys kept")
     p.add_argument("--depth", type=int, default=16)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--replay-old", action="store_true", help="each learning step also replays sequences from earlier maze sizes")
@@ -153,7 +155,7 @@ def main(argv=None):
                     side = s.belief.shape[-1]
                     i = returning.nonzero().squeeze(1)
                     sample = (asked[0][i], asked[1][i], asked[2][i], blocked[:r][i, t])
-                    hindsight[side] = (hindsight.get(side, []) + [sample])[-4 * args.replay:]
+                    hindsight[side] = (hindsight.get(side, []) + [sample])[-args.hindsight_keep:]
                 x = features(s)
                 if policy is None:
                     choice = fixed(args.schedule, s, t)
@@ -196,7 +198,7 @@ def main(argv=None):
                         if "hindsight" in args.targets and len(hindsight.get(k, [])) >= 2:
                             buf = hindsight[k]
                             picks = rng.choice(len(buf), size=min(len(buf), 16), replace=False)
-                            belief, age, goals, true = (torch.cat([buf[i][j] for i in picks])[:4 * args.learn_batch]
+                            belief, age, goals, true = (torch.cat([buf[i][j] for i in picks])[:args.hindsight_batch]
                                                         for j in range(4))
                             with torch.autocast("cuda", dtype=torch.bfloat16):
                                 loss = loss + hindsight_loss(model, belief, age, goals, true) / len(sides)

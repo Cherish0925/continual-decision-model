@@ -1,0 +1,110 @@
+{
+ "idle": {
+  "ticks": 259416,
+  "refinements_per_tick": 0.047522126622876,
+  "surveys_per_100_ticks": 5.204767631911679,
+  "moves_per_tick": 0.48724442594134515
+ },
+ "pending": {
+  "ticks": 264872,
+  "refinements_per_tick": 0.5857961581443112,
+  "surveys_per_100_ticks": 7.2880485668549335,
+  "moves_per_tick": 0.9988371741822465
+ },
+ "pending, 0 ticks since request": {
+  "ticks": 13142,
+  "refinements_per_tick": 1.9737482879318216,
+  "surveys_per_100_ticks": 22.249277126769137,
+  "moves_per_tick": 0.9999239080809618
+ },
+ "pending, 1 ticks since request": {
+  "ticks": 17114,
+  "refinements_per_tick": 0.8724436134159168,
+  "surveys_per_100_ticks": 7.9876124810097,
+  "moves_per_tick": 0.9994156830664953
+ },
+ "pending, 2 ticks since request": {
+  "ticks": 16569,
+  "refinements_per_tick": 0.8762146176594846,
+  "surveys_per_100_ticks": 6.74754058784477,
+  "moves_per_tick": 0.9992154022572274
+ },
+ "pending, 3 ticks since request": {
+  "ticks": 16291,
+  "refinements_per_tick": 0.5897121109815235,
+  "surveys_per_100_ticks": 4.910686882327665,
+  "moves_per_tick": 0.9988950954514763
+ },
+ "pending, 4 ticks since request": {
+  "ticks": 15707,
+  "refinements_per_tick": 0.571210288406443,
+  "surveys_per_100_ticks": 6.372954733558286,
+  "moves_per_tick": 0.999490672948367
+ },
+ "pending, 5 ticks since request": {
+  "ticks": 15412,
+  "refinements_per_tick": 0.5016869971450818,
+  "surveys_per_100_ticks": 4.515961588372696,
+  "moves_per_tick": 0.9990916169218791
+ },
+ "pending, 6 ticks since request": {
+  "ticks": 14489,
+  "refinements_per_tick": 0.44620056594658014,
+  "surveys_per_100_ticks": 4.582786941817931,
+  "moves_per_tick": 0.9992408033680723
+ },
+ "pending, 7 ticks since request": {
+  "ticks": 14075,
+  "refinements_per_tick": 0.4346714031971581,
+  "surveys_per_100_ticks": 4.4191829484902305,
+  "moves_per_tick": 0.9990053285968028
+ },
+ "pending, 8 ticks since request+": {
+  "ticks": 142073,
+  "refinements_per_tick": 0.42850506429793134,
+  "surveys_per_100_ticks": 7.117467780647977,
+  "moves_per_tick": 0.9984585389201326
+ },
+ "pending, mean map age 0-3": {
+  "ticks": 103907,
+  "refinements_per_tick": 0.7313366760660975,
+  "surveys_per_100_ticks": 3.149932150865678,
+  "moves_per_tick": 0.9976613702637935
+ },
+ "pending, mean map age 4-7": {
+  "ticks": 67536,
+  "refinements_per_tick": 0.4875325752191424,
+  "surveys_per_100_ticks": 4.755981994787965,
+  "moves_per_tick": 0.9994965647950722
+ },
+ "pending, mean map age 8-11": {
+  "ticks": 55976,
+  "refinements_per_tick": 0.4644847791910819,
+  "surveys_per_100_ticks": 9.429041017578962,
+  "moves_per_tick": 0.9996069744176076
+ },
+ "pending, mean map age 12-15": {
+  "ticks": 26409,
+  "refinements_per_tick": 0.4865765458745125,
+  "surveys_per_100_ticks": 16.055132719906094,
+  "moves_per_tick": 0.9998485364837745
+ },
+ "pending, mean map age 16-19": {
+  "ticks": 7600,
+  "refinements_per_tick": 0.6347368421052632,
+  "surveys_per_100_ticks": 25.776315789473685,
+  "moves_per_tick": 0.9994736842105263
+ },
+ "pending, mean map age 20-23": {
+  "ticks": 2331,
+  "refinements_per_tick": 0.7172887172887172,
+  "surveys_per_100_ticks": 33.933933933933936,
+  "moves_per_tick": 0.9995709995709996
+ },
+ "pending, mean map age 24-27": {
+  "ticks": 1113,
+  "refinements_per_tick": 0.8068283917340521,
+  "surveys_per_100_ticks": 49.505840071877806,
+  "moves_per_tick": 1.0
+ }
+}

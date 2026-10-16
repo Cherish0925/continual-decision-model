@@ -1,0 +1,1019 @@
+{
+ "args": {
+  "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+  "rooms": 5,
+  "radius": 2,
+  "delay": 2,
+  "survey_cost": 0.01,
+  "compute_cost": 0.002,
+  "streams": 2048,
+  "site_ticks": 128,
+  "iterations": 120,
+  "horizon": 32,
+  "epochs": 4,
+  "minibatch": 4096,
+  "lr": 0.0003,
+  "gamma": 0.99,
+  "lam": 0.95,
+  "clip": 0.2,
+  "entropy": 0.01,
+  "eval_sites": 4,
+  "seed": 1,
+  "device": "cuda",
+  "output": "runs/continual_agent/v2/carry_gate_policy1.json"
+ },
+ "training": [
+  {
+   "reward_per_100_ticks": -0.187878396582164,
+   "refinements_per_tick": 1.7273368835449219,
+   "surveys_per_100_ticks": 47.70469665527344,
+   "arrivals_per_request": 0.6022700949733611,
+   "iteration": 0,
+   "seconds": 20.1
+  },
+  {
+   "reward_per_100_ticks": 0.703216583633548,
+   "refinements_per_tick": 1.5661811828613281,
+   "surveys_per_100_ticks": 38.16642761230469,
+   "arrivals_per_request": 0.7575792640592456,
+   "iteration": 1,
+   "seconds": 38.2
+  },
+  {
+   "reward_per_100_ticks": 1.0661179084763717,
+   "refinements_per_tick": 1.3543243408203125,
+   "surveys_per_100_ticks": 27.820587158203125,
+   "arrivals_per_request": 0.7971014492753623,
+   "iteration": 2,
+   "seconds": 55.2
+  },
+  {
+   "reward_per_100_ticks": 1.2289322370634181,
+   "refinements_per_tick": 1.2138519287109375,
+   "surveys_per_100_ticks": 20.861053466796875,
+   "arrivals_per_request": 0.810933147632312,
+   "iteration": 3,
+   "seconds": 72.6
+  },
+  {
+   "reward_per_100_ticks": 1.3527542560041184,
+   "refinements_per_tick": 1.0648078918457031,
+   "surveys_per_100_ticks": 16.071701049804688,
+   "arrivals_per_request": 0.8194412107101281,
+   "iteration": 4,
+   "seconds": 90.0
+  },
+  {
+   "reward_per_100_ticks": 1.3649414526980763,
+   "refinements_per_tick": 0.9980354309082031,
+   "surveys_per_100_ticks": 13.059616088867188,
+   "arrivals_per_request": 0.8100254688585321,
+   "iteration": 5,
+   "seconds": 107.0
+  },
+  {
+   "reward_per_100_ticks": 1.4361023509536608,
+   "refinements_per_tick": 0.972412109375,
+   "surveys_per_100_ticks": 11.05194091796875,
+   "arrivals_per_request": 0.8237481120018589,
+   "iteration": 6,
+   "seconds": 123.5
+  },
+  {
+   "reward_per_100_ticks": 1.4442146769397368,
+   "refinements_per_tick": 0.9203872680664062,
+   "surveys_per_100_ticks": 10.515975952148438,
+   "arrivals_per_request": 0.8181398035817447,
+   "iteration": 7,
+   "seconds": 139.1
+  },
+  {
+   "reward_per_100_ticks": 1.487780801289773,
+   "refinements_per_tick": 0.8280982971191406,
+   "surveys_per_100_ticks": 9.868240356445312,
+   "arrivals_per_request": 0.8224201758445164,
+   "iteration": 8,
+   "seconds": 153.4
+  },
+  {
+   "reward_per_100_ticks": 1.4767738807677233,
+   "refinements_per_tick": 0.8277053833007812,
+   "surveys_per_100_ticks": 9.328842163085938,
+   "arrivals_per_request": 0.8209388798512666,
+   "iteration": 9,
+   "seconds": 168.4
+  },
+  {
+   "reward_per_100_ticks": 1.497510583840267,
+   "refinements_per_tick": 0.7958145141601562,
+   "surveys_per_100_ticks": 8.134078979492188,
+   "arrivals_per_request": 0.8248890964277376,
+   "iteration": 10,
+   "seconds": 198.8
+  },
+  {
+   "reward_per_100_ticks": 1.5128777098198043,
+   "refinements_per_tick": 0.7954254150390625,
+   "surveys_per_100_ticks": 7.9006195068359375,
+   "arrivals_per_request": 0.8215946071594608,
+   "iteration": 11,
+   "seconds": 229.5
+  },
+  {
+   "reward_per_100_ticks": 1.5218742934848706,
+   "refinements_per_tick": 0.7805404663085938,
+   "surveys_per_100_ticks": 7.8449249267578125,
+   "arrivals_per_request": 0.824136332019476,
+   "iteration": 12,
+   "seconds": 262.9
+  },
+  {
+   "reward_per_100_ticks": 1.4933579170246958,
+   "refinements_per_tick": 0.7883491516113281,
+   "surveys_per_100_ticks": 8.014297485351562,
+   "arrivals_per_request": 0.8195978147157968,
+   "iteration": 13,
+   "seconds": 295.7
+  },
+  {
+   "reward_per_100_ticks": 1.512907473534142,
+   "refinements_per_tick": 0.79022216796875,
+   "surveys_per_100_ticks": 7.636260986328125,
+   "arrivals_per_request": 0.8247326824732683,
+   "iteration": 14,
+   "seconds": 329.0
+  },
+  {
+   "reward_per_100_ticks": 1.5091583784851537,
+   "refinements_per_tick": 0.7994499206542969,
+   "surveys_per_100_ticks": 6.6585540771484375,
+   "arrivals_per_request": 0.8190575673166203,
+   "iteration": 15,
+   "seconds": 361.0
+  },
+  {
+   "reward_per_100_ticks": 1.5301765965432423,
+   "refinements_per_tick": 0.7863883972167969,
+   "surveys_per_100_ticks": 6.5948486328125,
+   "arrivals_per_request": 0.8234748318255625,
+   "iteration": 16,
+   "seconds": 390.2
+  },
+  {
+   "reward_per_100_ticks": 1.540097883935232,
+   "refinements_per_tick": 0.7654304504394531,
+   "surveys_per_100_ticks": 7.2509765625,
+   "arrivals_per_request": 0.8293563031079036,
+   "iteration": 17,
+   "seconds": 418.8
+  },
+  {
+   "reward_per_100_ticks": 1.5384987525976612,
+   "refinements_per_tick": 0.7505378723144531,
+   "surveys_per_100_ticks": 7.495880126953125,
+   "arrivals_per_request": 0.8234613604812587,
+   "iteration": 18,
+   "seconds": 443.9
+  },
+  {
+   "reward_per_100_ticks": 1.528493554042143,
+   "refinements_per_tick": 0.7284088134765625,
+   "surveys_per_100_ticks": 7.8807830810546875,
+   "arrivals_per_request": 0.8233796296296296,
+   "iteration": 19,
+   "seconds": 462.2
+  },
+  {
+   "reward_per_100_ticks": 1.5662277832234395,
+   "refinements_per_tick": 0.7228050231933594,
+   "surveys_per_100_ticks": 8.300399780273438,
+   "arrivals_per_request": 0.8336239972096268,
+   "iteration": 20,
+   "seconds": 481.0
+  },
+  {
+   "reward_per_100_ticks": 1.5411263044825319,
+   "refinements_per_tick": 0.7208824157714844,
+   "surveys_per_100_ticks": 8.45184326171875,
+   "arrivals_per_request": 0.8254096468959151,
+   "iteration": 21,
+   "seconds": 497.5
+  },
+  {
+   "reward_per_100_ticks": 1.5378792408228037,
+   "refinements_per_tick": 0.7055130004882812,
+   "surveys_per_100_ticks": 8.361434936523438,
+   "arrivals_per_request": 0.8222504914999422,
+   "iteration": 22,
+   "seconds": 513.3
+  },
+  {
+   "reward_per_100_ticks": 1.5434990570838636,
+   "refinements_per_tick": 0.6990432739257812,
+   "surveys_per_100_ticks": 8.378982543945312,
+   "arrivals_per_request": 0.826945412311266,
+   "iteration": 23,
+   "seconds": 529.2
+  },
+  {
+   "reward_per_100_ticks": 1.5293724636194383,
+   "refinements_per_tick": 0.6748428344726562,
+   "surveys_per_100_ticks": 7.9830169677734375,
+   "arrivals_per_request": 0.8219974421578886,
+   "iteration": 24,
+   "seconds": 544.5
+  },
+  {
+   "reward_per_100_ticks": 1.558435134938918,
+   "refinements_per_tick": 0.64593505859375,
+   "surveys_per_100_ticks": 7.57293701171875,
+   "arrivals_per_request": 0.824744661095636,
+   "iteration": 25,
+   "seconds": 558.8
+  },
+  {
+   "reward_per_100_ticks": 1.532542479071708,
+   "refinements_per_tick": 0.6566276550292969,
+   "surveys_per_100_ticks": 8.110427856445312,
+   "arrivals_per_request": 0.8226555246053854,
+   "iteration": 26,
+   "seconds": 572.2
+  },
+  {
+   "reward_per_100_ticks": 1.5725777282568743,
+   "refinements_per_tick": 0.646575927734375,
+   "surveys_per_100_ticks": 7.8563690185546875,
+   "arrivals_per_request": 0.8299778889794018,
+   "iteration": 27,
+   "seconds": 585.3
+  },
+  {
+   "reward_per_100_ticks": 1.5393967231830175,
+   "refinements_per_tick": 0.6478385925292969,
+   "surveys_per_100_ticks": 8.157730102539062,
+   "arrivals_per_request": 0.8249389321856462,
+   "iteration": 28,
+   "seconds": 599.1
+  },
+  {
+   "reward_per_100_ticks": 1.5242485579619824,
+   "refinements_per_tick": 0.6772117614746094,
+   "surveys_per_100_ticks": 7.906341552734375,
+   "arrivals_per_request": 0.8219639744334689,
+   "iteration": 29,
+   "seconds": 612.9
+  },
+  {
+   "reward_per_100_ticks": 1.5292938756374497,
+   "refinements_per_tick": 0.6958351135253906,
+   "surveys_per_100_ticks": 7.7640533447265625,
+   "arrivals_per_request": 0.8222737819025522,
+   "iteration": 30,
+   "seconds": 627.5
+  },
+  {
+   "reward_per_100_ticks": 1.5346153748396318,
+   "refinements_per_tick": 0.6650886535644531,
+   "surveys_per_100_ticks": 7.758331298828125,
+   "arrivals_per_request": 0.8226784881007932,
+   "iteration": 31,
+   "seconds": 642.0
+  },
+  {
+   "reward_per_100_ticks": 1.5528275107499212,
+   "refinements_per_tick": 0.6548805236816406,
+   "surveys_per_100_ticks": 7.6114654541015625,
+   "arrivals_per_request": 0.8254410399257196,
+   "iteration": 32,
+   "seconds": 655.1
+  },
+  {
+   "reward_per_100_ticks": 1.5505981973547023,
+   "refinements_per_tick": 0.6450080871582031,
+   "surveys_per_100_ticks": 8.115768432617188,
+   "arrivals_per_request": 0.8261625884263017,
+   "iteration": 33,
+   "seconds": 668.8
+  },
+  {
+   "reward_per_100_ticks": 1.554296168046676,
+   "refinements_per_tick": 0.6393928527832031,
+   "surveys_per_100_ticks": 8.103179931640625,
+   "arrivals_per_request": 0.8268514205868654,
+   "iteration": 34,
+   "seconds": 682.7
+  },
+  {
+   "reward_per_100_ticks": 1.5450020388016128,
+   "refinements_per_tick": 0.6494331359863281,
+   "surveys_per_100_ticks": 8.0535888671875,
+   "arrivals_per_request": 0.8263341067285382,
+   "iteration": 35,
+   "seconds": 696.4
+  },
+  {
+   "reward_per_100_ticks": 1.5541069735718338,
+   "refinements_per_tick": 0.6393470764160156,
+   "surveys_per_100_ticks": 7.9071044921875,
+   "arrivals_per_request": 0.8269007207626133,
+   "iteration": 36,
+   "seconds": 710.6
+  },
+  {
+   "reward_per_100_ticks": 1.5836769739507872,
+   "refinements_per_tick": 0.6129188537597656,
+   "surveys_per_100_ticks": 7.8887939453125,
+   "arrivals_per_request": 0.8293277603622431,
+   "iteration": 37,
+   "seconds": 724.4
+  },
+  {
+   "reward_per_100_ticks": 1.5375008146293112,
+   "refinements_per_tick": 0.6170158386230469,
+   "surveys_per_100_ticks": 7.64312744140625,
+   "arrivals_per_request": 0.8202234116825692,
+   "iteration": 38,
+   "seconds": 746.9
+  },
+  {
+   "reward_per_100_ticks": 1.57658545213053,
+   "refinements_per_tick": 0.6225318908691406,
+   "surveys_per_100_ticks": 7.6076507568359375,
+   "arrivals_per_request": 0.8283790060380863,
+   "iteration": 39,
+   "seconds": 768.9
+  },
+  {
+   "reward_per_100_ticks": 1.5786896223062286,
+   "refinements_per_tick": 0.6133460998535156,
+   "surveys_per_100_ticks": 7.8037261962890625,
+   "arrivals_per_request": 0.8298514391829155,
+   "iteration": 40,
+   "seconds": 790.4
+  },
+  {
+   "reward_per_100_ticks": 1.5804756739839831,
+   "refinements_per_tick": 0.5977020263671875,
+   "surveys_per_100_ticks": 7.4504852294921875,
+   "arrivals_per_request": 0.8269386808855917,
+   "iteration": 41,
+   "seconds": 813.3
+  },
+  {
+   "reward_per_100_ticks": 1.5682220988310291,
+   "refinements_per_tick": 0.6060600280761719,
+   "surveys_per_100_ticks": 7.2498321533203125,
+   "arrivals_per_request": 0.8217501731701685,
+   "iteration": 42,
+   "seconds": 832.7
+  },
+  {
+   "reward_per_100_ticks": 1.5697678229571466,
+   "refinements_per_tick": 0.6098518371582031,
+   "surveys_per_100_ticks": 6.9515228271484375,
+   "arrivals_per_request": 0.8254558123330623,
+   "iteration": 43,
+   "seconds": 850.7
+  },
+  {
+   "reward_per_100_ticks": 1.562367305132284,
+   "refinements_per_tick": 0.6000289916992188,
+   "surveys_per_100_ticks": 7.175445556640625,
+   "arrivals_per_request": 0.8243117125524965,
+   "iteration": 44,
+   "seconds": 868.3
+  },
+  {
+   "reward_per_100_ticks": 1.5841598929910106,
+   "refinements_per_tick": 0.6239700317382812,
+   "surveys_per_100_ticks": 7.439422607421875,
+   "arrivals_per_request": 0.8259866143549504,
+   "iteration": 45,
+   "seconds": 886.0
+  },
+  {
+   "reward_per_100_ticks": 1.573110232493491,
+   "refinements_per_tick": 0.609771728515625,
+   "surveys_per_100_ticks": 7.3146820068359375,
+   "arrivals_per_request": 0.8284880326911851,
+   "iteration": 46,
+   "seconds": 898.5
+  },
+  {
+   "reward_per_100_ticks": 1.5672470695790253,
+   "refinements_per_tick": 0.6208343505859375,
+   "surveys_per_100_ticks": 7.33489990234375,
+   "arrivals_per_request": 0.8242536880009292,
+   "iteration": 47,
+   "seconds": 911.1
+  },
+  {
+   "reward_per_100_ticks": 1.5688179609696817,
+   "refinements_per_tick": 0.6056556701660156,
+   "surveys_per_100_ticks": 7.389068603515625,
+   "arrivals_per_request": 0.8258954445346006,
+   "iteration": 48,
+   "seconds": 923.4
+  },
+  {
+   "reward_per_100_ticks": 1.6043793293874842,
+   "refinements_per_tick": 0.5835838317871094,
+   "surveys_per_100_ticks": 7.1346282958984375,
+   "arrivals_per_request": 0.8331202789076119,
+   "iteration": 49,
+   "seconds": 934.0
+  },
+  {
+   "reward_per_100_ticks": 1.604986608708714,
+   "refinements_per_tick": 0.5546836853027344,
+   "surveys_per_100_ticks": 7.0392608642578125,
+   "arrivals_per_request": 0.8290707094086333,
+   "iteration": 50,
+   "seconds": 942.6
+  },
+  {
+   "reward_per_100_ticks": 1.5784050629918056,
+   "refinements_per_tick": 0.5471534729003906,
+   "surveys_per_100_ticks": 7.24945068359375,
+   "arrivals_per_request": 0.8244532340623546,
+   "iteration": 51,
+   "seconds": 953.5
+  },
+  {
+   "reward_per_100_ticks": 1.568141229381581,
+   "refinements_per_tick": 0.5309524536132812,
+   "surveys_per_100_ticks": 7.07244873046875,
+   "arrivals_per_request": 0.8217729754850703,
+   "iteration": 52,
+   "seconds": 965.9
+  },
+  {
+   "reward_per_100_ticks": 1.5672432364226552,
+   "refinements_per_tick": 0.5517311096191406,
+   "surveys_per_100_ticks": 7.324981689453125,
+   "arrivals_per_request": 0.8205661467359907,
+   "iteration": 53,
+   "seconds": 979.4
+  },
+  {
+   "reward_per_100_ticks": 1.5924980612908257,
+   "refinements_per_tick": 0.5507888793945312,
+   "surveys_per_100_ticks": 7.5550079345703125,
+   "arrivals_per_request": 0.8267269355586463,
+   "iteration": 54,
+   "seconds": 993.3
+  },
+  {
+   "reward_per_100_ticks": 1.5880112091508636,
+   "refinements_per_tick": 0.5464248657226562,
+   "surveys_per_100_ticks": 7.775115966796875,
+   "arrivals_per_request": 0.8251877527440785,
+   "iteration": 55,
+   "seconds": 1007.5
+  },
+  {
+   "reward_per_100_ticks": 1.5850548230446293,
+   "refinements_per_tick": 0.5436210632324219,
+   "surveys_per_100_ticks": 7.622528076171875,
+   "arrivals_per_request": 0.826157595450853,
+   "iteration": 56,
+   "seconds": 1021.9
+  },
+  {
+   "reward_per_100_ticks": 1.5792038309882628,
+   "refinements_per_tick": 0.560211181640625,
+   "surveys_per_100_ticks": 7.48291015625,
+   "arrivals_per_request": 0.8239044748434964,
+   "iteration": 57,
+   "seconds": 1036.2
+  },
+  {
+   "reward_per_100_ticks": 1.598884631562214,
+   "refinements_per_tick": 0.563507080078125,
+   "surveys_per_100_ticks": 7.630157470703125,
+   "arrivals_per_request": 0.8316728452270621,
+   "iteration": 58,
+   "seconds": 1050.7
+  },
+  {
+   "reward_per_100_ticks": 1.5812180115972296,
+   "refinements_per_tick": 0.5525436401367188,
+   "surveys_per_100_ticks": 7.714080810546875,
+   "arrivals_per_request": 0.8257944792391556,
+   "iteration": 59,
+   "seconds": 1065.1
+  },
+  {
+   "reward_per_100_ticks": 1.5796844837495883,
+   "refinements_per_tick": 0.535186767578125,
+   "surveys_per_100_ticks": 7.5531005859375,
+   "arrivals_per_request": 0.8265317986280665,
+   "iteration": 60,
+   "seconds": 1079.4
+  },
+  {
+   "reward_per_100_ticks": 1.5791267734130088,
+   "refinements_per_tick": 0.5351333618164062,
+   "surveys_per_100_ticks": 7.7953338623046875,
+   "arrivals_per_request": 0.827899394503959,
+   "iteration": 61,
+   "seconds": 1093.6
+  },
+  {
+   "reward_per_100_ticks": 1.584240761167166,
+   "refinements_per_tick": 0.5227241516113281,
+   "surveys_per_100_ticks": 7.9944610595703125,
+   "arrivals_per_request": 0.8300326188257223,
+   "iteration": 62,
+   "seconds": 1107.8
+  },
+  {
+   "reward_per_100_ticks": 1.5878983148695625,
+   "refinements_per_tick": 0.5097579956054688,
+   "surveys_per_100_ticks": 7.8216552734375,
+   "arrivals_per_request": 0.8269832078749276,
+   "iteration": 63,
+   "seconds": 1121.8
+  },
+  {
+   "reward_per_100_ticks": 1.5583588229219458,
+   "refinements_per_tick": 0.5224533081054688,
+   "surveys_per_100_ticks": 7.674407958984375,
+   "arrivals_per_request": 0.8198324022346368,
+   "iteration": 64,
+   "seconds": 1135.9
+  },
+  {
+   "reward_per_100_ticks": 1.5932594547848566,
+   "refinements_per_tick": 0.5455513000488281,
+   "surveys_per_100_ticks": 7.706451416015625,
+   "arrivals_per_request": 0.830019765143588,
+   "iteration": 65,
+   "seconds": 1150.0
+  },
+  {
+   "reward_per_100_ticks": 1.585938288098987,
+   "refinements_per_tick": 0.5702171325683594,
+   "surveys_per_100_ticks": 7.941436767578125,
+   "arrivals_per_request": 0.8304474142940151,
+   "iteration": 66,
+   "seconds": 1164.1
+  },
+  {
+   "reward_per_100_ticks": 1.5568779374007136,
+   "refinements_per_tick": 0.593658447265625,
+   "surveys_per_100_ticks": 8.317947387695312,
+   "arrivals_per_request": 0.8249796487963716,
+   "iteration": 67,
+   "seconds": 1178.3
+  },
+  {
+   "reward_per_100_ticks": 1.5526665129982575,
+   "refinements_per_tick": 0.5984840393066406,
+   "surveys_per_100_ticks": 8.4930419921875,
+   "arrivals_per_request": 0.8244532340623546,
+   "iteration": 68,
+   "seconds": 1192.4
+  },
+  {
+   "reward_per_100_ticks": 1.5650871621346596,
+   "refinements_per_tick": 0.600372314453125,
+   "surveys_per_100_ticks": 8.412551879882812,
+   "arrivals_per_request": 0.8271676975142958,
+   "iteration": 69,
+   "seconds": 1206.5
+  },
+  {
+   "reward_per_100_ticks": 1.5519607890382758,
+   "refinements_per_tick": 0.6267127990722656,
+   "surveys_per_100_ticks": 8.443832397460938,
+   "arrivals_per_request": 0.8256178210929342,
+   "iteration": 70,
+   "seconds": 1220.4
+  },
+  {
+   "reward_per_100_ticks": 1.5864776942635217,
+   "refinements_per_tick": 0.6231575012207031,
+   "surveys_per_100_ticks": 8.150863647460938,
+   "arrivals_per_request": 0.8275303643724696,
+   "iteration": 71,
+   "seconds": 1234.1
+  },
+  {
+   "reward_per_100_ticks": 1.5536186583631206,
+   "refinements_per_tick": 0.6354942321777344,
+   "surveys_per_100_ticks": 8.336639404296875,
+   "arrivals_per_request": 0.8282122905027933,
+   "iteration": 72,
+   "seconds": 1247.5
+  },
+  {
+   "reward_per_100_ticks": 1.581372866894526,
+   "refinements_per_tick": 0.6329460144042969,
+   "surveys_per_100_ticks": 8.249664306640625,
+   "arrivals_per_request": 0.8306048995704168,
+   "iteration": 73,
+   "seconds": 1260.5
+  },
+  {
+   "reward_per_100_ticks": 1.5835083547244722,
+   "refinements_per_tick": 0.6154403686523438,
+   "surveys_per_100_ticks": 8.454132080078125,
+   "arrivals_per_request": 0.8309908235567429,
+   "iteration": 74,
+   "seconds": 1272.7
+  },
+  {
+   "reward_per_100_ticks": 1.5643517004718888,
+   "refinements_per_tick": 0.6113548278808594,
+   "surveys_per_100_ticks": 8.64410400390625,
+   "arrivals_per_request": 0.825442759578655,
+   "iteration": 75,
+   "seconds": 1285.8
+  },
+  {
+   "reward_per_100_ticks": 1.5530777364801907,
+   "refinements_per_tick": 0.6088066101074219,
+   "surveys_per_100_ticks": 8.582687377929688,
+   "arrivals_per_request": 0.8211353913747254,
+   "iteration": 76,
+   "seconds": 1298.9
+  },
+  {
+   "reward_per_100_ticks": 1.5303986001526937,
+   "refinements_per_tick": 0.6377449035644531,
+   "surveys_per_100_ticks": 8.835220336914062,
+   "arrivals_per_request": 0.8210599559318102,
+   "iteration": 77,
+   "seconds": 1313.2
+  },
+  {
+   "reward_per_100_ticks": 1.5553597102552885,
+   "refinements_per_tick": 0.6599769592285156,
+   "surveys_per_100_ticks": 8.950042724609375,
+   "arrivals_per_request": 0.8278707577870758,
+   "iteration": 78,
+   "seconds": 1327.6
+  },
+  {
+   "reward_per_100_ticks": 1.5330139641946516,
+   "refinements_per_tick": 0.6525344848632812,
+   "surveys_per_100_ticks": 8.86383056640625,
+   "arrivals_per_request": 0.8213749277874062,
+   "iteration": 79,
+   "seconds": 1341.1
+  },
+  {
+   "reward_per_100_ticks": 1.5704880167731972,
+   "refinements_per_tick": 0.6164360046386719,
+   "surveys_per_100_ticks": 8.405685424804688,
+   "arrivals_per_request": 0.8326725746268657,
+   "iteration": 80,
+   "seconds": 1372.6
+  },
+  {
+   "reward_per_100_ticks": 1.5757339790070546,
+   "refinements_per_tick": 0.6067619323730469,
+   "surveys_per_100_ticks": 8.426284790039062,
+   "arrivals_per_request": 0.8316658911121452,
+   "iteration": 81,
+   "seconds": 1403.0
+  },
+  {
+   "reward_per_100_ticks": 1.5545517541795562,
+   "refinements_per_tick": 0.6118888854980469,
+   "surveys_per_100_ticks": 8.760452270507812,
+   "arrivals_per_request": 0.8274573896801307,
+   "iteration": 82,
+   "seconds": 1434.9
+  },
+  {
+   "reward_per_100_ticks": 1.5530067978033912,
+   "refinements_per_tick": 0.5996437072753906,
+   "surveys_per_100_ticks": 8.966827392578125,
+   "arrivals_per_request": 0.8213169772017128,
+   "iteration": 83,
+   "seconds": 1463.4
+  },
+  {
+   "reward_per_100_ticks": 1.5553413750239997,
+   "refinements_per_tick": 0.621063232421875,
+   "surveys_per_100_ticks": 8.930587768554688,
+   "arrivals_per_request": 0.8274898078043098,
+   "iteration": 84,
+   "seconds": 1491.1
+  },
+  {
+   "reward_per_100_ticks": 1.5219292147776287,
+   "refinements_per_tick": 0.6301193237304688,
+   "surveys_per_100_ticks": 8.945083618164062,
+   "arrivals_per_request": 0.8183188405797102,
+   "iteration": 85,
+   "seconds": 1515.6
+  },
+  {
+   "reward_per_100_ticks": 1.5322228055083542,
+   "refinements_per_tick": 0.6379318237304688,
+   "surveys_per_100_ticks": 9.410476684570312,
+   "arrivals_per_request": 0.826268726048078,
+   "iteration": 86,
+   "seconds": 1536.7
+  },
+  {
+   "reward_per_100_ticks": 1.546878089357051,
+   "refinements_per_tick": 0.6216087341308594,
+   "surveys_per_100_ticks": 9.484481811523438,
+   "arrivals_per_request": 0.8246242774566473,
+   "iteration": 87,
+   "seconds": 1557.7
+  },
+  {
+   "reward_per_100_ticks": 1.5559753804382126,
+   "refinements_per_tick": 0.6084709167480469,
+   "surveys_per_100_ticks": 9.302902221679688,
+   "arrivals_per_request": 0.8229781325928497,
+   "iteration": 88,
+   "seconds": 1578.6
+  },
+  {
+   "reward_per_100_ticks": 1.5662224281186354,
+   "refinements_per_tick": 0.6116714477539062,
+   "surveys_per_100_ticks": 9.798049926757812,
+   "arrivals_per_request": 0.8278972935461485,
+   "iteration": 89,
+   "seconds": 1595.3
+  },
+  {
+   "reward_per_100_ticks": 1.5509445610405237,
+   "refinements_per_tick": 0.6168975830078125,
+   "surveys_per_100_ticks": 10.150909423828125,
+   "arrivals_per_request": 0.8271862676873115,
+   "iteration": 90,
+   "seconds": 1606.7
+  },
+  {
+   "reward_per_100_ticks": 1.550264800016521,
+   "refinements_per_tick": 0.5931358337402344,
+   "surveys_per_100_ticks": 10.115814208984375,
+   "arrivals_per_request": 0.8255462575546257,
+   "iteration": 91,
+   "seconds": 1616.3
+  },
+  {
+   "reward_per_100_ticks": 1.5480560687819889,
+   "refinements_per_tick": 0.5760841369628906,
+   "surveys_per_100_ticks": 10.132217407226562,
+   "arrivals_per_request": 0.824630771019886,
+   "iteration": 92,
+   "seconds": 1625.9
+  },
+  {
+   "reward_per_100_ticks": 1.5546356698905583,
+   "refinements_per_tick": 0.5821723937988281,
+   "surveys_per_100_ticks": 10.316085815429688,
+   "arrivals_per_request": 0.8286611608700709,
+   "iteration": 93,
+   "seconds": 1637.2
+  },
+  {
+   "reward_per_100_ticks": 1.5235413096434058,
+   "refinements_per_tick": 0.5924949645996094,
+   "surveys_per_100_ticks": 10.658645629882812,
+   "arrivals_per_request": 0.8219225851447169,
+   "iteration": 94,
+   "seconds": 1647.9
+  },
+  {
+   "reward_per_100_ticks": 1.5573113037135045,
+   "refinements_per_tick": 0.6110992431640625,
+   "surveys_per_100_ticks": 10.767745971679688,
+   "arrivals_per_request": 0.8281683626271971,
+   "iteration": 95,
+   "seconds": 1657.3
+  },
+  {
+   "reward_per_100_ticks": 1.555101825761085,
+   "refinements_per_tick": 0.6023101806640625,
+   "surveys_per_100_ticks": 10.361099243164062,
+   "arrivals_per_request": 0.8302479916171848,
+   "iteration": 96,
+   "seconds": 1666.7
+  },
+  {
+   "reward_per_100_ticks": 1.560398911988159,
+   "refinements_per_tick": 0.5831298828125,
+   "surveys_per_100_ticks": 9.751129150390625,
+   "arrivals_per_request": 0.8252178965717606,
+   "iteration": 97,
+   "seconds": 1677.8
+  },
+  {
+   "reward_per_100_ticks": 1.552198068020516,
+   "refinements_per_tick": 0.584136962890625,
+   "surveys_per_100_ticks": 9.848403930664062,
+   "arrivals_per_request": 0.8250347383047707,
+   "iteration": 98,
+   "seconds": 1689.3
+  },
+  {
+   "reward_per_100_ticks": 1.568595173102949,
+   "refinements_per_tick": 0.573028564453125,
+   "surveys_per_100_ticks": 9.616470336914062,
+   "arrivals_per_request": 0.8301229983754932,
+   "iteration": 99,
+   "seconds": 1700.2
+  },
+  {
+   "reward_per_100_ticks": 1.55829474060738,
+   "refinements_per_tick": 0.5703811645507812,
+   "surveys_per_100_ticks": 10.282135009765625,
+   "arrivals_per_request": 0.8257847793351094,
+   "iteration": 100,
+   "seconds": 1710.0
+  },
+  {
+   "reward_per_100_ticks": 1.5485108016036975,
+   "refinements_per_tick": 0.5608024597167969,
+   "surveys_per_100_ticks": 10.514450073242188,
+   "arrivals_per_request": 0.8250174865936115,
+   "iteration": 101,
+   "seconds": 1718.7
+  },
+  {
+   "reward_per_100_ticks": 1.5674927322834264,
+   "refinements_per_tick": 0.5818405151367188,
+   "surveys_per_100_ticks": 10.666656494140625,
+   "arrivals_per_request": 0.8285482750636721,
+   "iteration": 102,
+   "seconds": 1729.4
+  },
+  {
+   "reward_per_100_ticks": 1.540930989494882,
+   "refinements_per_tick": 0.5912628173828125,
+   "surveys_per_100_ticks": 10.612869262695312,
+   "arrivals_per_request": 0.8244841177834454,
+   "iteration": 103,
+   "seconds": 1740.7
+  },
+  {
+   "reward_per_100_ticks": 1.5590484938911686,
+   "refinements_per_tick": 0.5974349975585938,
+   "surveys_per_100_ticks": 10.05859375,
+   "arrivals_per_request": 0.8300880853036625,
+   "iteration": 104,
+   "seconds": 1753.2
+  },
+  {
+   "reward_per_100_ticks": 1.5425087628500478,
+   "refinements_per_tick": 0.6191177368164062,
+   "surveys_per_100_ticks": 10.058975219726562,
+   "arrivals_per_request": 0.8254207777132908,
+   "iteration": 105,
+   "seconds": 1765.8
+  },
+  {
+   "reward_per_100_ticks": 1.5561165493636508,
+   "refinements_per_tick": 0.6099205017089844,
+   "surveys_per_100_ticks": 10.134124755859375,
+   "arrivals_per_request": 0.832612001403673,
+   "iteration": 106,
+   "seconds": 1779.4
+  },
+  {
+   "reward_per_100_ticks": 1.5673073198286147,
+   "refinements_per_tick": 0.6079826354980469,
+   "surveys_per_100_ticks": 10.150146484375,
+   "arrivals_per_request": 0.8301252319109462,
+   "iteration": 107,
+   "seconds": 1793.8
+  },
+  {
+   "reward_per_100_ticks": 1.575482992848265,
+   "refinements_per_tick": 0.6251449584960938,
+   "surveys_per_100_ticks": 10.357284545898438,
+   "arrivals_per_request": 0.8308440430705106,
+   "iteration": 108,
+   "seconds": 1807.5
+  },
+  {
+   "reward_per_100_ticks": 1.5586639997309248,
+   "refinements_per_tick": 0.6224555969238281,
+   "surveys_per_100_ticks": 10.467147827148438,
+   "arrivals_per_request": 0.830350917964211,
+   "iteration": 109,
+   "seconds": 1820.0
+  },
+  {
+   "reward_per_100_ticks": 1.5359467214011602,
+   "refinements_per_tick": 0.6198272705078125,
+   "surveys_per_100_ticks": 10.555267333984375,
+   "arrivals_per_request": 0.8267487799209854,
+   "iteration": 110,
+   "seconds": 1833.1
+  },
+  {
+   "reward_per_100_ticks": 1.5537727801756773,
+   "refinements_per_tick": 0.6208381652832031,
+   "surveys_per_100_ticks": 10.665130615234375,
+   "arrivals_per_request": 0.8285416183630884,
+   "iteration": 111,
+   "seconds": 1846.6
+  },
+  {
+   "reward_per_100_ticks": 1.5464523804439523,
+   "refinements_per_tick": 0.6376800537109375,
+   "surveys_per_100_ticks": 10.710906982421875,
+   "arrivals_per_request": 0.8287734755390679,
+   "iteration": 112,
+   "seconds": 1860.8
+  },
+  {
+   "reward_per_100_ticks": 1.5583817193601135,
+   "refinements_per_tick": 0.6430740356445312,
+   "surveys_per_100_ticks": 10.442352294921875,
+   "arrivals_per_request": 0.8298808008332369,
+   "iteration": 113,
+   "seconds": 1875.6
+  },
+  {
+   "reward_per_100_ticks": 1.5537643955212843,
+   "refinements_per_tick": 0.6375694274902344,
+   "surveys_per_100_ticks": 10.444259643554688,
+   "arrivals_per_request": 0.8284557547715442,
+   "iteration": 114,
+   "seconds": 1893.3
+  },
+  {
+   "reward_per_100_ticks": 1.5232933499646606,
+   "refinements_per_tick": 0.6326255798339844,
+   "surveys_per_100_ticks": 10.590362548828125,
+   "arrivals_per_request": 0.8233796296296296,
+   "iteration": 115,
+   "seconds": 1909.5
+  },
+  {
+   "reward_per_100_ticks": 1.5346977563240216,
+   "refinements_per_tick": 0.6194725036621094,
+   "surveys_per_100_ticks": 10.60943603515625,
+   "arrivals_per_request": 0.8254152630967592,
+   "iteration": 116,
+   "seconds": 1920.0
+  },
+  {
+   "reward_per_100_ticks": 1.5242607558320742,
+   "refinements_per_tick": 0.6425704956054688,
+   "surveys_per_100_ticks": 10.802841186523438,
+   "arrivals_per_request": 0.8234271810914147,
+   "iteration": 117,
+   "seconds": 1933.0
+  },
+  {
+   "reward_per_100_ticks": 1.5349586949923832,
+   "refinements_per_tick": 0.6229171752929688,
+   "surveys_per_100_ticks": 11.170578002929688,
+   "arrivals_per_request": 0.8263549662712258,
+   "iteration": 118,
+   "seconds": 1951.8
+  },
+  {
+   "reward_per_100_ticks": 1.5455986509095965,
+   "refinements_per_tick": 0.6165237426757812,
+   "surveys_per_100_ticks": 11.307907104492188,
+   "arrivals_per_request": 0.8268007862180599,
+   "iteration": 119,
+   "seconds": 1969.0
+  }
+ ],
+ "evaluation": {
+  "one": {
+   "reward_per_100_ticks": 1.4532841571735844,
+   "refinements_per_tick": 1.0,
+   "surveys_per_100_ticks": 0.0,
+   "arrivals_per_request": 0.8000984593999768
+  },
+  "four": {
+   "reward_per_100_ticks": 0.8571348400778334,
+   "refinements_per_tick": 4.0,
+   "surveys_per_100_ticks": 0.0,
+   "arrivals_per_request": 0.8013436812232132
+  },
+  "survey16": {
+   "reward_per_100_ticks": 1.491406332132783,
+   "refinements_per_tick": 1.0,
+   "surveys_per_100_ticks": 5.46875,
+   "arrivals_per_request": 0.8199930499247076
+  },
+  "scaled": {
+   "reward_per_100_ticks": 1.5747268975530915,
+   "refinements_per_tick": 0.678044319152832,
+   "surveys_per_100_ticks": 3.471851348876953,
+   "arrivals_per_request": 0.8199930499247076
+  },
+  "learned": {
+   "reward_per_100_ticks": 1.6155651665826554,
+   "refinements_per_tick": 0.4199943542480469,
+   "surveys_per_100_ticks": 7.748603820800781,
+   "arrivals_per_request": 0.8269720838642418
+  }
+ }
+}

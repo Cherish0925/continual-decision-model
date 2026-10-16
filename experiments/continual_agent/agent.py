@@ -235,18 +235,20 @@ def ppo(model, args, device):
             return choice, (dist.log_prob(choice), value)
 
     def learn(x, choice, reward, extra, last):
+        if len(buffer) == args.horizon:      # the segment ended one tick ago: bootstrap from the state reached
+            update(x)
         buffer.append((x, choice, reward, extra[0], extra[1]))
-        if len(buffer) == args.horizon or last:
-            update(last)
+        if last:                             # a site ends the episode
+            update(None)
 
-    def update(last):
+    def update(next_x):
         xs = torch.stack([b[0] for b in buffer])            # [L, N, F]
         acts = torch.stack([b[1] for b in buffer])
         rews = torch.stack([b[2] for b in buffer])
         logp = torch.stack([b[3] for b in buffer])
         vals = torch.stack([b[4] for b in buffer])
         with torch.no_grad():
-            next_v = torch.zeros_like(vals[0]) if last else policy(xs[-1])[1]
+            next_v = torch.zeros_like(vals[0]) if next_x is None else policy(next_x)[1]
         adv = torch.zeros_like(rews)
         gae = torch.zeros_like(rews[0])
         for i in reversed(range(len(buffer))):
@@ -275,7 +277,7 @@ def ppo(model, args, device):
 
     start = time.perf_counter()
     for it in range(args.iterations):
-        stats = run(model, policy_fn, args, 1, args.site_ticks, 1_000_000 + it, device, learn)
+        stats = run(model, policy_fn, args, 1, args.site_ticks, 1_000_000 + 10_000 * args.seed + it, device, learn)
         stats.update(iteration=it, seconds=round(time.perf_counter() - start, 1))
         log.append(stats)
         if it % 5 == 0 or it == args.iterations - 1:

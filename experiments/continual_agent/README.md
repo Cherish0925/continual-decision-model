@@ -30,7 +30,7 @@ Conditions: no learning; learning from unused compute with each target and with 
 
 ## Trained activity heads
 
-The three activity heads of the results are in release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0) as `runs/continual_agent/<planner>_s0.pt`, together with the planners they run on; [`behaviour.py`](behaviour.py) and `operate.py --policy` read them.
+Release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1) holds the nine activity heads of the results (three planners, three PPO seeds each) as `runs/continual_agent/<planner>_seed<k>.pt`; the planners they run on are in release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0). [`behaviour.py`](behaviour.py) and `operate.py --policy` read them.
 
 ## Run
 

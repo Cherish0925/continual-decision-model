@@ -1,0 +1,140 @@
+{
+ "args": {
+  "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+  "policy": null,
+  "schedule": "scaled",
+  "condition": "frozen",
+  "phases": [
+   "5:0.3",
+   "9:0.3",
+   "5:0.3"
+  ],
+  "targets": [
+   "distill"
+  ],
+  "teacher": "frozen",
+  "sites_per_phase": 3,
+  "site_ticks": 128,
+  "streams": 512,
+  "budget": 4.0,
+  "step_cost": 4096.0,
+  "fixed_every": 8,
+  "record": 512,
+  "sequence": 8,
+  "replay": 64,
+  "learn_batch": 32,
+  "hindsight_batch": 128,
+  "hindsight_keep": 256,
+  "depth": 16,
+  "lr": 0.0003,
+  "replay_old": false,
+  "radius": 2,
+  "delay": 2,
+  "survey_cost": 0.01,
+  "compute_cost": 0.002,
+  "seed": 0,
+  "device": "cuda",
+  "output": "runs/continual_agent/operate_v2/frozen_distill.json"
+ },
+ "curve": [
+  {
+   "phase": 0,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 0,
+   "reward_per_100_ticks": 1.5850525217501854,
+   "refinements_per_tick": 0.673370361328125,
+   "surveys_per_100_ticks": 3.4149169921875,
+   "learning_steps": 0,
+   "seconds": 12.8
+  },
+  {
+   "phase": 0,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 1,
+   "reward_per_100_ticks": 1.5686310065575526,
+   "refinements_per_tick": 0.677581787109375,
+   "surveys_per_100_ticks": 3.49884033203125,
+   "learning_steps": 0,
+   "seconds": 27.8
+  },
+  {
+   "phase": 0,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 2,
+   "reward_per_100_ticks": 1.58731080096004,
+   "refinements_per_tick": 0.6803131103515625,
+   "surveys_per_100_ticks": 3.49273681640625,
+   "learning_steps": 0,
+   "seconds": 38.3
+  },
+  {
+   "phase": 1,
+   "rooms": 9,
+   "door_rate": 0.3,
+   "site": 0,
+   "reward_per_100_ticks": 0.3195556972968916,
+   "refinements_per_tick": 0.8842926025390625,
+   "surveys_per_100_ticks": 4.30450439453125,
+   "learning_steps": 0,
+   "seconds": 60.8
+  },
+  {
+   "phase": 1,
+   "rooms": 9,
+   "door_rate": 0.3,
+   "site": 1,
+   "reward_per_100_ticks": 0.25214541574314353,
+   "refinements_per_tick": 0.89404296875,
+   "surveys_per_100_ticks": 4.36859130859375,
+   "learning_steps": 0,
+   "seconds": 83.8
+  },
+  {
+   "phase": 1,
+   "rooms": 9,
+   "door_rate": 0.3,
+   "site": 2,
+   "reward_per_100_ticks": 0.2189209269999992,
+   "refinements_per_tick": 0.895751953125,
+   "surveys_per_100_ticks": 4.3670654296875,
+   "learning_steps": 0,
+   "seconds": 107.4
+  },
+  {
+   "phase": 2,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 0,
+   "reward_per_100_ticks": 1.610260024699528,
+   "refinements_per_tick": 0.6665802001953125,
+   "surveys_per_100_ticks": 3.43170166015625,
+   "learning_steps": 0,
+   "seconds": 124.2
+  },
+  {
+   "phase": 2,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 1,
+   "reward_per_100_ticks": 1.5934540157104493,
+   "refinements_per_tick": 0.6801910400390625,
+   "surveys_per_100_ticks": 3.5186767578125,
+   "learning_steps": 0,
+   "seconds": 141.8
+  },
+  {
+   "phase": 2,
+   "rooms": 5,
+   "door_rate": 0.3,
+   "site": 2,
+   "reward_per_100_ticks": 1.53081669122912,
+   "refinements_per_tick": 0.6794281005859375,
+   "surveys_per_100_ticks": 3.48663330078125,
+   "learning_steps": 0,
+   "seconds": 158.2
+  }
+ ]
+}
