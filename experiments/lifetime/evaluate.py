@@ -93,7 +93,7 @@ def load(path: Path, device):
     blob = torch.load(path, map_location=device, weights_only=False)
     weights = blob["model"]       # earlier checkpoints predate these options; their weights tell which they used
     config = CoreConfig(**{**blob["config"], "goal_term": "goal_weight" in weights,
-                           "bounded_workspace": "norm_slots.weight" in weights})
+                           "bounded_workspace": "norm_slots.weight" in weights, "learned_step": "log_step" in weights})
     model = ContinualCore(config, torch.zeros(config.actions, config.action_dim)).to(device)
     model.load_state_dict(blob["model"])
     instrument = InstrumentSpec(**blob["instrument"])

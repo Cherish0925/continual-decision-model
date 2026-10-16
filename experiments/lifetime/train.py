@@ -49,7 +49,8 @@ def build(args, spec: InstrumentSpec, device) -> ContinualCore:
     event_dim, record_dim = feature_dims(spec)
     config = CoreConfig(event_dim=event_dim, record_dim=record_dim, actions=spec.actions, action_dim=spec.dims,
                         width=args.width, slots=args.slots, heads=args.heads, records=args.records, rank=args.rank,
-                        hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM)
+                        hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM,
+                        learned_step=args.learned_step)
     return ContinualCore(config, action_values(spec)).to(device)
 
 
@@ -211,6 +212,7 @@ def main(argv=None):
     p.add_argument("--entropy", type=float, default=0.003)
     p.add_argument("--prediction", type=float, default=0.5)
     p.add_argument("--meta", type=float, default=0.0, help="weight of the prediction loss after a learning step")
+    p.add_argument("--learned-step", action="store_true", help="learn the size of a learning step through --meta")
     p.add_argument("--reward-scale", type=float, default=0.1, help="rewards are multiplied by this for value learning")
     p.add_argument("--save-every", type=int, default=50, help="windows between checkpoints")
     p.add_argument("--device", default="cuda")

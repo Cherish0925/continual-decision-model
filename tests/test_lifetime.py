@@ -149,6 +149,21 @@ class CoreTests(unittest.TestCase):
                 z = model.refine(z, h, records, torch.full((3,), 4))
         self.assertLess(float(z.norm(dim=-1).max()), 4 * 32 ** 0.5)
 
+    def test_learned_step_size_receives_gradient_through_the_step(self):
+        from cdm.core import adaptation_loss
+        spec = InstrumentSpec()
+        event_dim, record_dim = feature_dims(spec)
+        config = CoreConfig(event_dim=event_dim, record_dim=record_dim, actions=spec.actions, action_dim=spec.dims,
+                            width=32, slots=4, heads=4, records=8, rank=4, hidden=32, learned_step=True)
+        model = ContinualCore(config, action_values(spec))
+        s = model.initial(3, "cpu")
+        A, B = 0.1 * torch.randn_like(s["A"]), s["B"]
+        x, y = torch.randn(3, 16, 3 * 32), torch.randn(3, 16)
+        _, after = adaptation_loss(model, A, B, x[:, :8], y[:, :8], x[:, 8:], y[:, 8:], 0.05)
+        after.sum().backward()
+        self.assertIsNotNone(model.log_step.grad)
+        self.assertNotEqual(float(model.log_step.grad), 0.0)
+
     def test_sequence_and_tick_fast_states_agree(self):
         model = small_model()
         events = torch.randn(6, 3, model.config.event_dim)

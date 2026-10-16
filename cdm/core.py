@@ -47,6 +47,7 @@ class CoreConfig:
     action_width: int = 256    # width of the per-action control scores
     goal_term: bool = True     # control prefers actions predicted to reach the goal, with a learned weight
     bounded_workspace: bool = True   # normalise slots after every refinement
+    learned_step: bool = False # the size of a learning step is a parameter, trained through the step itself
     scalar_dim: int = 8        # extra features for the activity and value heads
 
     @property
@@ -94,6 +95,7 @@ class ContinualCore(nn.Module):
         self.control_pred = nn.Linear(2, a, bias=False)
         self.control_out = nn.Sequential(nn.GELU(), nn.Linear(a, a), nn.GELU(), nn.Linear(a, 1))
         self.goal_weight = nn.Parameter(torch.tensor(1.8)) if c.goal_term else None   # softplus(1.8) = 1.95
+        self.log_step = nn.Parameter(torch.tensor(0.05).log()) if c.learned_step else None
         self.activity = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options))
         self.value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 1))
 
@@ -160,6 +162,10 @@ class ContinualCore(nn.Module):
             pre = pre + torch.einsum("nhr,nkr->nkh", A, low)
         return self._head(pre)
 
+    def step_size(self, default: float) -> Tensor | float:
+        """Size of one learning step: learned when the configuration says so, otherwise the given one."""
+        return default if self.log_step is None else self.log_step.exp()
+
     def _head(self, pre: Tensor) -> tuple[Tensor, Tensor]:
         out = self.pred_out(pre)
         return out[..., 0], out[..., 1].clamp(-8.0, 4.0)
@@ -197,7 +203,9 @@ def adapter_step(model: ContinualCore, A: Tensor, B: Tensor, inputs: Tensor, tar
         loss = gaussian_nll(mean, logvar, targets).mean(1)                   # [n]
         gA, gB = torch.autograd.grad(loss.sum(), (A_, B_))
     scale = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)
-    return (A - learning_rate * gA / scale).detach(), (B - learning_rate * gB / scale).detach(), loss.detach()
+    step = model.step_size(learning_rate)
+    step = step.detach() if torch.is_tensor(step) else step
+    return (A - step * gA / scale).detach(), (B - step * gB / scale).detach(), loss.detach()
 
 
 def adaptation_loss(model: ContinualCore, A: Tensor, B: Tensor, support_x: Tensor, support_y: Tensor,
@@ -218,7 +226,8 @@ def adaptation_loss(model: ContinualCore, A: Tensor, B: Tensor, support_x: Tenso
     scale = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)
     with torch.no_grad():
         before = gaussian_nll(*model.predict(query_x, A, B), query_y).mean(1)
-    after = gaussian_nll(*model.predict(query_x, A_ - learning_rate * gA / scale, B_ - learning_rate * gB / scale),
+    step = model.step_size(learning_rate)
+    after = gaussian_nll(*model.predict(query_x, A_ - step * gA / scale, B_ - step * gB / scale),
                          query_y).mean(1)
     return before, after
 
