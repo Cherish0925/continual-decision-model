@@ -1,6 +1,6 @@
 # Related methods for continuing computation
 
-Reviewed: 14 October 2026.
+Read: 14 October 2026.
 
 The proposed neural mechanism jointly learns a persistent workspace, shared refinement, and a compressed observation-conditioned update. The relevant prior methods address reuse, correction, planning, and the propagation of sensitivities.
 

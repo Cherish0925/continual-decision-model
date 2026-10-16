@@ -56,7 +56,7 @@ The choice between sensing and computation depends on their achievable improveme
 3. **Learned activity.** Give the model control over observation, retrieval, refinement, and action timing. Train operation values from continuations beginning at the same interaction state.
 4. **Continued learning and transfer.** Add online parameter adaptation and background consolidation. Extend evaluation to nonlinear instruments, delayed tools, and richer observation modalities.
 
-The explicit grid experiment and the neural prototype are separate implementations. The [five-seed supervised pilot](experiments/neural_pilot/results/REPORT.md) measures learned memory use on sequential action prediction. Neural control of the changing grid and activity-policy learning are the next experiments. Instruments and embodied tasks then test more complex dynamics, partial observations, and measured computation delays. The [experiment plan](EXPERIMENTS.md) and [running guide](RUNNING.md) give the executable scope and commands.
+The explicit grid experiment and the neural prototype are separate implementations. The [five-seed supervised pilot](experiments/neural_pilot/results/REPORT.md) measures learned memory use on sequential action prediction. [Neural planners in a changing maze](experiments/dynamic_maze/RESULTS.md) measure which computation to keep after a change, and a [continual agent](experiments/continual_agent/RESULTS.md) learns how much to compute and when to look while it acts. Instruments and embodied tasks then test more complex dynamics, partial observations, and measured computation delays. The [experiment plan](EXPERIMENTS.md) and [running guide](RUNNING.md) give the executable scope and commands.
 
 ## Learning across timescales
 

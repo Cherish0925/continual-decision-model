@@ -10,5 +10,5 @@ url: "https://github.com/Cherish0925/continual-decision-model"
 license: MIT
 abstract: >-
   Research on persistent, proactive decision models, including model design,
-  training and evaluation specifications, related-work reviews, and a
+  training and evaluation specifications, related-work surveys, and a
   reproducible numerical experiment on continuing computation.

@@ -42,7 +42,7 @@ h_t=R_\theta(h_{t-1},e_t,a_{\mathrm{executed}},\Delta t,g_t),
 \qquad c_t=P_\theta(h_t,g_t).
 \]
 
-The implemented core uses a GRU. Gated matrix recurrence is the next backbone comparison with the same inputs, workspace, and output heads. The [sequence-model review](ref/SEQUENCE_MODELS.md) describes these existing recurrence families. The prototype defaults to width 128, four workspace slots, eight memory records, and four attention heads; these are configurable engineering settings.
+The implemented core uses a GRU. Gated matrix recurrence is the next backbone comparison with the same inputs, workspace, and output heads. The [sequence-model survey](ref/SEQUENCE_MODELS.md) describes these existing recurrence families. The prototype defaults to width 128, four workspace slots, eight memory records, and four attention heads; these are configurable engineering settings.
 
 A goal change enters the context at the next assimilation. The event-driven extension will retain both capture and arrival times for delayed observations and represent outstanding tool calls until their results arrive. Sensor observations, model predictions, and summaries of internal computation will use distinct input types.
 
@@ -111,7 +111,20 @@ The current reader mixes whole-workspace records before slotwise adaptation. A l
 
 The proposed contribution is learned reuse of partial computation under changing conditions, trained for subsequent decisions. It includes continued refinement and reuse after a context returns. Exact context restoration is compared with snapshot retrieval. Partial restoration and continuous change test whether conditional reuse adds more than caching.
 
-Low-rank context correction remains an optional revision parameterization. The earlier [transport study](research/COMPUTATION_TRANSPORT.md) is a separate numerical experiment and comparison, rather than the defining CDM mechanism.
+Low-rank context correction remains an optional revision parameterization. The earlier [transport study](research/COMPUTATION_TRANSPORT.md) is a separate numerical experiment and comparison, rather than the defining CDM method.
+
+## Computation organised by premise
+
+Records conditioned on their generating factors are one route to reuse. A second route organises the workspace itself by what each part depends on, so that a change invalidates only the computation built on the changed premise and that computation is rebuilt from the parts that remain valid. The spatial planners in [cdm/planner.py](cdm/planner.py) test this on mazes whose doors, obstacles, and goals change during computation ([experiments/dynamic_maze](experiments/dynamic_maze/README.md)).
+
+The factorized planner keeps a map workspace \(m\), computed from the map alone, and a goal workspace \(g\):
+
+\[
+m\leftarrow G_m(m,x_{\mathrm{map}}),\qquad
+g\leftarrow G_g\big(g,m,x_{\mathrm{map}},m(\gamma),\mathbb 1_\gamma\big),
+\]
+
+where \(m(\gamma)\) is the map workspace read at the goal cell \(\gamma\) and broadcast to every cell. When the goal moves, \(g\) is rebuilt from \([m,m(\gamma),x_{\mathrm{map}},\mathbb 1_\gamma]\) and \(m\) is kept. When the map changes, both continue under the new map. The read at the goal cell acts as a goal embedding computed from the map, as in [universal value function approximators](https://proceedings.mlr.press/v37/schaul15.html) and the [successor representation](https://doi.org/10.1162/neco.1993.5.4.613); here the re-targeted plan is refined further by the same block, and the map computation is repaired in place when doors or obstacles move. Restart, carry, restart on goal moves, snapshot and nearest-context retrieval, and learned per-cell or whole-map readers over stored workspaces share the refinement block and readout of the single-workspace planner, at matched computation per refinement.
 
 ## Activity policy
 
@@ -129,7 +142,7 @@ The fast action readout remains available at every boundary, including when the 
 
 An operation is useful when its expected future return exceeds that of available alternatives after its duration and resource use. A large uncertainty or a large planning error alone does not determine the choice: an inexpensive measurement may resolve little, while a brief computation may substantially improve an action, or vice versa.
 
-The initial experiments use fixed compute budgets and scripted measurement schedules. Next train operation values from paired continuations and learn the activity policy. Learning-operation selection and autonomous subgoal generation extend this interface later.
+The [continual agent](experiments/continual_agent/README.md) implements a first version of this interface for grid tasks. Each tick its activity head chooses how many refinements to run (0, 1, 2 or 4), whether to request a full observation, and whether to move; refinements and movement share the tick, and the observation returns two ticks later while the agent continues. Its state is the planner's workspace, the last seen map with the age of every cell, and counters of time since the last request and survey. The head is trained with PPO on reward minus computation and observation costs. Refinements it leaves unused pay for online learning steps of the planner. Learning-operation selection, joint training of head and planner, and autonomous subgoal generation extend this interface.
 
 ## Execution and GPU layout
 
@@ -158,4 +171,4 @@ Deploy with fixed parameters first, while recurrent state, workspace, and comput
 
 A background learner can replay received experience, train predictions, compare imagined trajectories, and distill deeper decisions into a faster policy. Its benefit is measured on later interaction. Stored computation carries its parameter version; updates to state-producing parameters require state reconstruction or a tested conversion between versions.
 
-This separates three mechanisms that can each improve behavior: retained activation state, reusable computation records, and learned parameter changes. [TRAINING.md](TRAINING.md) defines their training order and comparisons; [CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md) develops the central scientific hypothesis.
+This separates three processes that can each improve behavior: retained activation state, reusable computation records, and learned parameter changes. [TRAINING.md](TRAINING.md) defines their training order and comparisons; [CONTINUAL_COMPUTATION.md](research/CONTINUAL_COMPUTATION.md) develops the central scientific hypothesis.

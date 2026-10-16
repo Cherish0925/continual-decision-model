@@ -4,7 +4,7 @@ The central question is whether preserving and adapting intermediate computation
 
 ## 1. Dynamic grid: reuse under changing conditions
 
-[experiments/continual_grid/](experiments/continual_grid/README.md) implements the first closed-loop planning study. A fully observed grid contains changing doors, moving obstacles, and changing goals. A bounded block of internal computation advances environment time; each method then receives the current context and emits an action. Computation uses the observation available when it starts. Action selection uses the observation available when it finishes.
+[experiments/continual_grid/](experiments/continual_grid/README.md) implements the first interactive planning study. A fully observed grid contains changing doors, moving obstacles, and changing goals. A bounded block of internal computation advances environment time; each method then receives the current context and emits an action. Computation uses the observation available when it starts. Action selection uses the observation available when it finishes.
 
 | Regime | Change | What it tests |
 | --- | --- | --- |
@@ -31,6 +31,8 @@ This study measures trainability and sequential task performance. Activity selec
 ## 3. Neural control: the primary model comparison
 
 Connect the neural core to the grid, keeping the environment clock independent of observation, refinement, memory access, and action. First imitate a planner restricted to the model's observations. Then train action and activity policies for return under elapsed time.
+
+The first neural instance is [experiments/dynamic_maze](experiments/dynamic_maze/README.md). Convolutional latent planners act every tick in fully observed room mazes whose doors, obstacles, and goals change while they refine, with five seeds per variant. It implements restart, carry, restart on goal moves, exact snapshot and nearest-context retrieval, learned per-cell and whole-map reading of stored workspaces, a planner whose workspace is factorized by premise with two ablations, and carry trained only on static mazes. It also compares rules for sharing refinements and surveys among many agents, planners trained on partial views with and without an age input, and online learning on larger mazes. The [continual agent](experiments/continual_agent/README.md) adds learned activity selection: a PPO-trained head chooses refinements, surveys and moves each tick under a partial view, and unused compute pays for online learning. The recurrent action policy without a workspace, action-only correction, successor features with policy improvement, and the larger one-pass model remain to be implemented. Measurements: [maze](experiments/dynamic_maze/RESULTS.md), [agent](experiments/continual_agent/RESULTS.md).
 
 The activity policy chooses observation, computation, or external action. The action head remains available after every completed computation block. Introduce partial observation and measurement cost before drawing conclusions about proactive sensing.
 
@@ -66,7 +68,7 @@ Use these differences to train activity selection. An action change alone is not
 - Repeat computation on the same observation stream; measure accuracy and probability calibration without treating repeated reads as new observations.
 - After parameter updates, compare unchanged, migrated, and rebuilt computational memory.
 
-Interpret results at matched budgets. If snapshots and factorized memory perform similarly, retain the simpler mechanism until a task demonstrates a benefit from finer reuse. If ordinary recurrence is sufficient, concentrate on activity selection and longer tasks. If all reuse methods lose to restart, examine change frequency, computation depth, and representation learning before scaling. A gain in one regime identifies where a mechanism helps; generalization requires additional regimes and tasks.
+Interpret results at matched budgets. If snapshots and factorized memory perform similarly, retain the simpler method until a task demonstrates a benefit from finer reuse. If ordinary recurrence is sufficient, concentrate on activity selection and longer tasks. If all reuse methods lose to restart, examine change frequency, computation depth, and representation learning before scaling. A gain in one regime identifies where a method helps; generalization requires additional regimes and tasks.
 
 ## 4. Autonomous instrument
 

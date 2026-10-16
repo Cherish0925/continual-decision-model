@@ -44,6 +44,14 @@ The initial reader can learn to combine records, but one shared distribution can
 
 The observation prefix associated with a record says which history was available when it was written. It does not identify which individual inputs caused a particular latent component. Source-specific observation scopes are an extension for asynchronous sensor and tool streams.
 
+## Premises of computation
+
+Each part of an intermediate result rests on some of the inputs. In navigation, a distance field rests on the map and the goal; the reachability structure of the map rests on the map alone. When one input changes, exactly the parts resting on it become invalid. Restart discards everything, including the parts that remain valid. Carrying the whole state keeps conclusions that rest on the old input, and further refinement must first undo them. The two failures appear under different changes, so neither continuation is right in general.
+
+The [changing-maze study](../experiments/dynamic_maze/README.md) measures both failures and a planner whose workspace is split by premise: a map workspace that a goal change leaves intact, and a goal workspace rebuilt from it through one read at the new goal cell. Records can be keyed the same way. A map workspace stored with its map is reusable whenever that map returns, whatever the goal, whereas a whole snapshot needs map and goal to return together. Partial-return schedules, where maps and goals recombine, separate the two.
+
+This is a concrete form of the CDM hypothesis: store and continue computation indexed by what it depends on. In the maze the premises are fixed by design. The general problem is to learn the dependency structure, for example from the sensitivity of workspace components to interventions on single inputs, and to apply the same rule to it: when a premise changes, rebuild what rests on it from what does not.
+
 ## The value of further computation
 
 For candidate operation \(b\), define
@@ -69,6 +77,8 @@ To estimate relative operation value, branch from the same interaction state:
 Both branches start with the same received history, current environment, workspace, records, and pending operations. They advance over a common physical-time horizon, and use a specified continuation policy after the alternative operations. Shared exogenous randomness can reduce variance. Action-dependent transitions still follow each branch's own actions.
 
 This comparison supplies learning targets for the activity policy. Dividing predicted improvement by duration gives a simple scheduling baseline. Duration-aware actor–critic learning can account for longer consequences, interacting operations, and future opportunities to compute.
+
+The maze experiments measured three versions of this choice. When thinking or looking cost the agent a tick of standing still, branched-rollout values never beat moving: the operations returned about what they cost. When many agents share a refinement budget, the change of each agent's own action distribution in its latest refinement locates the useful computation almost as well as an oracle that reads the labels. When computation and surveys run while the agent keeps moving, an activity head trained with PPO on reward minus costs learns to burst computation when a new goal arrives, to survey more as its map ages, and to keep surveying while idle; it matches the best hand-written schedule with 24–54% fewer refinements ([results](../experiments/continual_agent/RESULTS.md)).
 
 ## Information and computation
 
@@ -96,6 +106,19 @@ The dynamic-grid study separately compares explicit planning states under changi
 
 The [quadratic study](../experiments/transport/RESULTS.md) found that its learned correction lost to stronger solvers. Its exact same-depth state reference also retained unfinished optimization error. Reproducing an internal state is therefore an auxiliary training target whose usefulness must be assessed through subsequent decisions. The primary objectives are action quality, return, adaptation speed, and measured runtime.
 
+## Measured so far
+
+The [changing-maze study](../experiments/dynamic_maze/RESULTS.md) and the [continual agent](../experiments/continual_agent/RESULTS.md) support six statements about this task family.
+
+1. Which computation to keep depends on which premise changed. Carrying the whole workspace repairs map changes well and perseveres after goal moves (43% of the affected cells right one refinement after a goal move); restarting discards valid work (16% non-optimal moves under continuous change).
+2. A change has to reach every computation that depends on it. Local refinement carries a goal change as a wave; one read of the workspace at the goal cell carries it everywhere at once (92.6% after one refinement). This read is the largest single effect measured.
+3. A model can learn part of the dependency structure. A learned keep-or-rebuild gate rebuilds 78% of the workspace evenly after a goal move and 56% after door changes, more near the doors, and keeps about ten of 86 channels through every change; its plan is 83% right before any refinement, matching a hand-made split into map and goal workspaces.
+4. The model's own readout tells where computation is needed, and with a partial view information is worth more than computation.
+5. Learning during operation needs an anchored target. A deployed planner halves its errors on larger mazes when it learns from the exact solver or from a frozen copy of its own deep computation; learning toward its own live deeper output collapses within a few hundred updates. In the partial-view stream, anchored learning paid from unused compute has not yet changed reward.
+6. Training under change is what teaches a recurrent block to revise its own state: trained on static mazes, it cannot recover after changes at any budget.
+
+Closest prior work: value iteration and gated path planning networks train the same kind of recurrent convolutional planner on fixed maps and goals; universal value function approximators and the successor representation factor values into goal-independent structure and a goal read; LPA* and D* Lite repair explicit search after graph changes, and like carried computation they handle goal moves poorly; Looped Actor stops computation when successive action distributions stabilise, the same signal that allocates refinements here across agents. The maze results add measurements of these ideas while the world changes during computation, a learned gate that recovers the premise split, and their cost in milliseconds. Learned premises beyond a fixed map/goal split, learned activity choices that include learning itself, and a second domain with delayed measurements are the next steps.
+
 ## Experimental comparisons
 
 | Comparison | What it tests |
@@ -115,4 +138,4 @@ For successor features, \(Q^\pi(s,a)=\psi^\pi(s,a)^\top w\) depends on the polic
 
 Run paired environment seeds, equal tuning budgets, and matching information access. Report task return, goal-reaching time, recovery after changes, refinement work, memory-read cost, and end-to-end latency. Compute ticks in a simulator and hardware milliseconds answer different questions; measure both and connect them through an explicit timing model when evaluating real-time operation.
 
-A successful mechanism should improve this quality–time tradeoff on held-out factor combinations, not only reconstruct familiar contexts. Negative or mixed outcomes determine which representation, reader, or task distribution needs to change.
+The design succeeds if it improves this quality–time tradeoff on held-out factor combinations, beyond reconstructing familiar contexts. Negative or mixed outcomes determine which representation, reader, or task distribution needs to change.
