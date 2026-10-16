@@ -1,0 +1,585 @@
+{
+ "args": {
+  "model": [
+   "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "runs/dynamic_maze/main/factorized_memory/seed0/model.pt"
+  ],
+  "oracle": false,
+  "rooms": [
+   5
+  ],
+  "regimes": [
+   "full_return",
+   "partial_return",
+   "continuous"
+  ],
+  "think": [
+   1,
+   2,
+   4
+  ],
+  "episodes": 1024,
+  "batch": 256,
+  "ticks": 96,
+  "seed": 424242,
+  "phase_range": [
+   12,
+   24
+  ],
+  "latency": false,
+  "latency_only": true,
+  "device": "cuda",
+  "output": "runs/dynamic_maze/latency.json"
+ },
+ "runs": [],
+ "latency": [
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 0.9653570440908273,
+   "p50_ms": 0.9637419134378433,
+   "p95_ms": 0.992969237267971,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.0183000092705092,
+   "p50_ms": 2.0212456583976746,
+   "p95_ms": 2.044381480664015,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.121201179921627,
+   "p50_ms": 1.1182082816958427,
+   "p95_ms": 1.1511506512761116,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.8270760137173863,
+   "p50_ms": 2.824549563229084,
+   "p95_ms": 2.8637331910431385,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.4015408439768686,
+   "p50_ms": 1.3970788568258286,
+   "p95_ms": 1.437696535140276,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/restart/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 4.472850345902973,
+   "p50_ms": 4.4656554237008095,
+   "p95_ms": 4.602971393615007,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 0.911657874368959,
+   "p50_ms": 0.909438356757164,
+   "p95_ms": 0.9347532875835896,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.8613992672827508,
+   "p50_ms": 1.8600886687636375,
+   "p95_ms": 1.8773825839161873,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.0614726071556408,
+   "p50_ms": 1.0573947802186012,
+   "p95_ms": 1.099550537765026,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.6688113601671324,
+   "p50_ms": 2.6547759771347046,
+   "p95_ms": 2.674214169383049,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.329691604607635,
+   "p50_ms": 1.3274801895022392,
+   "p95_ms": 1.3624224811792374,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 4.3069958169427185,
+   "p50_ms": 4.306337796151638,
+   "p95_ms": 4.348897747695446,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.0078695809675589,
+   "p50_ms": 1.005474478006363,
+   "p95_ms": 1.0350978933274746,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.339280562268363,
+   "p50_ms": 2.338644117116928,
+   "p95_ms": 2.3576400242745876,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.1841712312565909,
+   "p50_ms": 1.1822991073131561,
+   "p95_ms": 1.2109051458537579,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.3898699511256485,
+   "p50_ms": 3.390723839402199,
+   "p95_ms": 3.435845486819744,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.5419787416855495,
+   "p50_ms": 1.5377691015601158,
+   "p95_ms": 1.5712829306721687,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 5.575745573474301,
+   "p50_ms": 5.535442382097244,
+   "p95_ms": 5.787939392030239,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.244490531583627,
+   "p50_ms": 1.2406371533870697,
+   "p95_ms": 1.2775345705449581,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.1421084163917437,
+   "p50_ms": 3.139929845929146,
+   "p95_ms": 3.177423309534788,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.4222707082000043,
+   "p50_ms": 1.4190459623932838,
+   "p95_ms": 1.4545858837664127,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 4.20686010685232,
+   "p50_ms": 4.200904630124569,
+   "p95_ms": 4.285259451717138,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.7632618960407045,
+   "p50_ms": 1.759648323059082,
+   "p95_ms": 1.7961152829229832,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_gate/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 6.3726361323561935,
+   "p50_ms": 6.3073905184865,
+   "p95_ms": 6.904564239084721,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.3613103992409177,
+   "p50_ms": 1.3606445863842964,
+   "p95_ms": 1.3868914917111397,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.7760664725469217,
+   "p50_ms": 2.77751125395298,
+   "p95_ms": 2.78982138261199,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.5186378318402503,
+   "p50_ms": 1.5155607834458351,
+   "p95_ms": 1.553869340568781,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.5985353713234267,
+   "p50_ms": 3.5975947976112366,
+   "p95_ms": 3.6345044150948524,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.7933361128800445,
+   "p50_ms": 1.7920620739459991,
+   "p95_ms": 1.8226518295705318,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/snapshot/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 5.283879385226303,
+   "p50_ms": 5.243632011115551,
+   "p95_ms": 5.565067566931248,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.5317376599543624,
+   "p50_ms": 1.5316540375351906,
+   "p95_ms": 1.554944273084402,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.094149981107977,
+   "p50_ms": 3.0942047014832497,
+   "p95_ms": 3.1160187907516956,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.6894272632069058,
+   "p50_ms": 1.688462682068348,
+   "p95_ms": 1.7161444760859013,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.9412616855568356,
+   "p50_ms": 3.9419466629624367,
+   "p95_ms": 3.9936915040016174,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.9647956101430788,
+   "p50_ms": 1.9651558250188828,
+   "p95_ms": 1.989382691681385,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/nearest/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 5.610791635182169,
+   "p50_ms": 5.571705289185047,
+   "p95_ms": 5.888962931931017,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.196954863352908,
+   "p50_ms": 2.1940357983112335,
+   "p95_ms": 2.225057315081358,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 6.391521874401304,
+   "p50_ms": 6.306006573140621,
+   "p95_ms": 6.87868520617485,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.358702797856596,
+   "p50_ms": 2.3576244711875916,
+   "p95_ms": 2.3789419792592525,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 7.412907388061285,
+   "p50_ms": 7.340825162827969,
+   "p95_ms": 8.056062646210194,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.680452581908968,
+   "p50_ms": 2.6753339916467667,
+   "p95_ms": 2.7053928934037685,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_global/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 9.435927691972918,
+   "p50_ms": 9.33618750423193,
+   "p95_ms": 9.998690523207188,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.2156717566152415,
+   "p50_ms": 2.2127078846096992,
+   "p95_ms": 2.2404260002076626,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 6.6011925331420365,
+   "p50_ms": 6.516925059258938,
+   "p95_ms": 7.149479631334543,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.385021891031,
+   "p50_ms": 2.3844847455620766,
+   "p95_ms": 2.4138791486620903,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 7.593697412974304,
+   "p50_ms": 7.508706301450729,
+   "p95_ms": 8.189582824707031,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.702553797927168,
+   "p50_ms": 2.7016839012503624,
+   "p95_ms": 2.7316315099596977,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/memory_local/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 9.659939321378866,
+   "p50_ms": 9.534412994980812,
+   "p95_ms": 10.301969945430756,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.438547960586018,
+   "p50_ms": 1.4357967302203178,
+   "p95_ms": 1.4699609950184822,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.646841026014752,
+   "p50_ms": 2.6478003710508347,
+   "p95_ms": 2.6623882353305817,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.8307143925792642,
+   "p50_ms": 1.8282318487763405,
+   "p95_ms": 1.8652132712304592,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 4.0151679991847935,
+   "p50_ms": 4.015463404357433,
+   "p95_ms": 4.054727405309677,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.5842518338726626,
+   "p50_ms": 2.5858208537101746,
+   "p95_ms": 2.622350584715605,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 6.781213120039967,
+   "p50_ms": 6.753136403858662,
+   "p95_ms": 7.032850570976734,
+   "batch": 256,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 1.8111599402295218,
+   "p50_ms": 1.808268018066883,
+   "p95_ms": 1.8409447744488716,
+   "batch": 1,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 3.0389046813878746,
+   "p50_ms": 3.0386950820684433,
+   "p95_ms": 3.062319755554199,
+   "batch": 256,
+   "think": 1
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.212283511956533,
+   "p50_ms": 2.2134939208626747,
+   "p95_ms": 2.248831745237112,
+   "batch": 1,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 4.4308944915731745,
+   "p50_ms": 4.427909851074219,
+   "p95_ms": 4.546200297772884,
+   "batch": 256,
+   "think": 2
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 2.971509243879053,
+   "p50_ms": 2.970491535961628,
+   "p95_ms": 3.0099106952548027,
+   "batch": 1,
+   "think": 4
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized_memory/seed0/model.pt",
+   "rooms": 5,
+   "mean_ms": 7.17186164110899,
+   "p50_ms": 7.142513990402222,
+   "p95_ms": 7.396869454532861,
+   "batch": 256,
+   "think": 4
+  }
+ ]
+}

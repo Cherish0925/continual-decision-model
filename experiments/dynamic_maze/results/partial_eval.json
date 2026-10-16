@@ -1,0 +1,664 @@
+{
+ "args": {
+  "model": [
+   "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt"
+  ],
+  "rooms": 5,
+  "regimes": [
+   "partial_return",
+   "continuous"
+  ],
+  "episodes": 1024,
+  "ticks": 96,
+  "radius": 2,
+  "seed": 424242,
+  "device": "cuda",
+  "output": "runs/dynamic_maze/partial_eval.json"
+ },
+ "runs": [
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8531450033187866,
+   "return_sem": 0.03678057715296745
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7363677024841309,
+   "return_sem": 0.037377696484327316
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6641411781311035,
+   "return_sem": 0.036516547203063965
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7177739143371582,
+   "return_sem": 0.0214008130133152
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5619925260543823,
+   "return_sem": 0.024609174579381943
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.582930088043213,
+   "return_sem": 0.023160746321082115
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8558989763259888,
+   "return_sem": 0.03645931929349899
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7283793687820435,
+   "return_sem": 0.03765668347477913
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.645156741142273,
+   "return_sem": 0.03713105991482735
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7174808979034424,
+   "return_sem": 0.021541140973567963
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.565176248550415,
+   "return_sem": 0.024641480296850204
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5756644010543823,
+   "return_sem": 0.02353164181113243
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8617192506790161,
+   "return_sem": 0.03622112423181534
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7422465085983276,
+   "return_sem": 0.03697047010064125
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.647051215171814,
+   "return_sem": 0.03667032718658447
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7181057929992676,
+   "return_sem": 0.021608123555779457
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.558027744293213,
+   "return_sem": 0.02452472411096096
+  },
+  {
+   "model": "runs/dynamic_maze/main/carry_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5738871097564697,
+   "return_sem": 0.023736806586384773
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.7697269916534424,
+   "return_sem": 0.03634949401021004
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7176568508148193,
+   "return_sem": 0.03670381382107735
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6128129959106445,
+   "return_sem": 0.03687857836484909
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.6883794069290161,
+   "return_sem": 0.021995030343532562
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.606562852859497,
+   "return_sem": 0.024134071543812752
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5695315599441528,
+   "return_sem": 0.02358553186058998
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.7439849376678467,
+   "return_sem": 0.036198243498802185
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.6863480806350708,
+   "return_sem": 0.03744584321975708
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.591602087020874,
+   "return_sem": 0.03657202422618866
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.6658596992492676,
+   "return_sem": 0.02226589433848858
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.6003519296646118,
+   "return_sem": 0.02390414848923683
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5544143915176392,
+   "return_sem": 0.023542091250419617
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.775957465171814,
+   "return_sem": 0.03602571785449982
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7317192554473877,
+   "return_sem": 0.036777347326278687
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6108794212341309,
+   "return_sem": 0.03709827736020088
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.678828477859497,
+   "return_sem": 0.022068768739700317
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5986137390136719,
+   "return_sem": 0.02404535748064518
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5648441314697266,
+   "return_sem": 0.023864900693297386
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8147857189178467,
+   "return_sem": 0.03636198863387108
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7614262104034424,
+   "return_sem": 0.036424312740564346
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6323832273483276,
+   "return_sem": 0.03676601126790047
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.6952933073043823,
+   "return_sem": 0.021952221170067787
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.6062893867492676,
+   "return_sem": 0.0238342322409153
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5836331844329834,
+   "return_sem": 0.023263297975063324
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8098442554473877,
+   "return_sem": 0.03606686741113663
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.712480902671814,
+   "return_sem": 0.03757674992084503
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6266216039657593,
+   "return_sem": 0.03659943863749504
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.6828713417053223,
+   "return_sem": 0.022423449903726578
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5799808502197266,
+   "return_sem": 0.024683132767677307
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5739262104034424,
+   "return_sem": 0.02340180054306984
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.819902777671814,
+   "return_sem": 0.03634798526763916
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7299809455871582,
+   "return_sem": 0.0370669960975647
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6347074508666992,
+   "return_sem": 0.036381978541612625
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.6879886388778687,
+   "return_sem": 0.022146157920360565
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.581113576889038,
+   "return_sem": 0.024354005232453346
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_read_age/seed3/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5682034492492676,
+   "return_sem": 0.02398950420320034
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8699222803115845,
+   "return_sem": 0.03617633134126663
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.751660704612732,
+   "return_sem": 0.036999527364969254
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6517192125320435,
+   "return_sem": 0.03686090558767319
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.734394907951355,
+   "return_sem": 0.021007675677537918
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.576289415359497,
+   "return_sem": 0.024294674396514893
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5848050117492676,
+   "return_sem": 0.02331940457224846
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8721098899841309,
+   "return_sem": 0.036180492490530014
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7452348470687866,
+   "return_sem": 0.036954984068870544
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6620512008666992,
+   "return_sem": 0.03642132878303528
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7274808883666992,
+   "return_sem": 0.021242773160338402
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5789457559585571,
+   "return_sem": 0.024449408054351807
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5913089513778687,
+   "return_sem": 0.02291540987789631
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8696879148483276,
+   "return_sem": 0.0364399291574955
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7401957511901855,
+   "return_sem": 0.037414465099573135
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6591215133666992,
+   "return_sem": 0.03654954582452774
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7350589036941528,
+   "return_sem": 0.020991437137126923
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5645121335983276,
+   "return_sem": 0.02470887452363968
+  },
+  {
+   "model": "runs/dynamic_maze/main/factorized/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5749027729034424,
+   "return_sem": 0.02367420494556427
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8416997194290161,
+   "return_sem": 0.036277662962675095
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.754141092300415,
+   "return_sem": 0.03689105436205864
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.664961338043213,
+   "return_sem": 0.036549463868141174
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.7080082893371582,
+   "return_sem": 0.02174055203795433
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5964261293411255,
+   "return_sem": 0.02401820570230484
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed0/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5758206844329834,
+   "return_sem": 0.02311865985393524
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8427348136901855,
+   "return_sem": 0.03641124069690704
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7455863952636719,
+   "return_sem": 0.0369851253926754
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6599419116973877,
+   "return_sem": 0.03660786896944046
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.709394931793213,
+   "return_sem": 0.021738454699516296
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5945706367492676,
+   "return_sem": 0.023551322519779205
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed1/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5645315647125244,
+   "return_sem": 0.023382756859064102
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "full",
+   "return": 1.8457622528076172,
+   "return_sem": 0.036211419850587845
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "move",
+   "return": 1.7693169116973877,
+   "return_sem": 0.03636065125465393
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "partial_return",
+   "policy": "survey16",
+   "return": 1.6564652919769287,
+   "return_sem": 0.03656298667192459
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "full",
+   "return": 1.705312967300415,
+   "return_sem": 0.021757984533905983
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "move",
+   "return": 1.5990824699401855,
+   "return_sem": 0.023355023935437202
+  },
+  {
+   "model": "runs/dynamic_maze/main/partial_factorized_age/seed2/model.pt",
+   "regime": "continuous",
+   "policy": "survey16",
+   "return": 1.5879886150360107,
+   "return_sem": 0.022781411185860634
+  }
+ ]
+}
