@@ -14,16 +14,22 @@ own state, experience and adapters; nothing is reset. Reported:
   conditions met before in the lifetime (acquisition and retention);
 - tracking and prediction error as functions of time in the lifetime.
 
-``--also`` evaluates each model that learns a second time under other modes,
-for example with learning switched off. ``--instrument`` changes the instrument
-family, for example ``time_constant=8,16 width=0.15,0.25`` for dynamics outside
-the training ranges.
+``--also`` evaluates each model that learns a second time under other modes:
+``frozen`` switches learning off, so the compute it used is chosen anew;
+``discard`` keeps every chosen learning step, its time and its cost, but throws
+its adapter update away, which isolates what the updates themselves contribute.
+Every setting of a model starts from the same random state, so the settings are
+compared under common random numbers. ``--family`` selects the process family
+(by default the one trained on); ``--instrument`` changes fields of its
+specification, for example ``time_constant=8,16 width=0.15,0.25`` for dynamics
+outside the training ranges.
 """
 from __future__ import annotations
 
 import argparse
 import dataclasses
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -34,8 +40,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import CoreConfig, ContinualCore  # noqa: E402
-from cdm.instrument import InstrumentFleet, InstrumentSpec  # noqa: E402
-from runtime import MODES, Costs, configure_backends, new_agent, tick  # noqa: E402
+from cdm.instrument import InstrumentSpec  # noqa: E402
+from cdm.thermal import ThermalSpec  # noqa: E402
+from runtime import FAMILIES, MODES, Costs, configure_backends, make_fleet, new_agent, tick  # noqa: E402
 from train import first_observation  # noqa: E402
 
 SWITCH_BINS = (0, 10, 25, 50, 100, 200, 400, 800, 10 ** 9)
@@ -84,12 +91,20 @@ def load(path: Path, device):
                            "bounded_workspace": "norm_slots.weight" in weights})
     model = ContinualCore(config, torch.zeros(config.actions, config.action_dim)).to(device)
     model.load_state_dict(blob["model"])
-    return model.eval(), blob["args"], InstrumentSpec(**blob["instrument"])
+    instrument = InstrumentSpec(**blob["instrument"])
+    thermal = ThermalSpec(**blob["thermal"]) if "thermal" in blob else ThermalSpec(dims=instrument.dims,
+                                                                                    levels=instrument.levels)
+    return model.eval(), blob["args"], {"instrument": instrument, "thermal": thermal}
 
 
 @torch.no_grad()
-def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy=False):
-    env = InstrumentFleet(devices, spec, seed=seed, device=device)
+def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False):
+    torch.manual_seed(seed)
+    apply_updates = mode != "discard"
+    mode = args_train["mode"] if mode == "discard" else mode
+    env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"],
+                     args_train.get("thermal_share", 0.5))
+    spec = env.spec
     agent = new_agent(model, devices, args_train["buffer"], device)
     obs = first_observation(env)
     costs = Costs()
@@ -102,7 +117,8 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
-                                learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True)
+                                learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True,
+                                apply_updates=apply_updates)
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
         serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
@@ -150,7 +166,9 @@ def evaluate(model, args_train, spec, devices, ticks, seed, device, mode, greedy
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, nargs="+", required=True)
-    p.add_argument("--also", nargs="*", default=[], choices=MODES, help="further modes to evaluate each model under")
+    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard"),
+                   help="further settings to evaluate each learning model under")
+    p.add_argument("--family", choices=FAMILIES, help="process family to evaluate on; by default the training family")
     p.add_argument("--devices", type=int, default=1024)
     p.add_argument("--ticks", type=int, default=20000)
     p.add_argument("--seed", type=int, default=777)
@@ -169,21 +187,25 @@ def main(argv=None):
     configure_backends()
     rows = []
     for path in args.model:
-        model, targs, spec = load(path, device)
-        spec = dataclasses.replace(spec, **changes)
+        model, targs, specs = load(path, device)
+        family = args.family or targs.get("family", "instrument")
+        specs = {name: dataclasses.replace(spec, **{k: v for k, v in changes.items() if hasattr(spec, k)})
+                 for name, spec in specs.items()}
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
         for mode in dict.fromkeys([targs["mode"], *(args.also if learns else [])]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
-                   "seed": targs["seed"], "instrument": changes,
-                   **evaluate(model, targs, spec, args.devices, args.ticks, args.seed, device, mode, args.greedy)}
+                   "seed": targs["seed"], "family": family, "instrument": changes,
+                   **evaluate(model, targs, specs, family, args.devices, args.ticks, args.seed, device, mode,
+                              args.greedy)}
             rows.append(row)
             print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in row.items()
                               if not isinstance(v, list)}), flush=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
     args.output.write_text(json.dumps({"args": {k: ([str(x) for x in v] if k == "model" else
                                                     str(v) if isinstance(v, Path) else v)
                                                 for k, v in vars(args).items()},
-                                       "runs": rows}, indent=1))
+                                       "revision": revision or None, "runs": rows}, indent=1))
 
 
 if __name__ == "__main__":

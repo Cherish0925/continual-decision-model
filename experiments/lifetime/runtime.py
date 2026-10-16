@@ -18,7 +18,8 @@ import torch
 from torch import Tensor
 
 from cdm.core import REFINEMENTS, ContinualCore, adapter_step
-from cdm.instrument import InstrumentFleet, InstrumentSpec
+from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, ProcessSpec
+from cdm.thermal import ThermalFleet, ThermalSpec
 
 SCALAR_DIM = 8
 MODES = ("full", "fixed_learn", "frozen", "world_model", "predict_only", "recurrent")
@@ -33,7 +34,21 @@ def configure_backends():
     torch.backends.cuda.enable_cudnn_sdp(False)
 
 
-def feature_dims(spec: InstrumentSpec) -> tuple[int, int]:
+FAMILIES = ("instrument", "thermal", "mixed")
+
+
+def make_fleet(family: str, n: int, seed: int, device, instrument: InstrumentSpec = InstrumentSpec(),
+               thermal: ThermalSpec = ThermalSpec(), share: float = 0.5):
+    """Processes of one family, or a mixture with ``share`` of the streams thermal."""
+    if family == "instrument":
+        return InstrumentFleet(n, instrument, seed, device)
+    if family == "thermal":
+        return ThermalFleet(n, thermal, seed, device)
+    k = int(round(n * share))
+    return MixedFleet([InstrumentFleet(n - k, instrument, seed, device), ThermalFleet(k, thermal, seed + 1, device)])
+
+
+def feature_dims(spec: ProcessSpec) -> tuple[int, int]:
     """Sizes of the event vector and of one experience record."""
     return 13 + spec.dims, 5 + spec.dims
 
@@ -147,11 +162,12 @@ def distributions(control_logits: Tensor, activity_logits: Tensor, allowed: Tens
 @torch.no_grad()
 def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mode: str, costs: Costs,
          learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32,
-         shared: bool = False):
+         shared: bool = False, apply_updates: bool = True):
     """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick.
 
     With ``shared`` the record also holds the error of the shared predictor alone, without the instance adapter,
-    for the action taken.
+    for the action taken. With ``apply_updates`` false, chosen learning steps still occupy the compute and incur
+    their cost, but their adapter updates are discarded: a matched-time control for the effect of the update.
     """
     n = agent.h.shape[0]
     device = agent.h.device
@@ -199,16 +215,18 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     if learn.any():
         idx = learn.nonzero().squeeze(1)
         pick = torch.randint(0, T, (len(idx), sample_learn), device=device)
-        pick = T - 1 - (pick % filled[idx].unsqueeze(1))             # only filled entries
-        sel = (idx.unsqueeze(1), pick)
-        xs = torch.cat((learn_s[sel].float(), model.action_features(learn_a[sel])), -1)
-        newA, newB, _ = adapter_step(model, A[idx], B[idx], xs, learn_y[sel], learning_rate)
-        if learn_ticks <= 1:
-            A, B = A.clone(), B.clone()
-            A[idx], B[idx] = newA, newB
-        else:
-            next_A, next_B = next_A.clone(), next_B.clone()
-            next_A[idx], next_B[idx] = newA, newB
+        if apply_updates:
+            pick = T - 1 - (pick % filled[idx].unsqueeze(1))         # only filled entries
+            sel = (idx.unsqueeze(1), pick)
+            xs = torch.cat((learn_s[sel].float(), model.action_features(learn_a[sel])), -1)
+            newA, newB, _ = adapter_step(model, A[idx], B[idx], xs, learn_y[sel], learning_rate)
+            if learn_ticks <= 1:
+                A, B = A.clone(), B.clone()
+                A[idx], B[idx] = newA, newB
+            else:
+                next_A, next_B = next_A.clone(), next_B.clone()
+                next_A[idx], next_B[idx] = newA, newB
+        if learn_ticks > 1:
             busy[idx] = learn_ticks - 1
     pred_taken = mean.float()[rows, action]
     error = (nxt["cheap"] - pred_taken).abs()

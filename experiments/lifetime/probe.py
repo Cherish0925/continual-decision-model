@@ -7,8 +7,10 @@ each with learning on and off.
 
 ``decisions`` follows one trajectory of the model in its own mode and scores, at
 every tick of an active request, the action the adapted predictor and the shared
-predictor alone would choose greedily, by the true distance of that action's
-response from the setpoint. The simulator's response is used only for scoring.
+predictor alone would choose greedily, by the distance of that action's steady
+response from the setpoint. The predictors target the next reading, so this
+scores where an action leads rather than its one-step effect; the simulator's
+response is used only for scoring.
 """
 from __future__ import annotations
 
@@ -22,9 +24,8 @@ import torch
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cdm.instrument import InstrumentFleet, response  # noqa: E402
 from evaluate import SWITCH_BINS, evaluate, load  # noqa: E402
-from runtime import Costs, configure_backends, event_features, new_agent, tick  # noqa: E402
+from runtime import Costs, configure_backends, event_features, make_fleet, new_agent, tick  # noqa: E402
 from train import first_observation  # noqa: E402
 
 KEYS = ("error_while_active", "prediction_error", "shared_prediction_error", "refinements_per_tick",
@@ -45,11 +46,11 @@ def readouts(path, devices, ticks, seed, device):
     rows = []
     for control in ("policy", "greedy"):
         for learning in (True, False):
-            model, targs, spec = load(path, device)
+            model, targs, specs = load(path, device)
             if control == "greedy":
                 greedy_control(model)
             mode = targs["mode"] if learning else "frozen"
-            r = evaluate(model, targs, spec, devices, ticks, seed, device, mode)
+            r = evaluate(model, targs, specs, targs.get("family", "instrument"), devices, ticks, seed, device, mode)
             rows.append({"control": control, "learning": learning, **{k: r[k] for k in KEYS}})
             print(json.dumps(rows[-1]), flush=True)
     return rows
@@ -57,8 +58,10 @@ def readouts(path, devices, ticks, seed, device):
 
 @torch.no_grad()
 def decisions(path, devices, ticks, seed, device):
-    model, targs, spec = load(path, device)
-    env = InstrumentFleet(devices, spec, seed=seed, device=device)
+    model, targs, specs = load(path, device)
+    family = targs.get("family", "instrument")
+    assert family != "mixed", "decisions scores one process family at a time"
+    env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"])
     agent, obs = new_agent(model, devices, targs["buffer"], device), first_observation(env)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     nb, rows = len(SWITCH_BINS) - 1, torch.arange(devices, device=device)
@@ -69,7 +72,7 @@ def decisions(path, devices, ticks, seed, device):
             state = model.state_features(h, agent.z)
             adapted = model.predict_actions(state, agent.A, agent.B)[0].float()
             shared = model.predict_actions(state)[0].float()
-        r = response(spec, env.current().unsqueeze(1), env.table.unsqueeze(0), env.drift.unsqueeze(1))
+        r = env.steady(env.current(), env.table.expand(devices, -1, -1))
         goal = obs["setpoint"].unsqueeze(1)
         gap = (r - goal).abs()
         active = obs["active"].float()

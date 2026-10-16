@@ -32,13 +32,18 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cdm.core import CoreConfig, ContinualCore, adaptation_loss, gaussian_nll  # noqa: E402
-from cdm.instrument import InstrumentFleet, InstrumentSpec, action_values  # noqa: E402
-from runtime import (MODES, SCALAR_DIM, Costs, configure_backends, distributions, feature_dims,  # noqa: E402
-                     new_agent, reset_agents, tick)
+from cdm.instrument import InstrumentSpec, action_values  # noqa: E402
+from cdm.thermal import ThermalSpec  # noqa: E402
+from runtime import (FAMILIES, MODES, SCALAR_DIM, Costs, configure_backends, distributions, feature_dims,  # noqa: E402
+                     make_fleet, new_agent, reset_agents, tick)
 
 
 def instrument(args) -> InstrumentSpec:
     return InstrumentSpec(dims=args.dims, levels=args.levels)
+
+
+def thermal(args) -> ThermalSpec:
+    return ThermalSpec(dims=args.dims, levels=args.levels)
 
 
 def build(args, spec: InstrumentSpec, device) -> ContinualCore:
@@ -49,7 +54,7 @@ def build(args, spec: InstrumentSpec, device) -> ContinualCore:
     return ContinualCore(config, action_values(spec)).to(device)
 
 
-def first_observation(env: InstrumentFleet):
+def first_observation(env):
     n = env.n
     return env.step(torch.full((n,), env.spec.actions // 2, dtype=torch.long, device=env.device),
                     torch.zeros(n, dtype=torch.bool, device=env.device))
@@ -180,6 +185,8 @@ def main(argv=None):
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--dims", type=int, default=2, help="actuators of the instrument")
     p.add_argument("--levels", type=int, default=9, help="control levels per actuator")
+    p.add_argument("--family", choices=FAMILIES, default="instrument", help="process family of the training lifetimes")
+    p.add_argument("--thermal-share", type=float, default=0.5, help="share of thermal streams in a mixed fleet")
     p.add_argument("--streams", type=int, default=2048)
     p.add_argument("--window", type=int, default=128)
     p.add_argument("--chunk", type=int, default=128, help="backpropagation length through the fast state")
@@ -215,17 +222,17 @@ def main(argv=None):
     device = torch.device(args.device)
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=True)
-    spec = instrument(args)
+    spec, tspec = instrument(args), thermal(args)
     model = build(args, spec, device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, eps=1e-5)
-    env = InstrumentFleet(args.streams, spec, seed=args.seed + 1000, device=device)
+    env = make_fleet(args.family, args.streams, args.seed + 1000, device, spec, tspec, args.thermal_share)
     agent = new_agent(model, args.streams, args.buffer, device)
     gen = torch.Generator(device=device).manual_seed(args.seed + 2000)
     agent.age = torch.randint(0, args.lifetime, (args.streams,), generator=gen, device=device)
     obs = first_observation(env)
     costs = Costs()
     meta = {"args": {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
-            "config": asdict(model.config), "instrument": asdict(spec),
+            "config": asdict(model.config), "instrument": asdict(spec), "thermal": asdict(tspec),
             "parameters": sum(q.numel() for q in model.parameters()),
             "revision": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                                        text=True).stdout.strip() or None,
@@ -240,7 +247,7 @@ def main(argv=None):
 
     def save():
         torch.save({"model": model.state_dict(), "config": asdict(model.config), "instrument": asdict(spec),
-                    "args": meta["args"]}, out / "model.pt")
+                    "thermal": asdict(tspec), "args": meta["args"]}, out / "model.pt")
 
     window_adapters = previous_adapters = (agent.A, agent.B)   # when the window began / before the last tick
     collection = update_time = 0.0

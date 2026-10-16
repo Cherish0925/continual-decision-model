@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "li
 import evaluate as evaluation
 from cdm.core import ContinualCore, CoreConfig
 from cdm.instrument import InstrumentFleet, InstrumentSpec, action_values
+from cdm.thermal import ThermalSpec
 from evaluate import ResponseTimes
 from latency import clock_statistics
 from runtime import Costs, distributions, feature_dims, new_agent, tick
@@ -185,10 +186,11 @@ class EvaluationTests(unittest.TestCase):
                          ("returned", "learn", "accepted", "started", "next_started")})
             step["since_switch"] = torch.zeros(devices, dtype=torch.long)
             return None, None, step
-        with patch.object(evaluation, "InstrumentFleet"), patch.object(evaluation, "new_agent"), \
+        with patch.object(evaluation, "make_fleet"), patch.object(evaluation, "new_agent"), \
                 patch.object(evaluation, "first_observation"), patch.object(evaluation, "tick", fake_tick):
-            result = evaluation.evaluate(None, dict(buffer=8, adapter_lr=0.05, every=8, learn_ticks=2),
-                                         InstrumentSpec(), devices, ticks, 0, "cpu", "full")
+            result = evaluation.evaluate(None, dict(mode="full", buffer=8, adapter_lr=0.05, every=8, learn_ticks=2),
+                                         {"instrument": InstrumentSpec(), "thermal": ThermalSpec()}, "instrument",
+                                         devices, ticks, 0, "cpu", "full")
         self.assertEqual(result["prediction_error_by_thousand_ticks"], [1.0, 1.0])
         self.assertEqual(result["reward_per_100_by_thousand_ticks"], [100.0, 100.0])
 

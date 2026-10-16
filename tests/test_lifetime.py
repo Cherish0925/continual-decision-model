@@ -9,7 +9,8 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "lifetime"))
 
 from cdm.core import CoreConfig, ContinualCore  # noqa: E402
-from cdm.instrument import InstrumentFleet, InstrumentSpec, action_values, response  # noqa: E402
+from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, action_values, response  # noqa: E402
+from cdm.thermal import ThermalFleet, ThermalSpec  # noqa: E402
 from runtime import LEARN, MODES, Costs, feature_dims, masks, new_agent, tick  # noqa: E402
 
 QUIET = InstrumentSpec(precise_noise=0.0, cheap_noise=0.0, process_noise=0.0, drift=0.0)
@@ -78,6 +79,36 @@ class InstrumentTests(unittest.TestCase):
         self.assertFalse(env.active[mask].any())
         self.assertFalse(env.pending[mask].any())
         self.assertTrue(torch.equal(env.seen[mask].sum(1), torch.ones(16, dtype=torch.long)))
+
+
+class ThermalTests(unittest.TestCase):
+    def test_held_action_settles_at_the_steady_temperature(self):
+        spec = ThermalSpec(dwell=1e9, request_rate=0.0, process_noise=0.0, drift=0.0)
+        env = ThermalFleet(64, spec, seed=1)
+        action = torch.randint(0, spec.actions, (64,), generator=torch.Generator().manual_seed(0))
+        for _ in range(500):
+            out = env.step(action, torch.zeros(64, dtype=torch.bool))
+        torch.testing.assert_close(out["output"], env.steady(env.current(), env.table[action]), rtol=0, atol=1e-4)
+
+    def test_setpoints_are_steady_temperatures(self):
+        env = ThermalFleet(256, ThermalSpec(process_noise=0.0, drift=0.0), seed=2)
+        for _ in range(200):
+            out = env.step(torch.zeros(256, dtype=torch.long), torch.zeros(256, dtype=torch.bool))
+            if out["started"].any():
+                r = env.steady(env.current(), env.table.expand(256, -1, -1))
+                gap = (r - env.setpoint.unsqueeze(1)).abs().min(1).values[out["started"]]
+                self.assertLess(float(gap.max()), 1e-5)
+
+    def test_mixed_fleet_keeps_its_blocks(self):
+        mixed = MixedFleet([InstrumentFleet(3, seed=0), ThermalFleet(5, seed=1)])
+        out = mixed.step(torch.zeros(8, dtype=torch.long), torch.zeros(8, dtype=torch.bool))
+        self.assertTrue(all(v.shape[0] == 8 for v in out.values()))
+        mask = torch.zeros(8, dtype=torch.bool)
+        mask[4] = True
+        mixed.fleets[1].active[:] = True
+        mixed.reset(mask)
+        self.assertFalse(mixed.fleets[1].active[1])
+        self.assertTrue(mixed.fleets[1].active[0])
 
 
 class CoreTests(unittest.TestCase):
@@ -161,6 +192,22 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue((step["compute"] == 0).all())                       # compute occupied: idle only
         self.assertFalse(torch.equal(agent.A, before))                      # completed: used from the next tick
         self.assertTrue(torch.equal(agent.busy, torch.zeros(3, dtype=torch.long)))
+
+
+    def test_discarded_updates_keep_the_schedule_but_not_the_adapter(self):
+        spec = InstrumentSpec()
+        model = small_model(spec)
+        env = InstrumentFleet(3, spec, seed=0)
+        agent, obs = new_agent(model, 3, 16, "cpu"), first(env)
+        while not (agent.filled >= 8).all():
+            agent, obs, step = tick(model, agent, env, obs, "frozen", Costs(), 0.05, every=1)
+        before, learned = agent.A.clone(), torch.zeros(3, dtype=torch.bool)
+        for _ in range(4):
+            agent, obs, step = tick(model, agent, env, obs, "fixed_learn", Costs(), 0.05, every=1, learn_ticks=2,
+                                    apply_updates=False)
+            learned |= step["learn"]
+            self.assertTrue(torch.equal(agent.A, before))
+        self.assertTrue(learned.all())
 
 
 if __name__ == "__main__":
