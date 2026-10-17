@@ -28,9 +28,23 @@ STYLE = {
     "mixed_frozen": ("Both families, no learning", "#1baf7a", "^"),
     "mixed_recurrent": ("Recurrent policy on both families", "#e87ba4", "v"),
     "thermal_full": ("Full setting, thermal processes only", "#eb6834", "s"),
+    # second round, reported on its own: the same hues in the same order
+    "cdm": ("Trained through deployment", "#2a78d6", "o"),
+    "cdm_truncated": ("Same, one-tick workspace gradients", "#eb6834", "s"),
+    "cdm_nolearn": ("Same, no learning", "#1baf7a", "^"),
+    "cdm_step_meta": ("Same, one meta step per window", "#eda100", "D"),
+    "cdm_cheap_targets": ("Same, cheap targets only", "#e87ba4", "v"),
+    "cdm_bank": ("Same, four adapter blocks", "#008300", "*"),
+    "cdm_b6": ("Same, following values from copies", "#4a3aa7", "h"),
+    "cdm_b6_ppo": ("Same, copies kept, values not followed", "#e34948", "P"),
+    "cdm_all": ("Trained through deployment, three families", "#2a78d6", "o"),
+    "predict_only_all": ("Predictions only, three families", "#4a3aa7", "h"),
+    "cdm_navigation": ("Trained through deployment, vehicles only", "#eb6834", "s"),
+    "cdm_thermal": ("Trained through deployment, thermal only", "#1baf7a", "^"),
 }
 METRICS = ("error_while_active", "reward_per_100_ticks", "response_ticks_median", "prediction_error",
            "shared_prediction_error", "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")
+KINDS = ("error_setpoint_requests", "error_largest_output_requests")    # present when some requests ask for the largest output
 INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e6e5e0"
 plt.rcParams.update({"font.size": 8, "axes.titlesize": 8.5, "axes.labelsize": 8, "legend.fontsize": 7.5,
                      "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "axes.titlecolor": INK,
@@ -71,12 +85,14 @@ def label(variant, setting):
         return STYLE[variant][0]
     if setting == "frozen":
         return f"{STYLE[variant][0]}, learning switched off"
-    if setting == "discard":
-        return f"{STYLE[variant][0]}, learning steps kept, updates discarded"
+    if setting in OTHER:
+        return f"{STYLE[variant][0]}, {OTHER[setting]}"
     return f"{STYLE[variant][0]}, run in mode {setting}"
 
 
-OTHER = {"frozen": "learning switched off", "discard": "learning steps kept, updates discarded"}
+OTHER = {"frozen": "learning switched off", "discard": "learning steps kept, updates discarded",
+         "norefine": "no refinement", "noidle": "no computation between requests"}
+OTHER.update({f"planner{k}": f"control by {k}-tick imagined rollouts" for k in (1, 2, 4, 8)})
 
 
 def compute_cost(latency_file: Path | None):
@@ -102,26 +118,31 @@ def paired(rows, variant, a, b, metric):
 
 def table(rows, cost=None):
     order = [k for v in STYLE for k in sorted(rows, key=lambda k: (k[1] != "own", k[1])) if k[0] == v]
-    stats = {f"{t}/{m}": {metric: mean_se([r[metric] for r in rows[(t, m)]]) for metric in METRICS} for t, m in order}
+    kinds = KINDS if any(r.get(KINDS[1]) is not None for rs in rows.values() for r in rs) else ()
+    metrics = METRICS[:1] + kinds + METRICS[1:]
+    stats = {f"{t}/{m}": {metric: mean_se([r.get(metric) for r in rows[(t, m)]]) for metric in metrics}
+             for t, m in order}
     if cost:
         for t, m in order:
             stats[f"{t}/{m}"]["compute_us_per_tick"] = mean_se([compute_per_tick(r, cost) for r in rows[(t, m)]])
-    head = ["Model", "seeds", "error", "reward/100", "response", "prediction", "shared alone", "refine/tick",
-            "measure/100", "learn/100"] + (["GPU µs/tick"] if cost else [])
+    head = ["Model", "seeds", "error"] + (["setpoint", "largest output"] if kinds else []) + [
+        "reward/100", "response", "prediction", "shared alone", "refine/tick", "measure/100", "learn/100"] + (
+        ["GPU µs/tick"] if cost else [])
+    digits = (4,) + (4, 4)[:len(kinds)] + (2, 1, 4, 4, 2, 1, 1, 2)
     lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
     for t, m in order:
         s = stats[f"{t}/{m}"]
         cells = [label(t, m), str(s["error_while_active"][2])]
-        for metric, digits in zip(METRICS + (("compute_us_per_tick",) if cost else ()), (4, 2, 1, 4, 4, 2, 1, 1, 2)):
+        for metric, d in zip(metrics + (("compute_us_per_tick",) if cost else ()), digits):
             mean, se, _ = s[metric]
-            cells.append("—" if mean is None else f"{mean:.{digits}f} ± {se:.{digits}f}")
+            cells.append("—" if mean is None else f"{mean:.{d}f} ± {se:.{d}f}")
         lines.append("| " + " | ".join(cells) + " |")
-    learners = [v for v in STYLE if (v, "frozen") in rows or (v, "discard") in rows]
+    learners = [v for v in STYLE if any((v, other) in rows for other in OTHER)]
     if learners:
-        lines += ["", "Paired differences over seeds, own setting minus the other (negative: lower with learning):", "",
-                  "| Model | other setting | error | reward/100 |", "|---|---|---|---|"]
+        lines += ["", "Paired differences over seeds, own setting minus the other (negative: lower in the own setting):",
+                  "", "| Model | other setting | error | reward/100 |", "|---|---|---|---|"]
         for v in learners:
-            for other in ("frozen", "discard"):
+            for other in OTHER:
                 if (v, other) in rows:
                     e, r = paired(rows, v, "own", other, "error_while_active"), paired(rows, v, "own", other,
                                                                                          "reward_per_100_ticks")
@@ -204,12 +225,14 @@ def families_table(groups, ticks=None):
     return "\n".join(lines)
 
 
-LADDER = ("recurrent", "predict_hidden", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta", "meta_step")
+LADDER = ("recurrent", "predict_hidden", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta",
+          "meta_step", "cdm_nolearn", "cdm_cheap_targets", "cdm_step_meta", "cdm_truncated", "cdm", "cdm_bank",
+          "cdm_b6_ppo", "cdm_b6")
 
 
-def ladder(rows, out):
+def ladder(rows, out, names=None):
     """Error of every setting in its own mode: one point per seed, mean and standard error."""
-    names = [v for v in LADDER if (v, "own") in rows]
+    names = [v for v in (names or LADDER) if (v, "own") in rows]
     if not names:
         return
     fig, ax = plt.subplots(figsize=(5.6, 3.0))
