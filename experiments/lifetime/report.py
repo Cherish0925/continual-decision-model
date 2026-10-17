@@ -14,20 +14,20 @@ import numpy as np  # noqa: E402
 
 # Fixed variant -> (label, colour, marker), in the validated categorical order.
 STYLE = {
-    "full": ("CDM", "#2a78d6", "o"),
-    "fixed_learn": ("CDM, fixed learning schedule", "#eb6834", "s"),
-    "frozen": ("CDM without learning", "#1baf7a", "^"),
+    "full": ("Full setting", "#2a78d6", "o"),
+    "fixed_learn": ("Fixed learning schedule", "#eb6834", "s"),
+    "frozen": ("Workspace computation, no learning", "#1baf7a", "^"),
     "world_model": ("World model, fixed schedules", "#eda100", "D"),
     "recurrent": ("Recurrent policy", "#e87ba4", "v"),
-    "full_meta": ("CDM trained through its learning step", "#008300", "*"),
-    "predict_only": ("Predictions without workspace computation or learning", "#4a3aa7", "h"),
-    "predict_hidden": ("Recurrent policy trained to predict, reading no prediction", "#52514e", "X"),
-    "meta_step": ("CDM trained through a learned step size", "#e34948", "P"),
+    "full_meta": ("Trained through its learning step", "#008300", "*"),
+    "predict_only": ("Predictions only", "#4a3aa7", "h"),
+    "predict_hidden": ("Trained to predict, reading no prediction", "#52514e", "X"),
+    "meta_step": ("Trained through a learned step size", "#e34948", "P"),
     # the two-family runs are reported on their own, so they reuse the first hues of the same order
-    "mixed_full": ("CDM on both families", "#2a78d6", "o"),
-    "mixed_frozen": ("CDM on both families, without learning", "#1baf7a", "^"),
+    "mixed_full": ("Full setting on both families", "#2a78d6", "o"),
+    "mixed_frozen": ("Both families, no learning", "#1baf7a", "^"),
     "mixed_recurrent": ("Recurrent policy on both families", "#e87ba4", "v"),
-    "thermal_full": ("CDM on thermal processes only", "#eb6834", "s"),
+    "thermal_full": ("Full setting, thermal processes only", "#eb6834", "s"),
 }
 METRICS = ("error_while_active", "reward_per_100_ticks", "response_ticks_median", "prediction_error",
            "shared_prediction_error", "refinements_per_tick", "measurements_per_100_ticks", "learning_per_100_ticks")
@@ -130,11 +130,11 @@ def table(rows, cost=None):
     return stats, "\n".join(lines)
 
 
-def training_curves(run_root: Path, out: Path, smooth: int = 5):
+def training_curves(run_roots: list[Path], out: Path, smooth: int = 5):
     fig, ax = plt.subplots(figsize=(5.2, 3.0))
     for variant, (name, colour, _) in STYLE.items():
         curves = []
-        for log in sorted((run_root / variant).glob("seed*/train_log.jsonl")):
+        for log in sorted(log for root in run_roots for log in (root / variant).glob("seed*/train_log.jsonl")):
             rows = [json.loads(line) for line in log.read_text().splitlines()]
             if len(rows) < smooth:
                 continue
@@ -254,7 +254,8 @@ def main():
     p.add_argument("--families", nargs="*", default=[], metavar="NAME=DIR[,DIR]",
                    help="also tabulate own-setting error per family from evaluation directories")
     p.add_argument("--family-ticks", type=int, help="compare families over the first ticks of each lifetime")
-    p.add_argument("--runs", type=Path, help="training output root with <mode>/seed<k>/train_log.jsonl")
+    p.add_argument("--runs", type=Path, nargs="*", default=[],
+                   help="training output roots with <variant>/seed<k>/train_log.jsonl")
     p.add_argument("--latency", type=Path, help="latency.py output, to express activity in GPU time")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()

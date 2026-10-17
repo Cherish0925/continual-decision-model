@@ -4,7 +4,7 @@ Status at **17 October 2026**. Planner numbers come from release [v0.2.0](https:
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Prediction supervision together with predictions supplied to the policy makes this model better than a recurrent policy; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## The intended model
 
@@ -122,11 +122,12 @@ Source: [latency measurements](experiments/dynamic_maze/results/latency.json) an
 
 ### Continual core on process lifetimes
 
-Seven settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
+Eight settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
 
 | Setting | Error | Estimated GPU µs per tick |
 | --- | ---: | ---: |
 | Recurrent policy | 0.146 ± 0.008 | 4.15 |
+| Recurrent policy trained to predict, reading no prediction | 0.109 ± 0.002 | 4.15 |
 | Predictions only | 0.106 ± 0.002 | 4.15 |
 | + learned workspace computation | 0.106 ± 0.001 | 9.54 |
 | + learning on a fixed schedule | 0.107 ± 0.003 | 8.66 |
@@ -134,7 +135,7 @@ Seven settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interaction
 | World model with fixed schedules | 0.112 ± 0.003 | 7.45 |
 | CDM trained through its learning step | **0.097 ± 0.004** | 8.82 |
 
-- Prediction supervision together with predictions supplied to the policy lowers error by 28 %; a recurrent policy with the same supervision but no prediction readout is in training to separate the two. On these instruments, workspace refinement, online learning and the choice of when to learn add nothing measurable on top, and learned allocation of observation and compute beats fixed schedules by 0.005. The GPU column is estimated from per-operation timings.
+- Prediction supervision lowers error by 25 % even when the policy reads no prediction; supplying the predictions to the policy adds 0.003, within the spread of seeds. On these instruments, workspace refinement, online learning and the choice of when to learn add nothing measurable on top, and learned allocation of observation and compute beats fixed schedules by 0.005. The GPU column is estimated from per-operation timings.
 - Training the shared network through the instance's learning step gives the best model, here and on held-out instruments with slower dynamics, noisier sensors and more frequent changes; its deployed updates are neutral on the training family, so the gain is not explained by the updates themselves.
 - With each learning step kept but its update discarded (same simulated time and nominal cost, gradient computation skipped), the full setting tracks better by 0.0015 ± 0.0003, and after a condition change applying the updates costs 0.004–0.005 for 10–100 ticks. A smaller test-time step removes the harm. A step size learned through the single-step meta loss converges to 0.30 in three seeds, and those models' deployed updates hurt. Candidate causes are properties of the code (fixed-distance steps, noisy targets, mixed conditions in the buffer, one-step meta-training); their effects still need training comparisons.
 - About 0.06–0.07 of the noise-free next output remains unexplained, not all of it necessarily inferable from the agent's observations; the adapter of the model trained through its step removes a little of it, the plain adapter adds to it.

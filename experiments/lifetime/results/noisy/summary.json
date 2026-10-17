@@ -657,6 +657,53 @@
    5
   ]
  },
+ "predict_hidden/own": {
+  "error_while_active": [
+   0.1253109599102799,
+   0.0024166281377726103,
+   5
+  ],
+  "reward_per_100_ticks": [
+   -7.763790488243103,
+   0.14229296891814008,
+   5
+  ],
+  "response_ticks_median": [
+   3.0,
+   0.0,
+   5
+  ],
+  "prediction_error": [
+   0.32939423322677613,
+   0.00011228602207997672,
+   5
+  ],
+  "shared_prediction_error": [
+   0.32939491271972654,
+   0.00011226659740351225,
+   5
+  ],
+  "refinements_per_tick": [
+   0.0,
+   0.0,
+   5
+  ],
+  "measurements_per_100_ticks": [
+   19.810829162597656,
+   0.44883219414370595,
+   5
+  ],
+  "learning_per_100_ticks": [
+   0.0,
+   0.0,
+   5
+  ],
+  "compute_us_per_tick": [
+   4.147006620769389,
+   0.0,
+   5
+  ]
+ },
  "meta_step/own": {
   "error_while_active": [
    0.11265917139882269,

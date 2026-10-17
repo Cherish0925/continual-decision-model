@@ -2,11 +2,11 @@
 
 Setup, model and commands: [README](README.md). Error is the absolute tracking error while a request is active, averaged over one uninterrupted 16,384-tick lifetime on each of 512 newly sampled instruments; mean ± standard error over training seeds. Every setting of a model starts from the same random state, so settings of one model are compared under common random numbers. Reference points: random actions 0.305; a greedy controller that knows the true steady response 0.115, which ignores the dynamics and is not a bound ([references](results/references.json)).
 
-All models below were trained after the corrections of [issue #1](https://github.com/Cherish0925/continual-decision-model/issues/1) (revision `2f7a174` for the seven principal settings, `aee4702` for the two-family and learned-step runs): 35.9 M parameters, 2·10⁷ interactions per seed.
+All models below were trained after the corrections of [issue #1](https://github.com/Cherish0925/continual-decision-model/issues/1) (revision `2f7a174` for the seven principal settings, `aee4702` for the two-family and learned-step runs, `66f62cc` for the recurrent policy trained to predict): 35.9 M parameters, 2·10⁷ interactions per seed.
 
 ## Summary
 
-1. **Action-conditioned prediction carries the gain over the recurrent policy.** Training the predictor and supplying its predictions to the policy together lower error from 0.146 to 0.106; a recurrent policy trained with the same prediction loss but reading no prediction (`predict_hidden`, training) separates the two. Workspace refinements, online learning and the choice of when to learn add nothing measurable on top on these instruments.
+1. **Prediction supervision carries the gain over the recurrent policy.** A recurrent policy trained with the same prediction loss as the predicting settings, but reading no prediction, lowers error from 0.146 to 0.109; supplying the predictions to the policy as well gives 0.106, a difference within the spread of seeds. Workspace refinements, online learning and the choice of when to learn add nothing measurable on top on these instruments.
 2. **Learned allocation of observation and compute beats fixed schedules** (0.107 against 0.112).
 3. **Training the shared network through the learning step gives the best model**: 0.097 on the training family and the lowest error on every held-out family, level with its learned-step version on the slowest. At deployment its updates are neutral on the training family, so the gain is not explained by the updates themselves.
 4. **The instance's own updates, as trained, do not help and usually hurt** (+0.0015 ± 0.0003 against discarding them, five seeds), most with noisier sensors. A smaller step at test time removes the harm, and on unfamiliar slow dynamics the model trained through its step gains a little from its updates (−0.0031 ± 0.0016). Why the updates fail is not yet established by training comparisons; the candidate causes are listed below.
@@ -18,6 +18,7 @@ All models below were trained after the corrections of [issue #1](https://github
 | Setting | Seeds | Error | Reward / 100 ticks | Refinements / tick | Measurements / 100 | Learning / 100 | GPU µs / tick |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Recurrent policy | 5 | 0.1461 ± 0.0084 | −9.04 | 0.00 | 18.9 | 0.0 | 4.15 |
+| Recurrent policy trained to predict, reading no prediction | 5 | 0.1088 ± 0.0024 | −6.79 | 0.00 | 19.4 | 0.0 | 4.15 |
 | Predictions only | 5 | 0.1058 ± 0.0018 | −6.60 | 0.00 | 18.7 | 0.0 | 4.15 |
 | + learned workspace computation (no learning) | 5 | 0.1061 ± 0.0011 | −6.90 | 1.47 | 17.4 | 0.0 | 9.54 |
 | + learning on a fixed schedule | 5 | 0.1068 ± 0.0027 | −7.12 | 1.08 | 18.6 | 12.5 | 8.66 |
@@ -30,7 +31,7 @@ GPU µs per tick is an estimate: each setting's refinement and learning rates co
 
 ![Error of every setting, one point per seed](results/main/ladder.png)
 
-Read top to bottom, each row adds one ability. World prediction, as prediction supervision together with predictions supplied to the policy, lowers error by 0.040 (28 %). Learned refinement of the workspace adds nothing (0.1058 → 0.1061) and more than doubles the compute; online learning and the choice of when to learn add nothing further. With the same fixed learning, learned allocation of measurement and refinement (`fixed_learn`) beats fixed schedules (`world_model`) by 0.005. The loss through the learning step lowers error to 0.097, a tenth below the full setting.
+Read top to bottom, each row adds one ability. Training the recurrent state to predict the next reading for every action lowers error by 0.037 (25 %), although the policy never reads a prediction: the supervision shapes the state. Supplying the predictions to the policy adds 0.003 ± 0.003, within the spread of seeds. Learned refinement of the workspace adds nothing (0.1058 → 0.1061) and more than doubles the compute; online learning and the choice of when to learn add nothing further. With the same fixed learning, learned allocation of measurement and refinement (`fixed_learn`) beats fixed schedules (`world_model`) by 0.005. The loss through the learning step lowers error to 0.097, a tenth below the full setting.
 
 ![GPU time per tick against error](results/main/compute.png)
 
@@ -80,6 +81,7 @@ Own setting of every model, five seeds (three for the learned step size). Quarte
 | Setting | Training family | Time constant 8–16, width 0.15–0.25 | Cheap noise 0.4 | A change every 150 ticks, half new |
 | --- | ---: | ---: | ---: | ---: |
 | Recurrent policy | 0.1461 ± 0.0084 | 0.3001 ± 0.0102 | 0.1616 ± 0.0082 | 0.1659 ± 0.0070 |
+| Recurrent policy trained to predict, reading no prediction | 0.1088 ± 0.0024 | 0.2671 ± 0.0068 | 0.1253 ± 0.0024 | 0.1361 ± 0.0030 |
 | Predictions only | 0.1058 ± 0.0018 | 0.2676 ± 0.0024 | 0.1202 ± 0.0025 | 0.1329 ± 0.0018 |
 | + learned workspace computation (no learning) | 0.1061 ± 0.0011 | 0.2756 ± 0.0071 | 0.1214 ± 0.0027 | 0.1348 ± 0.0015 |
 | + learning on a fixed schedule | 0.1068 ± 0.0027 | 0.2746 ± 0.0053 | 0.1287 ± 0.0055 | 0.1327 ± 0.0027 |
@@ -89,7 +91,7 @@ Own setting of every model, five seeds (three for the learned step size). Quarte
 | Same, with a learned step size | 0.1022 ± 0.0008 | **0.2598 ± 0.0161** | 0.1127 ± 0.0013 | 0.1253 ± 0.0010 |
 | *True-steady greedy reference* | *0.115* | *0.224* | *0.115* | *0.113* |
 
-On every family the recurrent policy is worst and the models trained through their learning step are best; the settings between them stay within a few thousandths of each other. On slower, narrower instruments all models fall short of the true-steady reference: holding the right action takes longer to pay off than a 60-tick request allows.
+On every family the recurrent policy is worst and the models trained through their learning step are best; the settings between them stay within a few thousandths of each other. Prediction supervision without readout matches predictions only on slower, narrower instruments and trails it by 0.003–0.005 with noisier sensors or more frequent changes. On slower, narrower instruments all models fall short of the true-steady reference: holding the right action takes longer to pay off than a 60-tick request allows.
 
 ## One model across two process families
 
