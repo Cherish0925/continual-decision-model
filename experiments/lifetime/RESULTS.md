@@ -6,12 +6,12 @@ All models below were trained after the corrections of [issue #1](https://github
 
 ## Summary
 
-1. **Predicting what each action will do carries the gain.** Adding action-conditioned predictions to a recurrent policy lowers error from 0.146 to 0.106. The workspace refinements, online learning and the choice of when to learn add nothing measurable on top, at twice the compute.
+1. **Action-conditioned prediction carries the gain over the recurrent policy.** Training the predictor and supplying its predictions to the policy together lower error from 0.146 to 0.106; a recurrent policy trained with the same prediction loss but reading no prediction (`predict_hidden`, training) separates the two. Workspace refinements, online learning and the choice of when to learn add nothing measurable on top on these instruments.
 2. **Learned allocation of observation and compute beats fixed schedules** (0.107 against 0.112).
-3. **Training the shared network through the learning step gives the best model**: 0.097 on the training family and the lowest error on every held-out family, level with its learned-step version on the slowest. The gain comes from training: at deployment its updates are neutral on the training family.
-4. **The instance's own updates, as trained, do not help and usually hurt** (+0.0015 ± 0.0003 against discarding them, five seeds), most with noisier sensors. A smaller step at test time removes the harm, and on unfamiliar slow dynamics the model trained through its step gains a little from its updates (−0.0031 ± 0.0016).
+3. **Training the shared network through the learning step gives the best model**: 0.097 on the training family and the lowest error on every held-out family, level with its learned-step version on the slowest. At deployment its updates are neutral on the training family, so the gain is not explained by the updates themselves.
+4. **The instance's own updates, as trained, do not help and usually hurt** (+0.0015 ± 0.0003 against discarding them, five seeds), most with noisier sensors. A smaller step at test time removes the harm, and on unfamiliar slow dynamics the model trained through its step gains a little from its updates (−0.0031 ± 0.0016). Why the updates fail is not yet established by training comparisons; the candidate causes are listed below.
 5. **One set of weights runs both process families**, at a cost against single-family models that saw twice as much of each family.
-6. **Control continues while learning runs on its own stream** for up to 64 instances (3.2 ms median response at a 10 ms period); at 512 instances learning contends with control and most deadlines are missed.
+6. **Control continues while learning runs on its own stream** for up to 64 instances (3.2 ms median response at a 10 ms period, 3.2 % of steps on a held action, so not a strict deadline guarantee); at 512 instances learning contends with control and most steps run on a held action.
 
 ## Principal comparison
 
@@ -21,28 +21,28 @@ All models below were trained after the corrections of [issue #1](https://github
 | Predictions only | 5 | 0.1058 ± 0.0018 | −6.60 | 0.00 | 18.7 | 0.0 | 4.15 |
 | + learned workspace computation (no learning) | 5 | 0.1061 ± 0.0011 | −6.90 | 1.47 | 17.4 | 0.0 | 9.54 |
 | + learning on a fixed schedule | 5 | 0.1068 ± 0.0027 | −7.12 | 1.08 | 18.6 | 12.5 | 8.66 |
-| + choosing when to learn (full CDM) | 5 | 0.1078 ± 0.0009 | −7.23 | 1.14 | 19.9 | 13.5 | 8.94 |
+| + choosing when to learn (full setting) | 5 | 0.1078 ± 0.0009 | −7.23 | 1.14 | 19.9 | 13.5 | 8.94 |
 | World model, fixed schedules | 5 | 0.1122 ± 0.0025 | −7.32 | 0.75 | 12.5 | 12.5 | 7.45 |
 | CDM trained through its learning step | 5 | **0.0971 ± 0.0038** | −6.59 | 1.11 | 20.6 | 13.7 | 8.82 |
 | Same, with a learned step size | 3 | 0.1022 ± 0.0008 | −6.89 | 1.01 | 21.1 | 14.4 | 8.50 |
 
-GPU µs per tick converts each setting's refinements and learning steps into measured time per instance at batch 1,024 (4.15 µs for the control path, 3.67 per refinement, 4.45 per learning step). Full table with prediction errors and the other settings: [results/main/table.md](results/main/table.md).
+GPU µs per tick is an estimate: each setting's refinement and learning rates converted with per-operation times measured per instance at batch 1,024 (4.15 µs for the control path, 3.67 per refinement, 4.45 per learning step), not an end-to-end measurement of each setting. Full table with prediction errors and the other settings: [results/main/table.md](results/main/table.md).
 
 ![Error of every setting, one point per seed](results/main/ladder.png)
 
-Read top to bottom, each row adds one ability. World prediction lowers error by 0.040 (28 %). Learned refinement of the workspace adds nothing (0.1058 → 0.1061) and more than doubles the compute; online learning and the choice of when to learn add nothing further. With the same fixed learning, learned allocation of measurement and refinement (`fixed_learn`) beats fixed schedules (`world_model`) by 0.005. The loss through the learning step lowers error to 0.097, a tenth below the full CDM.
+Read top to bottom, each row adds one ability. World prediction, as prediction supervision together with predictions supplied to the policy, lowers error by 0.040 (28 %). Learned refinement of the workspace adds nothing (0.1058 → 0.1061) and more than doubles the compute; online learning and the choice of when to learn add nothing further. With the same fixed learning, learned allocation of measurement and refinement (`fixed_learn`) beats fixed schedules (`world_model`) by 0.005. The loss through the learning step lowers error to 0.097, a tenth below the full setting.
 
 ![GPU time per tick against error](results/main/compute.png)
 
 ## What the instance's own learning contributes
 
-Each learning model is evaluated three times on the same instruments: as trained, with every chosen learning step kept but its adapter update thrown away (*discarded*), and with learning switched off so that its compute goes to refinement (*off*). Differences are paired by seed.
+Each learning model is evaluated three times on the same instruments: as trained, with every chosen learning step kept but its adapter update thrown away (*discarded*), and with learning switched off so that its compute goes to refinement (*off*). Differences are paired by seed. The discarded setting keeps the simulated duration and nominal cost of each learning step but skips its gradient computation, so it is not a comparison at matched wall-clock compute.
 
 Error, updates applied minus discarded:
 
 | Model | Training family | Slow, narrow | Cheap noise 0.4 | Frequent changes |
 | --- | ---: | ---: | ---: | ---: |
-| Full CDM | +0.0015 ± 0.0003 | +0.0010 ± 0.0018 | +0.0061 ± 0.0011 | +0.0015 ± 0.0010 |
+| Full setting | +0.0015 ± 0.0003 | +0.0010 ± 0.0018 | +0.0061 ± 0.0011 | +0.0015 ± 0.0010 |
 | Fixed learning schedule | +0.0006 ± 0.0006 | +0.0024 ± 0.0007 | +0.0045 ± 0.0012 | +0.0016 ± 0.0005 |
 | World model, fixed schedules | +0.0016 ± 0.0004 | +0.0012 ± 0.0011 | +0.0041 ± 0.0011 | +0.0020 ± 0.0007 |
 | Trained through its learning step | −0.0002 ± 0.0009 | **−0.0031 ± 0.0016** | +0.0016 ± 0.0011 | −0.0008 ± 0.0005 |
@@ -52,26 +52,26 @@ Error, learning on minus off:
 
 | Model | Training family | Slow, narrow | Cheap noise 0.4 | Frequent changes |
 | --- | ---: | ---: | ---: | ---: |
-| Full CDM | −0.0000 ± 0.0011 | −0.0000 ± 0.0050 | +0.0050 ± 0.0014 | +0.0009 ± 0.0015 |
+| Full setting | −0.0000 ± 0.0011 | −0.0000 ± 0.0050 | +0.0050 ± 0.0014 | +0.0009 ± 0.0015 |
 | Fixed learning schedule | −0.0004 ± 0.0010 | +0.0005 ± 0.0028 | +0.0030 ± 0.0018 | −0.0001 ± 0.0008 |
 | Trained through its learning step | −0.0009 ± 0.0015 | **−0.0045 ± 0.0021** | +0.0015 ± 0.0014 | −0.0009 ± 0.0012 |
 | Same, learned step size (3 seeds) | +0.0034 ± 0.0006 | +0.0024 ± 0.0004 | +0.0052 ± 0.0009 | +0.0038 ± 0.0017 |
 
-A learning step moves the adapter a fixed normalised distance on 32 recent readings whose sensor noise (0.25) dominates what is left to predict. For models whose shared network was not trained through that step, the update fits noise: it raises error on every family, most with noisier readings. Trained through the step, the network makes its updates neutral or useful, and useful where in-context inference has least to go on, on dynamics slower and narrower than any seen in training.
+For models whose shared network was not trained through the learning step, applying the updates raises error on every family, most with noisier readings. Trained through the step, the network makes its updates neutral or useful, and useful on dynamics slower and narrower than any seen in training. The implementation suggests several candidate causes, each an established property of the code whose effect on performance still needs a training comparison: a learning step moves the adapter a fixed normalised distance whatever the size of the gradient; its targets are the noisy cheap readings, while precise readings never reach the adapter; the recent buffer mixes operating conditions around a switch; and the meta loss scores one step per window on a recorded trajectory, whereas deployment takes repeated steps about every seven ticks.
 
-**Step size.** The step of 0.05 was set on an earlier one-actuator task. At test time, a step of 0.015 lowers the full CDM's error by 0.0020 ± 0.0003 on the training family and makes its updates slightly better than discarding them (−0.0005 ± 0.0001); the model trained through its step reaches 0.0964 (five seeds each, [results](results/step_size.json)). Learning the step size through the meta loss drives it to 0.302, 0.312 and 0.303 in three seeds, six times larger. That loss scores one step on the first half of a training window by the second half; deployed, the instance takes a step about every seven ticks, and repeated steps of that size hurt on every family.
+**Step size.** The step of 0.05 was set on an earlier one-actuator task. At test time, a step of 0.015 lowers the full setting's error by 0.0020 ± 0.0003 on the training family and makes its updates slightly better than discarding them (−0.0005 ± 0.0001); the model trained through its step reaches 0.0964 (five seeds each, [results](results/step_size.json)). Learning the step size through the meta loss drives it to 0.302, 0.312 and 0.303 in three seeds, six times larger, and the deployed updates of these models hurt on every family. That loss scores one step on the first half of a training window by the second half, whereas deployment takes a step about every seven ticks; the mismatch is consistent with the result, and training through the deployed sequence of updates is the comparison that can establish it.
 
 **Residual error** ([`probe.py decisions`](probe.py), seed 0, 128 instruments × 3,000 ticks): mean absolute difference from the noise-free next output on identical states.
 
 | Model | Shared predictor alone, action taken / all actions | With the instance adapter | Greedy choices differ | One-step regret, adapted / shared |
 | --- | ---: | ---: | ---: | ---: |
-| Full CDM | 0.067 / 0.070 | 0.072 / 0.073 | 86 % | 0.057 / 0.055 |
+| Full setting | 0.067 / 0.070 | 0.072 / 0.073 | 86 % | 0.057 / 0.055 |
 | Trained through its learning step | 0.066 / 0.066 | **0.065 / 0.065** | 66 % | 0.051 / 0.052 |
 | Same, learned step size | **0.056 / 0.058** | 0.075 / 0.077 | 92 % | 0.057 / 0.046 |
 
-About 0.06–0.07 of the next output remains predictable, a quarter of the sensor noise. The adapter of the model trained through its step removes a little of it; the plain adapter and the learned large step add to it. Training through a large step gives the best shared predictor of all, which the deployed updates then degrade ([probes](results/probes)).
+About 0.06–0.07 of the noise-free next output remains unexplained, a quarter of the sensor noise; not all of it is necessarily inferable from the agent's observations. The adapter of the model trained through its step removes a little of it; the plain adapter and the learned large step add to it. Training through a large step gives the best shared predictor of all, which the deployed updates then degrade ([probes](results/probes)).
 
-**After a condition change** ([figure](results/main/error_after_switch.png)). Error is about 0.22 for 25 ticks after a change and falls to 0.13 by 50–100 ticks and 0.09 after 200. In the first 10–100 ticks the full CDM is 0.004–0.005 worse with its updates applied than discarded: its adapter carries the previous condition into the next. Conditions met before in the lifetime are only 0.002–0.005 easier than new ones, whether the model learns or not, so the single adapter, overwritten before a condition returns, provides no retention. Both learning models raise their learning rate after a change, from 0.128 to 0.157 (full) and 0.135 to 0.169 (trained through the step) learning steps per tick at 10–25 ticks, and return to the baseline within a few hundred ticks; without learning, the model raises its refinements instead.
+**After a condition change** ([figure](results/main/error_after_switch.png)). Error is about 0.22 for 25 ticks after a change and falls to 0.13 by 50–100 ticks and 0.09 after 200. In the first 10–100 ticks the full setting is 0.004–0.005 worse with its updates applied than discarded, consistent with its adapter carrying the previous condition into the next. Conditions met before in the lifetime are only 0.002–0.005 easier than new ones, whether the model learns or not, so the single adapter, overwritten before a condition returns, provides no retention. Both learning models choose learning more often after a change, from 0.128 to 0.157 (full) and 0.135 to 0.169 (trained through the step) learning steps per tick at 10–25 ticks, and return to the baseline within a few hundred ticks; this is a frequency, not a step size. Without learning, the model raises its refinements instead.
 
 ## Held-out dynamics
 
@@ -83,7 +83,7 @@ Own setting of every model, five seeds (three for the learned step size). Quarte
 | Predictions only | 0.1058 ± 0.0018 | 0.2676 ± 0.0024 | 0.1202 ± 0.0025 | 0.1329 ± 0.0018 |
 | + learned workspace computation (no learning) | 0.1061 ± 0.0011 | 0.2756 ± 0.0071 | 0.1214 ± 0.0027 | 0.1348 ± 0.0015 |
 | + learning on a fixed schedule | 0.1068 ± 0.0027 | 0.2746 ± 0.0053 | 0.1287 ± 0.0055 | 0.1327 ± 0.0027 |
-| + choosing when to learn (full CDM) | 0.1078 ± 0.0009 | 0.2782 ± 0.0029 | 0.1249 ± 0.0006 | 0.1349 ± 0.0011 |
+| + choosing when to learn (full setting) | 0.1078 ± 0.0009 | 0.2782 ± 0.0029 | 0.1249 ± 0.0006 | 0.1349 ± 0.0011 |
 | World model, fixed schedules | 0.1122 ± 0.0025 | 0.2781 ± 0.0057 | 0.1350 ± 0.0026 | 0.1403 ± 0.0026 |
 | CDM trained through its learning step | **0.0971 ± 0.0038** | 0.2621 ± 0.0151 | **0.1118 ± 0.0053** | **0.1210 ± 0.0043** |
 | Same, with a learned step size | 0.1022 ± 0.0008 | **0.2598 ± 0.0161** | 0.1127 ± 0.0013 | 0.1253 ± 0.0010 |
@@ -97,15 +97,15 @@ Error over the first 8,000 ticks of each lifetime, so that evaluations of differ
 
 | Model | Instrument | Thermal |
 | --- | ---: | ---: |
-| Full CDM, instruments only | 0.1083 ± 0.0010 (5) | 0.2444 ± 0.0098 (5) |
+| Full setting, instruments only | 0.1083 ± 0.0010 (5) | 0.2444 ± 0.0098 (5) |
 | Trained through its learning step, instruments only | 0.0970 ± 0.0037 (5) | 0.2272 ± 0.0205 (5) |
-| Full CDM, thermal processes only | 0.4078 ± 0.0032 (3) | **0.0670 ± 0.0006 (3)** |
-| Full CDM on both families | 0.1306 ± 0.0057 (3) | 0.0801 ± 0.0037 (3) |
+| Full setting, thermal processes only | 0.4078 ± 0.0032 (3) | **0.0670 ± 0.0006 (3)** |
+| Full setting on both families | 0.1306 ± 0.0057 (3) | 0.0801 ± 0.0037 (3) |
 | Same, without learning | 0.1322 ± 0.0069 (3) | 0.0891 ± 0.0030 (3) |
 | Recurrent policy on both families | 0.1761 ± 0.0047 (3) | 0.0872 ± 0.0054 (3) |
 | *True-steady greedy reference* | *0.115* | *0.091* |
 
-Neither single-family model transfers: instruments-only models track thermal processes at 0.23–0.24, the thermal model tracks instruments at 0.41. The model trained on both runs both without being told which family a process belongs to, at 0.023 above the instrument model and 0.013 above the thermal model; each single-family model had twice as much experience of its family within the same 2·10⁷ interactions. It keeps the advantage of prediction over the recurrent policy on both families. With learning switched off it tracks thermal processes 0.0076 ± 0.0051 worse, but with its updates merely discarded only 0.0004 ± 0.0010 worse: the computation it allocates matters, not the updates. The thermal model anticipates the two-state dynamics and beats the true-steady reference (0.067 against 0.091). Full table: [results/two_families/families.md](results/two_families/families.md).
+Neither single-family model transfers: instruments-only models track thermal processes at 0.23–0.24, the thermal model tracks instruments at 0.41. The model trained on both runs both without being told which family a process belongs to, at 0.023 above the instrument model and 0.013 above the thermal model; each single-family model had twice as much experience of its family within the same 2·10⁷ interactions, so the gap cannot be attributed to interference between families. It keeps the advantage of prediction over the recurrent policy on both families. With learning switched off it tracks thermal processes 0.0076 ± 0.0051 worse, but with its updates merely discarded only 0.0004 ± 0.0010 worse, which points to its allocation of computation rather than the updates. The thermal model anticipates the two-state dynamics and beats the true-steady reference (0.067 against 0.091). Full table: [results/two_families/families.md](results/two_families/families.md).
 
 ## Acting against an independent clock
 
@@ -113,16 +113,16 @@ Neither single-family model transfers: instruments-only models track thermal pro
 
 | Model | Instances | Learning | Response p50 / p95 / p99 (ms) | Held steps | Error | Learning steps / s |
 | --- | ---: | --- | --- | ---: | ---: | ---: |
-| Full CDM | 1 | on | 3.26 / 3.82 / 4.19 | 45 (1.5 %) | 0.113 | 10 |
-| Full CDM | 1 | off | 3.27 / 3.84 / 4.16 | 0 | 0.105 | 0 |
-| Full CDM | 64 | on | 3.15 / 3.43 / 8.74 | 95 (3.2 %) | 0.107 | 634 |
-| Full CDM | 64 | off | 3.07 / 3.36 / 3.51 | 4 | 0.107 | 0 |
-| Full CDM | 512 | on | 7.97 / 11.91 / 13.82 | 2,221 (74 %) | 0.131 | 5,014 |
-| Full CDM | 512 | off | 3.65 / 4.72 / 10.24 | 105 (3.5 %) | 0.110 | 0 |
+| Full setting | 1 | on | 3.26 / 3.82 / 4.19 | 45 (1.5 %) | 0.113 | 10 |
+| Full setting | 1 | off | 3.27 / 3.84 / 4.16 | 0 | 0.105 | 0 |
+| Full setting | 64 | on | 3.15 / 3.43 / 8.74 | 95 (3.2 %) | 0.107 | 634 |
+| Full setting | 64 | off | 3.07 / 3.36 / 3.51 | 4 | 0.107 | 0 |
+| Full setting | 512 | on | 7.97 / 11.91 / 13.82 | 2,221 (74 %) | 0.131 | 5,014 |
+| Full setting | 512 | off | 3.65 / 4.72 / 10.24 | 105 (3.5 %) | 0.110 | 0 |
 | Trained through its learning step | 64 | on | 3.14 / 3.48 / 8.83 | 94 (3.1 %) | 0.099 | 620 |
 | Trained through its learning step | 512 | on | 8.50 / 10.49 / 13.71 | 2,614 (87 %) | 0.128 | 5,142 |
 
-Up to 64 instances, the controller keeps its 10 ms period while learning steps run on their own stream, and tracking matches the simulated evaluation. At 512 instances, five thousand learning steps per second share the GPU with control, the response passes the period, most steps run on a held action, and tracking degrades by 0.02–0.03. The workspace in this runtime reads experience records one tick older than in training, because nothing on the control path waits. Single-instance error comes from one lifetime of 3,000 steps and varies accordingly. Results: [full CDM](results/realtime_full.json), [trained through its step](results/realtime_full_meta.json).
+Up to 64 instances, the median response stays near 3 ms while learning steps run on their own stream, 1.5–3.2 % of steps run on a held action, and tracking matches the simulated evaluation; this is not a strict deadline guarantee. At 512 instances, five thousand learning steps per second share the GPU with control, the response passes the period, most steps run on a held action, and tracking degrades by 0.02–0.03. The workspace in this runtime reads experience records one tick older than in training, because nothing on the control path waits. Two properties of this version of `realtime.py` limit the tracking numbers: when a step runs on a held action, the actor still records the action it submitted rather than the one applied, and its elapsed-time features count its own cycles rather than fleet steps; learning throughput is divided by the nominal duration. They are being corrected. Single-instance error comes from one lifetime of 3,000 steps and varies accordingly. Results: [full setting](results/realtime_full.json), [trained through its step](results/realtime_full_meta.json).
 
 ## Cost of training and of each operation
 
@@ -169,7 +169,7 @@ A probe of a first-campaign model (full setting without the goal term, 6.5·10�
 | Trained policy | 0.235 | 0.242 |
 | Greedy readout of the model's predictions | **0.194** | 0.315 |
 
-The predictions held more than the policy had yet learned to use, which is why the control head carries a learned preference for actions predicted to reach the setpoint. Trained to the end, the policy exceeds the readout of its predictions (0.105 against 0.126 for the full CDM at seed 0).
+The predictions held more than the policy had yet learned to use, which is why the control head carries a learned preference for actions predicted to reach the setpoint. Trained to the end, the policy exceeds the readout of its predictions (0.105 against 0.126 for the full setting at seed 0).
 
 ## Checkpoints trained before the corrections
 

@@ -4,7 +4,7 @@ Status at **17 October 2026**. Planner numbers come from release [v0.2.0](https:
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Action-conditioned prediction is what makes this model better than a recurrent policy; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Prediction supervision together with predictions supplied to the policy makes this model better than a recurrent policy; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## The intended model
 
@@ -124,22 +124,22 @@ Source: [latency measurements](experiments/dynamic_maze/results/latency.json) an
 
 Seven settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
 
-| Setting | Error | GPU µs per tick |
+| Setting | Error | Estimated GPU µs per tick |
 | --- | ---: | ---: |
 | Recurrent policy | 0.146 ± 0.008 | 4.15 |
 | Predictions only | 0.106 ± 0.002 | 4.15 |
 | + learned workspace computation | 0.106 ± 0.001 | 9.54 |
 | + learning on a fixed schedule | 0.107 ± 0.003 | 8.66 |
-| + choosing when to learn (full CDM) | 0.108 ± 0.001 | 8.94 |
+| + choosing when to learn (full setting) | 0.108 ± 0.001 | 8.94 |
 | World model with fixed schedules | 0.112 ± 0.003 | 7.45 |
 | CDM trained through its learning step | **0.097 ± 0.004** | 8.82 |
 
-- Action-conditioned prediction lowers error by 28 %; on these instruments, workspace refinement, online learning and the choice of when to learn add nothing measurable on top, and learned allocation of observation and compute beats fixed schedules by 0.005.
-- Training the shared network through the instance's learning step gives the best model, here and on held-out instruments with slower dynamics, noisier sensors and more frequent changes; the gain comes from training, as its deployed updates are neutral on the training family.
-- With each learning step kept but its update discarded, the full CDM tracks better by 0.0015 ± 0.0003: a fixed step on noisy readings fits noise, and after a condition change the adapter carries the previous condition for 10–100 ticks. A smaller test-time step removes the harm. A step size learned through the step converges to 0.30 in three seeds, too large for repeated deployment.
-- About 0.06–0.07 of the next output remains predictable beyond sensor noise; the adapter of the model trained through its step removes a little of it, the plain adapter adds to it.
+- Prediction supervision together with predictions supplied to the policy lowers error by 28 %; a recurrent policy with the same supervision but no prediction readout is in training to separate the two. On these instruments, workspace refinement, online learning and the choice of when to learn add nothing measurable on top, and learned allocation of observation and compute beats fixed schedules by 0.005. The GPU column is estimated from per-operation timings.
+- Training the shared network through the instance's learning step gives the best model, here and on held-out instruments with slower dynamics, noisier sensors and more frequent changes; its deployed updates are neutral on the training family, so the gain is not explained by the updates themselves.
+- With each learning step kept but its update discarded (same simulated time and nominal cost, gradient computation skipped), the full setting tracks better by 0.0015 ± 0.0003, and after a condition change applying the updates costs 0.004–0.005 for 10–100 ticks. A smaller test-time step removes the harm. A step size learned through the single-step meta loss converges to 0.30 in three seeds, and those models' deployed updates hurt. Candidate causes are properties of the code (fixed-distance steps, noisy targets, mixed conditions in the buffer, one-step meta-training); their effects still need training comparisons.
+- About 0.06–0.07 of the noise-free next output remains unexplained, not all of it necessarily inferable from the agent's observations; the adapter of the model trained through its step removes a little of it, the plain adapter adds to it.
 - One set of weights runs instrument and thermal processes without being told which is which, at 0.023 and 0.013 above single-family models that saw twice as much of each family; single-family models do not transfer.
-- Against processes advancing on an independent 10 ms clock, control keeps its period beside learning on a separate stream up to 64 instances (3.2 ms median response); at 512 instances learning takes the GPU from control and most steps run on a held action.
+- Against processes advancing on an independent 10 ms clock, with learning on a separate stream, the median response stays near 3 ms up to 64 instances with 1.5–3.2 % of steps on a held action, which is not a strict deadline guarantee; at 512 instances learning takes the GPU from control and most steps run on a held action.
 - A persistent state must keep one scale: an unnormalised residual workspace grew without bound over a lifetime and made fresh lifetimes 0.175 against 0.110 in training. Every refinement now normalises the slots.
 
 Sources: [lifetime results](experiments/lifetime/RESULTS.md), [per-seed results](experiments/lifetime/results/per_seed.json), and the [corrections](https://github.com/Cherish0925/continual-decision-model/issues/1) applied before training.
