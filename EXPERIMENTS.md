@@ -4,7 +4,7 @@ The main comparison now concerns a continuously operating model that learns obse
 
 ## Integrated model campaign
 
-This is the next main experiment. The studies below remain completed results and comparisons; further maze variants are not prerequisites for this campaign. The proposed campaign has not yet been run.
+The [lifetime experiment](experiments/lifetime/README.md) runs this campaign on structured process families with one shared core: a first round of eight settings on instruments and two families ([results](experiments/lifetime/RESULTS.md)), and a second round, in training, that trains the model through its deployed learning, its workspace across events and copies of processes, on instruments that also ask for their largest output, thermal processes and vehicles behind walls. Delayed digital tools and a ported established benchmark are not yet part of it. The studies below remain completed results and comparisons; further maze variants are not prerequisites for this campaign.
 
 Train one recurrent/Transformer core with action-conditioned prediction and the complete activity interface in [DESIGN.md](DESIGN.md). Keep the same shared core and activity parameterization across task families, using modality/task-specific input and output modules. Train both a mixed-family model and matched separate-family controls so multi-domain training is not confused with transfer.
 
@@ -27,6 +27,8 @@ For each family, vary unknown but learnable dynamics, familiar dynamics, and irr
 | Frozen model with learned activity selection | Benefit of adaptive computation and observation without deployment parameter updates |
 | Same CDM with fixed learning schedule | Contribution of choosing when and what to learn, with matched available update resources |
 | Full CDM | Jointly trained continuing state, activity, action, prediction, and local adaptation |
+
+In the lifetime experiment these are the recurrent policy and the recurrent policy trained to predict, the world model with fixed schedules, the model without learning, the fixed learning schedule and the full setting; the second round adds predictions only, single-step meta-training, cheap targets only, one-tick workspace truncation, and PPO-only activity learning at the compute of valued copies.
 
 Use implementations appropriate to each domain; an established method's native benchmark results are not directly comparable to a modified timed task. Match observation access, training interactions, model capacity or measured compute, and tuning budgets. Include ordinary retrieval-based improvement as a memory comparison. A larger single-pass model tests whether extra capacity is sufficient.
 

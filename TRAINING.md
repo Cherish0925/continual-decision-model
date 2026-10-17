@@ -73,6 +73,8 @@ Use these targets to initialize predicted operation values. Improvement divided 
 
 For tasks in which approximate planning references are available, report information-limited and computation-limited performance separately. Their magnitudes describe the current shortfall, whereas operation values estimate what a particular next activity can achieve.
 
+The lifetime trainer implements these continuations as copies of a process that share its future disturbances, readings and condition changes, with the continuation policy sampling under shared noise ([`runtime.branch_values`](experiments/lifetime/runtime.py)); their returns train an activity-value head. Whether such targets carry signal is measured, not assumed: [`branches.py`](experiments/lifetime/branches.py) values the same states twice with independent randomness. One sampled continuation per option repeats with a correlation below 0.1 at horizons of 4 to 32 ticks, so a single choice's consequence is buried in the variability of what follows; continuations on the policy's most probable choices over 4 ticks, averaged over four independent sets, repeat with a correlation of 0.75. The policy follows the head in proportion to the share of fresh continuations' variance it predicts.
+
 ## 4. Joint activity and action learning
 
 Train recurrent actor–critic policies, initially PPO, from fresh rollouts. Let an operation last \(\Delta t_i\), use \(\gamma_i=\exp(-\beta\Delta t_i)\), and accumulate reward during the interval. Bootstrap from the state after that duration.
@@ -108,6 +110,8 @@ Compute value targets across task changes and learning effects. A backpropagatio
 For a subset of simulated histories, branch from the same external state, model state, experience, and optimizer state: learn now versus spend the interval on another operation. Apply the same continuation policy and compare subsequent utility over a common elapsed-time horizon. This can initialize or train operation-value estimates. The deployed selector uses its own received history, not simulator parameters or the branch comparison.
 
 Experience selection initially chooses among recent, returning-task, and task-relevant retained records. Sample examples across all selected streams and records; [the corrected replay sampler](experiments/continual_agent/replay.py) addresses the prefix restriction in the existing operation experiment. A learned retrieval query or mixture may then optimize which experiences improve subsequent return.
+
+The lifetime trainer implements the differentiable comparison (`--objective deployed`): within each training window it replays the learning steps the agent took, at the ticks it took them, each on the buffer it read then, and trains the shared parameters and the step size through every step by the loss of each tick's prediction under the adapter then in effect. The same replay restores the adapter at every decision, so recomputed policy probabilities read the adapter that was in effect. Precise readings, when they return, replace the noisy reading of the transition they measured, and likelihoods weigh each by its sensor's noise.
 
 Compare acquisition with state-only adaptation, retrieved experience, fixed-schedule parameter updates, and learned update selection. Carry learned adapters across changing conditions and revisit earlier conditions without resetting them. Test transfer on held-out combinations. Separate reset experiments identify whether improvement resides in transient activations, retrieved records, or adapted parameters.
 
