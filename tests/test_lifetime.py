@@ -187,9 +187,9 @@ class RuntimeTests(unittest.TestCase):
                 self.assertFalse(m[1, 1])                                   # measurement in flight
                 self.assertTrue(torch.equal(m[2, 2:], torch.tensor([True, False, False, False, False])))
                 learn = m[:, 2 + LEARN]
-                if mode in ("frozen", "predict_only", "recurrent"):
+                if mode in ("frozen", "predict_only", "predict_hidden", "recurrent"):
                     self.assertFalse(learn.any())
-                if mode in ("predict_only", "recurrent"):
+                if mode in ("predict_only", "predict_hidden", "recurrent"):
                     self.assertFalse(m[:, 3:2 + LEARN].any())
                 if mode in ("fixed_learn", "world_model"):
                     self.assertEqual(bool(learn[0]), t == 0)
@@ -214,6 +214,18 @@ class RuntimeTests(unittest.TestCase):
         self.assertFalse(torch.equal(agent.A, before))                      # completed: used from the next tick
         self.assertTrue(torch.equal(agent.busy, torch.zeros(3, dtype=torch.long)))
 
+
+    def test_hidden_predictions_do_not_reach_the_policy(self):
+        spec = InstrumentSpec()
+        model = small_model(spec)
+        env = InstrumentFleet(4, spec, seed=0)
+        agent, obs = new_agent(model, 4, 16, "cpu"), first(env)
+        for _ in range(6):
+            agent, obs, step = tick(model, agent, env, obs, "predict_hidden", Costs(), 0.05, every=8)
+            self.assertEqual(float(step["offset"].abs().sum()), 0.0)
+            self.assertEqual(float(step["logvar"].abs().sum()), 0.0)
+            self.assertEqual(float(agent.predicted.abs().sum()), 0.0)
+            self.assertGreater(float(step["prediction_error"].sum()), 0.0)
 
     def test_discarded_updates_keep_the_schedule_but_not_the_adapter(self):
         spec = InstrumentSpec()

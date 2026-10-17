@@ -22,7 +22,8 @@ from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, ProcessS
 from cdm.thermal import ThermalFleet, ThermalSpec
 
 SCALAR_DIM = 8
-MODES = ("full", "fixed_learn", "frozen", "world_model", "predict_only", "recurrent")
+MODES = ("full", "fixed_learn", "frozen", "world_model", "predict_only", "predict_hidden", "recurrent")
+HIDDEN = ("recurrent", "predict_hidden")  # settings whose policy reads no prediction
 LEARN = len(REFINEMENTS)                  # index of the learning option among the compute options
 
 
@@ -133,9 +134,9 @@ def masks(agent: Agent, pending: Tensor, mode: str, tick: int, every: int) -> Te
     busy = agent.busy > 0
     m[:, 3:] &= ~busy.unsqueeze(1)                        # a running learning step occupies the compute
     m[:, k] &= agent.filled >= 8
-    if mode in ("frozen", "predict_only", "recurrent"):
+    if mode in ("frozen", "predict_only", "predict_hidden", "recurrent"):
         m[:, k] = False
-    if mode in ("predict_only", "recurrent"):
+    if mode in ("predict_only", "predict_hidden", "recurrent"):
         m[:, 3:k] = False
     if mode in ("fixed_learn", "world_model"):            # learn on a fixed schedule whenever possible
         due = m[:, k] & (tick % every == 0)
@@ -181,11 +182,13 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
         h = model.fast(h_prev, event)
         state = model.state_features(h, z_prev)
         if mode == "recurrent":
-            mean = logvar = offset = torch.zeros(n, model.config.actions, device=device)
+            mean = logvar = torch.zeros(n, model.config.actions, device=device)
         else:
             mean, logvar = model.predict_actions(state, agent.A, agent.B)
-            offset = mean.float() - obs["setpoint"].unsqueeze(1)      # predicted readings relative to the setpoint
         logvar = logvar.float()
+        offset = mean.float() - obs["setpoint"].unsqueeze(1)          # predicted readings relative to the setpoint
+        if mode in HIDDEN:                                            # the policy reads no prediction
+            offset, logvar = torch.zeros_like(offset), torch.zeros_like(logvar)
         control_logits, activity_logits, value = model.heads(model.trunk(h, z_prev, offset, logvar, scalars),
                                                              offset, logvar)
     h = h.float()
@@ -230,6 +233,8 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             busy[idx] = learn_ticks - 1
     pred_taken = mean.float()[rows, action]
     error = (nxt["cheap"] - pred_taken).abs()
+    seen = torch.zeros_like(pred_taken) if mode in HIDDEN else pred_taken   # what the policy's features may carry
+    seen_error = (nxt["cheap"] - seen).abs()
     if shared and mode != "recurrent":
         with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
             alone = model.predict(torch.cat((state, model.action_features(action)), -1).unsqueeze(1))[0]
@@ -240,7 +245,7 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
                   since_measure=torch.where(nxt["accepted"], torch.zeros_like(agent.since_measure), agent.since_measure + 1),
                   since_learn=torch.where(learn, torch.zeros_like(agent.since_learn), agent.since_learn + 1),
                   since_request=torch.where(nxt["started"], torch.zeros_like(agent.since_request), agent.since_request + 1),
-                  error_ema=0.95 * agent.error_ema + 0.05 * error, predicted=pred_taken, age=agent.age + 1)
+                  error_ema=0.95 * agent.error_ema + 0.05 * seen_error, predicted=seen, age=agent.age + 1)
     step = {"event": event, "scalars": scalars, "allowed": allowed, "records": records, "offset": offset,
             "logvar": logvar, "action": action, "measure": measure, "compute": compute, "counts": counts,
             "learn": learn, "logp": logp, "value": value.float(), "reward": reward, "target": nxt["cheap"],

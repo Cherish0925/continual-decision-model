@@ -21,6 +21,7 @@ STYLE = {
     "recurrent": ("Recurrent policy", "#e87ba4", "v"),
     "full_meta": ("CDM trained through its learning step", "#008300", "*"),
     "predict_only": ("Predictions without workspace computation or learning", "#4a3aa7", "h"),
+    "predict_hidden": ("Recurrent policy trained to predict, reading no prediction", "#52514e", "X"),
     "meta_step": ("CDM trained through a learned step size", "#e34948", "P"),
     # the two-family runs are reported on their own, so they reuse the first hues of the same order
     "mixed_full": ("CDM on both families", "#2a78d6", "o"),
@@ -203,7 +204,7 @@ def families_table(groups, ticks=None):
     return "\n".join(lines)
 
 
-LADDER = ("recurrent", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta", "meta_step")
+LADDER = ("recurrent", "predict_hidden", "predict_only", "frozen", "fixed_learn", "full", "world_model", "full_meta", "meta_step")
 
 
 def ladder(rows, out):
