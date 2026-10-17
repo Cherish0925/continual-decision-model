@@ -262,7 +262,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args, activity_weight=
                     stats["prediction"] += float(prediction.detach()) * T
                 if deployed:                                     # what the window's own steps did to its predictions
                     with torch.no_grad(), amp():
-                        unchanged = online_nll(model, state, action[:, mb], As, Bs, version.clamp(max=1),
+                        unchanged = online_nll(model, state, action[:, mb], As[:2], Bs[:2], version.clamp(max=1),
                                                target[:, mb], precise[:, mb])
                     w = keep.sum().clamp_min(1) * T
                     stats["adapt_before"] += float((unchanged * keep).sum() / w)
