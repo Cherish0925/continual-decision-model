@@ -158,6 +158,9 @@ def predictions_per_tick(model: ContinualCore, state: Tensor, As, Bs, version: T
         low = torch.einsum("vnrd,lnd->lvnr", B_all[..., :s], st)                  # [l, V, n, r]
         low = low.gather(1, ver.view(*ver.shape[:1], 1, -1, 1).expand(-1, 1, -1, low.shape[-1])).squeeze(1)
         low = low.unsqueeze(2) + _gather_versions(low_act, ver)                   # [l, n, K, r]
+        gates = model.gates(st)
+        if gates is not None:                                                     # adapter blocks of each state
+            low = low * gates.detach().unsqueeze(2).to(low.dtype)
         pre = (st @ W[:, :s].T + b).unsqueeze(2) + act_pre                        # [l, n, K, h]
         pre = pre + torch.einsum("lnhr,lnkr->lnkh", _gather_versions(A_all, ver).to(pre.dtype), low.to(pre.dtype))
         out = functional_call(model.pred_out, weights, (pre,))
@@ -179,6 +182,9 @@ def online_nll(model: ContinualCore, state: Tensor, actions: Tensor, As, Bs, ver
     B_all, A_all = torch.stack(Bs), torch.stack(As)                               # [V, n, r, 3w], [V, n, h, r]
     current = F.one_hot(version, len(As)).unsqueeze(-1)                           # [L, n, V, 1]
     low = torch.einsum("vnrd,lnd->lnvr", B_all, x) * current                      # only the version in effect
+    gates = model.gates(state)
+    if gates is not None:                                                         # adapter blocks of each state
+        low = low * gates.unsqueeze(2).to(low.dtype)
     pre = model.pred_in(x) + torch.einsum("vnhr,lnvr->lnh", A_all, low)
     mean, logvar = model._head(pre)
     return reading_nll(model, mean, logvar, targets, precise)

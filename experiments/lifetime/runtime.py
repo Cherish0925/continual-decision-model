@@ -348,6 +348,8 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             "prediction_error": error}
     if shared and mode != "recurrent":
         step["shared_prediction_error"] = shared_error
+    if model.selector is not None:                                    # the adapter block given most weight
+        step["block"] = model.selector(state).argmax(-1)
     return agent, nxt, step
 
 

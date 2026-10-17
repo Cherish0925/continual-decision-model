@@ -352,6 +352,10 @@ class MixedFleet:
         return torch.cat([f.pending for f in self.fleets])
 
     @property
+    def condition(self) -> torch.Tensor:
+        return torch.cat([f.condition for f in self.fleets])
+
+    @property
     def tick(self) -> int:
         return self.fleets[0].tick
 

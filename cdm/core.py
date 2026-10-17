@@ -12,7 +12,10 @@ operations, elapsed-time features). Its parts:
                 number of refinements
 ``predictor``   action-conditioned prediction of the next reading for every action;
                 its first layer carries an instance-owned low-rank adapter that a
-                learning step updates from the instance's own experience. With
+                learning step updates from the instance's own experience. The
+                adapter can be a bank of blocks that a selector weighs from the
+                state, so that experience of one operating condition is kept in
+                the blocks used under it until the condition returns. With
                 sensor noise, the prediction is of the noise-free output and each
                 sensor adds its own learned noise, so a precise reading weighs
                 more than a cheap one
@@ -61,6 +64,7 @@ class CoreConfig:
     step_rule: str = "normalized"    # "normalized": a step of fixed size; "evidence": -eta g / (|g| + kappa)
     gated_workspace: bool = False    # a learned gate keeps, revises or resets every slot at each refinement
     activity_values: bool = False    # a head that values every activity option against the others
+    adapter_blocks: int = 1          # adapter blocks of ``rank`` each, weighed by a selector reading the state
 
     @property
     def compute_options(self) -> int:
@@ -103,6 +107,7 @@ class ContinualCore(nn.Module):
         self.norm_slots = nn.LayerNorm(w) if c.bounded_workspace else nn.Identity()
         self.action = nn.Sequential(nn.Linear(c.action_dim, w), nn.GELU(), nn.Linear(w, w))
         self.pred_in = nn.Linear(3 * w, c.hidden)
+        self.selector = nn.Linear(2 * w, c.adapter_blocks) if c.adapter_blocks > 1 else None
         self.pred_out = nn.Sequential(nn.GELU(), nn.Linear(c.hidden, c.hidden), nn.GELU(), nn.Linear(c.hidden, 2))
         trunk = 2 * w + 2 * c.actions + c.scalar_dim
         self.norm_h, self.norm_z = nn.LayerNorm(w), nn.LayerNorm(w)
@@ -123,10 +128,11 @@ class ContinualCore(nn.Module):
     # ------------------------------------------------------------ state
     def initial(self, n: int, device) -> dict[str, Tensor]:
         c = self.config
+        rank = c.rank * c.adapter_blocks
         return {"h": torch.zeros(n, c.width, device=device),
                 "z": self.slots.detach().unsqueeze(0).expand(n, -1, -1).clone(),
-                "A": torch.zeros(n, c.hidden, c.rank, device=device),
-                "B": 0.01 * torch.randn(n, c.rank, 3 * c.width, device=device)}
+                "A": torch.zeros(n, c.hidden, rank, device=device),
+                "B": 0.01 * torch.randn(n, rank, 3 * c.width, device=device)}
 
     def fast(self, h: Tensor, event: Tensor) -> Tensor:
         """Fast state after one event: h [n, w], event [n, e]."""
@@ -175,11 +181,20 @@ class ContinualCore(nn.Module):
         values = self.action_values if action is None else self.action_values[action]
         return self.action(values)
 
+    def gates(self, state: Tensor) -> Tensor | None:
+        """Weight of each adapter block for state features [..., 2w], repeated over the block's rank [..., rank];
+        None for a single adapter."""
+        if self.selector is None:
+            return None
+        return torch.softmax(self.selector(state).float(), -1).repeat_interleave(self.config.rank, -1)
+
     def predict(self, x: Tensor, A: Tensor | None = None, B: Tensor | None = None) -> tuple[Tensor, Tensor]:
         """Mean and log-variance of the next reading for predictor inputs x [n, k, 3w]."""
         pre = self.pred_in(x)
         if A is not None:
-            pre = pre + torch.einsum("nhr,nkr->nkh", A, torch.einsum("nrd,nkd->nkr", B, x))
+            low = torch.einsum("nrd,nkd->nkr", B, x)
+            gates = self.gates(x[..., :2 * self.config.width])
+            pre = pre + torch.einsum("nhr,nkr->nkh", A, low if gates is None else low * gates.to(low.dtype))
         return self._head(pre)
 
     def predict_actions(self, state: Tensor, A: Tensor | None = None, B: Tensor | None = None):
@@ -190,7 +205,8 @@ class ContinualCore(nn.Module):
         pre = (state @ W[:, :s].T + b).unsqueeze(1) + (emb @ W[:, s:].T).unsqueeze(0)
         if A is not None:
             low = torch.einsum("nrd,nd->nr", B[..., :s], state).unsqueeze(1) + torch.einsum("nrd,kd->nkr", B[..., s:], emb)
-            pre = pre + torch.einsum("nhr,nkr->nkh", A, low)
+            gates = self.gates(state)
+            pre = pre + torch.einsum("nhr,nkr->nkh", A, low if gates is None else low * gates.unsqueeze(1).to(low.dtype))
         return self._head(pre)
 
     def step_size(self, default: float) -> Tensor | float:

@@ -1,5 +1,6 @@
 """Lifetime boundaries must describe the same states in collection, training and evaluation."""
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import torch
@@ -185,7 +186,8 @@ class EvaluationTests(unittest.TestCase):
         with patch.object(evaluation, "make_fleet", **{"return_value.spec.request_ticks": 60}), \
                 patch.object(evaluation, "new_agent"), \
                 patch.object(evaluation, "first_observation"), patch.object(evaluation, "tick", fake_tick):
-            result = evaluation.evaluate(None, dict(mode="full", buffer=8, adapter_lr=0.05, every=8, learn_ticks=2),
+            model = SimpleNamespace(config=SimpleNamespace(adapter_blocks=1))
+            result = evaluation.evaluate(model, dict(mode="full", buffer=8, adapter_lr=0.05, every=8, learn_ticks=2),
                                          {"instrument": InstrumentSpec(), "thermal": ThermalSpec()}, "instrument",
                                          devices, ticks, 0, "cpu", "full")
         self.assertEqual(result["prediction_error_by_thousand_ticks"], [1.0, 1.0])

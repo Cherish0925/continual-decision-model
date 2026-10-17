@@ -90,7 +90,7 @@ def build(args, spec: InstrumentSpec, device) -> ContinualCore:
                         hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM + goals - 1,
                         learned_step=args.learned_step, goals=goals, sensor_noise=args.sensor_noise,
                         step_rule=args.step_rule, gated_workspace=args.gated_workspace,
-                        activity_values=args.activity_values)
+                        activity_values=args.activity_values, adapter_blocks=args.adapter_blocks)
     return ContinualCore(config, action_values(spec)).to(device)
 
 
@@ -318,6 +318,7 @@ def parse_args(argv=None):
     p.add_argument("--heads", type=int, default=8)
     p.add_argument("--records", type=int, default=32)
     p.add_argument("--rank", type=int, default=8)
+    p.add_argument("--adapter-blocks", type=int, default=1, help="adapter blocks weighed by a selector of the state")
     p.add_argument("--hidden", type=int, default=512)
     p.add_argument("--action-width", type=int, default=256)
     p.add_argument("--buffer", type=int, default=64)

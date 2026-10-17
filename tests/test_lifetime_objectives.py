@@ -57,8 +57,13 @@ class ObjectiveTests(unittest.TestCase):
         self.assertEqual(int(agent.learn_p.sum()), len(measured))
 
     def test_replayed_adapters_are_the_adapters_the_agent_predicted_with(self):
+        for blocks in (1, 3):
+            with self.subTest(blocks=blocks):
+                self.replay(blocks)
+
+    def replay(self, blocks):
         spec = InstrumentSpec(search_share=0.5)
-        model = core(spec, sensor_noise=True, step_rule="evidence", gated_workspace=True)
+        model = core(spec, sensor_noise=True, step_rule="evidence", gated_workspace=True, adapter_blocks=blocks)
         start, steps, used, agent = collect(model, spec, warm=40, length=30)
         S = lambda k: torch.stack([s[k] for s in steps])
         L, T = len(steps), agent.learn_s.shape[1]

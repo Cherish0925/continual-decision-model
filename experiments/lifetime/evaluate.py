@@ -97,6 +97,18 @@ class ResponseTimes:
                 "unfinished_requests": int(((self.start >= 0) & ~self.reached).sum())}
 
 
+def block_use(use: torch.Tensor) -> dict:
+    """How consistently each operating condition is served by one adapter block, from ticks [n, conditions, blocks]:
+    the share of ticks on a condition's most used block, and the share of instances in which two conditions
+    met in the lifetime have the same most used block."""
+    met = use.sum(-1) > 0
+    top = use.argmax(-1)
+    same = (top.unsqueeze(2) == top.unsqueeze(1)) & met.unsqueeze(2) & met.unsqueeze(1)
+    same &= ~torch.eye(use.shape[1], dtype=torch.bool, device=use.device)
+    return {"block_purity": float(use.max(-1).values.sum() / use.sum().clamp_min(1)),
+            "block_shared_by_conditions": float(same.flatten(1).any(1).float().mean())}
+
+
 def runtime_options(args_train: dict) -> dict:
     """Options of ``runtime.tick`` a model was trained with; earlier checkpoints predate them."""
     return {"support": args_train.get("support", "sample"), "precise_targets": args_train.get("precise_targets", False)}
@@ -138,6 +150,8 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
     totals = torch.zeros(8, device=device)           # reward, refine, measure, learn, err, active, pred, shared
     kinds = torch.zeros(2, 2, device=device)         # [setpoint, largest output] x [error, active ticks]
     by_request = torch.zeros(2, 4, device=device)    # [idle, active] x [ticks, refinements, measurements, learning]
+    blocks = model.config.adapter_blocks
+    use = torch.zeros(devices, spec.conditions, blocks, device=device)   # ticks each condition gave each block most
     response = ResponseTimes(devices, device, spec.request_ticks)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
@@ -157,6 +171,8 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
             life[key][lb] += value.sum()
         totals += torch.stack((step["reward"].sum(), step["counts"].float().sum(), step["accepted"].float().sum(),
                                step["learn"].float().sum(), (err * active).sum(), active.sum(), perr.sum(), serr.sum()))
+        if "block" in step:
+            use[torch.arange(devices, device=device), env.condition, step["block"]] += 1
         search = step["transition_search"].long()
         kinds.index_put_((search,), torch.stack((err * active, active), 1), accumulate=True)
         by_request.index_put_((step["active"].long(),), torch.stack((torch.ones_like(active), step["counts"].float(),
@@ -181,6 +197,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
                for i, state in enumerate(("idle", "active"))
                for j, what in ((1, "refinements"), (2, "measurements"), (3, "learning"))},
             "idle_share": float(by_request[0, 0] / n),
+            **(block_use(use) if blocks > 1 else {}),
             **response.summary(),
             "switch_bins": list(SWITCH_BINS),
             **{f"{name}_after_switch_{group}": ratio(acc[a][g], acc[b][g])
