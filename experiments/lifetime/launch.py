@@ -2,7 +2,8 @@
 """Train several variants with several seeds, spread over the GPUs.
 
 A variant is a mode, or ``name=mode`` followed by its own training arguments,
-for example ``"full_meta=full --meta 0.5"``. Runs go to
+for example ``"full_meta=full --meta 0.5"``; a trailing ``@0,1`` restricts it to
+those seeds. Runs start in order of seed, then of variant. Runs go to
 ``<output-root>/<name>/seed<k>``. A run whose ``config.json`` records a finished
 training time is skipped, and so is one whose log changed in the last
 ``--busy-minutes``. A run starts on a GPU when fewer than ``--per-gpu`` runs
@@ -41,10 +42,11 @@ def busy(run: Path, minutes: float) -> bool:
     return log.exists() and time.time() - log.stat().st_mtime < 60 * minutes
 
 
-def variant(text: str) -> tuple[str, str, list[str]]:
+def variant(text: str) -> tuple[str, str, list[str], set[int] | None]:
+    text, _, seeds = text.partition(" @")
     head, *extra = shlex.split(text)
     name, _, mode = head.partition("=")
-    return name, mode or name, extra
+    return name, mode or name, extra, ({int(k) for k in seeds.split(",")} if seeds else None)
 
 
 def main():
@@ -61,7 +63,8 @@ def main():
     p.add_argument("--busy-minutes", type=float, default=15.0)
     p.add_argument("--output-root", type=Path, required=True)
     args = p.parse_args(argv)
-    queue = [(seed, *variant(v)) for seed, v in itertools.product(args.seeds, args.variants)]
+    queue = [(seed, name, mode, own) for seed, v in itertools.product(args.seeds, args.variants)
+             for name, mode, own, only in [variant(v)] if only is None or seed in only]
     queue = [job for job in queue if not finished(run := args.output_root / job[1] / f"seed{job[0]}")
              and not busy(run, args.busy_minutes)]
     running: dict[int, list] = {g: [] for g in args.gpus}
