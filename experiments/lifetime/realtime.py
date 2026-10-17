@@ -17,10 +17,14 @@ whose updated adapter is installed when it returns. The control path never
 waits for refinement or learning, so the workspace reads experience records
 one step older than in the simulated runtime.
 
-Reported per instance count: response time from the newest published
-observation to the published action (median, p95, p99), observations absorbed
-per decision, fleet steps that ran on a held action, tracking error, and
-refinements and learning steps per second of measured wall time.
+Each instance count runs under three settings: the model's own (learning as
+trained), ``frozen`` (no learning; its compute goes to refinement) and
+``noidle`` (no refinement or learning while no request is active). Reported:
+response time from the newest published observation to the published action
+(median, p95, p99), observations absorbed per decision, fleet steps that ran on
+a held action, tracking error, refinements and learning steps per second of
+measured wall time, and the GPU's mean power and energy per fleet step, read
+every 20 ms; the GPU should run nothing else.
 """
 from __future__ import annotations
 
@@ -106,6 +110,20 @@ class Fleet(threading.Thread):
             return items
 
 
+class PowerMeter(threading.Thread):
+    """Reads the GPU's power draw every ``interval`` seconds until stopped."""
+
+    def __init__(self, device, interval=0.02):
+        super().__init__(daemon=True)
+        self.device, self.interval, self.readings = device, interval, []
+        self.stop = threading.Event()
+
+    def run(self):
+        while not self.stop.is_set():
+            self.readings.append(torch.cuda.power_draw(self.device) / 1000)
+            time.sleep(self.interval)
+
+
 class Learner(threading.Thread):
     """Takes learning steps on its own stream and returns the updated adapters."""
 
@@ -128,11 +146,11 @@ class Learner(threading.Thread):
 
 
 @torch.no_grad()
-def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: bool):
+def run(model, targs, specs, family, n, period_ms, steps, seed, device, setting: str):
     torch.manual_seed(seed)
-    mode = targs["mode"] if learn else "frozen"
+    mode = "frozen" if setting == "frozen" else targs["mode"]
     goals, options = model.config.goals, runtime_options(targs)
-    env = make_fleet(family, n, seed, device, specs["instrument"], specs["thermal"], targs.get("thermal_share", 0.5))
+    env = make_fleet(family, n, seed, device, specs, targs.get("thermal_share", 0.5))
     fleet, learner = Fleet(env, period_ms, steps), Learner(model, targs["adapter_lr"], device)
     agent = new_agent(model, n, targs["buffer"], device)
     stream, amp = torch.cuda.Stream(device), torch.autocast("cuda", dtype=torch.bfloat16)
@@ -143,7 +161,9 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
     decided, attached = -2, True                                      # observation the latest decision answered
     state = expect = None                                             # latest state; its predictions for each action
     response, absorbed, refinements = [], [], 0.0
+    power = PowerMeter(device)
     learner.start()
+    power.start()
     fleet.start()
     with torch.cuda.stream(stream):
         while items := fleet.take():
@@ -179,6 +199,8 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
             pending = obs["pending"]
             scalars = scalar_features(obs, agent, pending, goals)
             allowed = masks(agent, pending, mode, k, targs["every"])
+            if setting == "noidle":                                   # nothing beyond control between requests
+                allowed[:, 3:] &= obs["active"].unsqueeze(1)
             with amp:
                 mean, logvar = model.predict_actions(state, agent.A, agent.B)
                 expect = mean.float()
@@ -225,15 +247,19 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
     learner.jobs.put(None)
     fleet.join()
     learner.join()
+    power.stop.set()
+    power.join()
     seconds = fleet.finished - fleet.started
+    watts = float(np.mean(power.readings)) if power.readings else None
     lat = np.asarray(response[10:] if len(response) > 20 else response)          # the first actions warm up
     quantile = lambda q: float(np.percentile(lat, q)) if len(lat) else None
-    return {"instances": n, "period_ms": period_ms, "learning": learn, "fleet_steps": steps, "decisions": len(response),
+    return {"instances": n, "period_ms": period_ms, "setting": setting, "fleet_steps": steps, "decisions": len(response),
             "observations_per_decision": float(np.mean(absorbed)) if absorbed else None,
             "response_ms_median": quantile(50), "response_ms_p95": quantile(95), "response_ms_p99": quantile(99),
             "held_steps": int(fleet.held), "error_while_active": fleet.err / max(fleet.active, 1),
             "wall_seconds": round(seconds, 3), "refinements_per_second": refinements / seconds,
-            "learning_steps_per_second": learner.completed / seconds}
+            "learning_steps_per_second": learner.completed / seconds, "power_w": watts,
+            "energy_j_per_step": watts * seconds / steps if watts is not None else None}
 
 
 def main():
@@ -244,6 +270,7 @@ def main():
     p.add_argument("--period", type=float, default=10.0, help="fleet step period in milliseconds")
     p.add_argument("--steps", type=int, default=3000)
     p.add_argument("--seed", type=int, default=777)
+    p.add_argument("--settings", nargs="+", default=["own", "frozen", "noidle"], choices=["own", "frozen", "noidle"])
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     configure_backends()
@@ -253,8 +280,8 @@ def main():
     family = args.family or targs.get("family", "instrument")
     rows = []
     for n in args.instances:
-        for learn in (True, False):
-            rows.append(run(model, targs, specs, family, n, args.period, args.steps, args.seed, device, learn))
+        for setting in args.settings:
+            rows.append(run(model, targs, specs, family, n, args.period, args.steps, args.seed, device, setting))
             print(json.dumps(rows[-1]), flush=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps({"model": args.model.parent.parent.name, "seed": args.model.parent.name,

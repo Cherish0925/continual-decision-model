@@ -67,7 +67,7 @@ def decisions(path, devices, ticks, seed, device):
     model, targs, specs = load(path, device)
     family = targs.get("family", "instrument")
     assert family != "mixed", "decisions scores one process family at a time"
-    env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"])
+    env = make_fleet(family, devices, seed, device, specs)
     agent, obs = new_agent(model, devices, targs["buffer"], device), first_observation(env)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     nb, rows, table = len(SWITCH_BINS) - 1, torch.arange(devices, device=device), env.table.expand(devices, -1, -1)

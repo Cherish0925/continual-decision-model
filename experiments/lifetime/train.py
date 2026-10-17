@@ -59,6 +59,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cdm.core import CoreConfig, ContinualCore, adaptation_loss, reading_nll  # noqa: E402
 from cdm.instrument import InstrumentSpec, action_values  # noqa: E402
+from cdm.navigation import NavigationSpec  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
 from experiments.lifetime.objectives import (NEVER, deployed_adapters, online_nll, predictions_per_tick,  # noqa: E402
                                              recompute_states, window_support)
@@ -75,6 +76,10 @@ def instrument(args) -> InstrumentSpec:
 
 def thermal(args) -> ThermalSpec:
     return ThermalSpec(dims=args.dims, levels=args.levels)
+
+
+def navigation(args) -> NavigationSpec:
+    return NavigationSpec(dims=args.dims, levels=args.levels, search_share=args.search_share)
 
 
 def build(args, spec: InstrumentSpec, device) -> ContinualCore:
@@ -372,7 +377,8 @@ def main(argv=None):
     device = torch.device(args.device)
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=True)
-    spec, tspec = instrument(args), thermal(args)
+    specs = {"instrument": instrument(args), "thermal": thermal(args), "navigation": navigation(args)}
+    spec = specs["instrument"]
     model = build(args, spec, device)
     if args.init:
         missing, unexpected = model.load_state_dict(torch.load(args.init, map_location=device)["model"], strict=False)
@@ -381,14 +387,14 @@ def main(argv=None):
         for name, q in model.named_parameters():
             q.requires_grad_(name.startswith(("activity.", "activity_value.", "value.")))
     optimizer = torch.optim.Adam([q for q in model.parameters() if q.requires_grad], lr=args.lr, eps=1e-5)
-    env = make_fleet(args.family, args.streams, args.seed + 1000, device, spec, tspec, args.thermal_share)
+    env = make_fleet(args.family, args.streams, args.seed + 1000, device, specs, args.thermal_share)
     agent = new_agent(model, args.streams, args.buffer, device)
     gen = torch.Generator(device=device).manual_seed(args.seed + 2000)
     agent.age = torch.randint(0, args.lifetime, (args.streams,), generator=gen, device=device)
     obs = first_observation(env)
     costs = Costs(args.cost_refinement, args.cost_measurement, args.cost_learning)
     meta = {"args": {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
-            "config": asdict(model.config), "instrument": asdict(spec), "thermal": asdict(tspec),
+            "config": asdict(model.config), **{k: asdict(v) for k, v in specs.items()},
             "parameters": sum(q.numel() for q in model.parameters()),
             "revision": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                                        text=True).stdout.strip() or None,
@@ -402,8 +408,8 @@ def main(argv=None):
     sums = dict.fromkeys(keys, 0.0)
 
     def save():
-        torch.save({"model": model.state_dict(), "config": asdict(model.config), "instrument": asdict(spec),
-                    "thermal": asdict(tspec), "args": meta["args"]}, out / "model.pt")
+        torch.save({"model": model.state_dict(), "config": asdict(model.config),
+                    **{k: asdict(v) for k, v in specs.items()}, "args": meta["args"]}, out / "model.pt")
 
     window_start = previous = agent                     # the agent when the window began / before the last tick
     collection = update_time = 0.0

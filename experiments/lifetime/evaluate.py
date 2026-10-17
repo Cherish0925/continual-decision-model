@@ -47,6 +47,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cdm.core import CoreConfig, ContinualCore  # noqa: E402
 from cdm.instrument import InstrumentSpec  # noqa: E402
+from cdm.navigation import NavigationSpec  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
 from experiments.lifetime.runtime import FAMILIES, MODES, Costs, configure_backends, make_fleet, new_agent, tick  # noqa: E402
 from experiments.lifetime.train import first_observation  # noqa: E402
@@ -114,9 +115,10 @@ def load(path: Path, device):
     model = ContinualCore(config, torch.zeros(config.actions, config.action_dim)).to(device)
     model.load_state_dict(blob["model"])
     instrument = InstrumentSpec(**blob["instrument"])
-    thermal = ThermalSpec(**blob["thermal"]) if "thermal" in blob else ThermalSpec(dims=instrument.dims,
-                                                                                    levels=instrument.levels)
-    return model.eval(), blob["args"], {"instrument": instrument, "thermal": thermal}
+    shape = {"dims": instrument.dims, "levels": instrument.levels}
+    thermal = ThermalSpec(**blob.get("thermal", shape))
+    navigation = NavigationSpec(**blob.get("navigation", {**shape, "search_share": instrument.search_share}))
+    return model.eval(), blob["args"], {"instrument": instrument, "thermal": thermal, "navigation": navigation}
 
 
 @torch.no_grad()
@@ -124,8 +126,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
     torch.manual_seed(seed)
     apply_updates, refinements, idle_compute = mode != "discard", mode != "norefine", mode != "noidle"
     mode = args_train["mode"] if mode in ("discard", "norefine", "noidle") else mode
-    env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"],
-                     args_train.get("thermal_share", 0.5))
+    env = make_fleet(family, devices, seed, device, specs, args_train.get("thermal_share", 0.5))
     spec = env.spec
     agent = new_agent(model, devices, args_train["buffer"], device)
     obs = first_observation(env)

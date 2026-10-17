@@ -24,8 +24,9 @@ import torch
 from torch import Tensor
 
 from cdm.core import REFINEMENTS, ContinualCore, adapter_update
-from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, ProcessSpec
-from cdm.thermal import ThermalFleet, ThermalSpec
+from cdm.instrument import InstrumentFleet, MixedFleet, ProcessSpec
+from cdm.navigation import NavigationFleet
+from cdm.thermal import ThermalFleet
 
 SCALAR_DIM = 8
 MODES = ("full", "fixed_learn", "frozen", "world_model", "predict_only", "predict_hidden", "recurrent")
@@ -41,18 +42,21 @@ def configure_backends():
     torch.backends.cuda.enable_cudnn_sdp(False)
 
 
-FAMILIES = ("instrument", "thermal", "mixed")
+FLEETS = {"instrument": InstrumentFleet, "thermal": ThermalFleet, "navigation": NavigationFleet}
+FAMILIES = (*FLEETS, "mixed", "all")
 
 
-def make_fleet(family: str, n: int, seed: int, device, instrument: InstrumentSpec = InstrumentSpec(),
-               thermal: ThermalSpec = ThermalSpec(), share: float = 0.5):
-    """Processes of one family, or a mixture with ``share`` of the streams thermal."""
-    if family == "instrument":
-        return InstrumentFleet(n, instrument, seed, device)
-    if family == "thermal":
-        return ThermalFleet(n, thermal, seed, device)
-    k = int(round(n * share))
-    return MixedFleet([InstrumentFleet(n - k, instrument, seed, device), ThermalFleet(k, thermal, seed + 1, device)])
+def make_fleet(family: str, n: int, seed: int, device, specs: dict[str, ProcessSpec], share: float = 0.5):
+    """Processes of one family; ``mixed``: instruments and, for ``share`` of the streams, thermal processes;
+    ``all``: instruments, thermal processes and vehicles, a third of the streams each. ``specs`` maps each family
+    to its specification."""
+    if family in FLEETS:
+        return FLEETS[family](n, specs[family], seed, device)
+    if family == "mixed":
+        parts = (("instrument", n - int(round(n * share))), ("thermal", int(round(n * share))))
+    else:
+        parts = (("instrument", n - 2 * (n // 3)), ("thermal", n // 3), ("navigation", n // 3))
+    return MixedFleet([FLEETS[k](m, specs[k], seed + i, device) for i, (k, m) in enumerate(parts)])
 
 
 def goal_kinds(spec: ProcessSpec) -> int:
