@@ -37,8 +37,9 @@ estimates. The weight of that gradient is ``--branch-weight`` times the share
 of the variance of fresh copies' returns the head predicts, a running estimate
 from rows it has not yet trained on, so a head that predicts nothing has no
 influence.
-``--init`` starts from trained weights; ``--train-only activity`` trains only
-the activity, activity-value and value heads over a fixed model.
+``--init`` starts from trained weights, with ``--fresh-activity`` a newly
+initialised activity head; ``--train-only activity`` trains only the activity,
+activity-value and value heads over a fixed model.
 """
 from __future__ import annotations
 
@@ -362,6 +363,7 @@ def parse_args(argv=None):
                    help="weight of the activity gradient from the activity-value estimates")
     p.add_argument("--activity-values", action="store_true", help="a head that values every activity option")
     p.add_argument("--init", type=Path, help="start from the weights of a trained model")
+    p.add_argument("--fresh-activity", action="store_true", help="with --init, a newly initialised activity head")
     p.add_argument("--train-only", choices=("activity",), help="train only the activity and value heads")
     p.add_argument("--reward-scale", type=float, default=0.1, help="rewards are multiplied by this for value learning")
     p.add_argument("--save-every", type=int, default=50, help="windows between checkpoints")
@@ -388,6 +390,10 @@ def main(argv=None):
     if args.init:
         missing, unexpected = model.load_state_dict(torch.load(args.init, map_location=device)["model"], strict=False)
         assert not unexpected and all(k.startswith("activity_value.") for k in missing), (missing, unexpected)
+        if args.fresh_activity:
+            for layer in model.activity:
+                if hasattr(layer, "reset_parameters"):
+                    layer.reset_parameters()
     if args.train_only == "activity":
         for name, q in model.named_parameters():
             q.requires_grad_(name.startswith(("activity.", "activity_value.", "value.")))
