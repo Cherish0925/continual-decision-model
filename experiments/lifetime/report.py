@@ -181,14 +181,22 @@ def after_switch(rows, field, ylabel, out, keys, groups=("new", "returned")):
     plt.close(fig)
 
 
-def families_table(groups):
-    """Own-setting error of every variant on every family: groups maps a family name to its rows."""
+def early_error(r, ticks):
+    """Tracking error over the first ``ticks`` of the evaluated lifetime, from its thousand-tick bins."""
+    bins = r["error_by_thousand_ticks"][:max(1, ticks // 1000)]
+    return float(np.mean(bins))
+
+
+def families_table(groups, ticks=None):
+    """Own-setting error of every variant on every family: groups maps a family name to its rows. With ``ticks``,
+    every evaluation is compared over the same first part of its lifetime."""
     variants = [v for v in STYLE if any((v, "own") in rows for rows in groups.values())]
     lines = ["| Model | " + " | ".join(groups) + " |", "|" + "---|" * (len(groups) + 1)]
     for v in variants:
         cells = []
         for rows in groups.values():
-            mean, se, n = mean_se([r["error_while_active"] for r in rows.get((v, "own"), [])])
+            values = [early_error(r, ticks) if ticks else r["error_while_active"] for r in rows.get((v, "own"), [])]
+            mean, se, n = mean_se(values)
             cells.append("—" if mean is None else f"{mean:.4f} ± {se:.4f} ({n})")
         lines.append(f"| {STYLE[v][0]} | " + " | ".join(cells) + " |")
     return "\n".join(lines)
@@ -241,8 +249,9 @@ def compute_figure(rows, cost, out):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--evaluations", type=Path, nargs="+", required=True)
-    p.add_argument("--families", nargs="*", default=[], metavar="NAME=DIR",
+    p.add_argument("--families", nargs="*", default=[], metavar="NAME=DIR[,DIR]",
                    help="also tabulate own-setting error per family from evaluation directories")
+    p.add_argument("--family-ticks", type=int, help="compare families over the first ticks of each lifetime")
     p.add_argument("--runs", type=Path, help="training output root with <mode>/seed<k>/train_log.jsonl")
     p.add_argument("--latency", type=Path, help="latency.py output, to express activity in GPU time")
     p.add_argument("--output", type=Path, required=True)
@@ -263,8 +272,9 @@ def main():
         after_switch(rows, "learning_rate", "learning steps per tick", args.output / "learning_after_switch.png",
                      [k for k in learners if k[1] == "own"])
     if args.families:
-        groups = {name: collect(sorted(Path(d).glob("*.json"))) for name, d in (f.split("=") for f in args.families)}
-        md_families = families_table(groups)
+        groups = {name: collect(sorted(p for d in dirs.split(",") for p in Path(d).glob("*.json")))
+                  for name, dirs in (f.split("=") for f in args.families)}
+        md_families = families_table(groups, args.family_ticks)
         (args.output / "families.md").write_text(md_families + "\n")
         print(md_families)
     ladder(rows, args.output / "ladder.png")
