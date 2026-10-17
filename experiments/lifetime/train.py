@@ -27,7 +27,9 @@ each tick, so the policy loss reaches the state through the predictions.
 With ``--branch-streams``, once per window that many streams are copied once
 per activity option at a random tick; each copy takes its option and the policy
 continues for ``--branch-horizon`` ticks under the same disturbances and
-sampling noise as the other copies (``runtime.branch_values``). The returns of
+sampling noise as the other copies (``runtime.branch_values``), on its most
+probable choices with ``--branch-greedy``; ``--branch-replicates`` averages that
+many sets of copies with independent randomness. The returns of
 the copies train an activity-value head (``--activity-values``) that estimates,
 from the state, how much each option is worth against the others; at every tick
 the activity heads follow the expected advantage of every option under these
@@ -354,6 +356,8 @@ def parse_args(argv=None):
     p.add_argument("--cost-learning", type=float, default=Costs.learning)
     p.add_argument("--branch-streams", type=int, default=0, help="streams copied per window to value activities")
     p.add_argument("--branch-horizon", type=int, default=32, help="ticks each copy runs before its value bootstrap")
+    p.add_argument("--branch-replicates", type=int, default=1, help="independent sets of copies averaged")
+    p.add_argument("--branch-greedy", action="store_true", help="copies take the policy's most probable choices")
     p.add_argument("--branch-weight", type=float, default=1.0,
                    help="weight of the activity gradient from the activity-value estimates")
     p.add_argument("--activity-values", action="store_true", help="a head that values every activity option")
@@ -425,12 +429,13 @@ def main(argv=None):
             eligible = (agent.age + args.branch_horizon < args.lifetime).nonzero().squeeze(1)
             pick = torch.randperm(len(eligible), generator=branch_gen, device=device)[:args.branch_streams]
             rows = eligible[pick].sort().values
-            q, valid = branch_values(model, agent, env, obs, rows, args.mode, costs, args.adapter_lr, args.every,
-                                     args.branch_horizon, args.gamma, args.reward_scale, seed=args.seed * 100003 + t,
-                                     learn_ticks=args.learn_ticks, support=args.support,
-                                     precise_targets=args.precise_targets)
-            branch = (rows, q, valid)
-            branch_transitions += len(rows) * OPTIONS * (args.branch_horizon + 1)
+            values = [branch_values(model, agent, env, obs, rows, args.mode, costs, args.adapter_lr, args.every,
+                                    args.branch_horizon, args.gamma, args.reward_scale,
+                                    seed=(args.seed * 100003 + t) * 16 + k, greedy=args.branch_greedy,
+                                    learn_ticks=args.learn_ticks, support=args.support,
+                                    precise_targets=args.precise_targets) for k in range(args.branch_replicates)]
+            branch = (rows, torch.stack([q for q, _ in values]).mean(0), values[0][1])
+            branch_transitions += args.branch_replicates * len(rows) * OPTIONS * (args.branch_horizon + 1)
         previous = agent                                 # tick() replaces the agent's tensors rather than editing them
         agent, obs, step = tick(model, agent, env, obs, args.mode, costs, args.adapter_lr, args.every,
                                 learn_ticks=args.learn_ticks, support=args.support,

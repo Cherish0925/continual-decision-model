@@ -359,7 +359,7 @@ OPTIONS = 2 + LEARN + 1               # activity options: measure no / yes, then
 @torch.no_grad()
 def branch_values(model: ContinualCore, agent: Agent, env, obs: dict, rows: Tensor, mode: str, costs: Costs,
                   learning_rate: float, every: int, horizon: int, gamma: float, reward_scale: float, seed: int,
-                  **options) -> tuple[Tensor, Tensor]:
+                  greedy: bool = False, **options) -> tuple[Tensor, Tensor]:
     """What each activity option is worth to the given streams, from copies of their processes and agents.
 
     Each row of ``rows`` (increasing) gets one copy per activity option: not measuring, measuring, and each compute
@@ -367,7 +367,8 @@ def branch_values(model: ContinualCore, agent: Agent, env, obs: dict, rows: Tens
     policy; then the policy runs for ``horizon`` ticks. The copies of a row share the processes' randomness and the
     policy's sampling noise, so they differ only through the option and its consequences. Returns the discounted
     scaled reward plus the discounted value after ``horizon`` ticks [rows, options], and which options were
-    allowed; a copy whose option was not allowed runs unforced and its value is not used.
+    allowed; a copy whose option was not allowed runs unforced and its value is not used. With ``greedy`` every
+    copy takes the policy's most probable choices instead of sampling them.
     """
     O, device = OPTIONS, agent.h.device
     fleet = env.branch(rows, O, seed)
@@ -384,7 +385,7 @@ def branch_values(model: ContinualCore, agent: Agent, env, obs: dict, rows: Tens
     generator = torch.Generator(device=device).manual_seed(seed)
     total, discount = torch.zeros(len(copies), device=device), 1.0
     for h in range(horizon + 1):
-        agents, obs, step = tick(model, agents, fleet, obs, mode, costs, learning_rate, every,
+        agents, obs, step = tick(model, agents, fleet, obs, mode, costs, learning_rate, every, greedy=greedy,
                                  force=force if h == 0 else None, generator=generator, copies=O, **options)
         if h < horizon:
             total += discount * reward_scale * step["reward"]
