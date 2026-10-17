@@ -3,18 +3,24 @@
 
 A fleet steps every ``--period`` milliseconds on its own thread and CUDA stream,
 applying the latest action it has received and holding the previous one when
-no new action has arrived. The agent runs the control path as soon as an
-observation is published and publishes its action at once; then it spends the
-time until the next observation on its chosen compute: refinements on its own
-stream, or a learning step handed to a learner thread on a third stream, whose
-updated adapter is installed when it returns. The control path never waits for
-refinement or learning, so the workspace reads experience records one tick
-older than in the simulated runtime, and a learning step takes as long as it
-takes.
+no new action has arrived. Every observation is queued with its step, the
+action that was actually applied, and its publication time. Each cycle of the
+agent first absorbs every queued observation in order: the fast state takes
+each event, experience records and the learning buffer pair each reading with
+the action that produced it, the prediction error compares each reading with
+the prediction made for the action actually applied, and elapsed-time features
+count fleet steps.
+Then the agent decides on its latest state and publishes the action at once.
+The time until the next cycle goes to its chosen compute: refinements on its
+own stream, or a learning step handed to a learner thread on a third stream,
+whose updated adapter is installed when it returns. The control path never
+waits for refinement or learning, so the workspace reads experience records
+one step older than in the simulated runtime.
 
-Reported per instance count: response time from the published observation to
-the published action (median, p95, p99), fleet steps that ran with a held
-action, tracking error, and refinements and learning steps per second.
+Reported per instance count: response time from the newest published
+observation to the published action (median, p95, p99), observations absorbed
+per decision, fleet steps that ran on a held action, tracking error, and
+refinements and learning steps per second of measured wall time.
 """
 from __future__ import annotations
 
@@ -24,6 +30,7 @@ import queue
 import sys
 import threading
 import time
+from collections import deque
 from pathlib import Path
 
 import numpy as np
@@ -33,13 +40,13 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from cdm.core import REFINEMENTS, adapter_step  # noqa: E402
 from experiments.lifetime.evaluate import load  # noqa: E402
-from experiments.lifetime.runtime import (LEARN, configure_backends, distributions, event_features, make_fleet, masks,  # noqa: E402
-                     new_agent, scalar_features)
+from experiments.lifetime.runtime import (LEARN, configure_backends, distributions, event_features, make_fleet,  # noqa: E402
+                                          masks, new_agent, scalar_features)
 from experiments.lifetime.train import first_observation  # noqa: E402
 
 
 class Fleet(threading.Thread):
-    """Steps the processes on a fixed schedule and publishes each observation with its time."""
+    """Steps the processes on a fixed schedule and queues every observation."""
 
     def __init__(self, env, period_ms, steps):
         super().__init__(daemon=True)
@@ -49,8 +56,9 @@ class Fleet(threading.Thread):
         self.action = torch.full((env.n,), env.spec.actions // 2, dtype=torch.long, device=env.device)
         self.measure = torch.zeros(env.n, dtype=torch.bool, device=env.device)
         self.answered = -1                      # index of the observation the current action responds to
-        self.obs, self.index, self.published = None, -1, 0.0
+        self.queue = deque()
         self.held = self.err = self.active = 0.0
+        self.started = self.finished = 0.0
         self.done = False
 
     def submit(self, action, measure, index):
@@ -59,36 +67,42 @@ class Fleet(threading.Thread):
 
     def run(self):
         with torch.cuda.stream(self.stream):
+            applied = self.action
             obs = first_observation(self.env)
             self.stream.synchronize()
-            start = time.perf_counter()
-            self._publish(obs, 0)
+            self.started = time.perf_counter()
+            self._publish(0, obs, applied, -1)
             for k in range(1, self.steps + 1):
-                while time.perf_counter() < start + k * self.period:
+                while time.perf_counter() < self.started + k * self.period:
                     time.sleep(0.0001)
                 with self.cond:
-                    action, measure, fresh = self.action, self.measure, self.answered == k - 1
+                    applied, measure, answered = self.action, self.measure, self.answered
                     self.measure = torch.zeros_like(self.measure)        # a measurement request is sent once
-                self.held += 0.0 if fresh else 1.0
-                obs = self.env.step(action, measure)
+                self.held += 0.0 if answered == k - 1 else 1.0
+                obs = self.env.step(applied, measure)
                 self.stream.synchronize()
                 self.err += float((obs["error"] * obs["transition_active"]).sum())
                 self.active += float(obs["transition_active"].sum())
-                self._publish(obs, k)
+                self._publish(k, obs, applied, answered)
+            self.finished = time.perf_counter()
         with self.cond:
             self.done = True
             self.cond.notify_all()
 
-    def _publish(self, obs, k):
-        obs = {**obs, "pending": self.env.pending.clone()}
+    def _publish(self, k, obs, applied, answered):
+        """answered: index of the observation the applied action responded to."""
+        obs = {**obs, "applied": applied, "answered": answered, "pending": self.env.pending.clone()}
         with self.cond:
-            self.obs, self.index, self.published = obs, k, time.perf_counter()
+            self.queue.append((k, obs, time.perf_counter()))
             self.cond.notify_all()
 
-    def next_observation(self, after):
+    def take(self):
+        """Every observation not yet taken, in order; empty once the fleet has finished."""
         with self.cond:
-            self.cond.wait_for(lambda: self.index > after or self.done)
-            return (None, None, None) if self.index <= after else (self.obs, self.index, self.published)
+            self.cond.wait_for(lambda: self.queue or self.done)
+            items = list(self.queue)
+            self.queue.clear()
+            return items
 
 
 class Learner(threading.Thread):
@@ -123,44 +137,60 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
     counts_of = torch.tensor(REFINEMENTS + (0,), device=device)
     rows, T = torch.arange(n, device=device), targs["buffer"]
     learning = torch.zeros(n, dtype=torch.bool, device=device)        # a step for this instance is under way
-    response, refinements = [], 0.0
+    flags = torch.zeros(n, 3, device=device)                          # activities of the latest decision
+    decided, attached = -2, True                                      # observation the latest decision answered
+    state = expect = None                                             # latest state; its predictions for each action
+    response, absorbed, refinements = [], [], 0.0
     learner.start()
     fleet.start()
-    index, previous = -1, None                                         # previous: (state, action) awaiting its reading
     with torch.cuda.stream(stream):
-        while True:
-            obs, index, published = fleet.next_observation(index)
-            if obs is None:
-                break
+        while items := fleet.take():
+            for i, (k, obs, published) in enumerate(items):           # absorb every observation in order
+                if state is not None:                                 # the reading that answered the applied action
+                    agent.predicted = expect[rows, obs["applied"]]
+                    record = torch.cat((obs["control"], torch.stack((obs["cheap"], obs["precise"],
+                                                                     obs["arrived"].float(), obs["setpoint"],
+                                                                     obs["active"].float()), 1)), 1)
+                    agent.records = torch.cat((agent.records[:, 1:], record.unsqueeze(1)), 1)
+                    agent.learn_s = torch.cat((agent.learn_s[:, 1:], state.unsqueeze(1).to(agent.learn_s.dtype)), 1)
+                    agent.learn_a = torch.cat((agent.learn_a[:, 1:], obs["applied"].unsqueeze(1)), 1)
+                    agent.learn_y = torch.cat((agent.learn_y[:, 1:], obs["cheap"].unsqueeze(1)), 1)
+                    agent.filled = (agent.filled + 1).clamp(max=T)
+                    agent.error_ema = 0.95 * agent.error_ema + 0.05 * (obs["cheap"] - agent.predicted).abs()
+                    agent.since_measure = torch.where(obs["accepted"], torch.zeros_like(agent.since_measure),
+                                                      agent.since_measure + 1)
+                    agent.since_request = torch.where(obs["started"], torch.zeros_like(agent.since_request),
+                                                      agent.since_request + 1)
+                    agent.since_learn = agent.since_learn + 1
+                    first = obs["answered"] == decided and not attached    # the step that applied the latest decision
+                    agent.last = torch.cat((obs["control"], flags if first else torch.zeros_like(flags)), 1)
+                    attached = attached or first
+                agent.busy = learning.long()
+                event = event_features(obs, agent, obs["pending"])
+                with amp:
+                    agent.h = model.fast(agent.h, event).float()
+                    state = model.state_features(agent.h, agent.z)
+                    if i < len(items) - 1:
+                        expect = model.predict_actions(state, agent.A, agent.B)[0].float()
+            k, obs, published = items[-1]
+            absorbed.append(len(items))
             pending = obs["pending"]
-            event = event_features(obs, agent, pending)
             scalars = scalar_features(obs, agent, pending)
-            agent.busy = learning.long()
-            allowed = masks(agent, pending, mode, index, targs["every"])
+            allowed = masks(agent, pending, mode, k, targs["every"])
             with amp:
-                h = model.fast(agent.h, event)
-                state = model.state_features(h, agent.z)
                 mean, logvar = model.predict_actions(state, agent.A, agent.B)
-                offset, logvar = mean.float() - obs["setpoint"].unsqueeze(1), logvar.float()
-                logits, activity, _ = model.heads(model.trunk(h, agent.z, offset, logvar, scalars), offset, logvar)
+                expect = mean.float()
+                offset, logvar = expect - obs["setpoint"].unsqueeze(1), logvar.float()
+                logits, activity, _ = model.heads(model.trunk(agent.h, agent.z, offset, logvar, scalars), offset,
+                                                  logvar)
             action, measure, compute = [d.sample() for d in distributions(logits, activity, allowed)]
             stream.synchronize()
-            fleet.submit(action, measure.bool(), index)
+            fleet.submit(action, measure.bool(), k)
             response.append(1000 * (time.perf_counter() - published))
-            # off the control path: record the reading that answered the previous action, refine, learn
-            if previous is not None:
-                s_prev, a_prev, u_prev = previous
-                record = torch.cat((u_prev, torch.stack((obs["cheap"], obs["precise"], obs["arrived"].float(),
-                                                         obs["setpoint"], obs["active"].float()), 1)), 1)
-                agent.records = torch.cat((agent.records[:, 1:], record.unsqueeze(1)), 1)
-                agent.learn_s = torch.cat((agent.learn_s[:, 1:], s_prev.unsqueeze(1).to(agent.learn_s.dtype)), 1)
-                agent.learn_a = torch.cat((agent.learn_a[:, 1:], a_prev.unsqueeze(1)), 1)
-                agent.learn_y = torch.cat((agent.learn_y[:, 1:], obs["cheap"].unsqueeze(1)), 1)
-                agent.filled = (agent.filled + 1).clamp(max=T)
-            previous = (state, action, env.table[action])
+            # off the control path: refine, start a learning step, install finished ones
             counts = counts_of[compute]
             with amp:
-                agent.z = model.refine(agent.z, h, agent.records, counts).float()
+                agent.z = model.refine(agent.z, agent.h, agent.records, counts).float()
             refinements += float(counts.sum())
             while not learner.results.empty():
                 idx, newA, newB = learner.results.get()
@@ -169,7 +199,7 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
                 agent.A, agent.B = agent.A.clone(), agent.B.clone()
                 agent.A[idx], agent.B[idx] = newA, newB
                 learning[idx] = False
-            start = (compute == LEARN) & ~learning
+            start = (compute == LEARN) & ~learning & (agent.filled > 0)
             if start.any():
                 idx = start.nonzero().squeeze(1)
                 pick = T - 1 - (torch.randint(0, T, (len(idx), 32), device=device) % agent.filled[idx].unsqueeze(1))
@@ -182,28 +212,21 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
                 ready.record(stream)
                 learner.jobs.put((*job, ready))
                 learning |= start
-            pred = mean.float()[rows, action]
-            agent.h = h.float()
-            agent.last = torch.cat((env.table[action], torch.stack((measure.float(), counts.float() / 4,
-                                                                    (compute == LEARN).float()), 1)), 1)
-            agent.since_measure = torch.where(measure.bool() & (pending == 0), torch.zeros_like(agent.since_measure),
-                                              agent.since_measure + 1)
-            agent.since_learn = torch.where(compute == LEARN, torch.zeros_like(agent.since_learn), agent.since_learn + 1)
-            agent.since_request = torch.where(obs["started"], torch.zeros_like(agent.since_request),
-                                              agent.since_request + 1)
-            agent.error_ema = 0.95 * agent.error_ema + 0.05 * (obs["cheap"] - agent.predicted).abs()
-            agent.predicted = pred
+            agent.since_learn = torch.where(compute == LEARN, torch.zeros_like(agent.since_learn), agent.since_learn)
+            flags = torch.stack((measure.float(), counts.float() / 4, (compute == LEARN).float()), 1)
+            decided, attached = k, False
     learner.jobs.put(None)
     fleet.join()
     learner.join()
-    seconds = steps * period_ms / 1000
+    seconds = fleet.finished - fleet.started
     lat = np.asarray(response[10:] if len(response) > 20 else response)          # the first actions warm up
     quantile = lambda q: float(np.percentile(lat, q)) if len(lat) else None
-    return {"instances": n, "period_ms": period_ms, "learning": learn, "fleet_steps": steps, "actions": len(response),
-            "response_ms_median": quantile(50), "response_ms_p95": quantile(95),
-            "response_ms_p99": quantile(99), "held_steps": int(fleet.held),
-            "error_while_active": fleet.err / max(fleet.active, 1),
-            "refinements_per_second": refinements / seconds, "learning_steps_per_second": learner.completed / seconds}
+    return {"instances": n, "period_ms": period_ms, "learning": learn, "fleet_steps": steps, "decisions": len(response),
+            "observations_per_decision": float(np.mean(absorbed)) if absorbed else None,
+            "response_ms_median": quantile(50), "response_ms_p95": quantile(95), "response_ms_p99": quantile(99),
+            "held_steps": int(fleet.held), "error_while_active": fleet.err / max(fleet.active, 1),
+            "wall_seconds": round(seconds, 3), "refinements_per_second": refinements / seconds,
+            "learning_steps_per_second": learner.completed / seconds}
 
 
 def main():
