@@ -37,6 +37,7 @@ STYLE = {
     "cdm_bank": ("Same, four adapter blocks", "#008300", "*"),
     "cdm_b6": ("Same, following values from copies", "#4a3aa7", "h"),
     "cdm_b6_ppo": ("Same, copies kept, values not followed", "#e34948", "P"),
+    "act_b6": ("New activity head over the fixed model", "#52514e", "X"),
     "cdm_all": ("Trained through deployment, three families", "#2a78d6", "o"),
     "predict_only_all": ("Predictions only, three families", "#4a3aa7", "h"),
     "cdm_navigation": ("Trained through deployment, vehicles only", "#eb6834", "s"),
