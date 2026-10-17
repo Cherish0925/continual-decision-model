@@ -33,10 +33,10 @@ STYLE = {
     "cdm_truncated": ("Same, one-tick workspace gradients", "#eb6834", "s"),
     "cdm_nolearn": ("Same, no learning", "#1baf7a", "^"),
     "cdm_step_meta": ("Same, one meta step per window", "#eda100", "D"),
-    "cdm_cheap_targets": ("Same, cheap targets only", "#e87ba4", "v"),
+    "cdm_cheap_targets": ("Same, cheap targets only", "#e34948", "v"),
     "cdm_bank": ("Same, four adapter blocks", "#008300", "*"),
     "cdm_b6": ("Same, following values from copies", "#4a3aa7", "h"),
-    "cdm_b6_ppo": ("Same, copies kept, values not followed", "#e34948", "P"),
+    "cdm_b6_ppo": ("Same, copies kept, values not followed", "#e87ba4", "P"),
     "act_b6": ("New activity head over the fixed model", "#52514e", "X"),
     "cdm_all": ("Trained through deployment, three families", "#2a78d6", "o"),
     "predict_only_all": ("Predictions only, three families", "#4a3aa7", "h"),
@@ -281,6 +281,9 @@ def main():
     p.add_argument("--runs", type=Path, nargs="*", default=[],
                    help="training output roots with <variant>/seed<k>/train_log.jsonl")
     p.add_argument("--latency", type=Path, help="latency.py output, to express activity in GPU time")
+    p.add_argument("--figure-variants", nargs="*", help="variants drawn in the figures; every variant is tabulated")
+    p.add_argument("--learners", nargs="*", default=["full", "full_meta"],
+                   help="variants whose learning settings are drawn after a condition change")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -290,9 +293,12 @@ def main():
     (args.output / "summary.json").write_text(json.dumps(stats, indent=1))
     (args.output / "table.md").write_text(md + "\n")
     print(md)
-    own = [(v, "own") for v in STYLE if (v, "own") in rows]
+    drawn = args.figure_variants or list(STYLE)
+    shown = {k: v for k, v in rows.items() if k[0] in drawn}
+    own = [(v, "own") for v in STYLE if (v, "own") in shown]
     after_switch(rows, "error", "tracking error while a request is active", args.output / "error_after_switch.png", own)
-    learners = [k for v in ("full", "full_meta") for k in sorted(rows, key=lambda k: k[1] != "own") if k[0] == v]
+    learners = [k for v in args.learners for k in sorted(rows, key=lambda k: k[1] != "own") if k[0] == v
+                and k[1] in ("own", "frozen", "discard")]
     if learners:
         after_switch(rows, "prediction_error", "prediction error of the next reading",
                      args.output / "prediction_after_switch.png", learners)
@@ -304,8 +310,8 @@ def main():
         md_families = families_table(groups, args.family_ticks)
         (args.output / "families.md").write_text(md_families + "\n")
         print(md_families)
-    ladder(rows, args.output / "ladder.png")
-    compute_figure(rows, cost, args.output / "compute.png")
+    ladder(shown, args.output / "ladder.png")
+    compute_figure(shown, cost, args.output / "compute.png")
     if args.runs:
         training_curves(args.runs, args.output / "training.png")
 
