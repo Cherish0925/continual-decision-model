@@ -6,11 +6,16 @@ operations, elapsed-time features). Its parts:
 ``gru``         fast state update from every event
 ``workspace``   latent slots refined by one shared Transformer block that attends
                 to the fast state and to the instance's recent experience records;
-                every refinement ends with a normalisation of each slot, so the
-                workspace keeps one scale over an unbounded number of refinements
+                optionally a learned gate keeps, revises or resets each slot at
+                every refinement; every refinement ends with a normalisation of
+                each slot, so the workspace keeps one scale over an unbounded
+                number of refinements
 ``predictor``   action-conditioned prediction of the next reading for every action;
                 its first layer carries an instance-owned low-rank adapter that a
-                learning step updates from the instance's own experience
+                learning step updates from the instance's own experience. With
+                sensor noise, the prediction is of the noise-free output and each
+                sensor adds its own learned noise, so a precise reading weighs
+                more than a cheap one
 ``control``     scores every action from the state, the action's features and the
                 action's own predicted reading, with weights shared across actions,
                 plus a learned preference for actions predicted to reach the goal
@@ -49,6 +54,10 @@ class CoreConfig:
     bounded_workspace: bool = True   # normalise slots after every refinement
     learned_step: bool = False # the size of a learning step is a parameter, trained through the step itself
     scalar_dim: int = 8        # extra features for the activity and value heads
+    goals: int = 1             # 1: setpoints; 2: setpoints and requests for the largest output
+    sensor_noise: bool = False # likelihoods add a learned noise for each of the two sensors
+    step_rule: str = "normalized"    # "normalized": a step of fixed size; "evidence": -eta g / (|g| + kappa)
+    gated_workspace: bool = False    # a learned gate keeps, revises or resets every slot at each refinement
 
     @property
     def compute_options(self) -> int:
@@ -84,6 +93,10 @@ class ContinualCore(nn.Module):
         self.slots = nn.Parameter(0.02 * torch.randn(c.slots, w))
         self.record = nn.Sequential(nn.Linear(c.record_dim + 1, w), nn.GELU(), nn.Linear(w, w))
         self.block = Block(w, c.heads)
+        self.gate = nn.Linear(2 * w, 3) if c.gated_workspace else None
+        if self.gate is not None:                            # start close to the ungated refinement
+            nn.init.zeros_(self.gate.weight)
+            self.gate.bias.data = torch.tensor([0.0, 3.0, -3.0])
         self.norm_slots = nn.LayerNorm(w) if c.bounded_workspace else nn.Identity()
         self.action = nn.Sequential(nn.Linear(c.action_dim, w), nn.GELU(), nn.Linear(w, w))
         self.pred_in = nn.Linear(3 * w, c.hidden)
@@ -95,7 +108,10 @@ class ContinualCore(nn.Module):
         self.control_pred = nn.Linear(2, a, bias=False)
         self.control_out = nn.Sequential(nn.GELU(), nn.Linear(a, a), nn.GELU(), nn.Linear(a, 1))
         self.goal_weight = nn.Parameter(torch.tensor(1.8)) if c.goal_term else None   # softplus(1.8) = 1.95
-        self.log_step = nn.Parameter(torch.tensor(0.05).log()) if c.learned_step else None
+        evidence = c.step_rule == "evidence"
+        self.log_step = nn.Parameter(torch.tensor(0.05).log()) if c.learned_step or evidence else None
+        self.log_kappa = nn.Parameter(torch.tensor(1.0).log()) if evidence else None
+        self.log_noise = nn.Parameter(torch.tensor([0.25, 0.02]).log()) if c.sensor_noise else None
         self.activity = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options))
         self.value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 1))
 
@@ -131,8 +147,18 @@ class ContinualCore(nn.Module):
         ctx, zr, cr = self.context(h[rows], records[rows]), z[rows], counts[rows]
         for step in range(int(cr.max())):
             sel = (cr > step).nonzero().squeeze(1)
-            zr = zr.index_copy(0, sel, self.norm_slots(self.block(zr[sel], ctx[sel])).to(zr.dtype))
+            zs = zr[sel]
+            new = self.block(zs, ctx[sel])
+            if self.gate is not None:                        # keep the slot, take the revision, or restart it
+                p = torch.softmax(self.gate(torch.cat((zs.to(new.dtype), new), -1)).float(), -1).to(new.dtype)
+                new = p[..., :1] * zs + p[..., 1:2] * new + p[..., 2:] * self.slots.to(new.dtype)
+            zr = zr.index_copy(0, sel, self.norm_slots(new).to(zr.dtype))
         return z.index_copy(0, rows, zr.to(z.dtype))
+
+    def gate_probabilities(self, z: Tensor, h: Tensor, records: Tensor) -> Tensor:
+        """Keep, revise and restart probabilities [n, slots, 3] of one refinement."""
+        new = self.block(z, self.context(h, records))
+        return torch.softmax(self.gate(torch.cat((z.to(new.dtype), new), -1)).float(), -1)
 
     # ------------------------------------------------------------ prediction with instance adapters
     def state_features(self, h: Tensor, z: Tensor) -> Tensor:
@@ -166,6 +192,16 @@ class ContinualCore(nn.Module):
         """Size of one learning step: learned when the configuration says so, otherwise the given one."""
         return default if self.log_step is None else self.log_step.exp()
 
+    def step_scale(self, norm: Tensor, default: float) -> Tensor:
+        """Factor applied to the gradient of a learning step whose gradient has the given norm.
+
+        ``normalized``: a step of fixed size whatever the gradient. ``evidence``: eta / (|g| + kappa), proportional
+        to the gradient while it is small against kappa and of bounded size once it is large.
+        """
+        if self.log_kappa is None:
+            return self.step_size(default) / norm
+        return self.log_step.exp() / (norm + self.log_kappa.exp())
+
     def _head(self, pre: Tensor) -> tuple[Tensor, Tensor]:
         out = self.pred_out(pre)
         return out[..., 0], out[..., 1].clamp(-8.0, 4.0)
@@ -189,45 +225,59 @@ def gaussian_nll(mean: Tensor, logvar: Tensor, target: Tensor) -> Tensor:
     return 0.5 * (logvar + (target - mean) ** 2 * torch.exp(-logvar))
 
 
-def adapter_step(model: ContinualCore, A: Tensor, B: Tensor, inputs: Tensor, targets: Tensor,
-                 learning_rate: float) -> tuple[Tensor, Tensor, Tensor]:
-    """One update of instance adapters on their own experience.
+def reading_nll(model: ContinualCore, mean: Tensor, logvar: Tensor, target: Tensor,
+                precise: Tensor | None = None) -> Tensor:
+    """Negative log-likelihood of readings. With sensor noise, ``mean`` and ``logvar`` describe the noise-free
+    output and the reading adds the noise of its sensor: the precise one where ``precise`` is set."""
+    if model.log_noise is None:
+        return gaussian_nll(mean, logvar, target)
+    log_noise = model.log_noise[0] if precise is None else torch.where(precise, model.log_noise[1], model.log_noise[0])
+    var = logvar.float().exp() + (2 * log_noise).exp()
+    return 0.5 * (var.log() + (target - mean.float()) ** 2 / var)
+
+
+def adapter_update(model: ContinualCore, A: Tensor, B: Tensor, inputs: Tensor, targets: Tensor,
+                   precise: Tensor | None, mask: Tensor | None, learning_rate: float,
+                   differentiable: bool = False) -> tuple[Tensor, Tensor, Tensor]:
+    """One learning step of instance adapters on their own experience.
 
     inputs [n, T, 3w] (predictor inputs of past ticks for the action taken), targets [n, T] (readings that
-    followed). Each instance's step is normalised by its own gradient size.
+    followed), precise [n, T] (the reading is a precise one), mask [n, T] (entries that hold experience). The
+    gradient is scaled by ``ContinualCore.step_scale``. With ``differentiable`` the step keeps its graph, so a
+    loss after it trains the shared parameters and the step size through it.
     """
     with torch.enable_grad():
-        A_ = A.detach().requires_grad_(True)
-        B_ = B.detach().requires_grad_(True)
+        A_ = A if differentiable and A.requires_grad else A.detach().requires_grad_(True)
+        B_ = B if differentiable and B.requires_grad else B.detach().requires_grad_(True)
         mean, logvar = model.predict(inputs, A_, B_)
-        loss = gaussian_nll(mean, logvar, targets).mean(1)                   # [n]
-        gA, gB = torch.autograd.grad(loss.sum(), (A_, B_))
-    scale = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)
-    step = model.step_size(learning_rate)
-    step = step.detach() if torch.is_tensor(step) else step
-    return (A - step * gA / scale).detach(), (B - step * gB / scale).detach(), loss.detach()
+        nll = reading_nll(model, mean, logvar, targets, precise)
+        loss = nll.mean(1) if mask is None else (nll * mask).sum(1) / mask.sum(1).clamp_min(1)
+        gA, gB = torch.autograd.grad(loss.sum(), (A_, B_), create_graph=differentiable)
+    norm = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)
+    scale = model.step_scale(norm, learning_rate)
+    if not differentiable:
+        scale = scale.detach()
+        return (A - scale * gA).detach(), (B - scale * gB).detach(), loss.detach()
+    return A_ - scale * gA, B_ - scale * gB, loss
+
+
+def adapter_step(model: ContinualCore, A: Tensor, B: Tensor, inputs: Tensor, targets: Tensor,
+                 learning_rate: float) -> tuple[Tensor, Tensor, Tensor]:
+    """``adapter_update`` on cheap readings, every entry used."""
+    return adapter_update(model, A, B, inputs, targets, None, None, learning_rate)
 
 
 def adaptation_loss(model: ContinualCore, A: Tensor, B: Tensor, support_x: Tensor, support_y: Tensor,
-                    query_x: Tensor, query_y: Tensor, learning_rate: float,
-                    differentiable: bool = True) -> tuple[Tensor, Tensor]:
+                    query_x: Tensor, query_y: Tensor, learning_rate: float, differentiable: bool = True,
+                    support_p: Tensor | None = None, query_p: Tensor | None = None) -> tuple[Tensor, Tensor]:
     """Prediction loss on later ticks before and after one adapter step on earlier ticks, per instance.
 
     The step is the one a learning activity takes. With ``differentiable`` the loss after the step carries
     gradients through the step into the shared parameters, so that training on it makes an instance's own
     learning step improve its later predictions.
     """
-    A_ = A.detach().requires_grad_(True)
-    B_ = B.detach().requires_grad_(True)
-    with torch.enable_grad():
-        mean, logvar = model.predict(support_x, A_, B_)
-        support = gaussian_nll(mean, logvar, support_y).mean(1).sum()
-        gA, gB = torch.autograd.grad(support, (A_, B_), create_graph=differentiable)
-    scale = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)
+    newA, newB, _ = adapter_update(model, A, B, support_x, support_y, support_p, None, learning_rate, differentiable)
     with torch.no_grad():
-        before = gaussian_nll(*model.predict(query_x, A, B), query_y).mean(1)
-    step = model.step_size(learning_rate)
-    after = gaussian_nll(*model.predict(query_x, A_ - step * gA / scale, B_ - step * gB / scale),
-                         query_y).mean(1)
+        before = reading_nll(model, *model.predict(query_x, A, B), query_y, query_p).mean(1)
+    after = reading_nll(model, *model.predict(query_x, newA, newB), query_y, query_p).mean(1)
     return before, after
-

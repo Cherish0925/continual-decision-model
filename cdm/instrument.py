@@ -4,10 +4,13 @@ Each stream is one device over one lifetime. Control actions set actuators
 that move with backlash; the output relaxes toward a response of the actuator
 state, shifted by a slow drift. A cheap sensor reads the output with large
 noise every tick. A precise measurement can be requested; it returns the
-output at the request time after a delay. Setpoint requests arrive at random
-times and stay active for a fixed duration; between them the device is idle.
-A setpoint is the response at one of the actions under the current condition;
-for a peaked response, at an action where the peak is visible.
+output at the request time after a delay. Requests arrive at random times and
+stay active for a fixed duration; between them the device is idle. Most
+requests give a setpoint: the response at one of the actions under the current
+condition; for a peaked response, at an action where the peak is visible. A
+share of them instead asks for the largest output the device can hold, without
+saying what it is; the error is then the shortfall from the largest steady
+output over the actions.
 
 Two families share this interface:
 
@@ -37,6 +40,7 @@ class ProcessSpec:
     novel: float = 0.2           # probability that a switch brings a new condition
     request_rate: float = 1 / 40 # probability per idle tick that a request starts
     request_ticks: int = 60      # ticks a request stays active
+    search_share: float = 0.0    # share of requests that ask for the largest output instead of a setpoint
     cheap_noise: float = 0.25
     precise_noise: float = 0.02
     delay: int = 3               # ticks until a precise measurement returns
@@ -113,6 +117,7 @@ class ProcessFleet:
         self.returned = torch.zeros(n, dtype=torch.bool, device=d)   # current condition was active before
         self.init_state()
         self.setpoint = torch.zeros(n, device=d)
+        self.search = torch.zeros(n, dtype=torch.bool, device=d)    # the active request asks for the largest output
         self.active = torch.zeros(n, dtype=torch.bool, device=d)
         self.request_left = torch.zeros(n, dtype=torch.long, device=d)
         self.pending = torch.zeros(n, dtype=torch.long, device=d)    # ticks until the precise value returns
@@ -165,6 +170,7 @@ class ProcessFleet:
         self.returned[idx] = False
         self.reset_state(idx)
         self.active[idx] = False
+        self.search[idx] = False
         self.request_left[idx] = 0
         self.pending[idx] = 0
 
@@ -195,7 +201,9 @@ class ProcessFleet:
         p = self.current()
         reachable = torch.multinomial(self.setpoint_weights(p), 1, generator=g).squeeze(1)
         target = self.steady(p, self.table[reachable])
+        search = torch.rand(self.n, generator=g, device=d) < s.search_share if s.search_share > 0 else start & False
         self.setpoint = torch.where(start, target, self.setpoint)
+        self.search = torch.where(start, search, self.search)
         self.active |= start
         self.request_left = torch.where(start, torch.full_like(self.request_left, s.request_ticks), self.request_left)
         return start
@@ -203,13 +211,18 @@ class ProcessFleet:
     def step(self, action: torch.Tensor, measure: torch.Tensor) -> dict[str, torch.Tensor]:
         """Advance one tick; keep completed-transition metadata separate from the next observation."""
         s, g, d = self.spec, self.gen, self.device
-        transition = {"transition_active": self.active.clone(),
-                      "transition_setpoint": self.setpoint.clone(),
-                      "transition_since_switch": self.since_switch.clone(),
-                      "transition_returned": self.returned.clone()}
         u = self.table[action]                                       # [n, dims]
         self.advance(u, self.current())
-        error = torch.where(self.active, (self.output - self.setpoint).abs(), torch.zeros_like(self.output))
+        goal = self.setpoint.clone()
+        if self.spec.search_share > 0:                               # the largest steady output over the actions
+            best = self.steady(self.current(), self.table.expand(self.n, -1, -1)).max(1).values
+            goal = torch.where(self.search, best, self.setpoint)
+        shortfall = torch.where(self.search, (goal - self.output).clamp(min=0), (self.output - goal).abs())
+        error = torch.where(self.active, shortfall, torch.zeros_like(self.output))
+        transition = {"transition_active": self.active.clone(), "transition_setpoint": goal,
+                      "transition_search": self.search.clone(),
+                      "transition_since_switch": self.since_switch.clone(),
+                      "transition_returned": self.returned.clone()}
         arrived = self.pending == 1
         arrived_value = self.pending_value + s.precise_noise * torch.randn(self.n, generator=g, device=d)
         self.pending = (self.pending - 1).clamp(min=0)
@@ -221,8 +234,9 @@ class ProcessFleet:
         started = self._requests()
         self.tick += 1
         return {"cheap": cheap, "precise": torch.where(arrived, arrived_value, torch.zeros_like(arrived_value)),
-                "arrived": arrived, "accepted": accepted, "setpoint": self.setpoint.clone(),
-                "active": self.active.clone(), "started": started, "error": error,
+                "arrived": arrived, "accepted": accepted,
+                "setpoint": torch.where(self.search, torch.zeros_like(self.setpoint), self.setpoint),
+                "search": self.search.clone(), "active": self.active.clone(), "started": started, "error": error,
                 "output": self.output.clone(), "since_switch": self.since_switch.clone(),
                 "returned": self.returned.clone(), "control": u, **transition}
 

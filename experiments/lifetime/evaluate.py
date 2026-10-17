@@ -17,7 +17,10 @@ own state, experience and adapters; nothing is reset. Reported:
 ``--also`` evaluates each model that learns a second time under other modes:
 ``frozen`` switches learning off, so the compute it used is chosen anew;
 ``discard`` keeps every chosen learning step, its time and its cost, but throws
-its adapter update away, which isolates what the updates themselves contribute.
+its adapter update away, which isolates what the updates themselves contribute;
+``norefine`` keeps the model's own setting but removes the refinement options,
+so its compute goes to learning or nothing, which isolates what refinement
+contributes.
 Every setting of a model starts from the same random state, so the settings are
 compared under common random numbers. ``--family`` selects the process family
 (by default the one trained on); ``--instrument`` changes fields of its
@@ -89,11 +92,21 @@ class ResponseTimes:
                 "unfinished_requests": int(((self.start >= 0) & ~self.reached).sum())}
 
 
+def runtime_options(args_train: dict) -> dict:
+    """Options of ``runtime.tick`` a model was trained with; earlier checkpoints predate them."""
+    return {"support": args_train.get("support", "sample"), "precise_targets": args_train.get("precise_targets", False)}
+
+
+def training_costs(args_train: dict) -> Costs:
+    return Costs(*(args_train.get(f"cost_{k}", getattr(Costs, k)) for k in ("refinement", "measurement", "learning")))
+
+
 def load(path: Path, device):
     blob = torch.load(path, map_location=device, weights_only=False)
     weights = blob["model"]       # earlier checkpoints predate these options; their weights tell which they used
-    config = CoreConfig(**{**blob["config"], "goal_term": "goal_weight" in weights,
-                           "bounded_workspace": "norm_slots.weight" in weights, "learned_step": "log_step" in weights})
+    config = {"goal_term": "goal_weight" in weights, "bounded_workspace": "norm_slots.weight" in weights,
+              "learned_step": "log_step" in weights, **blob["config"]}
+    config = CoreConfig(**config)
     model = ContinualCore(config, torch.zeros(config.actions, config.action_dim)).to(device)
     model.load_state_dict(blob["model"])
     instrument = InstrumentSpec(**blob["instrument"])
@@ -105,14 +118,14 @@ def load(path: Path, device):
 @torch.no_grad()
 def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False):
     torch.manual_seed(seed)
-    apply_updates = mode != "discard"
-    mode = args_train["mode"] if mode == "discard" else mode
+    apply_updates, refinements = mode != "discard", mode != "norefine"
+    mode = args_train["mode"] if mode in ("discard", "norefine") else mode
     env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"],
                      args_train.get("thermal_share", 0.5))
     spec = env.spec
     agent = new_agent(model, devices, args_train["buffer"], device)
     obs = first_observation(env)
-    costs = Costs()
+    costs = training_costs(args_train)
     nb = len(SWITCH_BINS) - 1
     life_bins = max(1, (ticks + 999) // 1000)
     acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "shared", "all", "learn", "refine")}
@@ -123,7 +136,8 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
     for t in range(ticks):
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
                                 learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True,
-                                apply_updates=apply_updates)
+                                apply_updates=apply_updates, refinements=refinements,
+                                **runtime_options(args_train))
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
         serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
@@ -166,7 +180,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, nargs="+", required=True)
-    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard"),
+    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard", "norefine"),
                    help="further settings to evaluate each learning model under")
     p.add_argument("--family", choices=FAMILIES, help="process family to evaluate on; by default the training family")
     p.add_argument("--adapter-lr", type=float, help="learning-step size during evaluation; by default the training one")
@@ -195,8 +209,10 @@ def main(argv=None):
         specs = {name: dataclasses.replace(spec, **{k: v for k, v in changes.items() if hasattr(spec, k)})
                  for name, spec in specs.items()}
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
+        refines = targs["mode"] in ("full", "fixed_learn", "frozen")
         # a model trained on fixed schedules has untrained activity heads: switch its learning off with discard
-        also = [m for m in args.also if learns and not (targs["mode"] == "world_model" and m == "frozen")]
+        also = [m for m in args.also if (refines if m == "norefine" else
+                                         learns and not (targs["mode"] == "world_model" and m == "frozen"))]
         for mode in dict.fromkeys([targs["mode"], *also]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,
                    "seed": targs["seed"], "family": family, "instrument": changes, "adapter_lr": targs["adapter_lr"],

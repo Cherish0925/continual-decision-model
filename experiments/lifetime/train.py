@@ -6,11 +6,23 @@ state, workspace, experience records, instance adapters and learning buffers
 persist across training windows; only the end of a lifetime resets them. Every
 ``--window`` ticks the shared parameters take PPO steps on the window, with the
 fast state and workspace recomputed in chunks from stored states. Value targets
-bootstrap from the next decision state; only a lifetime's end is terminal. The
-shared predictor is also trained on received readings. With ``--meta`` it is
-also trained so that one learning step on the first half of a window, taken
-from the adapter the instance held when the window began, improves its
-predictions on the second half.
+bootstrap from the next decision state; only a lifetime's end is terminal.
+
+The predictor is trained on received readings, under one of three objectives:
+
+``shared``    the shared predictor alone, without instance adapters;
+``step``      as ``shared``, plus the loss on the second half of a window after
+              one learning step on its first half, taken from the adapter the
+              instance held when the window began (``--meta`` weighs it);
+``deployed``  the prediction of every tick under the adapter the instance had
+              in effect then: the window's learning steps are replayed at the
+              ticks they were chosen, each on the buffer it read, and the loss
+              trains the shared network and the step size through them.
+
+``--segment`` unrolls the workspace over that many external events, so its
+gradients span them. With ``--recompute-predictions`` the heads read
+predictions recomputed by the current network under the adapter in effect at
+each tick, so the policy loss reaches the state through the predictions.
 """
 from __future__ import annotations
 
@@ -24,21 +36,27 @@ import time
 from dataclasses import asdict
 from pathlib import Path
 
+from types import SimpleNamespace
+
 import torch
 import torch.nn.functional as F
-from torch.utils.checkpoint import checkpoint
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from cdm.core import CoreConfig, ContinualCore, adaptation_loss, gaussian_nll  # noqa: E402
+from cdm.core import CoreConfig, ContinualCore, adaptation_loss, reading_nll  # noqa: E402
 from cdm.instrument import InstrumentSpec, action_values  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
-from experiments.lifetime.runtime import (FAMILIES, MODES, SCALAR_DIM, Costs, configure_backends, distributions, feature_dims,  # noqa: E402
-                     make_fleet, new_agent, reset_agents, tick)
+from experiments.lifetime.objectives import (NEVER, deployed_adapters, online_nll, predictions_per_tick,  # noqa: E402
+                                             recompute_states, window_support)
+from experiments.lifetime.runtime import (FAMILIES, HIDDEN, MODES, SCALAR_DIM, Costs, configure_backends,  # noqa: E402
+                                          distributions, feature_dims, goal_kinds, make_fleet, new_agent,
+                                          reset_agents, tick)
+
+START = ("A", "B", "next_A", "next_B", "busy", "learn_s", "learn_a", "learn_y", "learn_p", "filled")
 
 
 def instrument(args) -> InstrumentSpec:
-    return InstrumentSpec(dims=args.dims, levels=args.levels)
+    return InstrumentSpec(dims=args.dims, levels=args.levels, search_share=args.search_share)
 
 
 def thermal(args) -> ThermalSpec:
@@ -46,11 +64,13 @@ def thermal(args) -> ThermalSpec:
 
 
 def build(args, spec: InstrumentSpec, device) -> ContinualCore:
-    event_dim, record_dim = feature_dims(spec)
+    goals = goal_kinds(spec)
+    event_dim, record_dim = feature_dims(spec, goals)
     config = CoreConfig(event_dim=event_dim, record_dim=record_dim, actions=spec.actions, action_dim=spec.dims,
                         width=args.width, slots=args.slots, heads=args.heads, records=args.records, rank=args.rank,
-                        hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM,
-                        learned_step=args.learned_step)
+                        hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM + goals - 1,
+                        learned_step=args.learned_step, goals=goals, sensor_noise=args.sensor_noise,
+                        step_rule=args.step_rule, gated_workspace=args.gated_workspace)
     return ContinualCore(config, action_values(spec)).to(device)
 
 
@@ -68,36 +88,22 @@ def clear_observation(obs: dict, mask: torch.Tensor) -> dict:
     return {k: clear(v) for k, v in obs.items()}
 
 
-def recompute_states(model, h_prev, z_prev, event, records, counts, dones):
-    """Recompute a PPO chunk, resetting each row at its collected lifetime boundaries.
+def attach_returns(steps: list, delay: int):
+    """Record on each transition the precise reading that measured it and the step at which it returned.
 
-    Inputs have leading dimensions [time, streams]. A done at t resets the
-    state read at t+1. Workspace gradients retain the existing one-tick
-    truncation; fast-state gradients span the chunk except across a reset.
+    The newest step holds the readings that returned with it; each joins the step ``measured_back`` before it.
     """
-    length, streams = event.shape[:2]
-    reset_times = (dones[:-1].bool().any(1).nonzero().flatten() + 1).tolist()
-    boundaries = [0, *reset_times, length]
-    h, parts = h_prev[0], []
-    for begin, end in zip(boundaries[:-1], boundaries[1:]):
-        if begin:
-            h = torch.where(dones[begin - 1].bool().unsqueeze(-1), h_prev[begin], h)
-        hs = model.fast_sequence(h, event[begin:end])
-        parts.append(hs)
-        h = hs[-1]
-    H = torch.cat(parts, 0)
-    zin = z_prev.float()
-    zout = checkpoint(model.refine, zin.flatten(0, 1), H.flatten(0, 1), records.flatten(0, 1),
-                      counts.flatten(0, 1), use_reentrant=False).view_as(zin)
-    zread = torch.cat((zin[:1], zout[:-1]), 0)
-    reset_before = torch.cat((torch.zeros(1, streams, dtype=torch.bool, device=dones.device),
-                              dones[:-1].bool()), 0)
-    zread = torch.where(reset_before[..., None, None], zin, zread)
-    return H, zread
+    step, m = steps[-1], len(steps) - 1
+    step["precise_at"] = torch.full_like(step["action"], NEVER)
+    step["precise_value"] = torch.zeros_like(step["target"])
+    for back in range(1, min(delay, m) + 1):
+        sel, old = step["arrived"] & (step["measured_back"] == back), steps[m - back]
+        old["precise_at"] = torch.where(sel, m, old["precise_at"])
+        old["precise_value"] = torch.where(sel, step["precise"], old["precise_value"])
 
 
 def ppo_update(model, optimizer, steps, bootstrap, start, args):
-    """PPO on one window. ``start`` holds the adapters each stream had when the window began."""
+    """PPO on one window. ``start`` is the agent before the window's first tick."""
     L = len(steps)
     S = lambda key: torch.stack([s[key] for s in steps])
     rewards, values, dones = args.reward_scale * S("reward"), S("value"), S("done").float()
@@ -111,15 +117,26 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
     returns = adv + values
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
     event, scalars, allowed, records = S("event"), S("scalars"), S("allowed"), S("records")
-    offset, logvar, target = S("offset"), S("logvar"), S("target")
+    offset, logvar, cheap = S("offset"), S("logvar"), S("target")
     action, measure, compute, counts, logp = S("action"), S("measure"), S("compute"), S("counts"), S("logp")
-    h_prev, z_prev = S("h_prev"), S("z_prev")
+    h_prev, z_prev, learn = S("h_prev"), S("z_prev"), S("learn")
+    goal, search = S("goal"), S("search")
+    precise_value, precise_at = S("precise_value"), S("precise_at")
+    arrived, returned, back = S("arrived") & args.precise_targets, S("precise"), S("measured_back")
+    if not args.precise_targets:
+        precise_at = torch.full_like(precise_at, NEVER)
+    precise = precise_at < NEVER                          # a precise reading of this transition has returned
+    target = torch.where(precise, precise_value, cheap)
     n = rewards.shape[1]
     device = rewards.device
-    stats = {"policy": 0.0, "value": 0.0, "entropy": 0.0, "prediction": 0.0, "adapt_before": 0.0, "adapt_after": 0.0}
+    stats = dict.fromkeys(("policy", "value", "entropy", "prediction", "adapt_before", "adapt_after"), 0.0)
     whole = 1.0 - dones.amax(0)                          # streams whose lifetime runs through the whole window
     adapt_count = 0
     flat = lambda a: a.flatten(0, 1)
+    predicts, reads = args.mode != "recurrent", args.mode not in HIDDEN
+    deployed = predicts and args.objective == "deployed"
+    recompute = reads and predicts and args.recompute_predictions
+    amp = lambda: torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda")
     for _ in range(args.epochs):
         perm = torch.randperm(n, device=device)
         for i in range(0, n, args.minibatch):
@@ -128,16 +145,37 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                 c1 = min(c0 + args.chunk, L)
                 T = c1 - c0
                 part = lambda a: flat(a[c0:c1, mb])
-                with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
-                    H, zread = recompute_states(model, h_prev[c0:c1, mb], z_prev[c0:c1, mb],
-                                               event[c0:c1, mb], records[c0:c1, mb], counts[c0:c1, mb],
-                                               dones[c0:c1, mb])
-                    H, zread = flat(H), flat(zread)
-                    o, lv = part(offset), part(logvar)
-                    cl, al, v = model.heads(model.trunk(H, zread, o, lv, part(scalars)), o, lv)
-                    if args.mode != "recurrent":
-                        x = torch.cat((model.state_features(H, zread), model.action_features(part(action))), -1)
+                keep = whole[mb] > 0
+                with amp():
+                    H, zread = recompute_states(model, h_prev[c0:c1, mb], z_prev[c0:c1, mb], event[c0:c1, mb],
+                                               records[c0:c1, mb], counts[c0:c1, mb], dones[c0:c1, mb],
+                                               args.segment)
+                    state = model.state_features(flat(H), flat(zread)).view(T, len(mb), -1)   # [T, m, 2w]
+                    if deployed or recompute:                     # the adapter in effect at every tick
+                        first = SimpleNamespace(**{k: getattr(start, k)[mb] for k in START})
+                        support = window_support(model, first, state.detach(), action[:, mb], cheap[:, mb],
+                                                 precise_value[:, mb], precise_at[:, mb], arrived[:, mb],
+                                                 returned[:, mb], back[:, mb])
+                        version, As, Bs = deployed_adapters(model, first, learn[:, mb] & keep, support,
+                                                            args.learn_ticks, args.adapter_lr, deployed)
+                    if recompute:
+                        mean_all, lv_all = predictions_per_tick(model, state, As, Bs, version)
+                        g = torch.where(search[:, mb], mean_all.detach().max(-1).values, goal[:, mb])
+                        o = torch.where(keep[None, :, None], mean_all.float() - g.unsqueeze(-1), offset[:, mb])
+                        lv = torch.where(keep[None, :, None], lv_all.float(), logvar[:, mb])
+                        o, lv = flat(o), flat(lv)
+                    else:
+                        o, lv = part(offset), part(logvar)
+                    Hf, zf = flat(H), flat(zread)
+                    cl, al, v = model.heads(model.trunk(Hf, zf, o, lv, part(scalars)), o, lv)
+                    if deployed:
+                        nll = online_nll(model, state, action[:, mb], As, Bs, version, target[:, mb], precise[:, mb])
+                        prediction = (nll * keep).sum() / (keep.sum() * T).clamp_min(1)
+                    elif predicts:
+                        x = torch.cat((flat(state), model.action_features(part(action))), -1)    # [T * m, 3w]
                         pm, plv = model.predict(x.unsqueeze(1))
+                        prediction = reading_nll(model, pm.squeeze(1), plv.squeeze(1), part(target),
+                                                 part(precise)).mean()
                 dists = distributions(cl, al, part(allowed))
                 taken = (part(action), part(measure), part(compute))
                 new_logp = sum(d.log_prob(a) for d, a in zip(dists, taken))
@@ -147,20 +185,28 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                 policy = -torch.min(ratio * a_t, ratio.clamp(1 - args.clip, 1 + args.clip) * a_t).mean()
                 value_loss = F.mse_loss(v.float(), part(returns))
                 loss = policy + 0.5 * value_loss - args.entropy * entropy.mean()
-                if args.mode != "recurrent":
-                    prediction = gaussian_nll(pm.float().squeeze(1), plv.float().squeeze(1), part(target)).mean()
+                if predicts:
                     loss = loss + args.prediction * prediction
                     stats["prediction"] += float(prediction.detach()) * T
-                if args.mode != "recurrent" and c0 == 0 and T >= 2:
-                    with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"), \
-                            torch.set_grad_enabled(args.meta > 0):
+                if deployed:                                     # what the window's own steps did to its predictions
+                    with torch.no_grad(), amp():
+                        unchanged = online_nll(model, state, action[:, mb], As, Bs, version.clamp(max=1),
+                                               target[:, mb], precise[:, mb])
+                    w = keep.sum().clamp_min(1) * T
+                    stats["adapt_before"] += float((unchanged * keep).sum() / w)
+                    stats["adapt_after"] += float((nll.detach() * keep).sum() / w)
+                    adapt_count += 1
+                elif predicts and c0 == 0 and T >= 2:
+                    with amp(), torch.set_grad_enabled(args.objective == "step"):
                         xs, ys, k = x.view(T, -1, x.shape[-1]).transpose(0, 1), target[c0:c1, mb].T, T // 2
-                        before, after = adaptation_loss(model, start[0][mb], start[1][mb], xs[:, :k], ys[:, :k],
+                        ps = precise[c0:c1, mb].T
+                        before, after = adaptation_loss(model, start.A[mb], start.B[mb], xs[:, :k], ys[:, :k],
                                                         xs[:, k:], ys[:, k:], args.adapter_lr,
-                                                        differentiable=args.meta > 0)
+                                                        differentiable=args.objective == "step",
+                                                        support_p=ps[:, :k], query_p=ps[:, k:])
                     w = whole[mb]
                     after = (after.float() * w).sum() / w.sum().clamp_min(1)
-                    if args.meta > 0:
+                    if args.objective == "step":
                         loss = loss + args.meta * after
                     stats["adapt_before"] += float(((before.float() * w).sum() / w.sum().clamp_min(1)))
                     stats["adapt_after"] += float(after.detach())
@@ -179,7 +225,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
     return out
 
 
-def main(argv=None):
+def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--mode", choices=MODES, default="full")
     p.add_argument("--seed", type=int, default=0)
@@ -211,13 +257,39 @@ def main(argv=None):
     p.add_argument("--clip", type=float, default=0.2)
     p.add_argument("--entropy", type=float, default=0.003)
     p.add_argument("--prediction", type=float, default=0.5)
-    p.add_argument("--meta", type=float, default=0.0, help="weight of the prediction loss after a learning step")
-    p.add_argument("--learned-step", action="store_true", help="learn the size of a learning step through --meta")
+    p.add_argument("--meta", type=float, default=0.0, help="weight of the loss after one step, objective step")
+    p.add_argument("--objective", choices=("shared", "step", "deployed"),
+                   help="prediction objective; by default step when --meta is set, otherwise shared")
+    p.add_argument("--learned-step", action="store_true", help="learn the size of a learning step")
+    p.add_argument("--step-rule", choices=("normalized", "evidence"), default="normalized",
+                   help="normalized: steps of one size; evidence: -eta g / (|g| + kappa) with eta, kappa learned")
+    p.add_argument("--support", choices=("sample", "buffer"), default="sample",
+                   help="a learning step reads 32 sampled entries or every filled entry of the buffer")
+    p.add_argument("--precise-targets", action="store_true",
+                   help="a returning precise reading replaces the cheap reading of the transition it measured")
+    p.add_argument("--sensor-noise", action="store_true", help="likelihoods add a learned noise for each sensor")
+    p.add_argument("--segment", type=int, default=1, help="external events the workspace is unrolled over in PPO")
+    p.add_argument("--gated-workspace", action="store_true", help="refinements keep, revise or reset each slot")
+    p.add_argument("--recompute-predictions", action="store_true",
+                   help="PPO heads read predictions recomputed under the adapter in effect at each tick")
+    p.add_argument("--search-share", type=float, default=0.0, help="share of requests for the largest output")
+    p.add_argument("--cost-refinement", type=float, default=Costs.refinement)
+    p.add_argument("--cost-measurement", type=float, default=Costs.measurement)
+    p.add_argument("--cost-learning", type=float, default=Costs.learning)
     p.add_argument("--reward-scale", type=float, default=0.1, help="rewards are multiplied by this for value learning")
     p.add_argument("--save-every", type=int, default=50, help="windows between checkpoints")
     p.add_argument("--device", default="cuda")
     p.add_argument("--output-dir", type=Path, required=True)
     args = p.parse_args(argv)
+    args.objective = args.objective or ("step" if args.meta > 0 else "shared")
+    if args.objective == "deployed" or args.recompute_predictions:
+        if args.support != "buffer" or args.chunk < args.window:
+            p.error("replaying learning steps needs --support buffer and one chunk per window")
+    return args
+
+
+def main(argv=None):
+    args = parse_args(argv)
     torch.manual_seed(args.seed)
     configure_backends()
     device = torch.device(args.device)
@@ -231,7 +303,7 @@ def main(argv=None):
     gen = torch.Generator(device=device).manual_seed(args.seed + 2000)
     agent.age = torch.randint(0, args.lifetime, (args.streams,), generator=gen, device=device)
     obs = first_observation(env)
-    costs = Costs()
+    costs = Costs(args.cost_refinement, args.cost_measurement, args.cost_learning)
     meta = {"args": {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
             "config": asdict(model.config), "instrument": asdict(spec), "thermal": asdict(tspec),
             "parameters": sum(q.numel() for q in model.parameters()),
@@ -250,14 +322,15 @@ def main(argv=None):
         torch.save({"model": model.state_dict(), "config": asdict(model.config), "instrument": asdict(spec),
                     "thermal": asdict(tspec), "args": meta["args"]}, out / "model.pt")
 
-    window_adapters = previous_adapters = (agent.A, agent.B)   # when the window began / before the last tick
+    window_start = previous = agent                     # the agent when the window began / before the last tick
     collection = update_time = 0.0
     mark = time.perf_counter()
     for t in range(ticks):
         model.eval()
-        previous_adapters = (agent.A, agent.B)           # tick() replaces these tensors rather than editing them
+        previous = agent                                 # tick() replaces the agent's tensors rather than editing them
         agent, obs, step = tick(model, agent, env, obs, args.mode, costs, args.adapter_lr, args.every,
-                                learn_ticks=args.learn_ticks)
+                                learn_ticks=args.learn_ticks, support=args.support,
+                                precise_targets=args.precise_targets)
         done = agent.age >= args.lifetime
         step["done"] = done
         sums["reward"] += float(step["reward"].mean())
@@ -272,18 +345,19 @@ def main(argv=None):
             agent = reset_agents(model, agent, done)
             obs = clear_observation(obs, done)
         steps.append(step)
+        attach_returns(steps, env.spec.delay)
         if len(steps) == args.window + 1:
             if device.type == "cuda":
                 torch.cuda.synchronize(device)
             collection += time.perf_counter() - mark
             mark = time.perf_counter()
             model.train()
-            stats = ppo_update(model, optimizer, steps[:-1], steps[-1]["value"], window_adapters, args)
+            stats = ppo_update(model, optimizer, steps[:-1], steps[-1]["value"], window_start, args)
             if device.type == "cuda":
                 torch.cuda.synchronize(device)
             update_time += time.perf_counter() - mark
             mark = time.perf_counter()
-            steps, window_adapters = steps[-1:], previous_adapters
+            steps, window_start = steps[-1:], previous
             window += 1
             k = args.window
             row = {"window": window, "transitions": (t + 1) * args.streams,
@@ -293,6 +367,10 @@ def main(argv=None):
                    "learning_per_100_ticks": 100 * sums["learn"] / k,
                    "prediction_error": sums["prediction_error"] / k,
                    "workspace_norm": float(agent.z.norm(dim=-1).mean()), "adapter_norm": float(agent.A.norm(dim=(1, 2)).mean()),
+                   **({"step_eta": float(model.log_step.exp())} if model.log_step is not None else {}),
+                   **({"step_kappa": float(model.log_kappa.exp())} if model.log_kappa is not None else {}),
+                   **({"noise_cheap": float(model.log_noise[0].exp()), "noise_precise": float(model.log_noise[1].exp())}
+                      if model.log_noise is not None else {}),
                    **{f"loss_{a}": round(b, 5) for a, b in stats.items()},
                    "seconds": round(time.perf_counter() - start, 1), "collection_seconds": round(collection, 1),
                    "update_seconds": round(update_time, 1)}

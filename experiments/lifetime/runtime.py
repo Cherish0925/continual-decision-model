@@ -9,6 +9,12 @@ or a learning step. A learning step starts from the instance's experience at
 the time it is chosen and occupies the compute for ``learn_ticks`` ticks; its
 updated adapter is used once it completes. Control is produced every tick and
 nothing waits for computation or learning.
+
+The experience a learning step reads is either 32 entries sampled from the
+buffer (``support="sample"``) or every filled entry (``support="buffer"``).
+With ``precise_targets`` a precise reading, when it returns, replaces the cheap
+reading of the transition it measured, both as that entry's target and as the
+target of the prediction loss.
 """
 from __future__ import annotations
 
@@ -17,7 +23,7 @@ from dataclasses import dataclass, fields
 import torch
 from torch import Tensor
 
-from cdm.core import REFINEMENTS, ContinualCore, adapter_step
+from cdm.core import REFINEMENTS, ContinualCore, adapter_update
 from cdm.instrument import InstrumentFleet, InstrumentSpec, MixedFleet, ProcessSpec
 from cdm.thermal import ThermalFleet, ThermalSpec
 
@@ -49,9 +55,15 @@ def make_fleet(family: str, n: int, seed: int, device, instrument: InstrumentSpe
     return MixedFleet([InstrumentFleet(n - k, instrument, seed, device), ThermalFleet(k, thermal, seed + 1, device)])
 
 
-def feature_dims(spec: ProcessSpec) -> tuple[int, int]:
-    """Sizes of the event vector and of one experience record."""
-    return 13 + spec.dims, 5 + spec.dims
+def goal_kinds(spec: ProcessSpec) -> int:
+    """1 when every request gives a setpoint, 2 when some ask for the largest output."""
+    return 2 if spec.search_share > 0 else 1
+
+
+def feature_dims(spec: ProcessSpec, goals: int = 1) -> tuple[int, int]:
+    """Sizes of the event vector and of one experience record; with two kinds of goal each carries a flag for
+    requests that ask for the largest output, as do the scalar features (``SCALAR_DIM + goals - 1``)."""
+    return 12 + spec.dims + goals, 4 + spec.dims + goals
 
 
 @dataclass(frozen=True)
@@ -73,6 +85,7 @@ class Agent:
     learn_s: Tensor        # [n, T, 2w] state features of recent ticks
     learn_a: Tensor        # [n, T] actions taken
     learn_y: Tensor        # [n, T] readings that followed
+    learn_p: Tensor        # [n, T] the reading is a precise one
     filled: Tensor         # [n] valid entries of the learning buffer
     busy: Tensor           # [n] remaining ticks of a running learning step
     last: Tensor           # [n, dims + 3] previous control values, measurement, refinements/4, learning
@@ -92,7 +105,8 @@ def new_agent(model: ContinualCore, n: int, buffer: int, device) -> Agent:
                  records=torch.zeros(n, c.records, c.record_dim, device=device),
                  learn_s=torch.zeros(n, buffer, 2 * c.width, device=device, dtype=torch.bfloat16),
                  learn_a=torch.zeros(n, buffer, dtype=torch.long, device=device),
-                 learn_y=torch.zeros(n, buffer, device=device), filled=z.long(), busy=z.long(),
+                 learn_y=torch.zeros(n, buffer, device=device),
+                 learn_p=torch.zeros(n, buffer, dtype=torch.bool, device=device), filled=z.long(), busy=z.long(),
                  last=torch.zeros(n, c.action_dim + 3, device=device), since_measure=z.clone(),
                  since_learn=z.clone(), since_request=z.clone(), error_ema=z.clone(), predicted=z.clone(),
                  age=z.long())
@@ -111,18 +125,49 @@ def reset_agents(model: ContinualCore, agent: Agent, mask: Tensor) -> Agent:
     return Agent(**out)
 
 
-def event_features(obs: dict, agent: Agent, pending: Tensor) -> Tensor:
+def goal_flags(obs: dict, goals: int) -> list[Tensor]:
+    return [obs["search"].float()] if goals > 1 else []
+
+
+def event_features(obs: dict, agent: Agent, pending: Tensor, goals: int = 1) -> Tensor:
     reading = torch.stack((obs["cheap"], obs["precise"], obs["arrived"].float(), obs["setpoint"],
-                           obs["active"].float(), obs["started"].float()), 1)
+                           obs["active"].float(), obs["started"].float(), *goal_flags(obs, goals)), 1)
     timing = torch.stack(((agent.busy > 0).float(), (pending > 0).float(), (agent.since_measure / 32).clamp(max=2),
                           (obs["cheap"] - agent.predicted).clamp(-2, 2)), 1)
     return torch.cat((reading, agent.last, timing), 1)
 
 
-def scalar_features(obs: dict, agent: Agent, pending: Tensor) -> Tensor:
+def scalar_features(obs: dict, agent: Agent, pending: Tensor, goals: int = 1) -> Tensor:
     return torch.stack(((agent.busy > 0).float(), (pending > 0).float(), (agent.since_measure / 32).clamp(max=2),
                         (agent.since_learn / 64).clamp(max=2), agent.error_ema.clamp(max=2), obs["active"].float(),
-                        (agent.since_request / 64).clamp(max=2), agent.filled.float() / agent.learn_y.shape[1]), 1)
+                        (agent.since_request / 64).clamp(max=2), agent.filled.float() / agent.learn_y.shape[1],
+                        *goal_flags(obs, goals)), 1)
+
+
+def experience_record(obs: dict, goals: int = 1) -> Tensor:
+    """[n, record_dim]: the control applied and what followed it."""
+    return torch.cat((obs["control"], torch.stack((obs["cheap"], obs["precise"], obs["arrived"].float(),
+                                                   obs["setpoint"], obs["active"].float(),
+                                                   *goal_flags(obs, goals)), 1)), 1)
+
+
+def goal_offsets(mean: Tensor, obs: dict, goals: int = 1) -> Tensor:
+    """Predicted readings [n, actions] relative to the goal: the setpoint, or for a request for the largest
+    output, the largest predicted reading."""
+    goal = obs["setpoint"]
+    if goals > 1:
+        goal = torch.where(obs["search"], mean.detach().max(1).values, goal)
+    return mean - goal.unsqueeze(1)
+
+
+def precise_arrivals(agent: Agent, nxt: dict, learn_y: Tensor, learn_p: Tensor):
+    """Put each precise reading that returned with ``nxt`` in place of the cheap reading of the transition it
+    measured. Only one measurement is outstanding at a time, so that transition is ``since_measure + 1`` ticks
+    before the newest entry."""
+    T = learn_y.shape[1]
+    position = T - 2 - agent.since_measure.long()
+    hit = nxt["arrived"].unsqueeze(1) & (torch.arange(T, device=learn_y.device) == position.unsqueeze(1))
+    return torch.where(hit, nxt["precise"].unsqueeze(1), learn_y), learn_p | hit
 
 
 def masks(agent: Agent, pending: Tensor, mode: str, tick: int, every: int) -> Tensor:
@@ -163,20 +208,25 @@ def distributions(control_logits: Tensor, activity_logits: Tensor, allowed: Tens
 @torch.no_grad()
 def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mode: str, costs: Costs,
          learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32,
-         shared: bool = False, apply_updates: bool = True):
+         shared: bool = False, apply_updates: bool = True, support: str = "sample", precise_targets: bool = False,
+         refinements: bool = True):
     """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick.
 
     With ``shared`` the record also holds the error of the shared predictor alone, without the instance adapter,
     for the action taken. With ``apply_updates`` false, chosen learning steps still occupy the compute and incur
     their cost, but their adapter updates are discarded: a matched-time control for the effect of the update.
+    With ``refinements`` false the refinement options are removed.
     """
     n = agent.h.shape[0]
     device = agent.h.device
+    goals = model.config.goals
     rows = torch.arange(n, device=device)
     pending = env.pending.clone()
-    event = event_features(obs, agent, pending)
-    scalars = scalar_features(obs, agent, pending)
+    event = event_features(obs, agent, pending, goals)
+    scalars = scalar_features(obs, agent, pending, goals)
     allowed = masks(agent, pending, mode, env.tick, every)
+    if not refinements:
+        allowed[:, 3:2 + LEARN] = False
     h_prev, z_prev = agent.h, agent.z
     with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
         h = model.fast(h_prev, event)
@@ -186,7 +236,7 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
         else:
             mean, logvar = model.predict_actions(state, agent.A, agent.B)
         logvar = logvar.float()
-        offset = mean.float() - obs["setpoint"].unsqueeze(1)          # predicted readings relative to the setpoint
+        offset = goal_offsets(mean.float(), obs, goals)               # predicted readings relative to the goal
         if mode in HIDDEN:                                            # the policy reads no prediction
             offset, logvar = torch.zeros_like(offset), torch.zeros_like(logvar)
         control_logits, activity_logits, value = model.heads(model.trunk(h, z_prev, offset, logvar, scalars),
@@ -201,12 +251,13 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     learn = compute == LEARN
     reward = -nxt["error"] - costs.refinement * counts - costs.measurement * nxt["accepted"].float() \
         - costs.learning * learn.float()
-    record = torch.cat((nxt["control"], torch.stack((nxt["cheap"], nxt["precise"], nxt["arrived"].float(),
-                                                     nxt["setpoint"], nxt["active"].float()), 1)), 1)
-    records = torch.cat((agent.records[:, 1:], record.unsqueeze(1)), 1)
+    records = torch.cat((agent.records[:, 1:], experience_record(nxt, goals).unsqueeze(1)), 1)
     learn_s = torch.cat((agent.learn_s[:, 1:], state.unsqueeze(1).to(agent.learn_s.dtype)), 1)
     learn_a = torch.cat((agent.learn_a[:, 1:], action.unsqueeze(1)), 1)
     learn_y = torch.cat((agent.learn_y[:, 1:], nxt["cheap"].unsqueeze(1)), 1)
+    learn_p = torch.cat((agent.learn_p[:, 1:], torch.zeros_like(agent.learn_p[:, :1])), 1)
+    if precise_targets:
+        learn_y, learn_p = precise_arrivals(agent, nxt, learn_y, learn_p)
     T = learn_y.shape[1]
     filled = (agent.filled + 1).clamp(max=T)
     with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
@@ -217,12 +268,19 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     next_A, next_B, busy = agent.next_A, agent.next_B, (agent.busy - 1).clamp(min=0)
     if learn.any():
         idx = learn.nonzero().squeeze(1)
-        pick = torch.randint(0, T, (len(idx), sample_learn), device=device)
-        if apply_updates:
+        if support == "buffer":                                       # every filled entry of the buffer
+            xs = torch.cat((learn_s[idx].float(), model.action_features(learn_a[idx])), -1)
+            held = torch.arange(T, device=device).unsqueeze(0) >= (T - filled[idx]).unsqueeze(1)
+            newA, newB, _ = adapter_update(model, A[idx], B[idx], xs, learn_y[idx], learn_p[idx], held.float(),
+                                           learning_rate)
+        else:
+            pick = torch.randint(0, T, (len(idx), sample_learn), device=device)
             pick = T - 1 - (pick % filled[idx].unsqueeze(1))         # only filled entries
             sel = (idx.unsqueeze(1), pick)
             xs = torch.cat((learn_s[sel].float(), model.action_features(learn_a[sel])), -1)
-            newA, newB, _ = adapter_step(model, A[idx], B[idx], xs, learn_y[sel], learning_rate)
+            newA, newB, _ = adapter_update(model, A[idx], B[idx], xs, learn_y[sel], learn_p[sel], None,
+                                           learning_rate)
+        if apply_updates:
             if learn_ticks <= 1:
                 A, B = A.clone(), B.clone()
                 A[idx], B[idx] = newA, newB
@@ -231,6 +289,7 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
                 next_A[idx], next_B[idx] = newA, newB
         if learn_ticks > 1:
             busy[idx] = learn_ticks - 1
+    measured_back = agent.since_measure.long() + 1                 # a returning precise reading measured this far back
     pred_taken = mean.float()[rows, action]
     error = (nxt["cheap"] - pred_taken).abs()
     seen = torch.zeros_like(pred_taken) if mode in HIDDEN else pred_taken   # what the policy's features may carry
@@ -240,7 +299,7 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             alone = model.predict(torch.cat((state, model.action_features(action)), -1).unsqueeze(1))[0]
         shared_error = (nxt["cheap"] - alone.float().squeeze(1)).abs()
     agent = Agent(h=h, z=z, A=A, B=B, next_A=next_A, next_B=next_B, records=records, learn_s=learn_s,
-                  learn_a=learn_a, learn_y=learn_y, filled=filled, busy=busy,
+                  learn_a=learn_a, learn_y=learn_y, learn_p=learn_p, filled=filled, busy=busy,
                   last=torch.cat((nxt["control"], torch.stack((measure.float(), counts.float() / 4, learn.float()), 1)), 1),
                   since_measure=torch.where(nxt["accepted"], torch.zeros_like(agent.since_measure), agent.since_measure + 1),
                   since_learn=torch.where(learn, torch.zeros_like(agent.since_learn), agent.since_learn + 1),
@@ -254,8 +313,10 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
             "since_switch": nxt["transition_since_switch"], "returned": nxt["transition_returned"],
             "started": obs["started"], "output": nxt["output"], "setpoint": nxt["transition_setpoint"],
             "next_active": nxt["active"], "next_started": nxt["started"],
+            "goal": obs["setpoint"], "search": obs.get("search", torch.zeros_like(obs["active"])),
+            "transition_search": nxt.get("transition_search", torch.zeros_like(obs["active"])),
+            "arrived": nxt["arrived"], "precise": nxt["precise"], "measured_back": measured_back,
             "prediction_error": error}
     if shared and mode != "recurrent":
         step["shared_prediction_error"] = shared_error
     return agent, nxt, step
-

@@ -23,8 +23,8 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from experiments.lifetime.evaluate import SWITCH_BINS, evaluate, load  # noqa: E402
-from experiments.lifetime.runtime import Costs, configure_backends, event_features, make_fleet, new_agent, tick  # noqa: E402
+from experiments.lifetime.evaluate import SWITCH_BINS, evaluate, load, runtime_options, training_costs  # noqa: E402
+from experiments.lifetime.runtime import configure_backends, event_features, make_fleet, new_agent, tick  # noqa: E402
 from experiments.lifetime.train import first_observation  # noqa: E402
 
 KEYS = ("error_while_active", "prediction_error", "shared_prediction_error", "refinements_per_tick",
@@ -77,7 +77,7 @@ def decisions(path, devices, ticks, seed, device):
     torch.manual_seed(seed)
     for _ in range(ticks):
         with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
-            h = model.fast(agent.h, event_features(obs, agent, env.pending.clone()))
+            h = model.fast(agent.h, event_features(obs, agent, env.pending.clone(), model.config.goals))
             state = model.state_features(h, agent.z)
             adapted = model.predict_actions(state, agent.A, agent.B)[0].float()
             shared = model.predict_actions(state)[0].float()
@@ -87,8 +87,8 @@ def decisions(path, devices, ticks, seed, device):
         one_step = (truth - goal).abs()
         pick_a, pick_s = (adapted - goal).abs().argmin(1), (shared - goal).abs().argmin(1)
         b = torch.bucketize(env.since_switch, bins, right=True)
-        agent, nobs, step = tick(model, agent, env, obs, targs["mode"], Costs(), targs["adapter_lr"], targs["every"],
-                                 learn_ticks=targs["learn_ticks"])
+        agent, nobs, step = tick(model, agent, env, obs, targs["mode"], training_costs(targs), targs["adapter_lr"],
+                                 targs["every"], learn_ticks=targs["learn_ticks"], **runtime_options(targs))
         taken = step["action"]
         active = obs["active"].float()
         for key, value in (("taken_adapted", (adapted - truth).abs()[rows, taken]),

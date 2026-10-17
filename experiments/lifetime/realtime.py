@@ -38,10 +38,11 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from cdm.core import REFINEMENTS, adapter_step  # noqa: E402
-from experiments.lifetime.evaluate import load  # noqa: E402
-from experiments.lifetime.runtime import (LEARN, configure_backends, distributions, event_features, make_fleet,  # noqa: E402
-                                          masks, new_agent, scalar_features)
+from cdm.core import REFINEMENTS, adapter_update  # noqa: E402
+from experiments.lifetime.evaluate import load, runtime_options  # noqa: E402
+from experiments.lifetime.runtime import (LEARN, configure_backends, distributions, event_features,  # noqa: E402
+                                          experience_record, goal_offsets, make_fleet, masks, new_agent,
+                                          precise_arrivals, scalar_features)
 from experiments.lifetime.train import first_observation  # noqa: E402
 
 
@@ -118,9 +119,9 @@ class Learner(threading.Thread):
     def run(self):
         with torch.cuda.stream(self.stream):
             while (job := self.jobs.get()) is not None:
-                idx, A, B, xs, ys, ready = job
+                idx, A, B, xs, ys, ps, held, ready = job
                 self.stream.wait_event(ready)
-                newA, newB, _ = adapter_step(self.model, A, B, xs, ys, self.lr)
+                newA, newB, _ = adapter_update(self.model, A, B, xs, ys, ps, held, self.lr)
                 self.stream.synchronize()
                 self.completed += len(idx)
                 self.results.put((idx, newA, newB))
@@ -130,6 +131,7 @@ class Learner(threading.Thread):
 def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: bool):
     torch.manual_seed(seed)
     mode = targs["mode"] if learn else "frozen"
+    goals, options = model.config.goals, runtime_options(targs)
     env = make_fleet(family, n, seed, device, specs["instrument"], specs["thermal"], targs.get("thermal_share", 0.5))
     fleet, learner = Fleet(env, period_ms, steps), Learner(model, targs["adapter_lr"], device)
     agent = new_agent(model, n, targs["buffer"], device)
@@ -148,13 +150,13 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
             for i, (k, obs, published) in enumerate(items):           # absorb every observation in order
                 if state is not None:                                 # the reading that answered the applied action
                     agent.predicted = expect[rows, obs["applied"]]
-                    record = torch.cat((obs["control"], torch.stack((obs["cheap"], obs["precise"],
-                                                                     obs["arrived"].float(), obs["setpoint"],
-                                                                     obs["active"].float()), 1)), 1)
-                    agent.records = torch.cat((agent.records[:, 1:], record.unsqueeze(1)), 1)
+                    agent.records = torch.cat((agent.records[:, 1:], experience_record(obs, goals).unsqueeze(1)), 1)
                     agent.learn_s = torch.cat((agent.learn_s[:, 1:], state.unsqueeze(1).to(agent.learn_s.dtype)), 1)
                     agent.learn_a = torch.cat((agent.learn_a[:, 1:], obs["applied"].unsqueeze(1)), 1)
                     agent.learn_y = torch.cat((agent.learn_y[:, 1:], obs["cheap"].unsqueeze(1)), 1)
+                    agent.learn_p = torch.cat((agent.learn_p[:, 1:], torch.zeros_like(agent.learn_p[:, :1])), 1)
+                    if options["precise_targets"]:
+                        agent.learn_y, agent.learn_p = precise_arrivals(agent, obs, agent.learn_y, agent.learn_p)
                     agent.filled = (agent.filled + 1).clamp(max=T)
                     agent.error_ema = 0.95 * agent.error_ema + 0.05 * (obs["cheap"] - agent.predicted).abs()
                     agent.since_measure = torch.where(obs["accepted"], torch.zeros_like(agent.since_measure),
@@ -166,7 +168,7 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
                     agent.last = torch.cat((obs["control"], flags if first else torch.zeros_like(flags)), 1)
                     attached = attached or first
                 agent.busy = learning.long()
-                event = event_features(obs, agent, obs["pending"])
+                event = event_features(obs, agent, obs["pending"], goals)
                 with amp:
                     agent.h = model.fast(agent.h, event).float()
                     state = model.state_features(agent.h, agent.z)
@@ -175,12 +177,12 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
             k, obs, published = items[-1]
             absorbed.append(len(items))
             pending = obs["pending"]
-            scalars = scalar_features(obs, agent, pending)
+            scalars = scalar_features(obs, agent, pending, goals)
             allowed = masks(agent, pending, mode, k, targs["every"])
             with amp:
                 mean, logvar = model.predict_actions(state, agent.A, agent.B)
                 expect = mean.float()
-                offset, logvar = expect - obs["setpoint"].unsqueeze(1), logvar.float()
+                offset, logvar = goal_offsets(expect, obs, goals), logvar.float()
                 logits, activity, _ = model.heads(model.trunk(agent.h, agent.z, offset, logvar, scalars), offset,
                                                   logvar)
             action, measure, compute = [d.sample() for d in distributions(logits, activity, allowed)]
@@ -202,10 +204,15 @@ def run(model, targs, specs, family, n, period_ms, steps, seed, device, learn: b
             start = (compute == LEARN) & ~learning & (agent.filled > 0)
             if start.any():
                 idx = start.nonzero().squeeze(1)
-                pick = T - 1 - (torch.randint(0, T, (len(idx), 32), device=device) % agent.filled[idx].unsqueeze(1))
-                sel = (idx.unsqueeze(1), pick)
+                if options["support"] == "buffer":                    # every filled entry of the buffer
+                    sel = (idx.unsqueeze(1), torch.arange(T, device=device).expand(len(idx), T))
+                    held = (sel[1] >= (T - agent.filled[idx]).unsqueeze(1)).float()
+                else:
+                    pick = torch.randint(0, T, (len(idx), 32), device=device) % agent.filled[idx].unsqueeze(1)
+                    sel, held = (idx.unsqueeze(1), T - 1 - pick), torch.ones(len(idx), 32, device=device)
                 xs = torch.cat((agent.learn_s[sel].float(), model.action_features(agent.learn_a[sel])), -1)
-                job = (idx, agent.A[idx].clone(), agent.B[idx].clone(), xs, agent.learn_y[sel])
+                job = (idx, agent.A[idx].clone(), agent.B[idx].clone(), xs, agent.learn_y[sel], agent.learn_p[sel],
+                       held)
                 for tensor in job:
                     tensor.record_stream(learner.stream)
                 ready = torch.cuda.Event()
