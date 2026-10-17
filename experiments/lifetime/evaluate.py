@@ -49,6 +49,7 @@ from cdm.core import CoreConfig, ContinualCore  # noqa: E402
 from cdm.instrument import InstrumentSpec  # noqa: E402
 from cdm.navigation import NavigationSpec  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
+from experiments.lifetime.planner import imagined_control  # noqa: E402
 from experiments.lifetime.runtime import FAMILIES, MODES, Costs, configure_backends, make_fleet, new_agent, tick  # noqa: E402
 from experiments.lifetime.train import first_observation  # noqa: E402
 
@@ -134,7 +135,7 @@ def load(path: Path, device):
 
 
 @torch.no_grad()
-def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False):
+def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False, control=None):
     torch.manual_seed(seed)
     apply_updates, refinements, idle_compute = mode != "discard", mode != "norefine", mode != "noidle"
     mode = args_train["mode"] if mode in ("discard", "norefine", "noidle") else mode
@@ -158,7 +159,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
                                 learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True,
                                 apply_updates=apply_updates, refinements=refinements,
-                                idle_compute=idle_compute, **runtime_options(args_train))
+                                idle_compute=idle_compute, control=control, **runtime_options(args_train))
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
         serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
@@ -223,6 +224,8 @@ def main(argv=None):
     p.add_argument("--ticks", type=int, default=20000)
     p.add_argument("--seed", type=int, default=777)
     p.add_argument("--greedy", action="store_true")
+    p.add_argument("--planner", type=int, nargs="*", default=[], metavar="TICKS",
+                   help="also evaluate the own setting with control by imagined rollouts of this many ticks")
     p.add_argument("--instrument", nargs="*", default=[], metavar="FIELD=VALUE",
                    help="instrument fields to change; a pair of values for a range")
     p.add_argument("--device", default="cuda")
@@ -253,6 +256,15 @@ def main(argv=None):
                    "seed": targs["seed"], "family": family, "instrument": changes, "adapter_lr": targs["adapter_lr"],
                    **evaluate(model, targs, specs, family, args.devices, args.ticks, args.seed, device, mode,
                               args.greedy)}
+            rows.append(row)
+            print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in row.items()
+                              if not isinstance(v, list)}), flush=True)
+        for horizon in args.planner:
+            row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"],
+                   "mode": f"planner{horizon}", "seed": targs["seed"], "family": family, "instrument": changes,
+                   "adapter_lr": targs["adapter_lr"],
+                   **evaluate(model, targs, specs, family, args.devices, args.ticks, args.seed, device, targs["mode"],
+                              control=imagined_control(horizon))}
             rows.append(row)
             print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in row.items()
                               if not isinstance(v, list)}), flush=True)

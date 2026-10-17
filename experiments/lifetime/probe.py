@@ -11,6 +11,12 @@ predictor alone would choose greedily, by the distance of that action's steady
 response from the setpoint. The predictors target the next reading, so this
 scores where an action leads rather than its one-step effect; the simulator's
 response is used only for scoring.
+
+``workspace`` follows one trajectory of a model with a gated workspace and
+records, at the first refinement of every tick, the probabilities with which the
+gate keeps, revises or restarts the slots, together with the refinement rate,
+by ticks since the active request began (idle ticks apart) and by ticks since
+the operating condition changed.
 """
 from __future__ import annotations
 
@@ -111,10 +117,49 @@ def decisions(path, devices, ticks, seed, device):
     return out
 
 
+REQUEST_BINS = (0, 1, 3, 6, 11, 21, 10 ** 9)           # ticks since the request began; idle ticks apart
+
+
+@torch.no_grad()
+def workspace(path, devices, ticks, seed, device):
+    model, targs, specs = load(path, device)
+    assert model.gate is not None, "the model has no workspace gate"
+    family = targs.get("family", "instrument")
+    env = make_fleet(family, devices, seed, device, specs, targs.get("thermal_share", 0.5))
+    agent, obs = new_agent(model, devices, targs["buffer"], device), first_observation(env)
+    request_edges = torch.tensor(REQUEST_BINS[1:-1], device=device)
+    switch_edges = torch.tensor(SWITCH_BINS[1:-1], device=device)
+    by_request = torch.zeros(len(REQUEST_BINS), 5, device=device)   # [bins + idle] x [keep, revise, restart, refining, ticks]
+    by_switch = torch.zeros(2, len(SWITCH_BINS) - 1, 5, device=device)
+    torch.manual_seed(seed)
+    for _ in range(ticks):
+        active, since_request = obs["active"], agent.since_request.long()
+        since_switch, returned = env.since_switch.clone(), env.returned.long()
+        agent, obs, step = tick(model, agent, env, obs, targs["mode"], training_costs(targs), targs["adapter_lr"],
+                                targs["every"], learn_ticks=targs["learn_ticks"], **runtime_options(targs))
+        with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
+            gate = model.gate_probabilities(step["z_prev"].float(), agent.h, step["records"]).mean(1)   # [n, 3]
+        refining = (step["counts"] > 0).float()
+        row = torch.cat((gate * refining.unsqueeze(1), torch.stack((refining, torch.ones_like(refining)), 1)), 1)
+        b = torch.where(active, torch.bucketize(since_request, request_edges, right=True),
+                        torch.full_like(since_request, len(REQUEST_BINS) - 1))
+        by_request.index_put_((b,), row, accumulate=True)
+        by_switch.index_put_((returned, torch.bucketize(since_switch, switch_edges, right=True)), row, accumulate=True)
+
+    def summary(acc):
+        refining = acc[..., 3].clamp_min(1)
+        return {"keep": (acc[..., 0] / refining).tolist(), "revise": (acc[..., 1] / refining).tolist(),
+                "restart": (acc[..., 2] / refining).tolist(),
+                "refining_share": (acc[..., 3] / acc[..., 4].clamp_min(1)).tolist(), "ticks": acc[..., 4].tolist()}
+    return {"request_bins": [*REQUEST_BINS[:-1], "idle"], "by_request": summary(by_request),
+            "switch_bins": list(SWITCH_BINS), "by_switch_new": summary(by_switch[0]),
+            "by_switch_returned": summary(by_switch[1])}
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, required=True)
-    p.add_argument("--probes", nargs="+", default=["readout", "decisions"], choices=["readout", "decisions"])
+    p.add_argument("--probes", nargs="+", default=["readout", "decisions"], choices=["readout", "decisions", "workspace"])
     p.add_argument("--devices", type=int, default=256)
     p.add_argument("--ticks", type=int, default=4000)
     p.add_argument("--seed", type=int, default=777)
@@ -127,6 +172,9 @@ def main():
            "ticks": args.ticks}
     if "readout" in args.probes:
         out["readout"] = readouts(args.model, args.devices, args.ticks, args.seed, device)
+    if "workspace" in args.probes:
+        out["workspace"] = workspace(args.model, args.devices, args.ticks, args.seed, device)
+        print(json.dumps(out["workspace"]["by_request"]), flush=True)
     if "decisions" in args.probes:
         out["decisions"] = decisions(args.model, args.devices, args.ticks, args.seed, device)
         print(json.dumps({k: v for k, v in out["decisions"].items() if k.endswith("overall")}), flush=True)
