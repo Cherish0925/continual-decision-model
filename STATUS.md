@@ -1,10 +1,10 @@
 # CDM: objective, implementation, and results
 
-Status at **16 October 2026**. Planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1).
+Status at **17 October 2026**. Planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1); the continual core and its lifetime campaign from release [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present result is a trained navigation prototype with persistent computation and learned choices of observation and refinement. Online adaptation improves a separate full-view planner, and the integrated agent improves on larger mazes when it sees the whole map. Learning has not improved the return of the integrated partial-view agent. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Action-conditioned prediction is what makes this model better than a recurrent policy; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## The intended model
 
@@ -21,8 +21,9 @@ The runtime supplies time, observations, devices, tools, and execution. The rese
 | [Sequence core](cdm/model.py) | GRU context, latent slots refined by a shared Transformer, bounded whole-workspace records, conditioned reading and slotwise reuse/revision/initialization, action/activity/value heads | Action prediction on a twelve-event contextual-recall task. The activity and value heads are not trained in that study. |
 | [Spatial planner](cdm/planner.py) | Shared gated convolutional refinement; spatial workspace; optional goal-cell read, learned rebuild gate, stored workspaces, map/goal split, and observation-age input | Supervised optimal-action and distance prediction in changing mazes; inference continues across changes. |
 | [Continual agent](experiments/continual_agent/README.md) | Spatial planner, last observed map and its age, request/survey counters, policy over refinement count, survey request, and move/stay | PPO trains the activity head with the planner frozen. A separate operation experiment updates planner parameters under a hand-written activity schedule. |
+| [Continual core](cdm/core.py) | GRU fast state; eight persistent slots refined by a shared Transformer block over the fast state and recent experience records, normalised after every refinement; action-conditioned prediction of the next reading for every action through an instance-owned low-rank adapter; per-action control scores; heads for precise measurement and for compute (refinements or an adapter learning step); critic | Recurrent PPO over instrument and thermal process lifetimes of 16,384 ticks whose state, experience and adapters persist; trained choice of measurement, refinement and learning ([lifetime experiment](experiments/lifetime/README.md)). |
 
-The sequence core and spatial planner are separate models. The continual agent wraps the spatial planner; it is not yet a trained integration of the GRU/Transformer core, world model, language model, tools, and learning policy.
+The sequence core and spatial planner are separate models. The continual agent wraps the spatial planner. The continual core integrates fast state, persistent workspace, world prediction, activity choice and instance learning in one trained model for structured process events; navigation, language, tools and retrieval of computation records are not yet part of it.
 
 ## Capability coverage
 
@@ -30,18 +31,18 @@ The sequence core and spatial planner are separate models. The continual agent w
 
 | Intended capability | Present implementation and result | Work remaining |
 | --- | --- | --- |
-| Persistent current state | Workspace and map belief persist across requests and idle intervals within a site. | Carry or adapt state across sites and task types; operation over hours. Current site changes call `begin()` again. |
+| Persistent current state | Workspace and map belief persist across requests and idle intervals within a site. The continual core keeps fast state, workspace, experience records and adapters through 16,384-tick lifetimes spanning condition changes, requests and idle periods; slot normalisation keeps the workspace at one scale. | Carry or adapt state across sites and task types; operation over hours. Current site changes call `begin()` again. |
 | Continuing latent inference | Repeated shared neural refinement, with action readout after the selected refinements. No language decoding is required. | Non-spatial tasks, persistent candidate plans, and intermediate interruption under independently arriving events. |
 | Incorporation of new input | New maps/goals enter the next simulated tick; surveys return after two ticks. | General timestamped multimodal event handling, arbitrary arrival times, concurrent pending tools, and interruption inside a longer computation. |
 | Multimodal input | Structured maps, goals, position, observation ages, and counters. The sequence core accepts numeric features. | Text, image, video, audio, physical sensors, modality encoders, and their joint training. |
-| Action-conditioned world prediction | Distance and action heads in a maze planner. | Learned predictions of future observations, dynamics, rewards, and outcomes conditional on actions; imagined experiments and rollouts. A distance head does not implement these. |
-| Timely decisions and control | One move/stay decision per simulated tick; measured GPU planner-step times. | Independent environment clock, control during concurrent inference/learning, capture-to-applied-action timing, and deadline-aware training. |
-| Proactive observation and computation | PPO selects 0/1/2/4 refinements, survey/no survey, and move/stay. It observes during idle periods and varies computation with the request. | Learned choices of retrieval, tool use, learning, and longer internal activities. |
+| Action-conditioned world prediction | Distance and action heads in a maze planner. The continual core predicts the next reading for each of 81 actions and scores actions by their predicted outcomes. | Multi-step and reward predictions, imagined experiments and rollouts. |
+| Timely decisions and control | One move/stay decision per simulated tick; measured GPU planner-step times. The continual core acts every tick while refinements, learning steps and precise measurements take time; `realtime.py` runs it against processes on their own wall clock, with learning on a separate CUDA stream. | Deadline-aware training and capture-to-applied-action timing on physical devices. |
+| Proactive observation and computation | PPO selects 0/1/2/4 refinements, survey/no survey, and move/stay. It observes during idle periods and varies computation with the request. In the continual core it selects precise measurements, refinement counts and learning steps. | Learned choices of retrieval, tool use, learning, and longer internal activities. |
 | Autonomous goal pursuit | Pursues externally supplied navigation requests without a prompt for every action. | Generate and revise subgoals, initiate useful investigations, and maintain long research objectives. |
 | Reactive and conversational use | External goals and requests can arrive while the agent runs. | Language interaction, dialogue, instruction understanding, and use as a general LLM-agent component. |
 | Self-assessment and regulation | Activity head reads policy features, value-related features, map age, and request/survey progress. | Learned estimates of capabilities, uncertainty, expected progress, operation duration, and learning benefit that guide behavior across tasks. |
 | Output interfaces | Discrete navigation actions; activity choices; internal latent state. | Continuous controls, tool arguments, experiments, structured plans, language, speech, and image outputs. |
-| Environment and tool integration | Simulated grid observations and surveys. | Robot/device interfaces, files, operating-system actions, digital tools, and asynchronous experimental instruments. |
+| Environment and tool integration | Simulated grid observations and surveys; simulated instruments and thermal processes with delayed precise measurements. | Robot/device interfaces, files, operating-system actions, digital tools, and asynchronous experimental instruments. |
 
 ### Memory, learning, and scale
 
@@ -50,12 +51,12 @@ The sequence core and spatial planner are separate models. The continual agent w
 | Reuse of computation | Ring-buffer records, snapshot and learned readers; controlled comparisons. Useful on returning contexts, with limited additional benefit in the strongest maze planner. | Selective reuse beyond fixed map/goal structure, learned writing/eviction, longer retention, reuse after parameter updates, and transfer to other tasks. |
 | Experience and knowledge | Recent belief/goal sequences and survey outcomes are replayed; old-size experience can be retained across sites. | Durable experience abstraction, a transferable knowledge/skill store, and external knowledge retrieval. |
 | Offline training | Supervised sequence/planner training and PPO activity training run successfully. | Unified training distribution and objectives across model operations and domains; larger sequence and model scales. |
-| Learning during operation | Replay, frozen-teacher distillation, solver supervision, and hindsight from surveys are implemented. Separate full-view adaptation improves performance; in the integrated stream with a full view, learning from unused compute raises 9×9 reward by 0.026 per 100 ticks without loss on 5×5. | Improve the integrated partial-view agent's later return, retention, and adaptation under the same total time/compute budget. |
-| Choosing when and what to learn | Unused refinement credits trigger a gradient step at a fixed threshold. | A trained learning activity, choice of experiences/targets, and joint adaptation of the activity head and planner. |
+| Learning during operation | Replay, frozen-teacher distillation, solver supervision, and hindsight from surveys are implemented. Separate full-view adaptation improves performance; in the integrated stream with a full view, learning from unused compute raises 9×9 reward by 0.026 per 100 ticks without loss on 5×5. In the continual core, instance adapter updates as trained raise error slightly (+0.0015 ± 0.0003 against discarding them); trained through its own step, the network makes them neutral, and useful on slower dynamics than it was trained on (−0.0031 ± 0.0016). | Updates that help on familiar tasks, retention of returning conditions, and training through repeated steps at the deployed rate. |
+| Choosing when and what to learn | Unused refinement credits trigger a gradient step at a fixed threshold. The continual core's activity head chooses adapter learning steps, trained jointly with control, measurement and refinement. | Choice of experiences and targets; learning that serves returning conditions. |
 | Quiet-period consolidation | Low-activity observation is learned; replay and deeper-to-shallower distillation can run from spare credits. | Show that idle work improves subsequent tasks; longer-term skill consolidation, broader knowledge acquisition, and measured power reduction. |
 | Long-term self-improvement | A frozen copy's deeper computation improves its fast student on larger mazes. | Repeated acquisition of new skills and knowledge from interaction, retained improvements across tasks, and multi-stage self-improvement. |
-| Generalization | New maze instances, larger mazes, changed door dynamics, and recombined map/goal conditions. | Transfer across task families and modalities; a second physical or digital domain. |
-| GPU-friendly computation | BF16, batched PyTorch, fixed-size workspaces within a run, concurrent seeds/variants on two H100s. | End-to-end timing of adaptive activity and learning; distributed optimization, larger models, power measurements, and edge deployment. |
+| Generalization | New maze instances, larger mazes, changed door dynamics, and recombined map/goal conditions. Held-out instrument dynamics; one continual core trained on instrument and thermal processes together. | Transfer across modalities and to navigation or digital tools. |
+| GPU-friendly computation | BF16, batched PyTorch, fixed-size workspaces within a run, concurrent seeds/variants on two H100s. Measured training throughput, stage times and operation timing of the 35.9 M continual core. | End-to-end timing of adaptive activity and learning; distributed optimization, larger models, power measurements, and edge deployment. |
 | Open research artifacts | Source, result tables, per-seed measurements, retained planner weights, activity weights, configurations, and training curves are public. | Preserve failed training attempts in future aggregate reports; broader external comparisons and a paper supported by the completed experiments. |
 
 ## Results that are already available
@@ -119,6 +120,30 @@ The timed loop includes map assimilation, refinement, action readout, and a simu
 
 Source: [latency measurements](experiments/dynamic_maze/results/latency.json) and [timing function](experiments/dynamic_maze/evaluate.py).
 
+### Continual core on process lifetimes
+
+Seven settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
+
+| Setting | Error | GPU µs per tick |
+| --- | ---: | ---: |
+| Recurrent policy | 0.146 ± 0.008 | 4.15 |
+| Predictions only | 0.106 ± 0.002 | 4.15 |
+| + learned workspace computation | 0.106 ± 0.001 | 9.54 |
+| + learning on a fixed schedule | 0.107 ± 0.003 | 8.66 |
+| + choosing when to learn (full CDM) | 0.108 ± 0.001 | 8.94 |
+| World model with fixed schedules | 0.112 ± 0.003 | 7.45 |
+| CDM trained through its learning step | **0.097 ± 0.004** | 8.82 |
+
+- Action-conditioned prediction lowers error by 28 %; on these instruments, workspace refinement, online learning and the choice of when to learn add nothing measurable on top, and learned allocation of observation and compute beats fixed schedules by 0.005.
+- Training the shared network through the instance's learning step gives the best model, here and on held-out instruments with slower dynamics, noisier sensors and more frequent changes; the gain comes from training, as its deployed updates are neutral on the training family.
+- With each learning step kept but its update discarded, the full CDM tracks better by 0.0015 ± 0.0003: a fixed step on noisy readings fits noise, and after a condition change the adapter carries the previous condition for 10–100 ticks. A smaller test-time step removes the harm. A step size learned through the step converges to 0.30 in three seeds, too large for repeated deployment.
+- About 0.06–0.07 of the next output remains predictable beyond sensor noise; the adapter of the model trained through its step removes a little of it, the plain adapter adds to it.
+- One set of weights runs instrument and thermal processes without being told which is which, at 0.023 and 0.013 above single-family models that saw twice as much of each family; single-family models do not transfer.
+- Against processes advancing on an independent 10 ms clock, control keeps its period beside learning on a separate stream up to 64 instances (3.2 ms median response); at 512 instances learning takes the GPU from control and most steps run on a held action.
+- A persistent state must keep one scale: an unnormalised residual workspace grew without bound over a lifetime and made fresh lifetimes 0.175 against 0.110 in training. Every refinement now normalises the slots.
+
+Sources: [lifetime results](experiments/lifetime/RESULTS.md), [per-seed results](experiments/lifetime/results/per_seed.json), and the [corrections](https://github.com/Cherish0925/continual-decision-model/issues/1) applied before training.
+
 ### Earlier studies and literature
 
 | Study | Completed result | Role in the project |
@@ -132,11 +157,11 @@ Recurrence, gating, memory, iterative planning, active observation, and computat
 
 ## Remaining work that directly serves the objective
 
-**Make the same agent learn usefully while it acts.** Train the choice of learning alongside observation, computation, retrieval, and action; then optimize the state updates and activity policy together. Compare subsequent task return, acquisition of changed dynamics, old-task retention, and total elapsed time. Repeatedly increasing maze variant count does not answer this question.
+**Make the instance's own learning pay.** The continual core chooses when to learn, but its updates have not yet improved control on familiar tasks. Train the shared network through repeated steps at the deployed rate, learn the step size under that objective, and index adapters by recognised condition so that a returning condition finds what was learned about it. Measure acquisition, retention on returning conditions, and total compute together.
 
-**Make elapsed time part of the interaction.** The current agent runs selected refinements, then moves, then may take a gradient step inside the same simulation loop. A survey is asynchronous in simulated ticks, but the environment does not evolve independently during GPU work. Add independent event time and a continuing action path; measure operation durations and behavior when new input arrives during computation or learning.
+**Keep control on time at scale.** Control runs beside learning on its own stream up to tens of instances; at hundreds, learning must be bounded so that control keeps its deadlines. Measure capture-to-action timing on physical devices.
 
-**Extend the learned behavior across tasks.** Connect activity learning to the sequence core and add a nonlinear instrument with delayed, action-dependent measurements. Preserve the current objective while changing observations, actions, and dynamics. Train prediction, information gathering, subgoal selection, and skill retention on those interactions.
+**Extend the shared core across task families.** The core runs two process families on one interface. Add navigation and delayed digital tools, and tasks whose decisions need longer inference, which the instruments do not.
 
 The PPO rollout-boundary bootstrap now uses the next decision state after each segment's last transition; the activity results above come from the corrected training. Report all partial-view training attempts, including the two replaced runs, when comparing training reliability.
 
