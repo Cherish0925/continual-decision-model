@@ -145,3 +145,41 @@ class SearchRequestTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BranchTests(unittest.TestCase):
+    def test_copies_of_a_process_share_its_randomness(self):
+        env = InstrumentFleet(5, InstrumentSpec(search_share=0.5, dwell=20.0, request_rate=0.2), seed=2)
+        for _ in range(10):
+            env.step(torch.randint(0, 81, (5,)), torch.zeros(5, dtype=torch.bool))
+        copies = env.branch(torch.tensor([1, 3]), 3, seed=8)
+        outs = []
+        for _ in range(60):
+            out = copies.step(torch.full((6,), 40), torch.zeros(6, dtype=torch.bool))
+            outs.append(torch.stack((out["cheap"], out["setpoint"], out["error"])))
+        outs = torch.stack(outs).view(60, 3, 2, 3)
+        torch.testing.assert_close(outs[..., 0], outs[..., 1], rtol=0, atol=0)
+        torch.testing.assert_close(outs[..., 0], outs[..., 2], rtol=0, atol=0)
+        self.assertGreater(float((outs[:, :, 0, 0] - outs[:, :, 1, 0]).abs().max()), 0.0)
+
+    def test_each_copy_takes_its_option_and_invalid_options_are_marked(self):
+        from experiments.lifetime.runtime import OPTIONS, branch_values
+        spec = InstrumentSpec()
+        model = core(spec)
+        env = InstrumentFleet(4, spec, seed=1)
+        agent, obs = new_agent(model, 4, 16, "cpu"), first_observation(env)
+        torch.manual_seed(0)
+        for _ in range(20):
+            agent, obs, _ = tick(model, agent, env, obs, "full", Costs(), 0.05, 8, support="buffer")
+        env.pending[:] = 0
+        agent.busy[0], env.pending[1] = 1, 2                       # stream 0 is learning, stream 1 is measuring
+        rows = torch.tensor([0, 1, 2])
+        args = (model, agent, env, obs, rows, "full", Costs(), 0.05, 8, 6, 0.99, 0.1, 5)
+        q, valid = branch_values(*args, support="buffer")
+        again, _ = branch_values(*args, support="buffer")
+        torch.testing.assert_close(q, again)
+        self.assertEqual(tuple(q.shape), (3, OPTIONS))
+        self.assertTrue(torch.equal(valid[0], torch.tensor([True, True, True, False, False, False, False])))
+        self.assertFalse(bool(valid[1, 1]))
+        self.assertTrue(bool(valid[2].all()))
+        self.assertGreater(float(q[2].max() - q[2].min()), 0.0)

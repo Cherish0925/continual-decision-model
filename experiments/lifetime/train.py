@@ -23,6 +23,16 @@ The predictor is trained on received readings, under one of three objectives:
 gradients span them. With ``--recompute-predictions`` the heads read
 predictions recomputed by the current network under the adapter in effect at
 each tick, so the policy loss reaches the state through the predictions.
+
+With ``--branch-streams``, once per window that many streams are copied once
+per activity option at a random tick; each copy takes its option and the policy
+continues for ``--branch-horizon`` ticks under the same disturbances and
+sampling noise as the other copies (``runtime.branch_values``). The returns of
+the copies train the activity heads directly, through the expected advantage of
+every option under the policy, and train an activity-value head
+(``--activity-values``) whose estimates give the same gradient at every tick.
+``--init`` starts from trained weights; ``--train-only activity`` trains only
+the activity, activity-value and value heads over a fixed model.
 """
 from __future__ import annotations
 
@@ -48,9 +58,9 @@ from cdm.instrument import InstrumentSpec, action_values  # noqa: E402
 from cdm.thermal import ThermalSpec  # noqa: E402
 from experiments.lifetime.objectives import (NEVER, deployed_adapters, online_nll, predictions_per_tick,  # noqa: E402
                                              recompute_states, window_support)
-from experiments.lifetime.runtime import (FAMILIES, HIDDEN, MODES, SCALAR_DIM, Costs, configure_backends,  # noqa: E402
-                                          distributions, feature_dims, goal_kinds, make_fleet, new_agent,
-                                          reset_agents, tick)
+from experiments.lifetime.runtime import (FAMILIES, HIDDEN, MODES, OPTIONS, SCALAR_DIM, Costs,  # noqa: E402
+                                          branch_values, configure_backends, distributions, feature_dims,
+                                          goal_kinds, make_fleet, new_agent, reset_agents, tick)
 
 START = ("A", "B", "next_A", "next_B", "busy", "learn_s", "learn_a", "learn_y", "learn_p", "filled")
 
@@ -70,7 +80,8 @@ def build(args, spec: InstrumentSpec, device) -> ContinualCore:
                         width=args.width, slots=args.slots, heads=args.heads, records=args.records, rank=args.rank,
                         hidden=args.hidden, action_width=args.action_width, scalar_dim=SCALAR_DIM + goals - 1,
                         learned_step=args.learned_step, goals=goals, sensor_noise=args.sensor_noise,
-                        step_rule=args.step_rule, gated_workspace=args.gated_workspace)
+                        step_rule=args.step_rule, gated_workspace=args.gated_workspace,
+                        activity_values=args.activity_values)
     return ContinualCore(config, action_values(spec)).to(device)
 
 
@@ -102,6 +113,21 @@ def attach_returns(steps: list, delay: int):
         old["precise_value"] = torch.where(sel, step["precise"], old["precise_value"])
 
 
+FACTORS = (slice(0, 2), slice(2, None))   # measurement options, compute options
+
+
+def factor_probs(logits, allowed):
+    """[N, OPTIONS] probabilities of each activity option within its factor."""
+    x = logits.float().masked_fill(~allowed, -1e9)
+    return torch.cat([x[:, f].softmax(-1) for f in FACTORS], 1)
+
+
+def centred(values, weights):
+    """Each factor's values minus their mean under ``weights`` [N, OPTIONS]."""
+    return torch.cat([values[:, f] - (values[:, f] * weights[:, f]).sum(1, keepdim=True)
+                      / weights[:, f].sum(1, keepdim=True).clamp_min(1e-8) for f in FACTORS], 1)
+
+
 def ppo_update(model, optimizer, steps, bootstrap, start, args):
     """PPO on one window. ``start`` is the agent before the window's first tick."""
     L = len(steps)
@@ -130,6 +156,14 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
     n = rewards.shape[1]
     device = rewards.device
     stats = dict.fromkeys(("policy", "value", "entropy", "prediction", "adapt_before", "adapt_after"), 0.0)
+    branched = args.branch_streams > 0
+    if branched:                                         # option values centred within each factor, in window units
+        valid = S("branch_valid")
+        q = centred(S("branch_q").flatten(0, 1), valid.flatten(0, 1).float()).view_as(valid)
+        spread = q[valid].std() if int(valid.sum()) > 1 else q.new_tensor(1.0)
+        q = q / spread.clamp_min(1e-6)
+        stats.update(activity_value=0.0, branch_regret=0.0, branch_agree=0.0)
+        branch_count = 0
     whole = 1.0 - dones.amax(0)                          # streams whose lifetime runs through the whole window
     adapt_count = 0
     flat = lambda a: a.flatten(0, 1)
@@ -167,7 +201,10 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                     else:
                         o, lv = part(offset), part(logvar)
                     Hf, zf = flat(H), flat(zread)
-                    cl, al, v = model.heads(model.trunk(Hf, zf, o, lv, part(scalars)), o, lv)
+                    trunk = model.trunk(Hf, zf, o, lv, part(scalars))
+                    cl, al, v = model.heads(trunk, o, lv)
+                    if branched and model.activity_value is not None:
+                        estimate = model.activity_value(trunk).float()
                     if deployed:
                         nll = online_nll(model, state, action[:, mb], As, Bs, version, target[:, mb], precise[:, mb])
                         prediction = (nll * keep).sum() / (keep.sum() * T).clamp_min(1)
@@ -185,6 +222,27 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                 policy = -torch.min(ratio * a_t, ratio.clamp(1 - args.clip, 1 + args.clip) * a_t).mean()
                 value_loss = F.mse_loss(v.float(), part(returns))
                 loss = policy + 0.5 * value_loss - args.entropy * entropy.mean()
+                if branched:
+                    ok, bq, mask = part(allowed), part(q), part(valid)
+                    probs = factor_probs(al, ok)
+                    at = mask.any(1)
+                    if bool(at.any()):                   # the expected advantage of every option under the policy
+                        option_adv = centred(bq, probs * mask).detach()
+                        term = -(probs * option_adv * mask)[at].sum(1).mean()
+                        loss = loss + args.branch_weight * term
+                        best = bq.masked_fill(~mask, -1e9)
+                        regret = [((probs[:, f] * best[:, f] * mask[:, f]).sum(1) - best[:, f].max(1).values)[at]
+                                  for f in FACTORS]
+                        stats["branch_regret"] += float(sum(r.mean().detach() for r in regret)) * T
+                        agree = [(probs[:, f].argmax(1) == best[:, f].argmax(1))[at].float().mean() for f in FACTORS]
+                        stats["branch_agree"] += float(sum(agree) / 2) * T
+                        branch_count += T
+                        if model.activity_value is not None:
+                            fit = (((estimate - bq) ** 2) * mask)[at].sum() / mask[at].sum()
+                            loss = loss + 0.5 * fit
+                            stats["activity_value"] += float(fit.detach()) * T
+                    if model.activity_value is not None:  # the same gradient at every tick, from the estimates
+                        loss = loss - args.branch_weight * (probs * centred(estimate.detach(), probs)).sum(1).mean()
                 if predicts:
                     loss = loss + args.prediction * prediction
                     stats["prediction"] += float(prediction.detach()) * T
@@ -222,6 +280,10 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
     out = {k: v / count for k, v in stats.items()}
     for key in ("adapt_before", "adapt_after"):
         out[key] = stats[key] / max(adapt_count, 1)
+    if branched:
+        for key in ("activity_value", "branch_regret", "branch_agree"):
+            out[key] = stats[key] / max(branch_count, 1)
+        out["branch_spread"] = float(spread)
     return out
 
 
@@ -276,6 +338,12 @@ def parse_args(argv=None):
     p.add_argument("--cost-refinement", type=float, default=Costs.refinement)
     p.add_argument("--cost-measurement", type=float, default=Costs.measurement)
     p.add_argument("--cost-learning", type=float, default=Costs.learning)
+    p.add_argument("--branch-streams", type=int, default=0, help="streams copied per window to value activities")
+    p.add_argument("--branch-horizon", type=int, default=32, help="ticks each copy runs before its value bootstrap")
+    p.add_argument("--branch-weight", type=float, default=1.0, help="weight of the activity gradient from copies")
+    p.add_argument("--activity-values", action="store_true", help="a head that values every activity option")
+    p.add_argument("--init", type=Path, help="start from the weights of a trained model")
+    p.add_argument("--train-only", choices=("activity",), help="train only the activity and value heads")
     p.add_argument("--reward-scale", type=float, default=0.1, help="rewards are multiplied by this for value learning")
     p.add_argument("--save-every", type=int, default=50, help="windows between checkpoints")
     p.add_argument("--device", default="cuda")
@@ -297,7 +365,13 @@ def main(argv=None):
     out.mkdir(parents=True, exist_ok=True)
     spec, tspec = instrument(args), thermal(args)
     model = build(args, spec, device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, eps=1e-5)
+    if args.init:
+        missing, unexpected = model.load_state_dict(torch.load(args.init, map_location=device)["model"], strict=False)
+        assert not unexpected and all(k.startswith("activity_value.") for k in missing), (missing, unexpected)
+    if args.train_only == "activity":
+        for name, q in model.named_parameters():
+            q.requires_grad_(name.startswith(("activity.", "activity_value.", "value.")))
+    optimizer = torch.optim.Adam([q for q in model.parameters() if q.requires_grad], lr=args.lr, eps=1e-5)
     env = make_fleet(args.family, args.streams, args.seed + 1000, device, spec, tspec, args.thermal_share)
     agent = new_agent(model, args.streams, args.buffer, device)
     gen = torch.Generator(device=device).manual_seed(args.seed + 2000)
@@ -324,15 +398,35 @@ def main(argv=None):
 
     window_start = previous = agent                     # the agent when the window began / before the last tick
     collection = update_time = 0.0
+    branch_gen = torch.Generator(device=device).manual_seed(args.seed + 3000)
+    branch_at = int(torch.randint(0, args.window, (1,), generator=branch_gen, device=device))
+    branch, branch_transitions = None, 0
     mark = time.perf_counter()
     for t in range(ticks):
         model.eval()
+        if args.branch_streams and len(steps) == branch_at:      # value each activity option on copies
+            eligible = (agent.age + args.branch_horizon < args.lifetime).nonzero().squeeze(1)
+            pick = torch.randperm(len(eligible), generator=branch_gen, device=device)[:args.branch_streams]
+            rows = eligible[pick].sort().values
+            q, valid = branch_values(model, agent, env, obs, rows, args.mode, costs, args.adapter_lr, args.every,
+                                     args.branch_horizon, args.gamma, args.reward_scale, seed=args.seed * 100003 + t,
+                                     learn_ticks=args.learn_ticks, support=args.support,
+                                     precise_targets=args.precise_targets)
+            branch = (rows, q, valid)
+            branch_transitions += len(rows) * OPTIONS * (args.branch_horizon + 1)
         previous = agent                                 # tick() replaces the agent's tensors rather than editing them
         agent, obs, step = tick(model, agent, env, obs, args.mode, costs, args.adapter_lr, args.every,
                                 learn_ticks=args.learn_ticks, support=args.support,
                                 precise_targets=args.precise_targets)
         done = agent.age >= args.lifetime
         step["done"] = done
+        if args.branch_streams:
+            step["branch_q"] = torch.zeros(args.streams, OPTIONS, device=device)
+            step["branch_valid"] = torch.zeros(args.streams, OPTIONS, dtype=torch.bool, device=device)
+            if branch is not None:
+                rows, q, valid = branch
+                step["branch_q"][rows], step["branch_valid"][rows] = q, valid
+                branch = None
         sums["reward"] += float(step["reward"].mean())
         sums["error"] += float(step["error"].sum())
         sums["active"] += float(step["active"].float().sum())
@@ -358,9 +452,11 @@ def main(argv=None):
             update_time += time.perf_counter() - mark
             mark = time.perf_counter()
             steps, window_start = steps[-1:], previous
+            branch_at = int(torch.randint(1, args.window + 1, (1,), generator=branch_gen, device=device))
             window += 1
             k = args.window
             row = {"window": window, "transitions": (t + 1) * args.streams,
+                   **({"branch_transitions": branch_transitions} if args.branch_streams else {}),
                    "reward_per_100_ticks": 100 * sums["reward"] / k,
                    "error_while_active": sums["error"] / max(sums["active"], 1),
                    "refinements_per_tick": sums["refine"] / k, "measurements_per_100_ticks": 100 * sums["measure"] / k,

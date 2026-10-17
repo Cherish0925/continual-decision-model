@@ -4,7 +4,10 @@
 Part one times each operation for a number of instances served together:
 the control path (event, fast state, predictions for every action under the
 instance adapters, heads, sampling), one workspace refinement, and one
-learning step on 32 stored ticks.
+learning step on the stored ticks a step of this model reads (32 sampled, or
+the whole buffer). From the times at the largest number of instances it
+derives activity costs proportional to compute: a refinement keeps the cost it
+was given, and a learning step costs that times the ratio of their times.
 
 Part two runs an actor on its own CUDA stream that issues control every
 ``--period`` milliseconds, first alone and then while a learner thread runs
@@ -25,19 +28,21 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from cdm.core import adapter_step  # noqa: E402
+from cdm.core import adapter_update  # noqa: E402
 from experiments.lifetime.runtime import configure_backends  # noqa: E402
 
 
-def operations(model, n, device):
+def operations(model, n, device, entries=32):
     c = model.config
     s = model.initial(n, device)
     h, z, A, B = s["h"], s["z"], s["A"], s["B"]
     event = torch.randn(n, c.event_dim, device=device)
     scalars = torch.randn(n, c.scalar_dim, device=device)
     records = torch.randn(n, c.records, c.record_dim, device=device)
-    xs = torch.randn(n, 32, 3 * c.width, device=device)
-    ys = torch.randn(n, 32, device=device)
+    xs = torch.randn(n, entries, 3 * c.width, device=device)
+    ys = torch.randn(n, entries, device=device)
+    ps = torch.rand(n, entries, device=device) < 0.2
+    held = torch.ones(n, entries, device=device)
     amp = torch.autocast(device.type, dtype=torch.bfloat16)
 
     def control():
@@ -53,7 +58,7 @@ def operations(model, n, device):
             return model.refine(z, h, records, torch.ones(n, dtype=torch.long, device=device))
 
     def learn():
-        return adapter_step(model, A, B, xs, ys, 0.05)[0]
+        return adapter_update(model, A, B, xs, ys, ps, held, 0.05)[0]
 
     return {"control": control, "refinement": refine, "learning": learn}
 
@@ -82,8 +87,8 @@ def clock_statistics(service_ms, response_ms, period_ms):
             "missed_periods": int((response > period_ms).sum())}
 
 
-def actor_latency(model, n, device, period_ms, ticks, with_learner):
-    ops = operations(model, n, device)
+def actor_latency(model, n, device, period_ms, ticks, with_learner, entries):
+    ops = operations(model, n, device, entries)
     actor, learner = torch.cuda.Stream(device), torch.cuda.Stream(device)
     stop, steps = threading.Event(), [0]
 
@@ -125,29 +130,35 @@ def main():
     p.add_argument("--instances", type=int, nargs="+", default=[1, 16, 256, 1024])
     p.add_argument("--period", type=float, default=10.0, help="actor period in milliseconds")
     p.add_argument("--ticks", type=int, default=1000)
+    p.add_argument("--refinement-cost", type=float, default=0.002, help="cost of one refinement, in reward units")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args()
     configure_backends()
     device = torch.device("cuda")
     from experiments.lifetime.evaluate import load
-    model, _, _ = load(args.model, device)
+    model, targs, _ = load(args.model, device)
     model.requires_grad_(False)
+    entries = targs["buffer"] if targs.get("support") == "buffer" else 32
     timing = []
     with torch.no_grad():
         for n in args.instances:
-            ops = operations(model, n, device)
+            ops = operations(model, n, device, entries)
             row = {"instances": n, **{f"{k}_ms": time_op(f) for k, f in ops.items()}}
             timing.append(row)
             print(json.dumps(row), flush=True)
         clock = []
         for n in args.instances:
             for with_learner in (False, True):
-                row = actor_latency(model, n, device, args.period, args.ticks, with_learner)
+                row = actor_latency(model, n, device, args.period, args.ticks, with_learner, entries)
                 clock.append(row)
                 print(json.dumps(row), flush=True)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({"gpu": torch.cuda.get_device_name(device), "timing": timing,
-                                       "independent_clock": clock}, indent=1))
+    largest = timing[-1]
+    costs = {"instances": largest["instances"], "refinement": args.refinement_cost,
+             "learning": args.refinement_cost * largest["learning_ms"] / largest["refinement_ms"]}
+    print(json.dumps({"costs": costs}), flush=True)
+    args.output.write_text(json.dumps({"gpu": torch.cuda.get_device_name(device), "learning_entries": entries,
+                                       "timing": timing, "independent_clock": clock, "costs": costs}, indent=1))
 
 
 if __name__ == "__main__":

@@ -50,7 +50,7 @@ class ThermalFleet(ProcessFleet):
 
     def sample(self, shape):
         s = self.spec
-        u = torch.rand(*shape, len(RANGES) + 1, generator=self.gen, device=self.device)
+        u = self._rand(*shape, len(RANGES) + 1)
         p = torch.empty_like(u)
         for i, name in enumerate(RANGES):
             lo, hi = getattr(s, name)
@@ -90,21 +90,21 @@ class ThermalFleet(ProcessFleet):
         self.output[idx] = ambient
 
     def advance(self, u, p):
-        s, g, d = self.spec, self.gen, self.device
+        s = self.spec
         command, c = (u[:, 0] + 1) / 2, (u[:, 1] + 1) / 2
         self.heater = torch.cat((command.unsqueeze(1), self.heater[:, :-1]), 1)
         h = self.heater.gather(1, p[:, 9].long().unsqueeze(1)).squeeze(1)
         k12, k1 = p[:, 0], p[:, 1]
         cooled, eta, c1, c2 = self._plant(p, c)
         heat = eta * h ** p[:, 5]
-        self.drift = self.drift + s.drift * torch.randn(self.n, generator=g, device=d)
+        self.drift = self.drift + s.drift * self._randn(self.n)
         ambient = p[:, 6] + self.drift
         for _ in range(4):                                           # four quarter-tick Euler steps
             exchange = k12 * (self.block - self.body)
             block = self.block + 0.25 * (heat - exchange - k1 * (self.block - ambient)) / c1
             self.body = self.body + 0.25 * (exchange - cooled * (self.body - ambient)) / c2
             self.block = block
-        self.body = self.body + s.process_noise * torch.randn(self.n, generator=g, device=d)
+        self.body = self.body + s.process_noise * self._randn(self.n)
         self.output = self.body.clone()
 
     def expected_next(self, values):

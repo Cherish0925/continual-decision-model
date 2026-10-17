@@ -20,7 +20,11 @@ own state, experience and adapters; nothing is reset. Reported:
 its adapter update away, which isolates what the updates themselves contribute;
 ``norefine`` keeps the model's own setting but removes the refinement options,
 so its compute goes to learning or nothing, which isolates what refinement
-contributes.
+contributes; ``noidle`` removes refinement and learning while no request is
+active, which isolates what computation between requests contributes to later
+ones. Errors are also reported separately for setpoint requests and requests
+for the largest output, and activities separately for ticks with and without
+an active request.
 Every setting of a model starts from the same random state, so the settings are
 compared under common random numbers. ``--family`` selects the process family
 (by default the one trained on); ``--instrument`` changes fields of its
@@ -118,8 +122,8 @@ def load(path: Path, device):
 @torch.no_grad()
 def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False):
     torch.manual_seed(seed)
-    apply_updates, refinements = mode != "discard", mode != "norefine"
-    mode = args_train["mode"] if mode in ("discard", "norefine") else mode
+    apply_updates, refinements, idle_compute = mode != "discard", mode != "norefine", mode != "noidle"
+    mode = args_train["mode"] if mode in ("discard", "norefine", "noidle") else mode
     env = make_fleet(family, devices, seed, device, specs["instrument"], specs["thermal"],
                      args_train.get("thermal_share", 0.5))
     spec = env.spec
@@ -131,13 +135,15 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
     acc = {key: torch.zeros(2, nb, device=device) for key in ("err", "active", "pred", "shared", "all", "learn", "refine")}
     life = {key: torch.zeros(life_bins, device=device) for key in ("err", "active", "pred", "reward")}
     totals = torch.zeros(8, device=device)           # reward, refine, measure, learn, err, active, pred, shared
+    kinds = torch.zeros(2, 2, device=device)         # [setpoint, largest output] x [error, active ticks]
+    by_request = torch.zeros(2, 4, device=device)    # [idle, active] x [ticks, refinements, measurements, learning]
     response = ResponseTimes(devices, device, spec.request_ticks)
     bins = torch.tensor(SWITCH_BINS[1:-1], device=device)
     for t in range(ticks):
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
                                 learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True,
                                 apply_updates=apply_updates, refinements=refinements,
-                                **runtime_options(args_train))
+                                idle_compute=idle_compute, **runtime_options(args_train))
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
         serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
@@ -150,6 +156,11 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
             life[key][lb] += value.sum()
         totals += torch.stack((step["reward"].sum(), step["counts"].float().sum(), step["accepted"].float().sum(),
                                step["learn"].float().sum(), (err * active).sum(), active.sum(), perr.sum(), serr.sum()))
+        search = step["transition_search"].long()
+        kinds.index_put_((search,), torch.stack((err * active, active), 1), accumulate=True)
+        by_request.index_put_((step["active"].long(),), torch.stack((torch.ones_like(active), step["counts"].float(),
+                                                                   step["accepted"].float(),
+                                                                   step["learn"].float()), 1), accumulate=True)
         response.add(t, step)
     n = devices * ticks
     reward, refine, measure, learn, err_sum, active_sum, pred, shared = totals.tolist()
@@ -163,6 +174,12 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
             "shared_prediction_error": shared / n if predicts else None,
             "refinements_per_tick": refine / n, "measurements_per_100_ticks": 100 * measure / n,
             "learning_per_100_ticks": 100 * learn / n,
+            "error_setpoint_requests": float(kinds[0, 0] / kinds[0, 1].clamp_min(1)),
+            "error_largest_output_requests": float(kinds[1, 0] / kinds[1, 1]) if kinds[1, 1] > 0 else None,
+            **{f"{what}_per_tick_{state}": float(by_request[i, j] / by_request[i, 0].clamp_min(1))
+               for i, state in enumerate(("idle", "active"))
+               for j, what in ((1, "refinements"), (2, "measurements"), (3, "learning"))},
+            "idle_share": float(by_request[0, 0] / n),
             **response.summary(),
             "switch_bins": list(SWITCH_BINS),
             **{f"{name}_after_switch_{group}": ratio(acc[a][g], acc[b][g])
@@ -180,7 +197,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, nargs="+", required=True)
-    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard", "norefine"),
+    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard", "norefine", "noidle"),
                    help="further settings to evaluate each learning model under")
     p.add_argument("--family", choices=FAMILIES, help="process family to evaluate on; by default the training family")
     p.add_argument("--adapter-lr", type=float, help="learning-step size during evaluation; by default the training one")
@@ -211,7 +228,7 @@ def main(argv=None):
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
         refines = targs["mode"] in ("full", "fixed_learn", "frozen")
         # a model trained on fixed schedules has untrained activity heads: switch its learning off with discard
-        also = [m for m in args.also if (refines if m == "norefine" else
+        also = [m for m in args.also if (refines if m == "norefine" else (refines or learns) if m == "noidle" else
                                          learns and not (targs["mode"] == "world_model" and m == "frozen"))]
         for mode in dict.fromkeys([targs["mode"], *also]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,

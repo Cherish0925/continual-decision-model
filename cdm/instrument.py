@@ -25,6 +25,7 @@ tensors on one device; every stream advances in parallel.
 """
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 
 import torch
@@ -69,8 +70,11 @@ def action_values(spec: ProcessSpec, device=None) -> torch.Tensor:
 
 def sample_conditions(spec: InstrumentSpec, shape, generator, device) -> torch.Tensor:
     """Condition parameters [..., 8]; the meaning of the first five depends on ``dims``; 5: time constant, 6: backlash."""
-    u = torch.rand(*shape, 8, generator=generator, device=device)
-    p = torch.zeros(*shape, 8, device=device)
+    return conditions_from_uniform(spec, torch.rand(*shape, 8, generator=generator, device=device))
+
+
+def conditions_from_uniform(spec: InstrumentSpec, u: torch.Tensor) -> torch.Tensor:
+    p = torch.zeros_like(u)
     if spec.dims == 1:
         p[..., 0] = (0.6 + 0.8 * u[..., 0]) * torch.where(u[..., 7] < 0.25, -1.0, 1.0)   # gain
         p[..., 1] = 0.8 + 2.2 * u[..., 1]                                                 # slope
@@ -101,8 +105,12 @@ class ProcessFleet:
     The fleet keeps the operating conditions of every lifetime, switches between them, issues setpoint requests,
     and returns a cheap reading every tick and precise measurements after a delay. A family supplies its
     conditions (``sample``), its state and dynamics (``init_state``, ``reset_state``, ``advance``, ``on_switch``),
-    and the steady response that defines reachable setpoints (``steady``, ``setpoint_weights``).
+    and the steady response that defines reachable setpoints (``steady``, ``setpoint_weights``). ``branch`` copies
+    some processes so that the copies of one process share its future randomness: different actions can then be
+    compared from the same state under the same disturbances.
     """
+
+    copies = 1                     # consecutive rows that are copies of one process and draw the same randomness
 
     def __init__(self, n: int, spec: ProcessSpec, seed: int = 0, device="cpu"):
         self.n, self.spec, self.device = n, spec, torch.device(device)
@@ -152,6 +160,39 @@ class ProcessFleet:
         """Noise-free output after one tick for actuator targets values [n, actions, dims], state unchanged."""
         raise NotImplementedError
 
+    # ------------------------------------------------------------ randomness, shared by copies of one process
+    def _draw(self, fn, rows: int, *shape, **kw) -> torch.Tensor:
+        k = self.copies
+        x = fn(rows // k, *shape, generator=self.gen, device=self.device, **kw)
+        return x if k == 1 else x.repeat_interleave(k, 0)
+
+    def _rand(self, rows: int, *shape) -> torch.Tensor:
+        return self._draw(torch.rand, rows, *shape)
+
+    def _randn(self, rows: int, *shape) -> torch.Tensor:
+        return self._draw(torch.randn, rows, *shape)
+
+    def _randint(self, low: int, high: int, rows: int) -> torch.Tensor:
+        return self._draw(lambda m, **kw: torch.randint(low, high, (m,), **kw), rows)
+
+    def _choice(self, weights: torch.Tensor) -> torch.Tensor:
+        """One index per row drawn in proportion to ``weights`` [rows, k]."""
+        k = self.copies
+        x = torch.multinomial(weights[::k], 1, generator=self.gen).squeeze(1)
+        return x if k == 1 else x.repeat_interleave(k, 0)
+
+    def branch(self, rows: torch.Tensor, copies: int, seed: int) -> "ProcessFleet":
+        """``copies`` consecutive copies of each process in ``rows``, advancing with randomness of their own that
+        the copies of one process share. They never start new lifetimes."""
+        new = copy.copy(self)
+        idx = rows.repeat_interleave(copies)
+        for name, value in vars(self).items():
+            if torch.is_tensor(value) and name != "table" and value.dim() and value.shape[0] == self.n:
+                setattr(new, name, value[idx].clone())
+        new.n, new.copies = len(idx), copies
+        new.gen = torch.Generator(device=self.device).manual_seed(seed)
+        return new
+
     # ------------------------------------------------------------ shared machinery
     def current(self) -> torch.Tensor:
         return self.params[torch.arange(self.n, device=self.device), self.condition]
@@ -175,13 +216,13 @@ class ProcessFleet:
         self.pending[idx] = 0
 
     def _switch(self):
-        s, g, d = self.spec, self.gen, self.device
-        switch = torch.rand(self.n, generator=g, device=d) < 1.0 / s.dwell
+        s, d = self.spec, self.device
+        switch = self._rand(self.n) < 1.0 / s.dwell
         if not switch.any():
             self.since_switch += 1
             return
-        target = (self.condition + torch.randint(1, s.conditions, (self.n,), generator=g, device=d)) % s.conditions
-        novel = switch & (torch.rand(self.n, generator=g, device=d) < s.novel)
+        target = (self.condition + self._randint(1, s.conditions, self.n)) % s.conditions
+        novel = switch & (self._rand(self.n) < s.novel)
         fresh = self.sample((self.n,))
         idx = torch.arange(self.n, device=d)
         self.params[idx[novel], target[novel]] = fresh[novel]
@@ -193,15 +234,15 @@ class ProcessFleet:
         self.on_switch(switch)
 
     def _requests(self):
-        s, g, d = self.spec, self.gen, self.device
+        s = self.spec
         self.request_left = (self.request_left - 1).clamp(min=0)
         ended = self.active & (self.request_left == 0)
         self.active &= ~ended
-        start = ~self.active & (torch.rand(self.n, generator=g, device=d) < s.request_rate)
+        start = ~self.active & (self._rand(self.n) < s.request_rate)
         p = self.current()
-        reachable = torch.multinomial(self.setpoint_weights(p), 1, generator=g).squeeze(1)
+        reachable = self._choice(self.setpoint_weights(p))
         target = self.steady(p, self.table[reachable])
-        search = torch.rand(self.n, generator=g, device=d) < s.search_share if s.search_share > 0 else start & False
+        search = self._rand(self.n) < s.search_share if s.search_share > 0 else start & False
         self.setpoint = torch.where(start, target, self.setpoint)
         self.search = torch.where(start, search, self.search)
         self.active |= start
@@ -210,7 +251,7 @@ class ProcessFleet:
 
     def step(self, action: torch.Tensor, measure: torch.Tensor) -> dict[str, torch.Tensor]:
         """Advance one tick; keep completed-transition metadata separate from the next observation."""
-        s, g, d = self.spec, self.gen, self.device
+        s = self.spec
         u = self.table[action]                                       # [n, dims]
         self.advance(u, self.current())
         goal = self.setpoint.clone()
@@ -224,12 +265,12 @@ class ProcessFleet:
                       "transition_since_switch": self.since_switch.clone(),
                       "transition_returned": self.returned.clone()}
         arrived = self.pending == 1
-        arrived_value = self.pending_value + s.precise_noise * torch.randn(self.n, generator=g, device=d)
+        arrived_value = self.pending_value + s.precise_noise * self._randn(self.n)
         self.pending = (self.pending - 1).clamp(min=0)
         accepted = measure & (self.pending == 0)
         self.pending = torch.where(accepted, torch.full_like(self.pending, s.delay), self.pending)
         self.pending_value = torch.where(accepted, self.output, self.pending_value)
-        cheap = self.output + s.cheap_noise * torch.randn(self.n, generator=g, device=d)
+        cheap = self.output + s.cheap_noise * self._randn(self.n)
         self._switch()
         started = self._requests()
         self.tick += 1
@@ -248,7 +289,7 @@ class InstrumentFleet(ProcessFleet):
         super().__init__(n, spec, seed, device)
 
     def sample(self, shape):
-        return sample_conditions(self.spec, shape, self.gen, self.device)
+        return conditions_from_uniform(self.spec, self._rand(*shape, 8))
 
     def init_state(self):
         self.actuator = torch.zeros(self.n, self.spec.dims, device=self.device)
@@ -261,14 +302,13 @@ class InstrumentFleet(ProcessFleet):
         self.output[idx] = response(self.spec, self.current()[idx], self.actuator[idx], self.drift[idx])
 
     def advance(self, u, p):
-        s, g, d = self.spec, self.gen, self.device
+        s = self.spec
         backlash = p[:, 6:7]
         self.actuator = torch.where(u - self.actuator > backlash, u - backlash,
                                     torch.where(u - self.actuator < -backlash, u + backlash, self.actuator))
-        self.drift = self.drift + s.drift * torch.randn(self.n, generator=g, device=d)
+        self.drift = self.drift + s.drift * self._randn(self.n)
         target = response(s, p, self.actuator, self.drift)
-        self.output = self.output + (target - self.output) / p[:, 5] + \
-            s.process_noise * torch.randn(self.n, generator=g, device=d)
+        self.output = self.output + (target - self.output) / p[:, 5] + s.process_noise * self._randn(self.n)
 
     def on_switch(self, switch):
         self.drift = torch.where(switch, torch.zeros_like(self.drift), self.drift)
@@ -314,6 +354,16 @@ class MixedFleet:
     @property
     def tick(self) -> int:
         return self.fleets[0].tick
+
+    def branch(self, rows: torch.Tensor, copies: int, seed: int):
+        """``ProcessFleet.branch`` for increasing ``rows``, which keeps them in order across the families."""
+        parts, start = [], 0
+        for i, (fleet, size) in enumerate(zip(self.fleets, self.sizes)):
+            mine = rows[(rows >= start) & (rows < start + size)] - start
+            if len(mine):
+                parts.append(fleet.branch(mine, copies, seed + i))
+            start += size
+        return parts[0] if len(parts) == 1 else MixedFleet(parts)
 
     def reset(self, mask: torch.Tensor):
         for fleet, part in zip(self.fleets, mask.split(self.sizes)):

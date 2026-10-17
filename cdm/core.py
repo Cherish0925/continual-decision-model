@@ -22,6 +22,8 @@ operations, elapsed-time features). Its parts:
 ``activity``    heads for precise measurement and for the use of compute: a number
                 of workspace refinements or one learning step
 ``value``       critic for the outer reinforcement learning
+``activity value``  optional: what each activity option is worth relative to the
+                others, trained on returns of copies that took each option
 
 Shared parameters are trained across lifetimes; adapters belong to one instance
 and change only through its learning steps.
@@ -58,6 +60,7 @@ class CoreConfig:
     sensor_noise: bool = False # likelihoods add a learned noise for each of the two sensors
     step_rule: str = "normalized"    # "normalized": a step of fixed size; "evidence": -eta g / (|g| + kappa)
     gated_workspace: bool = False    # a learned gate keeps, revises or resets every slot at each refinement
+    activity_values: bool = False    # a head that values every activity option against the others
 
     @property
     def compute_options(self) -> int:
@@ -114,6 +117,8 @@ class ContinualCore(nn.Module):
         self.log_noise = nn.Parameter(torch.tensor([0.25, 0.02]).log()) if c.sensor_noise else None
         self.activity = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options))
         self.value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 1))
+        self.activity_value = nn.Sequential(nn.Linear(trunk, w), nn.GELU(), nn.Linear(w, 2 + c.compute_options)) \
+            if c.activity_values else None
 
     # ------------------------------------------------------------ state
     def initial(self, n: int, device) -> dict[str, Tensor]:

@@ -112,6 +112,11 @@ def new_agent(model: ContinualCore, n: int, buffer: int, device) -> Agent:
                  age=z.long())
 
 
+def select_agent(agent: Agent, rows: Tensor) -> Agent:
+    """The agents of ``rows``, in that order; a row may repeat."""
+    return Agent(**{f.name: getattr(agent, f.name)[rows] for f in fields(agent)})
+
+
 def reset_agents(model: ContinualCore, agent: Agent, mask: Tensor) -> Agent:
     if not mask.any():
         return agent
@@ -205,17 +210,28 @@ def distributions(control_logits: Tensor, activity_logits: Tensor, allowed: Tens
             torch.distributions.Categorical(logits=act[:, 2:]))
 
 
+def shared_sample(dist: torch.distributions.Categorical, generator: torch.Generator, copies: int) -> Tensor:
+    """A sample per row by the Gumbel-max rule, with the same noise for the ``copies`` consecutive copies of a row."""
+    n, k = dist.logits.shape
+    u = torch.rand(n // copies, k, generator=generator, device=dist.logits.device).repeat_interleave(copies, 0)
+    return (dist.logits - torch.log(-torch.log(u.clamp(1e-20, 1.0)))).argmax(-1)
+
+
 @torch.no_grad()
 def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mode: str, costs: Costs,
          learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32,
          shared: bool = False, apply_updates: bool = True, support: str = "sample", precise_targets: bool = False,
-         refinements: bool = True):
+         refinements: bool = True, idle_compute: bool = True, force: Tensor | None = None,
+         generator: torch.Generator | None = None, copies: int = 1):
     """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick.
 
     With ``shared`` the record also holds the error of the shared predictor alone, without the instance adapter,
     for the action taken. With ``apply_updates`` false, chosen learning steps still occupy the compute and incur
     their cost, but their adapter updates are discarded: a matched-time control for the effect of the update.
-    With ``refinements`` false the refinement options are removed.
+    With ``refinements`` false the refinement options are removed; with ``idle_compute`` false, refinement and
+    learning are removed while no request is active. ``force`` [n, 2 + compute options] restricts the
+    activity options further. With a ``generator``, choices are sampled from it, with the same noise for each run
+    of ``copies`` consecutive rows.
     """
     n = agent.h.shape[0]
     device = agent.h.device
@@ -227,6 +243,10 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     allowed = masks(agent, pending, mode, env.tick, every)
     if not refinements:
         allowed[:, 3:2 + LEARN] = False
+    if not idle_compute:
+        allowed[:, 3:] &= obs["active"].unsqueeze(1)
+    if force is not None:
+        allowed &= force
     h_prev, z_prev = agent.h, agent.z
     with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
         h = model.fast(h_prev, event)
@@ -243,7 +263,12 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
                                                              offset, logvar)
     h = h.float()
     dists = distributions(control_logits, activity_logits, allowed)
-    choice = [d.probs.argmax(-1) if greedy else d.sample() for d in dists]
+    if greedy:
+        choice = [d.probs.argmax(-1) for d in dists]
+    elif generator is not None:
+        choice = [shared_sample(d, generator, copies) for d in dists]
+    else:
+        choice = [d.sample() for d in dists]
     action, measure, compute = choice
     logp = sum(d.log_prob(a) for d, a in zip(dists, choice))
     nxt = env.step(action, measure.bool())
@@ -320,3 +345,44 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     if shared and mode != "recurrent":
         step["shared_prediction_error"] = shared_error
     return agent, nxt, step
+
+
+OPTIONS = 2 + LEARN + 1               # activity options: measure no / yes, then each compute option
+
+
+@torch.no_grad()
+def branch_values(model: ContinualCore, agent: Agent, env, obs: dict, rows: Tensor, mode: str, costs: Costs,
+                  learning_rate: float, every: int, horizon: int, gamma: float, reward_scale: float, seed: int,
+                  **options) -> tuple[Tensor, Tensor]:
+    """What each activity option is worth to the given streams, from copies of their processes and agents.
+
+    Each row of ``rows`` (increasing) gets one copy per activity option: not measuring, measuring, and each compute
+    option. On the first tick the copy takes its option, with the other activity and the control chosen by the
+    policy; then the policy runs for ``horizon`` ticks. The copies of a row share the processes' randomness and the
+    policy's sampling noise, so they differ only through the option and its consequences. Returns the discounted
+    scaled reward plus the discounted value after ``horizon`` ticks [rows, options], and which options were
+    allowed; a copy whose option was not allowed runs unforced and its value is not used.
+    """
+    O, device = OPTIONS, agent.h.device
+    fleet = env.branch(rows, O, seed)
+    copies = rows.repeat_interleave(O)
+    agents, obs = select_agent(agent, copies), {k: v[copies] for k, v in obs.items()}
+    allowed = masks(agents, fleet.pending, mode, env.tick, every)
+    option = torch.arange(O, device=device).repeat(len(rows))
+    own = torch.arange(O, device=device) == option.unsqueeze(1)                 # the column of the copy's option
+    measured = (option < 2).unsqueeze(1)
+    force = torch.where(measured, torch.cat((own[:, :2], torch.ones_like(own[:, 2:])), 1),
+                        torch.cat((torch.ones_like(own[:, :2]), own[:, 2:]), 1))
+    valid = allowed[own]
+    force[~valid] = True
+    generator = torch.Generator(device=device).manual_seed(seed)
+    total, discount = torch.zeros(len(copies), device=device), 1.0
+    for h in range(horizon + 1):
+        agents, obs, step = tick(model, agents, fleet, obs, mode, costs, learning_rate, every,
+                                 force=force if h == 0 else None, generator=generator, copies=O, **options)
+        if h < horizon:
+            total += discount * reward_scale * step["reward"]
+            discount *= gamma
+        else:
+            total += discount * step["value"]
+    return total.view(len(rows), O), valid.view(len(rows), O)

@@ -179,7 +179,7 @@ class EvaluationTests(unittest.TestCase):
                     ("error", "prediction_error", "shared_prediction_error", "reward", "counts")}
             step.update({key: torch.ones(devices, dtype=torch.bool) for key in ("active", "next_active")})
             step.update({key: torch.zeros(devices, dtype=torch.bool) for key in
-                         ("returned", "learn", "accepted", "started", "next_started")})
+                         ("returned", "learn", "accepted", "started", "next_started", "transition_search")})
             step["since_switch"] = torch.zeros(devices, dtype=torch.long)
             return None, None, step
         with patch.object(evaluation, "make_fleet", **{"return_value.spec.request_ticks": 60}), \
