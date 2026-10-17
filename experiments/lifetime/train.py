@@ -28,9 +28,13 @@ With ``--branch-streams``, once per window that many streams are copied once
 per activity option at a random tick; each copy takes its option and the policy
 continues for ``--branch-horizon`` ticks under the same disturbances and
 sampling noise as the other copies (``runtime.branch_values``). The returns of
-the copies train the activity heads directly, through the expected advantage of
-every option under the policy, and train an activity-value head
-(``--activity-values``) whose estimates give the same gradient at every tick.
+the copies train an activity-value head (``--activity-values``) that estimates,
+from the state, how much each option is worth against the others; at every tick
+the activity heads follow the expected advantage of every option under these
+estimates. The weight of that gradient is ``--branch-weight`` times the share
+of the variance of fresh copies' returns the head predicts, a running estimate
+from rows it has not yet trained on, so a head that predicts nothing has no
+influence.
 ``--init`` starts from trained weights; ``--train-only activity`` trains only
 the activity, activity-value and value heads over a fixed model.
 """
@@ -128,8 +132,9 @@ def centred(values, weights):
                       / weights[:, f].sum(1, keepdim=True).clamp_min(1e-8) for f in FACTORS], 1)
 
 
-def ppo_update(model, optimizer, steps, bootstrap, start, args):
-    """PPO on one window. ``start`` is the agent before the window's first tick."""
+def ppo_update(model, optimizer, steps, bootstrap, start, args, activity_weight=0.0):
+    """PPO on one window. ``start`` is the agent before the window's first tick; ``activity_weight`` weighs the
+    gradient of the activity heads from the activity-value estimates."""
     L = len(steps)
     S = lambda key: torch.stack([s[key] for s in steps])
     rewards, values, dones = args.reward_scale * S("reward"), S("value"), S("done").float()
@@ -163,7 +168,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
         spread = q[valid].std() if int(valid.sum()) > 1 else q.new_tensor(1.0)
         q = q / spread.clamp_min(1e-6)
         stats.update(activity_value=0.0, branch_regret=0.0, branch_agree=0.0)
-        branch_count = 0
+        branch_count, unseen = 0, [0.0, 0.0]            # head residual and total on rows it has not trained on
     whole = 1.0 - dones.amax(0)                          # streams whose lifetime runs through the whole window
     adapt_count = 0
     flat = lambda a: a.flatten(0, 1)
@@ -171,7 +176,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
     deployed = predicts and args.objective == "deployed"
     recompute = reads and predicts and args.recompute_predictions
     amp = lambda: torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda")
-    for _ in range(args.epochs):
+    for epoch in range(args.epochs):
         perm = torch.randperm(n, device=device)
         for i in range(0, n, args.minibatch):
             mb = perm[i:i + args.minibatch]
@@ -226,10 +231,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                     ok, bq, mask = part(allowed), part(q), part(valid)
                     probs = factor_probs(al, ok)
                     at = mask.any(1)
-                    if bool(at.any()):                   # the expected advantage of every option under the policy
-                        option_adv = centred(bq, probs * mask).detach()
-                        term = -(probs * option_adv * mask)[at].sum(1).mean()
-                        loss = loss + args.branch_weight * term
+                    if bool(at.any()):                   # the policy and the head against the copies' returns
                         best = bq.masked_fill(~mask, -1e9)
                         regret = [((probs[:, f] * best[:, f] * mask[:, f]).sum(1) - best[:, f].max(1).values)[at]
                                   for f in FACTORS]
@@ -238,11 +240,15 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
                         stats["branch_agree"] += float(sum(agree) / 2) * T
                         branch_count += T
                         if model.activity_value is not None:
-                            fit = (((estimate - bq) ** 2) * mask)[at].sum() / mask[at].sum()
+                            residual = (((estimate - bq) ** 2) * mask)[at]
+                            fit = residual.sum() / mask[at].sum()
                             loss = loss + 0.5 * fit
                             stats["activity_value"] += float(fit.detach()) * T
-                    if model.activity_value is not None:  # the same gradient at every tick, from the estimates
-                        loss = loss - args.branch_weight * (probs * centred(estimate.detach(), probs)).sum(1).mean()
+                            if epoch == 0:
+                                unseen[0] += float(residual.sum().detach())
+                                unseen[1] += float(((bq ** 2) * mask)[at].sum())
+                    if model.activity_value is not None and activity_weight > 0:   # every tick, from the estimates
+                        loss = loss - activity_weight * (probs * centred(estimate.detach(), probs)).sum(1).mean()
                 if predicts:
                     loss = loss + args.prediction * prediction
                     stats["prediction"] += float(prediction.detach()) * T
@@ -284,6 +290,8 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args):
         for key in ("activity_value", "branch_regret", "branch_agree"):
             out[key] = stats[key] / max(branch_count, 1)
         out["branch_spread"] = float(spread)
+        if model.activity_value is not None:
+            out["activity_value_r2"] = 1 - unseen[0] / max(unseen[1], 1e-12)
     return out
 
 
@@ -340,7 +348,8 @@ def parse_args(argv=None):
     p.add_argument("--cost-learning", type=float, default=Costs.learning)
     p.add_argument("--branch-streams", type=int, default=0, help="streams copied per window to value activities")
     p.add_argument("--branch-horizon", type=int, default=32, help="ticks each copy runs before its value bootstrap")
-    p.add_argument("--branch-weight", type=float, default=1.0, help="weight of the activity gradient from copies")
+    p.add_argument("--branch-weight", type=float, default=1.0,
+                   help="weight of the activity gradient from the activity-value estimates")
     p.add_argument("--activity-values", action="store_true", help="a head that values every activity option")
     p.add_argument("--init", type=Path, help="start from the weights of a trained model")
     p.add_argument("--train-only", choices=("activity",), help="train only the activity and value heads")
@@ -401,6 +410,7 @@ def main(argv=None):
     branch_gen = torch.Generator(device=device).manual_seed(args.seed + 3000)
     branch_at = int(torch.randint(0, args.window, (1,), generator=branch_gen, device=device))
     branch, branch_transitions = None, 0
+    explained = 0.0                                      # running share of fresh option values the head predicts
     mark = time.perf_counter()
     for t in range(ticks):
         model.eval()
@@ -446,7 +456,11 @@ def main(argv=None):
             collection += time.perf_counter() - mark
             mark = time.perf_counter()
             model.train()
-            stats = ppo_update(model, optimizer, steps[:-1], steps[-1]["value"], window_start, args)
+            weight = args.branch_weight * min(max(explained, 0.0), 1.0)
+            stats = ppo_update(model, optimizer, steps[:-1], steps[-1]["value"], window_start, args, weight)
+            if "activity_value_r2" in stats:
+                explained = 0.9 * explained + 0.1 * stats["activity_value_r2"]
+                stats["activity_weight"] = weight
             if device.type == "cuda":
                 torch.cuda.synchronize(device)
             update_time += time.perf_counter() - mark
