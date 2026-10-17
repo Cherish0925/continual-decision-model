@@ -121,13 +121,13 @@ The first round left three gaps between what was trained and what ran: the predi
 - **Evidence-scaled steps** (`--step-rule evidence`).
 - **Workspace across events** (`--segment 16`, `--gated-workspace`). PPO recomputes the workspace one tick after another from its stored value at the start of each 16-tick segment, so its gradients span up to 16 external events; segments run in parallel and each tick's refinement is checkpointed.
 - **Predictions recomputed** (`--recompute-predictions`). The heads read the predictions of every action recomputed by the current network under the adapter in effect at each tick, with the predictor and adapters held fixed, so the policy loss reaches the fast state and workspace through the predictions it acts on.
-- **Activities by their consequences** (`--branch-streams 128 --branch-horizon 32 --activity-values`). Once per window at a random tick, 128 streams are copied once per activity option: not measuring, measuring, and each compute option. Copies of one process draw the same disturbances, readings and condition changes, and the policy samples with the same noise in every copy, so copies differ only through the option and what follows from it. Each copy takes its option, with the other activity and the control chosen by the policy, then the policy runs for 32 ticks; the scaled discounted reward plus the discounted value after them is the option's value. Values are centred within each activity and scaled by their spread in the window. They train the activity-value head; at every tick the activity heads follow the expected advantage of every option under the head's estimates, with weight `--branch-weight` times the running share of variance of fresh copies the head predicts, so a head that predicts nothing has no influence. `--branch-weight 0` keeps the copies and the head but leaves the policy to PPO alone, at the same compute.
+- **Activities by their consequences** (`--branch-streams 128 --branch-horizon 32 --activity-values`). Once per window at a random tick, 128 streams are copied once per activity option: not measuring, measuring, and each compute option. Copies of one process draw the same disturbances, readings and condition changes, and the policy samples with the same noise in every copy, so copies differ only through the option and what follows from it. Each copy takes its option, with the other activity and the control chosen by the policy, then the policy runs for 32 ticks; the scaled discounted reward plus the discounted value after them is the option's value. Values are centred within each activity and scaled by their spread in the window. They train the activity-value head; at every tick the activity heads follow the expected advantage of every option under the head's estimates, with weight `--branch-weight` times the running share of variance of fresh copies the head predicts, so a head that predicts nothing has no influence. `--branch-weight 0` keeps the copies and the head but leaves the policy to PPO alone, at the same compute. [`branches.py`](branches.py) measures the same states' option values twice with independent randomness: values from one set of sampled 32-tick copies repeat with a correlation below 0.1, so the first configuration gives the head nothing to learn and its weight stays near zero. With the copies on the policy's most probable choices (`--branch-greedy`), a 4-tick horizon and four independent sets averaged (`--branch-replicates 4`), the values repeat with a correlation of 0.75; `cdm_b6` and `cdm_b6_ppo` compare following and not following them, at 17,920 simulated transitions per window.
 - **Measured costs.** A learning step on the 64-entry buffer takes 1.82 times a refinement at 1,024 instances ([`latency.py`](latency.py)), so it costs 0.0036 where a refinement costs 0.002 (`--cost-learning 0.0036`); a precise measurement still costs 0.01.
 
 | Variant | Differs from the first |
 | --- | --- |
 | `cdm` | `full` with every item above |
-| `cdm_ppo_activity` | the copies and the activity-value head kept, the policy not following it |
+| `cdm_b6`, `cdm_b6_ppo` | greedy 4-tick copies, four sets averaged; followed, or kept but not followed |
 | `cdm_truncated` | one-tick workspace gradients, no gate, cached predictions |
 | `cdm_nolearn` | no learning (`frozen`) |
 | `cdm_step_meta` | `--objective step` |
@@ -137,7 +137,7 @@ The first round left three gaps between what was trained and what ran: the predi
 | `predict_only`, `predict_only_all` | predictions only, with recomputed predictions; on one or three families |
 | `predict_hidden`, `recurrent` | as in the first round |
 
-Every variant trains on instruments with half the requests for the largest output, with precise targets and sensor noise unless stated, 2·10⁷ interactions per seed; the copies add 29,568 simulated transitions per window.
+Every variant trains on instruments with half the requests for the largest output, with precise targets and sensor noise unless stated, 2·10⁷ interactions per seed; the sampled 32-tick copies add 29,568 simulated transitions per window.
 
 ## Evaluation
 
@@ -183,23 +183,26 @@ Second round:
 
 ```bash
 BASE="--precise-targets --sensor-noise --support buffer"
-CDM="--objective deployed --step-rule evidence --segment 16 --gated-workspace --recompute-predictions \
-     --branch-streams 128 --branch-horizon 32 --activity-values"
-python experiments/lifetime/launch.py --output-root runs/lifetime/c6 --seeds 0 1 2 \
-    --variants "cdm=full $BASE $CDM" "cdm_ppo_activity=full $BASE $CDM --branch-weight 0" \
-    "cdm_truncated=full $BASE --objective deployed --step-rule evidence --branch-streams 128 --activity-values" \
-    "cdm_nolearn=frozen $BASE --segment 16 --gated-workspace --recompute-predictions --branch-streams 128 --activity-values" \
-    "predict_only=predict_only $BASE --recompute-predictions" \
-    "cdm_all=full --family all $BASE $CDM @0,1" "cdm_bank=full $BASE $CDM --adapter-blocks 4 @0,1" \
-    "cdm_step_meta=full $BASE --objective step --meta 0.5 --step-rule evidence --segment 16 --gated-workspace \
-     --recompute-predictions --branch-streams 128 --activity-values @0,1" \
-    "cdm_cheap_targets=full --support buffer $CDM @0,1" "predict_hidden=predict_hidden $BASE @0,1" \
+DEP="--objective deployed --step-rule evidence"
+WS="--segment 16 --gated-workspace --recompute-predictions"
+BR="--branch-streams 128 --branch-horizon 32 --activity-values"
+B6="--branch-streams 128 --branch-horizon 4 --branch-replicates 4 --branch-greedy --activity-values"
+python experiments/lifetime/launch.py --output-root runs/lifetime/c6 --seeds 0 1 2 --variants \
+    "cdm=full $BASE $DEP $WS $BR" "cdm_b6=full $BASE $DEP $WS $B6" \
+    "cdm_b6_ppo=full $BASE $DEP $WS $B6 --branch-weight 0" "cdm_truncated=full $BASE $DEP $BR" \
+    "cdm_nolearn=frozen $BASE $WS $BR" "predict_only=predict_only $BASE --recompute-predictions" \
+    "cdm_all=full --family all $BASE $DEP $WS $BR @0,1" "cdm_bank=full $BASE $DEP $WS $BR --adapter-blocks 4 @0,1" \
+    "cdm_step_meta=full $BASE --objective step --meta 0.5 --step-rule evidence $WS $BR @0,1" \
+    "cdm_cheap_targets=full --support buffer $DEP $WS $BR @0,1" "predict_hidden=predict_hidden $BASE @0,1" \
     "recurrent=recurrent $BASE @0,1" "predict_only_all=predict_only --family all $BASE --recompute-predictions @0,1" \
-    "cdm_navigation=full --family navigation $BASE $CDM @0,1" "cdm_thermal=full --family thermal $BASE $CDM @0" -- \
+    "cdm_navigation=full --family navigation $BASE $DEP $WS $BR @0,1" \
+    "cdm_thermal=full --family thermal $BASE $DEP $WS $BR @0" -- \
     --streams 1024 --width 1024 --hidden 1024 --interactions 2e7 --lifetime 16384 --minibatch 128 \
     --search-share 0.5 --cost-learning 0.0036
 python experiments/lifetime/evaluate.py --model runs/lifetime/c6/cdm/seed0/model.pt \
     --also frozen discard norefine noidle --devices 512 --ticks 16384 --output runs/lifetime/eval_c6/cdm_seed0.json
+python experiments/lifetime/branches.py --model runs/lifetime/c6/cdm/seed0/model.pt --greedy --replicates 4 \
+    --output experiments/lifetime/results/branches_cdm_seed0.json
 python experiments/lifetime/latency.py --model runs/lifetime/c6/cdm/seed0/model.pt --output experiments/lifetime/results/latency_c6.json
 ```
 
