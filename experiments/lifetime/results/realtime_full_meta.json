@@ -1,0 +1,92 @@
+{
+ "model": "full_meta",
+ "seed": "seed0",
+ "family": "instrument",
+ "gpu": "NVIDIA H100",
+ "runs": [
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2964,
+   "response_ms_median": 3.2563097774982452,
+   "response_ms_p95": 3.8332967087626457,
+   "response_ms_p99": 4.1798616200685474,
+   "held_steps": 41,
+   "error_while_active": 0.10149751361999594,
+   "refinements_per_second": 141.66666666666666,
+   "learning_steps_per_second": 9.666666666666666
+  },
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 3001,
+   "response_ms_median": 3.253435716032982,
+   "response_ms_p95": 3.860611468553543,
+   "response_ms_p99": 4.1632721200585365,
+   "held_steps": 0,
+   "error_while_active": 0.10816395165252637,
+   "refinements_per_second": 174.73333333333332,
+   "learning_steps_per_second": 0.0
+  },
+  {
+   "instances": 64,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2954,
+   "response_ms_median": 3.1410017982125282,
+   "response_ms_p95": 3.4800386056303974,
+   "response_ms_p99": 8.83098470047119,
+   "held_steps": 94,
+   "error_while_active": 0.0985838964703693,
+   "refinements_per_second": 8506.2,
+   "learning_steps_per_second": 619.9
+  },
+  {
+   "instances": 64,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 3000,
+   "response_ms_median": 3.0496958643198013,
+   "response_ms_p95": 3.4305511042475696,
+   "response_ms_p99": 3.5139298066496854,
+   "held_steps": 2,
+   "error_while_active": 0.0944291140329343,
+   "refinements_per_second": 10697.133333333333,
+   "learning_steps_per_second": 0.0
+  },
+  {
+   "instances": 512,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2884,
+   "response_ms_median": 8.503279648721218,
+   "response_ms_p95": 10.494639165699482,
+   "response_ms_p99": 13.71426410973072,
+   "held_steps": 2614,
+   "error_while_active": 0.12771864226673635,
+   "refinements_per_second": 66335.46666666666,
+   "learning_steps_per_second": 5142.0
+  },
+  {
+   "instances": 512,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 2979,
+   "response_ms_median": 3.653082996606827,
+   "response_ms_p95": 4.8428650945425025,
+   "response_ms_p99": 8.860262706875801,
+   "held_steps": 82,
+   "error_while_active": 0.09844401110717638,
+   "refinements_per_second": 85317.16666666667,
+   "learning_steps_per_second": 0.0
+  }
+ ]
+}

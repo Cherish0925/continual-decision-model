@@ -1,0 +1,92 @@
+{
+ "model": "full",
+ "seed": "seed0",
+ "family": "instrument",
+ "gpu": "NVIDIA H100",
+ "runs": [
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2963,
+   "response_ms_median": 3.2600555568933487,
+   "response_ms_p95": 3.823194652795792,
+   "response_ms_p99": 4.186493009328843,
+   "held_steps": 45,
+   "error_while_active": 0.1133131226639447,
+   "refinements_per_second": 148.6,
+   "learning_steps_per_second": 10.233333333333333
+  },
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 3001,
+   "response_ms_median": 3.2680686563253403,
+   "response_ms_p95": 3.835368901491165,
+   "response_ms_p99": 4.164388217031956,
+   "held_steps": 0,
+   "error_while_active": 0.10480871658336792,
+   "refinements_per_second": 175.4,
+   "learning_steps_per_second": 0.0
+  },
+  {
+   "instances": 64,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2953,
+   "response_ms_median": 3.152908757328987,
+   "response_ms_p95": 3.4316131845116615,
+   "response_ms_p99": 8.73824667185545,
+   "held_steps": 95,
+   "error_while_active": 0.10679803139321291,
+   "refinements_per_second": 8847.766666666666,
+   "learning_steps_per_second": 633.8
+  },
+  {
+   "instances": 64,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 3001,
+   "response_ms_median": 3.0691176652908325,
+   "response_ms_p95": 3.362184390425682,
+   "response_ms_p99": 3.5107905045151706,
+   "held_steps": 4,
+   "error_while_active": 0.10719058017617346,
+   "refinements_per_second": 10787.666666666666,
+   "learning_steps_per_second": 0.0
+  },
+  {
+   "instances": 512,
+   "period_ms": 10.0,
+   "learning": true,
+   "fleet_steps": 3000,
+   "actions": 2830,
+   "response_ms_median": 7.967542856931686,
+   "response_ms_p95": 11.907539609819645,
+   "response_ms_p99": 13.8241982832551,
+   "held_steps": 2221,
+   "error_while_active": 0.13104391531445686,
+   "refinements_per_second": 69034.13333333333,
+   "learning_steps_per_second": 5013.933333333333
+  },
+  {
+   "instances": 512,
+   "period_ms": 10.0,
+   "learning": false,
+   "fleet_steps": 3000,
+   "actions": 2971,
+   "response_ms_median": 3.652086481451988,
+   "response_ms_p95": 4.720600321888924,
+   "response_ms_p99": 10.240329429507256,
+   "held_steps": 105,
+   "error_while_active": 0.10946220404970129,
+   "refinements_per_second": 85968.93333333333,
+   "learning_steps_per_second": 0.0
+  }
+ ]
+}
