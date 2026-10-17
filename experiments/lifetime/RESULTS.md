@@ -11,7 +11,7 @@ All models below were trained after the corrections of [issue #1](https://github
 3. **Training the shared network through the learning step gives the best model**: 0.097 on the training family and the lowest error on every held-out family, level with its learned-step version on the slowest. At deployment its updates are neutral on the training family, so the gain is not explained by the updates themselves.
 4. **The instance's own updates, as trained, do not help and usually hurt** (+0.0015 ± 0.0003 against discarding them, five seeds), most with noisier sensors. A smaller step at test time removes the harm, and on unfamiliar slow dynamics the model trained through its step gains a little from its updates (−0.0031 ± 0.0016). Why the updates fail is not yet established by training comparisons; the candidate causes are listed below.
 5. **One set of weights runs both process families**, at a cost against single-family models that saw twice as much of each family.
-6. **Control continues while learning runs on its own stream** for up to 64 instances (3.2 ms median response at a 10 ms period, 3.2 % of steps on a held action, so not a strict deadline guarantee); at 512 instances learning contends with control and most steps run on a held action.
+6. **Control continues while learning runs on its own stream** for up to 64 instances: a median response of 3.5–3.7 ms at a 10 ms period, with learning raising the p99 to 11–13 ms and leaving 5–8 % of steps on an action that does not answer the newest observation, so not a deadline guarantee. At 512 instances learning contends with control and 24–92 % of steps run behind the newest observation.
 
 ## Principal comparison
 
@@ -109,20 +109,20 @@ Neither single-family model transfers: instruments-only models track thermal pro
 
 ## Acting against an independent clock
 
-[`realtime.py`](realtime.py), idle H100, fleet stepping every 10 ms for 3,000 steps; response is the time from a published observation to the published action; a held step is one the fleet ran on the previous action because no new one had arrived.
+[`realtime.py`](realtime.py), idle H100, processes stepping every 10 ms for 3,000 steps. Each agent cycle absorbs, in order, every observation published since the previous cycle, learns from the action the process actually applied, and counts elapsed time in process steps; it then decides on its newest state. Response is the time from the newest published observation to the published action. A step *behind* is one the process ran on an action that did not answer the observation just before it, because the answer had not arrived. Rates use measured wall time.
 
-| Model | Instances | Learning | Response p50 / p95 / p99 (ms) | Held steps | Error | Learning steps / s |
-| --- | ---: | --- | --- | ---: | ---: | ---: |
-| Full setting | 1 | on | 3.26 / 3.82 / 4.19 | 45 (1.5 %) | 0.113 | 10 |
-| Full setting | 1 | off | 3.27 / 3.84 / 4.16 | 0 | 0.105 | 0 |
-| Full setting | 64 | on | 3.15 / 3.43 / 8.74 | 95 (3.2 %) | 0.107 | 634 |
-| Full setting | 64 | off | 3.07 / 3.36 / 3.51 | 4 | 0.107 | 0 |
-| Full setting | 512 | on | 7.97 / 11.91 / 13.82 | 2,221 (74 %) | 0.131 | 5,014 |
-| Full setting | 512 | off | 3.65 / 4.72 / 10.24 | 105 (3.5 %) | 0.110 | 0 |
-| Trained through its learning step | 64 | on | 3.14 / 3.48 / 8.83 | 94 (3.1 %) | 0.099 | 620 |
-| Trained through its learning step | 512 | on | 8.50 / 10.49 / 13.71 | 2,614 (87 %) | 0.128 | 5,142 |
+| Model | Instances | Learning | Response p50 / p95 / p99 (ms) | Steps behind | Observations per decision | Error | Learning steps / s |
+| --- | ---: | --- | --- | ---: | ---: | ---: | ---: |
+| Full setting | 1 | on | 3.64 / 4.38 / 4.93 | 52 (1.7 %) | 1.01 | 0.085 | 11 |
+| Full setting | 1 | off | 3.58 / 4.34 / 4.95 | 0 | 1.00 | 0.099 | 0 |
+| Full setting | 64 | on | 3.65 / 7.57 / 12.61 | 229 (7.6 %) | 1.02 | 0.108 | 612 |
+| Full setting | 64 | off | 3.53 / 3.79 / 4.80 | 18 (0.6 %) | 1.00 | 0.107 | 0 |
+| Full setting | 512 | on | 8.09 / 11.83 / 14.06 | 2,760 (92 %) | 1.06 | 0.124 | 5,157 |
+| Full setting | 512 | off | 4.08 / 5.42 / 10.89 | 124 (4.1 %) | 1.01 | 0.108 | 0 |
+| Trained through its learning step | 64 | on | 3.50 / 4.96 / 11.31 | 161 (5.4 %) | 1.02 | 0.096 | 611 |
+| Trained through its learning step | 512 | on | 5.80 / 10.65 / 13.80 | 711 (24 %) | 1.04 | 0.102 | 4,977 |
 
-Up to 64 instances, the median response stays near 3 ms while learning steps run on their own stream, 1.5–3.2 % of steps run on a held action, and tracking matches the simulated evaluation; this is not a strict deadline guarantee. At 512 instances, five thousand learning steps per second share the GPU with control, the response passes the period, most steps run on a held action, and tracking degrades by 0.02–0.03. The workspace in this runtime reads experience records one tick older than in training, because nothing on the control path waits. Two properties of this version of `realtime.py` limit the tracking numbers: when a step runs on a held action, the actor still records the action it submitted rather than the one applied, and its elapsed-time features count its own cycles rather than fleet steps; learning throughput is divided by the nominal duration. They are being corrected. Single-instance error comes from one lifetime of 3,000 steps and varies accordingly. Results: [full setting](results/realtime_full.json), [trained through its step](results/realtime_full_meta.json).
+Up to 64 instances the median response stays near 3.6 ms and tracking matches the simulated evaluation (0.107–0.108 for the full setting, 0.096 for the model trained through its step). Learning on its own stream raises the p99 to 11–13 ms and leaves 5–8 % of steps behind, so this is not a deadline guarantee. At 512 instances five thousand learning steps per second share the GPU with control: the median response rises to 6–8 ms, a quarter to nearly all steps run behind, and the full setting tracks 0.016 worse than without learning. The workspace reads experience records one step older than in the simulated runtime, because nothing on the control path waits. Single-instance errors come from one 3,000-step lifetime each. Results: [full setting](results/realtime_full.json), [trained through its step](results/realtime_full_meta.json).
 
 ## Cost of training and of each operation
 
