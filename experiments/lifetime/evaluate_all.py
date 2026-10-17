@@ -9,7 +9,9 @@ result is skipped. A family is a name, the process family, and changes to its sp
 Families named in ``--main`` (by default ``training``) use ``--devices`` processes over ``--ticks``; every other
 family a quarter of each.
 At most ``--per-gpu`` evaluations run on a GPU, and one starts only when ``--min-free-gb`` are free.
-Arguments after ``--`` are passed to every evaluation, for example ``-- --adapter-lr 0.015``.
+With ``--watch`` the run roots are scanned again every that many seconds for models that have finished since,
+and the script keeps running. Arguments after ``--`` are passed to every evaluation, for example
+``-- --adapter-lr 0.015``.
 """
 from __future__ import annotations
 
@@ -51,26 +53,36 @@ def main():
     p.add_argument("--gpus", type=int, nargs="+", default=[0, 1])
     p.add_argument("--per-gpu", type=int, default=3)
     p.add_argument("--min-free-gb", type=float, default=8.0)
+    p.add_argument("--watch", type=float, default=0.0, help="seconds between scans for newly finished models")
     p.add_argument("--output", type=Path, required=True)
     args = p.parse_args(argv)
-    jobs = []
-    for model in finished_models(args.runs):
-        for family in args.families:
-            name, _, rest = family.partition("=")
-            kind, *changes = rest.split(":")
-            out = args.output / name / f"{model.parent.parent.name}_{model.parent.name}.json"
-            if out.exists():
-                continue
-            devices, ticks = (args.devices, args.ticks) if name in args.main else (args.devices // 4, args.ticks // 4)
-            cmd = [sys.executable, str(HERE / "evaluate.py"), "--model", str(model), "--family", kind,
-                   "--devices", str(devices), "--ticks", str(ticks), "--output", str(out)]
-            cmd += ["--also", *args.also] if args.also else []
-            cmd += ["--instrument", *changes] if changes else []
-            cmd += extra
-            jobs.append((cmd, out))
+    taken = set()                                          # outputs queued or started by this run
+
+    def scan():
+        found = []
+        for model in finished_models(args.runs):
+            for family in args.families:
+                name, _, rest = family.partition("=")
+                kind, *changes = rest.split(":")
+                out = args.output / name / f"{model.parent.parent.name}_{model.parent.name}.json"
+                if out.exists() or out in taken:
+                    continue
+                devices, ticks = (args.devices, args.ticks) if name in args.main else (args.devices // 4, args.ticks // 4)
+                cmd = [sys.executable, str(HERE / "evaluate.py"), "--model", str(model), "--family", kind,
+                       "--devices", str(devices), "--ticks", str(ticks), "--output", str(out)]
+                cmd += ["--also", *args.also] if args.also else []
+                cmd += ["--instrument", *changes] if changes else []
+                found.append((cmd + extra, out))
+                taken.add(out)
+        if found:
+            print(f"{len(found)} evaluations", flush=True)
+        return found
+
+    jobs, scanned = scan(), time.time()
     running = {g: [] for g in args.gpus}
-    print(f"{len(jobs)} evaluations", flush=True)
-    while jobs or any(running.values()):
+    while jobs or any(running.values()) or args.watch:
+        if args.watch and time.time() - scanned >= args.watch:
+            jobs, scanned = jobs + scan(), time.time()
         for g in args.gpus:
             running[g] = [job for job in running[g] if job.poll() is None]
             if jobs and len(running[g]) < args.per_gpu and free_gb(g) >= args.min_free_gb:

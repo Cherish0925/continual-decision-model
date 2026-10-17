@@ -1,0 +1,115 @@
+{
+ "gpu": "NVIDIA H100",
+ "learning_entries": 64,
+ "timing": [
+  {
+   "instances": 1,
+   "control_ms": 1.9069463014602661,
+   "refinement_ms": 1.0010609403252602,
+   "learning_ms": 1.1834939941763878
+  },
+  {
+   "instances": 256,
+   "control_ms": 2.0103435963392258,
+   "refinement_ms": 1.3375766575336456,
+   "learning_ms": 2.193290740251541
+  },
+  {
+   "instances": 1024,
+   "control_ms": 4.417615942656994,
+   "refinement_ms": 3.8550272583961487,
+   "learning_ms": 7.662763819098473
+  }
+ ],
+ "independent_clock": [
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learner": false,
+   "latency_ms_median": 2.787623554468155,
+   "latency_ms_p99": 3.6815139092504974,
+   "response_ms_median": 2.887423150241375,
+   "response_ms_p95": 3.2952135428786278,
+   "response_ms_p99": 3.7602046132087708,
+   "missed_periods": 0,
+   "ticks": 300,
+   "learning_steps_per_tick": 0.0,
+   "seconds": 2.99
+  },
+  {
+   "instances": 1,
+   "period_ms": 10.0,
+   "learner": true,
+   "latency_ms_median": 3.1621642410755157,
+   "latency_ms_p99": 4.635602068156004,
+   "response_ms_median": 3.2477397471666336,
+   "response_ms_p95": 3.9293538779020336,
+   "response_ms_p99": 4.691795911639929,
+   "missed_periods": 0,
+   "ticks": 300,
+   "learning_steps_per_tick": 9.436666666666667,
+   "seconds": 2.99
+  },
+  {
+   "instances": 256,
+   "period_ms": 10.0,
+   "learner": false,
+   "latency_ms_median": 2.839447930455208,
+   "latency_ms_p99": 3.7479681149125086,
+   "response_ms_median": 2.933272160589695,
+   "response_ms_p95": 3.465935029089451,
+   "response_ms_p99": 3.8470988161861883,
+   "missed_periods": 0,
+   "ticks": 300,
+   "learning_steps_per_tick": 0.0,
+   "seconds": 2.99
+  },
+  {
+   "instances": 256,
+   "period_ms": 10.0,
+   "learner": true,
+   "latency_ms_median": 5.395334213972092,
+   "latency_ms_p99": 6.15332281216979,
+   "response_ms_median": 5.520115606486797,
+   "response_ms_p95": 5.982671212404966,
+   "response_ms_p99": 6.274309530854224,
+   "missed_periods": 0,
+   "ticks": 300,
+   "learning_steps_per_tick": 4.933333333333334,
+   "seconds": 3.0
+  },
+  {
+   "instances": 1024,
+   "period_ms": 10.0,
+   "learner": false,
+   "latency_ms_median": 4.696600139141083,
+   "latency_ms_p99": 5.161228869110345,
+   "response_ms_median": 4.795403219759464,
+   "response_ms_p95": 5.0213105045259,
+   "response_ms_p99": 5.2491496689617625,
+   "missed_periods": 0,
+   "ticks": 300,
+   "learning_steps_per_tick": 0.0,
+   "seconds": 2.99
+  },
+  {
+   "instances": 1024,
+   "period_ms": 10.0,
+   "learner": true,
+   "latency_ms_median": 18.447084352374077,
+   "latency_ms_p99": 19.2663636431098,
+   "response_ms_median": 1286.1104449257255,
+   "response_ms_p95": 2416.1112296395004,
+   "response_ms_p99": 2518.013539183885,
+   "missed_periods": 300,
+   "ticks": 300,
+   "learning_steps_per_tick": 2.216666666666667,
+   "seconds": 5.53
+  }
+ ],
+ "costs": {
+  "instances": 1024,
+  "refinement": 0.002,
+  "learning": 0.00397546544056682
+ }
+}
