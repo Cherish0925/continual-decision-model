@@ -226,14 +226,15 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
          learning_rate: float, every: int, learn_ticks: int = 2, greedy: bool = False, sample_learn: int = 32,
          shared: bool = False, apply_updates: bool = True, support: str = "sample", precise_targets: bool = False,
          refinements: bool = True, idle_compute: bool = True, force: Tensor | None = None,
-         generator: torch.Generator | None = None, copies: int = 1, control=None):
+         generator: torch.Generator | None = None, copies: int = 1, control=None, apply_refinements: bool = True):
     """Advance agents and devices one tick. Returns the new agent, next observation and a record of the tick.
 
     With ``shared`` the record also holds the error of the shared predictor alone, without the instance adapter,
     for the action taken. With ``apply_updates`` false, chosen learning steps still occupy the compute and incur
     their cost, but their adapter updates are discarded: a matched-time control for the effect of the update.
     With ``refinements`` false the refinement options are removed; with ``idle_compute`` false, refinement and
-    learning are removed while no request is active. ``force`` [n, 2 + compute options] restricts the
+    learning are removed while no request is active; with ``apply_refinements`` false, chosen refinements are
+    computed, timed and charged but the workspace keeps its previous value. ``force`` [n, 2 + compute options] restricts the
     activity options further. With a ``generator``, choices are sampled from it, with the same noise for each run
     of ``copies`` consecutive rows. ``control(model, agent, h, obs, pending, mean)``, if given, replaces the
     control the policy chose, after it was drawn, so the activities and the random stream stay the same.
@@ -294,6 +295,8 @@ def tick(model: ContinualCore, agent: Agent, env: InstrumentFleet, obs: dict, mo
     filled = (agent.filled + 1).clamp(max=T)
     with torch.autocast(device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
         z = model.refine(z_prev, h, records, counts).float()
+    if not apply_refinements:
+        z = z_prev
     complete = (agent.busy == 1).view(-1, 1, 1)                     # a learning step finishes with this tick
     A = torch.where(complete, agent.next_A, agent.A)
     B = torch.where(complete, agent.next_B, agent.B)

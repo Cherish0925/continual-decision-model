@@ -20,7 +20,10 @@ own state, experience and adapters; nothing is reset. Reported:
 its adapter update away, which isolates what the updates themselves contribute;
 ``norefine`` keeps the model's own setting but removes the refinement options,
 so its compute goes to learning or nothing, which isolates what refinement
-contributes; ``noidle`` removes refinement and learning while no request is
+contributes together with the change of activity it causes; ``discard_refine``
+keeps every chosen refinement, its time and cost, but leaves the workspace as it
+was, which isolates what the workspace computation contributes at unchanged
+activity; ``noidle`` removes refinement and learning while no request is
 active, which isolates what computation between requests contributes to later
 ones. Errors are also reported separately for setpoint requests and requests
 for the largest output, and activities separately for ticks with and without
@@ -138,7 +141,8 @@ def load(path: Path, device):
 def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mode, greedy=False, control=None):
     torch.manual_seed(seed)
     apply_updates, refinements, idle_compute = mode != "discard", mode != "norefine", mode != "noidle"
-    mode = args_train["mode"] if mode in ("discard", "norefine", "noidle") else mode
+    apply_refinements = mode != "discard_refine"
+    mode = args_train["mode"] if mode in ("discard", "norefine", "noidle", "discard_refine") else mode
     env = make_fleet(family, devices, seed, device, specs, args_train.get("thermal_share", 0.5))
     spec = env.spec
     agent = new_agent(model, devices, args_train["buffer"], device)
@@ -159,7 +163,8 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
         agent, obs, step = tick(model, agent, env, obs, mode, costs, args_train["adapter_lr"], args_train["every"],
                                 learn_ticks=args_train["learn_ticks"], greedy=greedy, shared=True,
                                 apply_updates=apply_updates, refinements=refinements,
-                                idle_compute=idle_compute, control=control, **runtime_options(args_train))
+                                idle_compute=idle_compute, control=control, apply_refinements=apply_refinements,
+                                **runtime_options(args_train))
         active, err, perr = step["active"].float(), step["error"], step["prediction_error"]
         serr = step.get("shared_prediction_error", perr)
         where = (step["returned"].long(), torch.bucketize(step["since_switch"], bins, right=True))
@@ -216,7 +221,7 @@ def evaluate(model, args_train, specs, family, devices, ticks, seed, device, mod
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", type=Path, nargs="+", required=True)
-    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard", "norefine", "noidle"),
+    p.add_argument("--also", nargs="*", default=[], choices=(*MODES, "discard", "norefine", "noidle", "discard_refine"),
                    help="further settings to evaluate each learning model under")
     p.add_argument("--family", choices=FAMILIES, help="process family to evaluate on; by default the training family")
     p.add_argument("--adapter-lr", type=float, help="learning-step size during evaluation; by default the training one")
@@ -249,7 +254,8 @@ def main(argv=None):
         learns = targs["mode"] in ("full", "fixed_learn", "world_model")
         refines = targs["mode"] in ("full", "fixed_learn", "frozen")
         # a model trained on fixed schedules has untrained activity heads: switch its learning off with discard
-        also = [m for m in args.also if (refines if m == "norefine" else (refines or learns) if m == "noidle" else
+        also = [m for m in args.also if (refines if m in ("norefine", "discard_refine") else
+                                         (refines or learns) if m == "noidle" else
                                          learns and not (targs["mode"] == "world_model" and m == "frozen"))]
         for mode in dict.fromkeys([targs["mode"], *also]):
             row = {"model": str(path), "variant": path.parent.parent.name, "trained": targs["mode"], "mode": mode,

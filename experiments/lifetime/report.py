@@ -92,7 +92,8 @@ def label(variant, setting):
 
 
 OTHER = {"frozen": "learning switched off", "discard": "learning steps kept, updates discarded",
-         "norefine": "no refinement", "noidle": "no computation between requests"}
+         "norefine": "no refinement", "noidle": "no computation between requests",
+         "discard_refine": "refinements kept, workspace not updated"}
 OTHER.update({f"planner{k}": f"control by {k}-tick imagined rollouts" for k in (1, 2, 4, 8)})
 
 
