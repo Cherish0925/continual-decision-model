@@ -71,13 +71,17 @@ def mean_se(values):
 
 
 def collect(paths):
-    """rows[(variant, setting)] = evaluation rows, one per seed; setting is "own" or the mode imposed."""
-    rows = defaultdict(list)
+    """rows[(variant, setting)] = evaluation rows, one per seed; setting is "own" or the mode imposed. A setting
+    evaluated twice for the same seed, in files that each repeat the own setting, counts once."""
+    rows, seen = defaultdict(list), set()
     for path in paths:
         for r in json.loads(Path(path).read_text())["runs"]:
             if r["trained"] == "world_model" and r["mode"] == "frozen":
                 continue                             # its activity heads were never trained; discard is the comparison
-            rows[(r["variant"], "own" if r["mode"] == r["trained"] else r["mode"])].append(r)
+            key = (r["variant"], "own" if r["mode"] == r["trained"] else r["mode"])
+            if (key, r["seed"]) not in seen:
+                seen.add((key, r["seed"]))
+                rows[key].append(r)
     return rows
 
 
