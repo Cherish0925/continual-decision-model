@@ -152,9 +152,11 @@ def table(rows, cost=None):
     return stats, "\n".join(lines)
 
 
-def training_curves(run_roots: list[Path], out: Path, smooth: int = 5):
-    fig, ax = plt.subplots(figsize=(5.2, 3.0))
+def training_curves(run_roots: list[Path], out: Path, variants=None, smooth: int = 5):
+    fig, ax = plt.subplots(figsize=(4.6, 3.0))
     for variant, (name, colour, _) in STYLE.items():
+        if variants and variant not in variants:
+            continue
         curves = []
         for log in sorted(log for root in run_roots for log in (root / variant).glob("seed*/train_log.jsonl")):
             rows = [json.loads(line) for line in log.read_text().splitlines()]
@@ -167,15 +169,16 @@ def training_curves(run_roots: list[Path], out: Path, smooth: int = 5):
             continue
         n = min(len(c[1]) for c in curves)
         x, ys = curves[0][0][:n], np.array([c[1][:n] for c in curves])
-        ax.plot(x, ys.mean(0), color=colour, linewidth=1.5, label=f"{name} ({len(curves)} seeds)")
+        ax.plot(x, ys.mean(0), color=colour, linewidth=1.5,
+                label=f"{name} ({len(curves)} seed{'s' if len(curves) > 1 else ''})")
         ax.fill_between(x, ys.min(0), ys.max(0), color=colour, alpha=0.12, linewidth=0)
     style_axes(ax)
     ax.set_xlabel("interactions (millions)")
-    ax.set_ylabel("tracking error while a request is active")
+    ax.set_ylabel("error while a request is active")
     if ax.get_legend_handles_labels()[0]:
-        ax.legend(frameon=False)
+        ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False)
     fig.tight_layout()
-    fig.savefig(out, dpi=200)
+    fig.savefig(out, dpi=200, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -201,7 +204,7 @@ def after_switch(rows, field, ylabel, out, keys, groups=("new", "returned")):
     handles, labels = np.atleast_1d(axes)[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", ncol=min(3, len(labels)), frameon=False)
     fig.tight_layout(rect=(0, 0.07 * ((len(labels) + 2) // 3), 1, 1))
-    fig.savefig(out, dpi=200)
+    fig.savefig(out, dpi=200, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -296,7 +299,7 @@ def main():
     drawn = args.figure_variants or list(STYLE)
     shown = {k: v for k, v in rows.items() if k[0] in drawn}
     own = [(v, "own") for v in STYLE if (v, "own") in shown]
-    after_switch(rows, "error", "tracking error while a request is active", args.output / "error_after_switch.png", own)
+    after_switch(rows, "error", "error while a request is active", args.output / "error_after_switch.png", own)
     learners = [k for v in args.learners for k in sorted(rows, key=lambda k: k[1] != "own") if k[0] == v
                 and k[1] in ("own", "frozen", "discard")]
     if learners:
@@ -313,7 +316,7 @@ def main():
     ladder(shown, args.output / "ladder.png")
     compute_figure(shown, cost, args.output / "compute.png")
     if args.runs:
-        training_curves(args.runs, args.output / "training.png")
+        training_curves(args.runs, args.output / "training.png", args.figure_variants)
 
 
 if __name__ == "__main__":
