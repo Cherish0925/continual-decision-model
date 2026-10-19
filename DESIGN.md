@@ -1,203 +1,170 @@
-# Model architecture
+# Continual Decision Model: first multimodal architecture
 
-The CDM target architecture combines a recurrent context, a persistent latent workspace, bounded memory of previous computation, and learned action and activity policies. It should retain goals and unfinished inference across outputs and keep decisions available during further computation. Current operations execute in serial blocks; concurrent real-time action and learning remain an implementation step. [STATUS.md](STATUS.md) distinguishes the target from the trained models.
+**Selected on 19 October 2026.** CDM is a persistent, goal-conditioned model that learns actions and the use of observation, computation and experience. This document fixes the first integrated architecture. [STATUS.md](STATUS.md) records implementation and measured behavior; [TRAINING.md](TRAINING.md) defines optimization.
 
-The [PyTorch prototype](cdm/model.py) implements the recurrent context, shared workspace refinement, factor-conditioned memory reading, and action/activity/value heads. The [dynamic-grid experiment](experiments/continual_grid/README.md) separately compares explicit planning states. [RUNNING.md](RUNNING.md) lists executable commands; [TRAINING.md](TRAINING.md) specifies the progression from supervised learning to learned activity and continued adaptation.
+The main path is **pretrained perception → recurrent state ↔ persistent Transformer workspace → action and activity policies**, with action-conditioned prediction, episodic memory and parameter learning connected to the same state.
 
-## Next integrated model
+## 1. Concrete model
 
-The next main implementation extends the sequence core into an acting and learning model. Its running state is
+| Part | Selected structure | Role |
+| --- | --- | --- |
+| Image and short-text perception | Frozen **SigLIP 2 Base, patch16, 224px**, with its paired text tower; trainable projections to width 512 | Reuse pretrained representations of images and instructions |
+| Structured observations | Two-layer MLP, width 512; explicit value-presence fields | Encode numeric readings, task fields, executed actions and tool results |
+| Time | MLP over log(1 + elapsed time), observation delay and action age | Distinguish fresh and delayed observations |
+| Fast state | One **GRU**, width 512, preceded by attention from its previous state to event tokens | Incorporate each new event without clearing unfinished work |
+| Ongoing inference | **8 persistent slots × 512**, refined by **one shared Transformer block**, 8 heads, MLP width 2048 | Continue inference using the current state, observation tokens and recent records |
+| Prediction | Action-conditioned MLP with rank-8 instance adapters; extend its outputs to future features, measurements, reward and duration | Compare consequences and learn from returned results |
+| External action | Goal-conditioned, task-specific action head | Produce control or a typed tool request from the freshest state |
+| Internal activity | Factorized policy over observation requests and internal work; target and budget heads as the corresponding operations are added | Choose sensing, refinement, retrieval, learning or waiting |
+| Long-term experience | Timestamped episode store, learned retrieval key, top-8 retrieved records, 32 recent working records | Revisit useful experiences beyond the current window |
+| Continued learning | Instance prediction/action adapters; replay and distillation into shared prediction/action parameters | Improve future behavior and make useful repeated inference cheaper |
+
+The dimensions are initial engineering choices, not an assertion of an optimal scale. They remain fixed for the first integrated comparison. The machine-readable choices are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json).
+
+The encoder checkpoint is pinned to revision **75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2**. Its FixRes architecture uses the Transformers SiglipModel class. Images produce a 14×14 patch grid; spatial pooling retains a 4×4 grid before projection. Text uses the checkpoint's 64-token context. Longer instructions are divided into ordered events rather than silently truncated. This text tower provides representations, not generative conversation. A language decoder is a separate output module.
+
+SigLIP 2 uses a vision Transformer. A CNN is not required in this model. The existing convolutional maze planner remains an experimental comparison. The selected recurrence is a GRU; a matrix recurrence is a later matched-backbone comparison, not another unresolved prerequisite.
+
+~~~mermaid
+flowchart TD
+    E["Images, instructions, readings, tool results"] --> P["Pretrained towers and input projections"]
+    P --> H["Fast recurrent state"]
+    P --> Z["Persistent Transformer workspace"]
+    H --> Z
+    Z --> Z
+    H --> A["Action and activity policies"]
+    Z --> A
+    Z --> W["Action-conditioned prediction"]
+    W --> A
+    A --> X["Environment and tools"]
+    X --> E
+    X --> M["Episode store"]
+    M --> Z
+    M --> L["Adapter learning and consolidation"]
+    L --> W
+    L --> A
+~~~
+
+## 2. State and event contract
+
+The running model retains
 
 \[
 S_t=(h_t,Z_t,M_t,D_t,\eta_t,q_t,g_t),
 \]
 
-where \(h_t\) is the current recurrent context, \(Z_t\) the unfinished latent computation, \(M_t\) reusable records, \(D_t\) received experience, \(\eta_t\) instance-specific adaptive parameters and optimizer state, \(q_t\) pending operations and elapsed-time information, and \(g_t\) the continuing goal and current subgoals. Shared parameters \(\theta\) are optimized across training lifetimes.
+where \(h_t\) is fast context, \(Z_t\) is unfinished inference, \(M_t\) is working memory, \(D_t\) is accumulated experience, \(\eta_t\) is instance-owned adaptive parameters and optimizer state, \(q_t\) is pending work, and \(g_t\) is the continuing objective and current subgoal.
 
-Use the existing GRU as the reference fast update and a shared Transformer block over persistent slots as the refinement core. Compare a gated matrix recurrence at matched model size and runtime after the common trainer works. Input/output modules map structured sensors, images, instructions, and tool events into this same state. A language decoder is invoked for communication; ordinary control reads the current context and completed workspace directly.
+An event carries its source and type, capture time, arrival time, payload, and related request/action identifier. The model consumes events in arrival order and retains capture time. A returned measurement is attached to the action and conditions that produced it. An imagined observation has its own type and does not replace a received measurement.
 
-An action-conditioned prediction head models future received observations, task outcomes, and elapsed durations. It supports measurement selection, action comparison, and learning from received results. Prediction learning and the activity policy share the context/workspace representation. A goal-conditioned readout proposes subgoals or measurement settings, with their contribution trained through subsequent task return.
+The event log stores exact identifiers and media references. The neural input contains encoded content, timing and task-relevant relations. Arbitrary request identifiers are not treated as meaningful real numbers.
 
-The activity output specifies an operation, its target, and its work budget: which sensor or tool to query; which workspace slots or prediction branch to refine; which memories to retrieve; which experience and parameter group to update; or when to reconsider. Physical control remains a separate output available at fast update boundaries. Concurrent background activity and external action therefore need not be exclusive categorical choices.
+In the implemented frontend, numeric and timing tokens are always present; image and text tokens may be absent or masked per stream. Numeric schemas include explicit indicators for missing readings. Token masks prevent absent inputs from affecting attention. Frozen encoder features can be cached by asset and encoder revision; projected features must be recomputed while their projection is being trained.
 
-The first online parameter group \(\eta_t\) consists of prediction and action adapters. Keeping the shared state-producing coordinates fixed within an adaptation interval allows those updates to use the current workspace. The outer training still optimizes the shared recurrence, refinement, world prediction, and activity policy together. Subsequent consolidation can update \(\theta\); it must also account for the cost of bringing retained state into the updated representation. Retention through a parameter update is part of the model design.
+## 3. Observation, inference and action
 
-[`cdm/core.py`](cdm/core.py) implements this model for structured process events ([lifetime experiment](experiments/lifetime/README.md)): the GRU fast state; eight persistent slots refined by one shared Transformer block over the fast state and the 32 most recent experience records, each refinement ending with a normalisation of every slot so that the workspace keeps one scale over a lifetime; action-conditioned prediction of the next reading for every action, whose first layer carries an instance-owned low-rank adapter; a control head that scores each action from its own predicted outcome; and activity heads for precise measurement and for the use of compute between ticks, a number of refinements or one adapter learning step. Options of a second round: a gate that keeps, revises or restarts each slot at every refinement; prediction of the noise-free output with a learned noise per sensor, so precise readings weigh more as targets; learning steps on the whole experience buffer whose size grows with the gradient up to a learned bound, \(-\eta g/(\lVert g\rVert+\kappa)\); a bank of adapter blocks weighed by a selector of the state, so that experience of one operating condition stays in the blocks used under it; and an activity-value head. Its training follows deployment: the learning steps an agent took are replayed in the update, the workspace is unrolled over external events, and activity options are valued on copies of a process that share its randomness ([lifetime experiment](experiments/lifetime/README.md#training-through-deployment)). Computation records beyond the recent-experience window, retrieval, goals and subgoals, action adapters, and consolidation of adapters into shared parameters are not yet part of it.
+For encoded event tokens \(E_t\),
 
-One model means shared trained representations, objectives, and persistent state, not a requirement that every operation execute in one kernel. Frozen image or language encoders can provide initial features, with their costs and training status reported. The current convolutional maze planner remains a comparison; it is not silently substituted for the GRU/Transformer core.
+\[
+u_t=\operatorname{Attention}(h_{t-1},E_t,E_t),\qquad
+h_t=\operatorname{GRU}(P(u_t),h_{t-1}).
+\]
 
-## State
+Observation updates the fast state. It does not automatically erase the workspace or adapters.
 
-| State | Contents | Update |
+Each refinement uses slot self-attention, cross-attention to fresh context and records, and a feed-forward network:
+
+\[
+Z^{k+1}=\operatorname{LayerNorm}
+F_\theta\!\left(Z^k,[h_t,E_t,M_t]\right).
+\]
+
+The block parameters are shared across refinements. A model can use zero, one, two or four refinements before reconsidering its next internal activity. New input can enter between blocks. During a block already executing on a GPU, the runtime queues arrivals; preemption inside a matrix multiplication is not assumed.
+
+The action head can read \((h_t,Z_{\mathrm{ready}})\) immediately after observation, before any new refinement. Completed refinement replaces \(Z_{\mathrm{ready}}\). The action stream therefore does not depend on completing a long plan or generating a language explanation.
+
+The first model uses residual workspace revision and normalization. The existing keep/revise/restart gate is an ablation, not a required improvement: the available experiments have not established its advantage. Slots have no manually assigned meanings such as “one hypothesis per slot”; such interpretations require a corresponding training objective.
+
+## 4. Prediction and planning
+
+The implemented process predictor estimates the next scalar reading's mean and variance for each candidate action. Its first layer has an instance-owned rank-8 adapter. Action scores can read these predictions. The numeric distance-to-setpoint term is specific to process tasks and is disabled for unrelated tool tasks.
+
+The integrated prediction extension uses a width-512 latent transition initialized from \([h_t,\operatorname{pool}(Z_t)]\). A residual two-layer MLP conditions each transition on an action embedding and elapsed time. Separate readouts predict frozen observation features, numeric measurements, task reward and operation duration. Future feature targets come from the frozen perception towers; prediction targets are tied to actual returned observations.
+
+Short imagined action sequences use repeated transitions of this same model. Their outcomes inform the action head or supply training examples for a faster policy. The first implementation does not require pixel generation or a large language model in every control step.
+
+## 5. Proactive activity and goals
+
+The model receives a continuing objective. It can then initiate an observation, experiment, tool call or internal calculation without another instruction.
+
+External action and internal work use separate heads. An activity has an operation, target and budget. Available operations are:
+
+- request a sensor reading, image, document or tool result;
+- refine the workspace or compare candidate actions;
+- retrieve earlier experience;
+- update an instance adapter from received outcomes;
+- rehearse experience or distill useful computation;
+- wait until a chosen reconsideration time or an arriving event.
+
+The existing code learns measurement and refinement/learning choices. Retrieval, general tool targets, subgoals and reconsideration time extend this policy; they are not yet trained capabilities.
+
+A subgoal is a task-grounded target with an estimated completion value and duration. In digital experimentation, candidates include measuring a variable, testing a candidate condition, acquiring a required object or repeating a measurement. The policy selects and revises them using downstream task return. Free-form goal descriptions alone are not an objective.
+
+Value, prediction uncertainty, expected duration, progress and pending operations provide computational self-assessment. Routine states can take a short path; difficult or informative states can receive more computation. Quiet periods can use replay or wait. Useful continuity does not require full GPU utilization.
+
+## 6. Memory, learning and consolidation
+
+Three forms of persistence have different jobs:
+
+| Form | Stored content | How it changes |
 | --- | --- | --- |
-| Context \(h_t\) | Received observations, executed actions, elapsed time, current goal, pending requests | On arriving events and elapsed time |
-| Workspace \(Z_t\) | A fixed number of latent slots holding ongoing inference | Context-conditioned reading, revision, and shared refinement |
-| Computation memory \(M_t\) | Selected intermediate states and the conditions under which they were computed | After useful computation; bounded retention |
-| Operations \(q_t\) | Computation depth, timing, pending requests, recent operations, predicted operation value | At operation boundaries |
-| Experience \(D\) | Observation–action–outcome trajectories | During interaction; consumed by training |
-| Goals \(g_t\) | Continuing objective and proposed subgoals | On received instructions and learned subgoal choices |
-| Local adaptation \(\eta_t\) | Prediction/action adapters and their optimizer state | Model-selected learning operations within one lifetime |
-| Shared parameters \(\theta\) | Encoders, recurrence, refinement, memory operations, and policy heads | Training across lifetimes and measured consolidation |
+| Activations | Current context and unfinished inference | Observation and refinement |
+| Episodic memory | Received events, executed actions, outcomes, useful computation summaries and their generating context | Append during interaction; retrieve by learned compatibility |
+| Parameters | Local prediction/action adapters and shared abilities | Gradient updates and distillation |
 
-Computation memory and experience have different roles. A computation record helps resume or adapt an unfinished calculation. An experience supplies observations and outcomes for prediction and learning. They may refer to the same interaction without being interchangeable.
+The selected long-term reader retrieves eight event/experience records and projects them into the workspace context. Store the observation interval, goal and parameter version of a computation summary. Its relevance is learned from subsequent prediction and task performance. Recording a dependency does not by itself determine whether old reasoning remains useful.
 
-```mermaid
-flowchart TD
-    E[Arriving events] --> C[Recurrent context]
-    C --> R[Read and revise]
-    M[Computation memory] --> R
-    Z[Persistent workspace] --> R
-    R --> F[Shared refinement]
-    F --> Z
-    F --> M
-    C --> P[Action and activity policies]
-    Z --> P
-    P --> F
-    P --> W[Environment and tools]
-    W --> E
-```
+Within an adaptation interval, shared state-producing parameters remain fixed. Prediction adapters can change without changing the coordinates of the current workspace. Action adapters are the next parameter group; the existing lifetime learner updates prediction adapters only.
 
-## Context and action
+Training across lifetimes optimizes the shared representation and the learning procedure together. Quiet-period consolidation initially updates prediction/action parameters using old and recent episodes plus task-grounded distillation. Updating the shared state encoder during a live run also requires recomputing state under the new version. A bounded replay prefix is an approximation to full history and is evaluated as such.
 
-For received event features \(e_t\), goal \(g_t\), and elapsed time \(\Delta t\),
+Retrieving an old experience is preferred to blindly overwriting current adapters with an old snapshot. Newer learning must remain available when a previous condition returns.
 
-\[
-h_t=R_\theta(h_{t-1},e_t,a_{\mathrm{executed}},\Delta t,g_t),
-\qquad c_t=P_\theta(h_t,g_t).
-\]
+## 7. Training and GPU execution
 
-The implemented core uses a GRU. Gated matrix recurrence is the next backbone comparison with the same inputs, workspace, and output heads. The [sequence-model survey](ref/SEQUENCE_MODELS.md) describes these existing recurrence families. The prototype defaults to width 128, four workspace slots, eight memory records, and four attention heads; these are configurable engineering settings.
+[TRAINING.md](TRAINING.md) specifies one integrated progression: initialize multimodal projections and action/prediction heads from trajectories; jointly train action and activity over persistent lifetimes; differentiate through selected local learning steps; consolidate on mixed old and recent experience.
 
-A goal change enters the context at the next assimilation. The event-driven extension will retain both capture and arrival times for delayed observations and represent outstanding tool calls until their results arrive. Sensor observations, model predictions, and summaries of internal computation will use distinct input types.
+Use BF16 for dense perception and Transformer operations, with FP32 recurrent state and adaptation reductions in the current implementation. Batch independent streams, keep the workspace bounded, cache frozen input features during replay, and group internal work by selected depth. Compile stable shapes after measuring the eager implementation.
 
-The action head reads fresh context and the latest completed workspace:
+The present refinement implementation uses dynamic row selection and a Python loop. It is functional batched code, not a claim of an optimized CUDA scheduler. H100/A100 latency must include perception, state update, refinement, learning contention and action application.
 
-\[
-a_t\sim\pi_{\mathrm{act},\theta}(a\mid c_t,Z_{\mathrm{ready}}).
-\]
+On two H100s, start with one homogeneous training pool; assign CPU processes to environments and storage. Use the second GPU for synchronized training when scaling is measured, or for concurrent collection/evaluation. A100 machines can collect data and run independent seeds. Mixed H100/A100 synchronization is not assumed to improve throughput.
 
-All comparison models receive the same fresh-context path. An external action therefore need not wait for a full planning cycle. A valid applied control continues between updates; the task defines its duration and how a new control replaces it.
+## 8. Application and scientific contribution
 
-## Persistent computation
+The first application is a **digital experimental operator**: receive an objective, observe instruments or a visual workspace, choose measurements and interventions, wait for delayed results while continuing useful work, revise predictions, and retain what was learned.
 
-The workspace has \(S\) slots of width \(d\). A shared Transformer refines it repeatedly:
+Two complementary evaluations serve that application:
 
-\[
-Z^{k+1}=F_\theta(Z^k,c_t).
-\]
+1. The existing instrument/thermal processes measure continual control, delayed feedback, adaptation and elapsed-time behavior under controlled conditions.
+2. [DiscoveryWorld](https://github.com/allenai/discoveryworld) is the selected external task suite for visual scientific interaction and experiment sequences. Its adapter and training integration remain to be built. Preserve its official protocol and scores; an independently timed extension is a separately reported setting.
 
-In the prototype, refinement adds a projected current context to each slot and applies self-attention across slots. Recent observations enter through the recurrent context; retrieved records enter through the workspace initialization. Residual updates let further computation develop the existing partial state.
+These task suites keep the same core architecture. Tool schemas and output heads differ. Neither benchmark alone covers general multimodal agency, lifetime learning and real-time execution.
 
-At each short computation boundary, new events update \(c_t\). Further refinement uses that context. The workspace is consequently a state of ongoing calculation, rather than a sequence that must finish before another input can enter.
+The research mechanism is **jointly training ongoing inference and parameter adaptation through interruptions and subsequent actions**. The model should learn when useful partial computation can continue, when new observation deserves more computation, and when learning from an outcome improves later decisions. Pretrained perception supplies input competence; it is not the claimed contribution.
 
-The next integrated model includes action-conditioned prediction of future received observations, rewards, and outcomes. Explicit imagined rollouts remain a comparison at the same interaction budget; prediction can also be read directly without expanding a search tree.
+Compare a recurrent policy, a restarted workspace, persistent inference without local learning, fixed learning/compute schedules, and the joint model with the same perception and resource accounting. Include strong task-native agents. A paper contribution requires improvement attributable to the proposed state/training mechanism; modular composition alone does not establish it.
 
-## Computation records
+## 9. Code boundary
 
-The prototype stores a fixed-capacity ring of whole-workspace records:
+| Component | Code / state |
+| --- | --- |
+| Frozen image/text towers, projection, masks, feature cache interface | Implemented in [cdm/multimodal.py](cdm/multimodal.py) |
+| Multimodal assimilation and direct workspace attention | Implemented in the same module and [cdm/core.py](cdm/core.py); tested with small real Siglip towers |
+| Persistent core, process predictor, activity/action heads, prediction adapters | Existing implementation and structured-process experiments |
+| Correct option-value policy gradient | Fixed in [experiments/lifetime/train.py](experiments/lifetime/train.py); detached centering weights |
+| Full pretrained-weight multimodal training | Not run in this update |
+| Long-term retrieval, prediction extension, tool/subgoal heads, action adapters and consolidation | Specified above; implementation remains |
+| Autonomous digital experimentation | Application target; not a completed result |
 
-\[
-m_j=(U_j,\xi_j,g_j,d_j,\nu_j,k_j,n_j),
-\]
-
-where \(U_j\) contains intermediate computation, \(\xi_j\) is its generating recurrent context, \(g_j\) and \(d_j\) are its goal and environment descriptors, \(\nu_j\) is the parameter version, and \(k_j\) tracks computation depth. After mixing records, depth is a weighted history statistic rather than an exact count of the operations needed to reconstruct the mixed state. Reading excludes records from other parameter versions. The current workspace is also a read candidate.
-
-The ring has fixed capacity \(B\). Its initial writing rule appends the completed workspace at selected boundaries. Learned writing and eviction follow the comparison with this fixed rule. A continuation state can contain more than the final action, allowing subsequent refinement to resume intermediate work.
-
-The event index \(n_j\) identifies the received observation prefix available when a record was written. The event-driven extension adds source-specific observation scopes and timestamps. Exact duplicate handling belongs in that extension's reader. Retrieval updates computational features; it does not create another sensor observation or automatically increase an observation count.
-
-## Condition-factorized reading and revision
-
-The implemented reader learns separate goal, environment, and recurrent-context similarity terms, together with a depth score. For compatible record \(j\),
-
-\[
-s_j=\frac{
-\langle q_g(g_t),q_g(g_j)\rangle+
-\langle q_d(d_t),q_d(d_j)\rangle+
-\langle q_c(c_t),k_c(\xi_j)\rangle}{\sqrt{3d}}
-+b_\theta(\log(1+k_j)),
-\qquad \alpha_j=\operatorname{softmax}_j(s_j).
-\]
-
-The weighted workspace \(\bar U=\sum_j\alpha_j U_j\) is revised from differences between current and retrieved context, goal, and environment representations. A slotwise gate mixes reuse, revision, and fresh initialization:
-
-\[
-\widetilde Z_{t,s}
-=\rho_{s,0}\bar U_s
-+\rho_{s,1}\left(\bar U_s+A_\theta(\bar U_s,\Delta c,\Delta g,\Delta d)\right)
-+\rho_{s,2}I_\theta(c_t)_s,
-\qquad \sum_{r=0}^{2}\rho_{s,r}=1.
-\]
-
-Shared Transformer refinement continues from \(\widetilde Z_t\). The factors are learned representations of supplied descriptors. Training varies goals, environment conditions, and observations independently and jointly to test whether the reader learns useful reuse under these changes.
-
-The current reader mixes whole-workspace records before slotwise adaptation. A later groupwise reader can preserve several distinct candidate continuations. The associated comparison asks whether mixing destroys useful alternatives and whether joint slot interactions justify the additional computation.
-
-The proposed contribution is learned reuse of partial computation under changing conditions, trained for subsequent decisions. It includes continued refinement and reuse after a context returns. Exact context restoration is compared with snapshot retrieval. Partial restoration and continuous change test whether conditional reuse adds more than caching.
-
-Low-rank context correction remains an optional revision parameterization. The earlier [transport study](research/COMPUTATION_TRANSPORT.md) is a separate numerical experiment and comparison, rather than the defining CDM method.
-
-## Computation organised by premise
-
-Records conditioned on their generating factors are one route to reuse. A second route organises the workspace itself by what each part depends on, so that a change invalidates only the computation built on the changed premise and that computation is rebuilt from the parts that remain valid. The spatial planners in [cdm/planner.py](cdm/planner.py) test this on mazes whose doors, obstacles, and goals change during computation ([experiments/dynamic_maze](experiments/dynamic_maze/README.md)).
-
-The factorized planner keeps a map workspace \(m\), computed from the map alone, and a goal workspace \(g\):
-
-\[
-m\leftarrow G_m(m,x_{\mathrm{map}}),\qquad
-g\leftarrow G_g\big(g,m,x_{\mathrm{map}},m(\gamma),\mathbb 1_\gamma\big),
-\]
-
-where \(m(\gamma)\) is the map workspace read at the goal cell \(\gamma\) and broadcast to every cell. When the goal moves, \(g\) is rebuilt from \([m,m(\gamma),x_{\mathrm{map}},\mathbb 1_\gamma]\) and \(m\) is kept. When the map changes, both continue under the new map. The read at the goal cell acts as a goal embedding computed from the map, as in [universal value function approximators](https://proceedings.mlr.press/v37/schaul15.html) and the [successor representation](https://doi.org/10.1162/neco.1993.5.4.613); here the re-targeted plan is refined further by the same block, and the map computation is repaired in place when doors or obstacles move. Restart, carry, restart on goal moves, snapshot and nearest-context retrieval, and learned per-cell or whole-map readers over stored workspaces share the refinement block and readout of the single-workspace planner, at matched computation per refinement.
-
-## Activity policy
-
-The existing sequence prototype provides observation, computation, and action logits together with a value head. The next integrated model trains the full interface below, using the same context, workspace, goal, pending requests, and summaries of its learning state. Useful self-assessment quantities include predicted task success, prediction uncertainty, operation duration, and expected improvement from an operation; observed outcomes train these estimates.
-
-| Activity | Output | Effect |
-| --- | --- | --- |
-| Observe | Sensor, measurement configuration, or information request | Receives additional input after its delay |
-| Compute | Refinement depth or a prediction branch | Develops the current workspace |
-| Retrieve | Query and record budget | Makes earlier computation available for adaptation |
-| Act | Control, tool arguments, or communication request | Changes the environment or communicates a result |
-| Learn | Experience selection, parameter group, and update budget | Updates prediction or action adapters; later task return trains the choice |
-| Set subgoal | Intermediate target, experiment, or information objective | Directs subsequent work within the continuing task |
-| Wait | Reconsideration interval | Keeps the present action while requests or physical processes proceed |
-
-The fast action readout remains available at every boundary, including when the selected activity is internal computation. The runtime supplies clocks, inputs, and operation execution. The trained policy decides which operation to perform and what to do with its result.
-
-An operation is useful when its expected future return exceeds that of available alternatives after its duration and resource use. A large uncertainty or a large planning error alone does not determine the choice: an inexpensive measurement may resolve little, while a brief computation may substantially improve an action, or vice versa.
-
-The [continual agent](experiments/continual_agent/README.md) implements a first version of this interface for grid tasks. Each tick its activity head chooses how many refinements to run (0, 1, 2 or 4), whether to request a full observation, and whether to move; refinements and movement share the tick, and the observation returns two ticks later while the agent continues. Its state is the planner's workspace, the last seen map with the age of every cell, and counters of time since the last request and survey. The head is trained with PPO on reward minus computation and observation costs. Refinements it leaves unused pay for online learning steps of the planner. Learning-operation selection, joint training of head and planner, and autonomous subgoal generation extend this interface.
-
-## Execution and GPU layout
-
-The prototype exposes each operation separately so an environment can advance between them:
-
-```python
-state = model.assimilate(state, observations, goals, environments,
-                         previous_action=previous_action, elapsed=elapsed)
-state, memory_read = model.read_memory(state)
-state = model.refine(state, steps=1)
-output = model.readout(state)
-state = model.write_memory(state)
-```
-
-The integrated actor uses short bounded blocks and a fast action path. Event-time training advances the environment through every operation's duration while applied control continues; it also models new observations arriving during that interval. A separate execution mode runs the environment clock independently of neural computation and learning. Capture, arrival, incorporation, action generation, and action application receive separate timestamps. An uninterrupted GPU kernel cannot be instantly preempted by the model, so refinement block size determines the earliest point at which new input can change that computation.
-
-Use fixed slot count, fixed memory capacity, and fixed retrieval count for dense batched kernels. Gathered records feed ordinary projections and attention. Selective activity does not imply lower latency by itself; factor construction, lookup, padding, data movement, and action readout are included in end-to-end timing.
-
-Larger neural configurations retain this layout. Scale width, recurrent depth, and environment batch size after measuring quality against computation. Training batches parallelize independent trajectories. Within one trajectory, context recurrence and successive refinement retain their temporal dependence.
-
-Implement continuing control alongside refinement and learning in the same development cycle. Streams alone do not guarantee concurrency when a long GPU kernel occupies the device; measure kernel duration and action delay under the actual workload. Parameter publication occurs at operation boundaries, with transfer and state-update time included. Batch-one action latency is measured independently from training throughput. Quiet intervals may select little compute or useful replay; measure device energy to distinguish reduced work from a lower-power operating mode.
-
-## Learning during extended operation
-
-Training learns both shared parameters \(\theta\) and an activity policy for updating the instance-specific parameters \(\eta_t\) from experience. At deployment, \(\eta_t\), state, memory, and experience persist across requests and changes of operating conditions. Each independently evaluated agent owns its adaptation state.
-
-An online learning operation has a duration and a chosen input batch. It may train prediction from delayed observations and executed actions, rehearse earlier experience, or distill deeper computation into a fast readout. Prediction loss supplies an update direction; improvement in later task return supplies the value of choosing that update. The activity policy is not rewarded just for executing an update or reducing loss on its training batch.
-
-Consolidation evaluates newly acquired abilities on later and returning tasks. When shared state-producing parameters change, reconstruct from a retained event prefix or use a trained state conversion and include its latency. A reconstruction for an explicitly measured parameter conversion differs from silently clearing state whenever a task changes.
-
-The existing operation script pools several streams and triggers learning from accumulated compute credits. It implements useful comparisons, but does not yet implement the learned per-instance adaptation specified here. [TRAINING.md](TRAINING.md) defines the optimization and [EXPERIMENTS.md](EXPERIMENTS.md) the acquisition, retention, and transfer comparisons.
-
+The next integration is a trajectory/environment adapter that connects multimodal events to the lifetime learner, followed by joint training. A new encoder implementation does not require redesigning the persistent core.

@@ -1,6 +1,63 @@
 # Data and training
 
-The [supervised pilot](experiments/neural_pilot/README.md) trains the implemented [CDM core](cdm/model.py) on sequential contextual recall. It compares workspace reset, workspace carry, and memory reading using action cross-entropy after each refinement. Activity and value heads are not trained by this objective. The next main training run jointly trains environment interaction, activity selection, and adaptation over continuing lifetimes. The numbered sections below specify objectives and initialization dependencies; they are not separate research projects that must each reach their best score before integration. Current commands are in [RUNNING.md](RUNNING.md).
+## First multimodal training route
+
+The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Image, short-text and numeric inputs enter one persistent core. The new frontend is implemented; connecting a multimodal trajectory/environment adapter to the lifetime trainer is the next integration. Existing lifetime commands still train structured process events.
+
+| Training phase | Updated parameters | Data and objective |
+| --- | --- | --- |
+| Representation and behavior initialization | Input projections, GRU, workspace, predictor and action heads | Observation–action–outcome sequences; action imitation and outcome prediction at zero and nonzero refinement depths |
+| Joint interaction | The same shared core plus activity/value heads | Recurrent PPO over continuing lifetimes; prediction of received outcomes; operation value targets where useful |
+| Learning during interaction | Instance adapters during deployment; shared parameters through replayed adapter updates during training | Loss on outcomes after the learning step, using only experience available when that step occurred |
+| Quiet-period consolidation | Initially prediction/action parameters; later shared representations with state recomputation | Mixed recent and older experience, and distillation from useful deeper computation into the fast policy |
+
+These are initialization and optimization phases of one model. Do not require each auxiliary task to reach its best isolated score before integration.
+
+### Trajectory adapter
+
+Each training item identifies a lifetime and an interval of arrival-ordered events. Store capture/arrival/action times, input assets, observed numeric values and presence fields, instruction chunks, pending requests, the executed action, chosen internal activity, returned outcomes, reward and terminal flags. Preserve the distinction between a training-window boundary, a changed task, and the end of a lifetime.
+
+Cache frozen image/text features once per asset and encoder revision. Apply the trainable projections during each training pass. Do not duplicate an unchanged cached image as a new independent measurement. During deployment, recompute perception when an image or instruction changes; numeric/timing events can update the model between expensive perception passes.
+
+Start from available task-native interaction trajectories and reference policies. Report any reference policy's extra simulator information; its labels can initialize behavior without giving that information to CDM. Split environments, generated scientific rules, task compositions and collection seeds before making tensor windows. Public evaluation demonstrations are not training examples for that same evaluation split.
+
+The first image/text task adapter targets DiscoveryWorld's official observation/action API. The existing instrument and thermal families remain the independent-time and adaptation experiments. A benchmark's standard step count and a wall-clock task duration are different quantities.
+
+### Starting optimization settings
+
+Freeze the pretrained image/text towers. Start AdamW at **1e-4** for new projections/core parameters, with gradient norm clipping at **1.0**; tune on validation trajectories. Use BF16 dense computation and FP32 recurrent state and adaptation reductions. Start with **32-event unrolls**, **256-event rollout windows**, and **128 streams per GPU**, adjusting batch size from measured memory and throughput. These settings are a starting configuration, not measured optimal values.
+
+Retain state, workspace, memory and instance adapters across tensor windows. Recompute representations under the current shared parameter version when replaying a window; include a preceding context segment and report its length. A finite context segment does not exactly reconstruct an arbitrarily long recurrent history.
+
+Train action/prediction readouts at depths 0, 1, 2 and 4. The depth-zero path learns useful immediate behavior; additional computation must improve subsequent decisions enough to cover its time and resource use. Train under delayed observations and input arriving between refinement blocks.
+
+During joint training, optimize action and activity return, value regression, action-conditioned prediction and adaptation on future outcomes. Use duration-aware discounting for operations with unequal durations. Fixed-depth schedules and fixed learning schedules share the same observation encoder and action head for comparison.
+
+### Learning that persists
+
+Prediction adaptation is already implemented in the lifetime model. Its deployed-update objective replays the actual learning choices and their then-available buffers. Action adapters, long-term episode retrieval, general tool/subgoal choices and consolidation still need integration.
+
+The proposed action-adapter update uses recent on-policy action returns. Older experience supports prediction, value learning or explicitly defined teacher distillation; stale action log-probabilities are not treated as fresh PPO data. Training must include revisited conditions and later tasks so that useful retention receives a learning signal.
+
+During quiet intervals, train on both recent and retained episodes. Distill a deeper policy only on tasks where its actions improve measured outcomes, or use a task-native reference. Repeatedly matching a model's own unsupported prediction is not a source of new observations. Evaluate the resulting fast policy on held-out interactions and returning task conditions.
+
+### Option-value gradient correction, 19 October 2026
+
+The previous activity-value term centered estimated values with the same differentiable probabilities used to weight the loss. Its gradient canceled. The implemented function now uses **detached centering weights and detached estimates**, so the activity head receives the expected-value gradient while the value estimator keeps its separate regression objective.
+
+The regression test compares this gradient with direct expected-value optimization, checks both activity factors and masked options, and checks that the value estimator receives no gradient from this policy term. This fixes an auxiliary policy-learning term; it does not establish a new performance result or change the meaning of already published process-prediction experiments.
+
+### Evaluation and scaling
+
+Report official task completion and reward; adaptation speed after a change; performance when an earlier condition returns; task transfer; and the contribution of state, retrieval and parameter updates. Measure capture-to-applied-action latency, its median/p95/p99, action age, observation/compute counts, GPU memory, and total training/inference time. Measure energy directly before claiming power savings.
+
+Use the same encoder and training data for recurrent, restarted-workspace, persistent-workspace and learning comparisons. Include task-native reference agents separately. Account for all failed and completed training runs in total compute.
+
+Use the two H100s for the main training/collection workload. Additional A100 machines can run independent seeds, fixed comparisons and data collection without forcing a heterogeneous synchronous group. Increase throughput after a complete observation–action–outcome–update path works; a longer run of an ineffective objective does not replace that integration.
+
+## Existing studies and detailed objectives
+
+The [supervised pilot](experiments/neural_pilot/README.md) trains the older [sequence core](cdm/model.py) on contextual recall. The [lifetime experiment](experiments/lifetime/README.md) trains the current [continual core](cdm/core.py) on structured process events. The sections below retain their data contracts and training mechanisms. [RUNNING.md](RUNNING.md) separates executable commands from the new integration work.
 
 ## Interaction data
 
@@ -21,9 +78,9 @@ Sequence batches follow arrival order while retaining capture time. Numeric even
 
 Split collection runs, layouts, dynamics, goal combinations, and random seeds before constructing training windows. Evaluate new factor combinations separately from longer sequences and changed timing. Repeated contexts must occur within trajectories so reuse can be learned; held-out trajectories and task combinations remain separate.
 
-## Environment distribution
+## Task distributions
 
-The initial grid distribution contains changing doors, goals, and obstacle positions. Each operation consumes a specified interval. Use three regimes: full context return, return of only some conditions, and continued change without exact repetition. Every method receives the current observations at its action head.
+The existing grid study contains changing doors, goals, and obstacle positions. Each operation consumes a specified interval. Use three regimes: full context return, return of only some conditions, and continued change without exact repetition. Every method receives the current observations at its action head.
 
 Reference planners initialize behavior from the information assigned to them. Record whether a reference uses the agent's observation history, a reconstructed map, or full simulator state. A planner with extra information can be a teacher or performance reference without becoming a student input.
 
@@ -73,7 +130,7 @@ Use these targets to initialize predicted operation values. Improvement divided 
 
 For tasks in which approximate planning references are available, report information-limited and computation-limited performance separately. Their magnitudes describe the current shortfall, whereas operation values estimate what a particular next activity can achieve.
 
-The lifetime trainer implements these continuations as copies of a process that share its future disturbances, readings and condition changes, with the continuation policy sampling under shared noise ([`runtime.branch_values`](experiments/lifetime/runtime.py)); their returns train an activity-value head. Whether such targets carry signal is measured, not assumed: [`branches.py`](experiments/lifetime/branches.py) values the same states twice with independent randomness. One sampled continuation per option repeats with a correlation below 0.1 at horizons of 4 to 32 ticks, so a single choice's consequence is buried in the variability of what follows; continuations on the policy's most probable choices over 4 ticks, averaged over four independent sets, repeat with a correlation of 0.75. The policy follows the head in proportion to the share of fresh continuations' variance it predicts.
+The lifetime trainer implements these continuations as copies of a process that share its future disturbances, readings and condition changes, with the continuation policy sampling under shared noise ([`runtime.branch_values`](experiments/lifetime/runtime.py)); their returns train an activity-value head. Whether such targets carry signal is measured, not assumed: [`branches.py`](experiments/lifetime/branches.py) values the same states twice with independent randomness. One sampled continuation per option repeats with a correlation below 0.1 at horizons of 4 to 32 ticks, so a single choice's consequence is buried in the variability of what follows; continuations on the policy's most probable choices over 4 ticks, averaged over four independent sets, repeat with a correlation of 0.75. The corrected policy term follows the head in proportion to the share of fresh continuations' variance it predicts; the earlier implementation's gradient canceled as described above.
 
 ## 4. Joint activity and action learning
 

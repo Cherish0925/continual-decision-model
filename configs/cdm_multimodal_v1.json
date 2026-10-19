@@ -1,0 +1,97 @@
+{
+  "version": "cdm-multimodal-v1",
+  "selected_on": "2026-10-19",
+  "encoder": {
+    "model_id": "google/siglip2-base-patch16-224",
+    "revision": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+    "frozen": true,
+    "image_size": 224,
+    "patch_size": 16,
+    "image_grid": 4,
+    "text_max_length": 64
+  },
+  "core": {
+    "event_dim": 512,
+    "width": 512,
+    "slots": 8,
+    "heads": 8,
+    "records": 32,
+    "rank": 8,
+    "hidden": 512,
+    "action_width": 256,
+    "bounded_workspace": true,
+    "gated_workspace": false,
+    "adapter_blocks": 1,
+    "activity_values": true,
+    "goal_term": false
+  },
+  "task_fields": [
+    "numeric_dim",
+    "record_dim",
+    "actions",
+    "action_dim",
+    "action_values",
+    "goal_schema",
+    "reward_definition"
+  ],
+  "refinement_counts": [
+    0,
+    1,
+    2,
+    4
+  ],
+  "selected_extensions": {
+    "status": "specified_not_implemented",
+    "retrieved_records": 8,
+    "world_transition_width": 512,
+    "world_prediction_targets": [
+      "frozen_observation_features",
+      "numeric_readings",
+      "reward",
+      "duration"
+    ],
+    "adaptive_parameter_groups": [
+      "prediction",
+      "action"
+    ],
+    "activity_operations": [
+      "observe",
+      "refine",
+      "retrieve",
+      "learn",
+      "consolidate",
+      "wait"
+    ],
+    "output_interfaces": [
+      "control",
+      "typed_tool_request",
+      "subgoal",
+      "language_decoder"
+    ]
+  },
+  "training": {
+    "encoder_updates": false,
+    "optimizer": "AdamW",
+    "initial_learning_rate": 0.0001,
+    "initial_sequence_length": 32,
+    "rollout_window": 256,
+    "initial_streams_per_gpu": 128,
+    "shared_precision": "bfloat16",
+    "recurrent_state_precision": "float32",
+    "adapter_reduction_precision": "float32",
+    "initialization": [
+      "action_imitation",
+      "outcome_prediction"
+    ],
+    "joint_objectives": [
+      "recurrent_ppo",
+      "deployed_adaptation",
+      "activity_value"
+    ],
+    "consolidation": [
+      "experience_replay",
+      "task_grounded_distillation"
+    ],
+    "status": "starting_configuration_not_a_trained_checkpoint"
+  }
+}

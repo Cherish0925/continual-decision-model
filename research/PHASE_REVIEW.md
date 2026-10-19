@@ -1,6 +1,8 @@
-# Phase review: the continual core after two rounds
+# Phase results: the continual core after two rounds
 
-Written 19 October 2026, at revision of the second-round results. It records where the project stands against its objective, what the evidence establishes, what failed and why, and what the next phase must do. Numbers come from [the lifetime results](../experiments/lifetime/RESULTS.md); this document links them rather than restating every table.
+**Architecture update, 19 October:** [DESIGN.md](../DESIGN.md) now selects the first multimodal architecture, [the configuration](../configs/cdm_multimodal_v1.json) fixes its dimensions, and [TRAINING.md](../TRAINING.md) defines its integration and optimization. The hypotheses below record the choices considered after the process experiments. The selected memory path retrieves experience; restoring complete old adapters remains a comparison rather than the default.
+
+Written 19 October 2026, at revision of the second-round results. It records where the project stands against its objective, what the experiments show, what failed and why, and what the next phase must do. Numbers come from [the lifetime results](../experiments/lifetime/RESULTS.md); this document links them rather than restating every table.
 
 ## A. Goal and value
 
@@ -35,7 +37,7 @@ Publication requires these on public tasks, against strong existing methods at m
 
 ## B. Understanding and judgment
 
-### b1. What the evidence establishes
+### b1. What the experiments show
 
 **First round** (eight settings, five seeds):
 
@@ -69,8 +71,8 @@ CDM's emphasis is their coupling in time: the same model acts, observes, compute
 
 **The converse is just as consistent: a mechanism whose benefit the training signal does not reach is not learned.**
 
-- The workspace gate kept one option because nothing rewarded choosing.
-- The adapter bank's selector was rewarded only within a window where one block suffices.
+- The workspace gate kept one option. Insufficient benefit from conditional revision is a possible explanation to test.
+- The adapter bank's selector collapsed. Short-window learning may limit retention, but this has not been established as the cause.
 - Activity values could not guide the policy through a term that had no gradient.
 
 ### b4. Judgment and research taste
@@ -94,8 +96,7 @@ These are errors of method, not of compute. The rules adopted follow from them:
 | Experience kept until a situation returns; consolidation; skills | Not achieved |
 | Continuing and revising unfinished inference | Computation persists and pays; revision of unfinished work is not shown |
 | Proactive goals, experiments and research | Not implemented beyond choosing measurement, compute and learning |
-| Insight, intuition, research taste | Not implemented and not measured |
-| Multimodal input, language, tools | Not implemented |
+| Multimodal input, language, tools | Not part of the two trained rounds; image/text input integration was added afterward, as specified in [DESIGN.md](../DESIGN.md). General language/tool behavior remains untrained. |
 
 ## C. Problem and theory
 
@@ -116,7 +117,7 @@ A capability is acquired only if two conditions hold:
 1. the task makes it pay;
 2. training carries that payoff back to the parameters that produce it.
 
-The evidence above agrees in every case examined: learning paid once the objective replayed the deployed updates, and failed while it did not. The gate, the bank and the activity values each lacked one of the two conditions. Long horizons weaken the second condition without removing it: the critic bootstraps across windows, but a discount of 0.995 leaves 0.24 % weight on returns 1,200 ticks away, and direct gradients through computation and updates span at most one window.
+The comparisons above show that learning paid once the objective replayed the deployed updates, and failed while it did not. The activity-value policy term had no gradient. The gate and adapter bank also failed to improve performance, but the proposed explanations for their collapse require separate experiments. Long horizons weaken the second condition without removing it: the critic bootstraps across windows, but a discount of 0.995 leaves 0.24 % weight on returns 1,200 ticks away, and direct gradients through computation and updates span at most one window.
 
 ### c3. Structure
 
@@ -175,7 +176,7 @@ Each comes with a test that can fail.
 | --- | --- |
 | Deployed-step replay | Works |
 | Precise targets with sensor noise | Helps |
-| Evidence-scaled steps | In every learning variant; not separately ablated |
+| Gradient-scaled steps | In every learning variant; not separately ablated |
 | Unrolled workspace with gate | No gain |
 | Recomputed predictions | Part of the unrolled package, no gain |
 | Values from copies | Repeatable only short and averaged; following them untested |

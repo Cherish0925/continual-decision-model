@@ -2,6 +2,8 @@
 
 **Literature cutoff: 15 October 2026.**
 
+[Pretrained component selection](PRETRAINED_COMPONENTS.md), dated 19 October 2026, records the SigLIP 2 checkpoint, input interface and the external scientific-interaction suite selected for the first multimodal implementation.
+
 The collection contains 122 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
 
 | Area | Survey |

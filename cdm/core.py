@@ -81,11 +81,11 @@ class Block(nn.Module):
         self.cross_attn = nn.MultiheadAttention(width, heads, batch_first=True)
         self.mlp = nn.Sequential(nn.Linear(width, 4 * width), nn.GELU(), nn.Linear(4 * width, width))
 
-    def forward(self, z: Tensor, context: Tensor) -> Tensor:
+    def forward(self, z: Tensor, context: Tensor, padding_mask: Tensor | None = None) -> Tensor:
         q = self.n1(z)
         z = z + self.self_attn(q, q, q, need_weights=False)[0]
         q = self.n2(z)
-        z = z + self.cross_attn(q, context, context, need_weights=False)[0]
+        z = z + self.cross_attn(q, context, context, key_padding_mask=padding_mask, need_weights=False)[0]
         return z + self.mlp(self.n3(z))
 
 
@@ -150,16 +150,28 @@ class ContinualCore(nn.Module):
         age = torch.linspace(1.0, 0.0, r, device=records.device).expand(n, r).unsqueeze(-1)
         return torch.cat((h.unsqueeze(1), self.record(torch.cat((records, age), -1))), 1)
 
-    def refine(self, z: Tensor, h: Tensor, records: Tensor, counts: Tensor) -> Tensor:
-        """Apply each instance's chosen number of shared refinements (counts [n] in 0..4)."""
+    def refine(self, z: Tensor, h: Tensor, records: Tensor, counts: Tensor,
+               observation_tokens: Tensor | None = None, observation_mask: Tensor | None = None) -> Tensor:
+        """Apply shared refinements; optional observation tokens retain image/text structure.
+
+        ``observation_mask`` is True for present tokens. The default path is
+        unchanged for existing structured-event checkpoints.
+        """
         rows = (counts > 0).nonzero().squeeze(1)
         if len(rows) == 0:
             return z
         ctx, zr, cr = self.context(h[rows], records[rows]), z[rows], counts[rows]
+        padding = None
+        if observation_tokens is not None:
+            present = torch.ones(observation_tokens.shape[:2], dtype=torch.bool, device=ctx.device) \
+                if observation_mask is None else observation_mask.bool()
+            padding = torch.cat((torch.zeros(ctx.shape[:2], dtype=torch.bool, device=ctx.device),
+                                 ~present[rows]), 1)
+            ctx = torch.cat((ctx, observation_tokens[rows].to(ctx.dtype)), 1)
         for step in range(int(cr.max())):
             sel = (cr > step).nonzero().squeeze(1)
             zs = zr[sel]
-            new = self.block(zs, ctx[sel])
+            new = self.block(zs, ctx[sel], None if padding is None else padding[sel])
             if self.gate is not None:                        # keep the slot, take the revision, or restart it
                 p = torch.softmax(self.gate(torch.cat((zs.to(new.dtype), new), -1)).float(), -1).to(new.dtype)
                 new = p[..., :1] * zs + p[..., 1:2] * new + p[..., 2:] * self.slots.to(new.dtype)

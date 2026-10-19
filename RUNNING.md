@@ -1,5 +1,33 @@
 # Run and extend CDM
 
+## Multimodal input and state path
+
+Install the optional perception dependencies:
+
+~~~bash
+python -m pip install -e '.[multimodal]'
+~~~
+
+Run the selected pretrained image/text towers through the new CDM state path:
+
+~~~bash
+python examples/multimodal_forward.py --image path/to/observation.png --instruction "Measure the temperature before changing the heater." --device cuda
+~~~
+
+Omit the image argument for a text/numeric event. The example downloads the pinned SigLIP 2 checkpoint and reports tensor shapes before and after refinement. Its CDM projections and core are randomly initialized; it is not a trained task policy. Use [TRAINING.md](TRAINING.md#first-multimodal-training-route) for the required data and training integration.
+
+The tests below use small actual Siglip modules and do not download pretrained weights:
+
+~~~bash
+python -m unittest discover -s tests -p 'test_multimodal.py' -v
+python -m unittest discover -s tests -p 'test_activity_value_gradient.py' -v
+python -m unittest discover -s tests -p 'test_lifetime*.py' -v
+~~~
+
+The existing lifetime training commands below continue to use structured events. The multimodal environment/trajectory adapter and joint trainer are not connected by the forward example.
+
+
+
 ## Install
 
 ```bash
@@ -102,7 +130,7 @@ These checks cover persistent computation, fresh-context actions, batched memory
 
 ## Next integrated implementation
 
-The shared sequence core acting and learning throughout a changing lifetime is implemented for two process families ([experiment](experiments/lifetime/README.md)). Its specification is in [DESIGN.md](DESIGN.md#next-integrated-model), training budgets and objectives in [TRAINING.md](TRAINING.md), and comparisons in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign).
+The continual core acts and learns throughout changing process lifetimes ([experiment](experiments/lifetime/README.md)). The selected multimodal extension is specified in [DESIGN.md](DESIGN.md), training budgets and objectives in [TRAINING.md](TRAINING.md), and comparisons in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign).
 
 | Implementation | State |
 | --- | --- |
@@ -117,4 +145,3 @@ Develop these against one common state/event/action interface. Task adapters and
 Record GPU model/count, memory, interconnect, driver, CUDA, PyTorch version, environment throughput, and model-step timing at setup. Separate collection parallelism from backpropagation batch size and single-instance deployment latency. The research campaign uses measured throughput to allocate the available devices.
 
 Retain source, configurations, raw measurements, and analysis in GitHub. Large datasets and checkpoints have versioned locations and hashes linked from their experiment. Use a separate output directory for each run and retain unsuccessful training attempts alongside completed ones.
-
