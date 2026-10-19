@@ -1,0 +1,89 @@
+{
+ "model": "runs/lifetime/c6/cdm_truncated/seed0/model.pt",
+ "devices": 128,
+ "points": 8,
+ "greedy": false,
+ "replicates": 1,
+ "horizons": {
+  "4": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.0402008593082428,
+    "noise": 0.029972291410790955,
+    "repeatable_share": 0.4621354832988886,
+    "same_best": 0.597122311592102,
+    "policy_regret": -0.02290717512369156,
+    "policy_agrees": 0.47961631417274475
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.01430482603609562,
+    "noise": 0.01636694099997415,
+    "repeatable_share": 0.17574161977195982,
+    "same_best": 0.37688443064689636,
+    "policy_regret": -0.010835706256330013,
+    "policy_agrees": 0.3366834223270416
+   }
+  },
+  "8": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.05486976355314255,
+    "noise": 0.04640193638463719,
+    "repeatable_share": 0.03976782020055162,
+    "same_best": 0.486810564994812,
+    "policy_regret": -0.023938702419400215,
+    "policy_agrees": 0.5179855823516846
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.03190851956605911,
+    "noise": 0.031489541078690696,
+    "repeatable_share": 0.0331990202976692,
+    "same_best": 0.32663315534591675,
+    "policy_regret": -0.01575964130461216,
+    "policy_agrees": 0.2939698398113251
+   }
+  },
+  "16": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.05186596140265465,
+    "noise": 0.05577764508149929,
+    "repeatable_share": -0.09422492689092911,
+    "same_best": 0.513189435005188,
+    "policy_regret": -0.022441690787672997,
+    "policy_agrees": 0.5035971403121948
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.0705290213227272,
+    "noise": 0.056972334381033024,
+    "repeatable_share": 0.08369103883198337,
+    "same_best": 0.32663315534591675,
+    "policy_regret": -0.02461540512740612,
+    "policy_agrees": 0.29145729541778564
+   }
+  },
+  "32": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.07929170876741409,
+    "noise": 0.06974308762928105,
+    "repeatable_share": -0.04730066219128395,
+    "same_best": 0.4892086386680603,
+    "policy_regret": -0.033097874373197556,
+    "policy_agrees": 0.5347721576690674
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.06372737139463425,
+    "noise": 0.07039911386306524,
+    "repeatable_share": -0.05989064070346764,
+    "same_best": 0.286432147026062,
+    "policy_regret": -0.030051495879888535,
+    "policy_agrees": 0.2989949882030487
+   }
+  }
+ }
+}

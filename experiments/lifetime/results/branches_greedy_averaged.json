@@ -1,0 +1,49 @@
+{
+ "model": "runs/lifetime/c6/cdm_truncated/seed0/model.pt",
+ "devices": 128,
+ "points": 8,
+ "greedy": true,
+ "replicates": 4,
+ "horizons": {
+  "4": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.030272485688328743,
+    "noise": 0.013831557815130839,
+    "repeatable_share": 0.7773890121116712,
+    "same_best": 0.7913669347763062,
+    "policy_regret": -0.01739603653550148,
+    "policy_agrees": 0.4460431635379791
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.01425583939999342,
+    "noise": 0.007802981922520883,
+    "repeatable_share": 0.6858451961066018,
+    "same_best": 0.3680904507637024,
+    "policy_regret": -0.010194184258580208,
+    "policy_agrees": 0.24748744070529938
+   }
+  },
+  "8": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.025760160759091377,
+    "noise": 0.015179793352145829,
+    "repeatable_share": 0.6163307340222586,
+    "same_best": 0.6810551285743713,
+    "policy_regret": -0.01414499431848526,
+    "policy_agrees": 0.5155875086784363
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.019143326207995415,
+    "noise": 0.014128041138069739,
+    "repeatable_share": 0.3933499752383511,
+    "same_best": 0.30276381969451904,
+    "policy_regret": -0.013011601753532887,
+    "policy_agrees": 0.24120603501796722
+   }
+  }
+ }
+}

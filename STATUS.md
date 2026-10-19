@@ -4,7 +4,7 @@ Status at **17 October 2026**. Planner numbers come from release [v0.2.0](https:
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; the instance's own parameter updates have not yet improved its control, except a little on unfamiliar dynamics when the shared network is trained through those updates. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Recall of situations met before, revision of inference in progress, and proactive work are not yet achieved. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## The intended model
 
@@ -122,7 +122,9 @@ Source: [latency measurements](experiments/dynamic_maze/results/latency.json) an
 
 ### Continual core on process lifetimes
 
-Eight settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
+A second round trains the core through the process it is deployed in, on instruments that also ask for their largest output (errors not comparable with the table below). With its own updates the model reaches 0.153 ± 0.003, with them discarded at matched compute 0.307, and without learning 0.326; predictions only reach 0.307 ± 0.037. Error after a condition change falls from 0.40 to 0.09 with learning and stays at 0.29 without. Unrolling the workspace across events, a gated workspace, an adapter bank and values from copies of processes did not help ([results](experiments/lifetime/RESULTS.md#second-round-training-through-deployment)).
+
+First round: eight settings of one 35.9 M-parameter model, five seeds of 2·10⁷ interactions each, evaluated over one uninterrupted 16,384-tick lifetime on 512 newly sampled instruments whose operating conditions change and return without announcement. Error is the tracking error while a request is active; a controller that knows the true steady response scores 0.115.
 
 | Setting | Error | Estimated GPU µs per tick |
 | --- | ---: | ---: |
@@ -158,7 +160,7 @@ Recurrence, gating, memory, iterative planning, active observation, and computat
 
 ## Remaining work that directly serves the objective
 
-**Make the instance's own learning pay.** Trained through the steps it actually takes, the continual core's updates lowered error by a third in a one-seed pilot. The second-round campaign tests this with seeds, held-out dynamics, single-step meta-training, cheap targets only and no learning, and tests adapter blocks for returning conditions. Measure acquisition, retention on returning conditions, and total compute together.
+**Carry learning during operation to retention and public tasks.** Trained through the learning steps it actually takes, the continual core's updates halve its error against discarding them (0.153 against 0.307, three seeds; [second round](experiments/lifetime/RESULTS.md#second-round-training-through-deployment)). Situations met before are not yet recalled, inference in progress is not yet revised, and the method has not been compared with existing adaptation methods on public tasks. The next phase starts from a stated computational design and from measuring, before training, how much each capability can pay in a task ([phase review](research/PHASE_REVIEW.md)).
 
 **Keep control on time at scale.** Control runs beside learning on its own stream up to tens of instances; at hundreds, learning must be bounded so that control keeps its deadlines. Measure capture-to-action timing on physical devices.
 

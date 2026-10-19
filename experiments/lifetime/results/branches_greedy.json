@@ -1,0 +1,89 @@
+{
+ "model": "runs/lifetime/c6/cdm_truncated/seed0/model.pt",
+ "devices": 128,
+ "points": 8,
+ "greedy": true,
+ "replicates": 1,
+ "horizons": {
+  "4": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.04152057692408562,
+    "noise": 0.03270074667448464,
+    "repeatable_share": 0.37876109139131786,
+    "same_best": 0.6666666865348816,
+    "policy_regret": -0.022898539900779724,
+    "policy_agrees": 0.486810564994812
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.02137468196451664,
+    "noise": 0.017789726409470814,
+    "repeatable_share": 0.2464541025660061,
+    "same_best": 0.393216073513031,
+    "policy_regret": -0.013866696506738663,
+    "policy_agrees": 0.28015074133872986
+   }
+  },
+  "8": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.047556072473526,
+    "noise": 0.041510805151660064,
+    "repeatable_share": 0.09351531307921618,
+    "same_best": 0.577937662601471,
+    "policy_regret": -0.0218743197619915,
+    "policy_agrees": 0.486810564994812
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.03227042034268379,
+    "noise": 0.029462514741339565,
+    "repeatable_share": 0.050181722739790366,
+    "same_best": 0.31658291816711426,
+    "policy_regret": -0.020275382325053215,
+    "policy_agrees": 0.24748744070529938
+   }
+  },
+  "16": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.06495945900678635,
+    "noise": 0.056756879691445335,
+    "repeatable_share": 0.007133659129712274,
+    "same_best": 0.5659472346305847,
+    "policy_regret": -0.024722378700971603,
+    "policy_agrees": 0.5083932876586914
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.06420750170946121,
+    "noise": 0.05628460318045651,
+    "repeatable_share": 0.0025568951861665626,
+    "same_best": 0.311557799577713,
+    "policy_regret": -0.030308034271001816,
+    "policy_agrees": 0.2600502371788025
+   }
+  },
+  "32": {
+   "measurement": {
+    "states": 417,
+    "spread": 0.05592510849237442,
+    "noise": 0.057975972016266884,
+    "repeatable_share": 0.08151382773375318,
+    "same_best": 0.5371702909469604,
+    "policy_regret": -0.02793998084962368,
+    "policy_agrees": 0.4940047860145569
+   },
+   "compute": {
+    "states": 796,
+    "spread": 0.06946609914302826,
+    "noise": 0.07255682177258047,
+    "repeatable_share": -0.012915240203992122,
+    "same_best": 0.22361809015274048,
+    "policy_regret": -0.042340055108070374,
+    "policy_agrees": 0.21984924376010895
+   }
+  }
+ }
+}
