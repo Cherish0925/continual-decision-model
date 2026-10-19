@@ -188,3 +188,14 @@ class BranchTests(unittest.TestCase):
         self.assertFalse(bool(valid[1, 1]))
         self.assertTrue(bool(valid[2].all()))
         self.assertGreater(float(q[2].max() - q[2].min()), 0.0)
+
+
+class ActivityGradientTests(unittest.TestCase):
+    def test_expected_advantage_moves_probability_toward_better_options(self):
+        from experiments.lifetime.train import expected_advantage, factor_probs
+        logits = torch.zeros(1, 7, requires_grad=True)
+        values = torch.tensor([[0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 0.0]])        # measure; refine twice
+        expected_advantage(factor_probs(logits, torch.ones(1, 7, dtype=torch.bool)), values).backward()
+        self.assertGreater(float(logits.grad[0, 1]), 0.0)
+        self.assertLess(float(logits.grad[0, 0]), 0.0)
+        self.assertEqual(int(logits.grad[0, 2:].argmax()), 2)

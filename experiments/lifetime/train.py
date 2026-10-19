@@ -140,6 +140,12 @@ def centred(values, weights):
                       / weights[:, f].sum(1, keepdim=True).clamp_min(1e-8) for f in FACTORS], 1)
 
 
+def expected_advantage(probs, values):
+    """Mean over rows of each activity's expected value under the policy, measured from a baseline that is held
+    fixed; its gradient moves probability toward options valued above that baseline."""
+    return (probs * centred(values, probs.detach())).sum(1).mean()
+
+
 def ppo_update(model, optimizer, steps, bootstrap, start, args, activity_weight=0.0):
     """PPO on one window. ``start`` is the agent before the window's first tick; ``activity_weight`` weighs the
     gradient of the activity heads from the activity-value estimates."""
@@ -256,7 +262,7 @@ def ppo_update(model, optimizer, steps, bootstrap, start, args, activity_weight=
                                 unseen[0] += float(residual.sum().detach())
                                 unseen[1] += float(((bq ** 2) * mask)[at].sum())
                     if model.activity_value is not None and activity_weight > 0:   # every tick, from the estimates
-                        loss = loss - activity_weight * (probs * centred(estimate.detach(), probs)).sum(1).mean()
+                        loss = loss - activity_weight * expected_advantage(probs, estimate.detach())
                 if predicts:
                     loss = loss + args.prediction * prediction
                     stats["prediction"] += float(prediction.detach()) * T
