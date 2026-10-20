@@ -93,7 +93,7 @@ def main():
             event = join_events(event, context)
         state = model.refine(
             state, event, torch.zeros(1, config.records, config.record_dim, device=args.device),
-            torch.zeros(1, dtype=torch.long, device=args.device))
+            torch.ones(1, dtype=torch.long, device=args.device))
         refined = model.readout(state, scalars, goal)
     print(json.dumps({
         "encoder": e["model_id"],
