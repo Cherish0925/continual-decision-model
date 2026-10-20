@@ -2,7 +2,7 @@
 
 ## Multimodal input and state path
 
-Install the optional perception dependencies:
+Install the optional perception and vision-language dependencies (Transformers 5.4.0; PyTorch and Torchvision must be a compatible pair):
 
 ~~~bash
 python -m pip install -e '.[multimodal]'
@@ -14,12 +14,23 @@ Run the selected pretrained image/text towers through the new CDM state path:
 python examples/multimodal_forward.py --image path/to/observation.png --instruction "Measure the temperature before changing the heater." --device cuda
 ~~~
 
-Omit the image argument for a text/numeric event. The example downloads the pinned SigLIP 2 checkpoint and reports tensor shapes before and after refinement. Its CDM projections and core are randomly initialized; it is not a trained task policy. Use [TRAINING.md](TRAINING.md#first-multimodal-training-route) for the required data and training integration.
+Omit the image argument for a text/numeric event. The example loads the pinned SigLIP checkpoint. Add a lifetime checkpoint and the native semantic model to reuse trained weights:
 
-The tests below use small actual Siglip modules and do not download pretrained weights:
+~~~bash
+python examples/multimodal_forward.py --core-checkpoint path/to/model.pt --semantic --image path/to/observation.png --instruction "Read the instrument and propose the next measurement." --device cuda
+~~~
+
+Replace the checkpoint path with a model extracted from [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0). The loader retains its original dimensions and action schema. Without that argument the reference core is randomly initialized. The semantic flag uses the pinned Qwen3.5-2B processor and weights; it encodes the supplied image/text and compresses its final hidden states to eight tokens. The example runs sequentially; asynchronous scheduling is separate work.
+
+New modality projections and the semantic reader need task training. Numeric values, goals and experience records in this example are placeholders; output reports tensor shapes, not task performance. The 4,096-token semantic input budget includes image tokens. For GPU throughput, install compatible flash-linear-attention and causal-conv1d kernels following the [model implementation documentation](https://huggingface.co/docs/transformers/model_doc/qwen3_5); the CPU implementation also runs without them.
+
+Use [TRAINING.md](TRAINING.md#first-multimodal-training-route) for trajectories, bridge training, teacher transfer and joint optimization.
+
+The tests below use small actual Siglip and Qwen3.5 modules and the released checkpoint structure; they do not download model weights:
 
 ~~~bash
 python -m unittest discover -s tests -p 'test_multimodal.py' -v
+python -m unittest discover -s tests -p 'test_pretrained_integration.py' -v
 python -m unittest discover -s tests -p 'test_activity_value_gradient.py' -v
 python -m unittest discover -s tests -p 'test_lifetime*.py' -v
 ~~~

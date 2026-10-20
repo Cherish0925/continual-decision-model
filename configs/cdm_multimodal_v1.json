@@ -80,8 +80,9 @@
     "recurrent_state_precision": "float32",
     "adapter_reduction_precision": "float32",
     "initialization": [
-      "action_imitation",
-      "outcome_prediction"
+      "load_frozen_perception_and_semantic_weights",
+      "load_core_checkpoint_or_explicit_random_baseline",
+      "train_new_connections_with_action_imitation_and_outcome_prediction"
     ],
     "joint_objectives": [
       "recurrent_ppo",
@@ -92,6 +93,40 @@
       "experience_replay",
       "task_grounded_distillation"
     ],
-    "status": "starting_configuration_not_a_trained_checkpoint"
+    "status": "starting_configuration_not_a_trained_checkpoint",
+    "semantic_model_updates": false,
+    "pretrained_core_learning_rate": 0.00001
+  },
+  "updated_on": "2026-10-20",
+  "core_initialization": {
+    "preferred": "released_lifetime_checkpoint",
+    "source_release": "v0.4.0",
+    "preserve": [
+      "configuration",
+      "event_projector",
+      "action_schema",
+      "all_core_weights"
+    ],
+    "reference_configuration": "core is the width-512 initialization used when no checkpoint is supplied",
+    "new_task": "retain compatible state modules and train task-specific heads"
+  },
+  "semantic_model": {
+    "model_id": "Qwen/Qwen3.5-2B",
+    "revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+    "frozen": true,
+    "source_width": 2048,
+    "context_tokens": 8,
+    "projection_width": "core.width",
+    "initial_max_input_tokens": 4096,
+    "execution": "on_demand",
+    "cache": "compress once; refresh source age between calls",
+    "implementation": "native model wrapper and learned reader",
+    "scheduler": "not_implemented"
+  },
+  "teacher": {
+    "model_id": "Qwen/Qwen3.6-35B-A3B",
+    "revision": "995ad96eacd98c81ed38be0c5b274b04031597b0",
+    "role": "offline task-grounded trajectory generation and distillation",
+    "implementation": "selected_not_implemented"
   }
 }

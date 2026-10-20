@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import isqrt
+from os import PathLike
 
 import torch
 import torch.nn.functional as F
@@ -24,6 +25,12 @@ ENCODER_REVISION = "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2"
 class EncodedEvent:
     tokens: Tensor             # [batch, tokens, width]
     present: Tensor            # [batch, tokens], True for received inputs
+
+
+def join_events(*events: EncodedEvent) -> EncodedEvent:
+    """Combine available input groups before assimilation or workspace reading."""
+    return EncodedEvent(torch.cat([e.tokens for e in events], 1),
+                        torch.cat([e.present for e in events], 1))
 
 
 class MultimodalEncoder(nn.Module):
@@ -123,26 +130,61 @@ class MultimodalCore(nn.Module):
 
     def __init__(self, config: CoreConfig, action_values: Tensor, encoder: MultimodalEncoder):
         super().__init__()
-        if config.width != encoder.width or config.event_dim != encoder.width:
-            raise ValueError("core width and event_dim must equal the encoder projection width")
+        if config.width != encoder.width:
+            raise ValueError("core width must equal the encoder projection width")
         self.encoder = encoder
         self.core = ContinualCore(config, action_values)
         self.ingest = nn.MultiheadAttention(config.width, config.heads, batch_first=True)
         self.query_norm = nn.LayerNorm(config.width)
         self.summary_norm = nn.LayerNorm(config.width)
+        self.input_bridge = nn.Identity() if config.event_dim == config.width \
+            else nn.Linear(config.width, config.event_dim)
+        self.input_gain = nn.Parameter(torch.zeros(()))
+
+    @classmethod
+    def from_lifetime_checkpoint(cls, checkpoint: dict | str | PathLike,
+                                 encoder: MultimodalEncoder):
+        """Reuse the complete trained process core and its original task schema.
+
+        Released lifetime checkpoints contain ``config`` and ``model``. The
+        original event projector, action table and heads are loaded exactly;
+        observation bridges are new parameters. No incompatible tensors are
+        silently skipped. New action/task schemas require their own heads.
+        """
+        saved = torch.load(checkpoint, map_location="cpu", weights_only=True) \
+            if isinstance(checkpoint, (str, PathLike)) else checkpoint
+        config = CoreConfig(**saved["config"])
+        model = cls(config, saved["model"]["action_values"], encoder)
+        model.core.load_state_dict(saved["model"], strict=True)
+        return model
 
     def initial(self, batch: int, device) -> dict[str, Tensor]:
         return self.core.initial(batch, device)
 
-    def observe(self, state: dict[str, Tensor], event: EncodedEvent) -> dict[str, Tensor]:
+    def observe(self, state: dict[str, Tensor], event: EncodedEvent | None,
+                structured_event: Tensor | None = None) -> dict[str, Tensor]:
+        if event is None:
+            if structured_event is None:
+                raise ValueError("An observation needs tokens or a structured event")
+            return {**state, "h": self.core.fast(state["h"], structured_event)}
         query = self.query_norm(state["h"]).unsqueeze(1)
         summary = self.ingest(query, event.tokens, event.tokens,
                               key_padding_mask=~event.present, need_weights=False)[0][:, 0]
-        return {**state, "h": self.core.fast(state["h"], self.summary_norm(summary))}
+        summary = self.summary_norm(summary)
+        if structured_event is None:
+            h = self.core.fast(state["h"], self.input_bridge(summary))
+        else:
+            # At initialization this preserves the source model's fast update.
+            # Training the gain then introduces received multimodal information.
+            x = self.core.event(structured_event) + self.input_gain.tanh() * summary
+            h = self.core.fast_embeddings(state["h"], x.unsqueeze(0))[0]
+        return {**state, "h": h}
 
-    def refine(self, state: dict[str, Tensor], event: EncodedEvent, records: Tensor,
+    def refine(self, state: dict[str, Tensor], event: EncodedEvent | None, records: Tensor,
                counts: Tensor) -> dict[str, Tensor]:
-        z = self.core.refine(state["z"], state["h"], records, counts, event.tokens, event.present)
+        z = self.core.refine(state["z"], state["h"], records, counts,
+                             None if event is None else event.tokens,
+                             None if event is None else event.present)
         return {**state, "z": z}
 
     def readout(self, state: dict[str, Tensor], scalars: Tensor, goal: Tensor):

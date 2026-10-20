@@ -140,7 +140,10 @@ class ContinualCore(nn.Module):
 
     def fast_sequence(self, h: Tensor, events: Tensor) -> Tensor:
         """Fast states [T, n, w] after each of the events [T, n, e], starting from h [n, w]."""
-        x = self.event(events)
+        return self.fast_embeddings(h, self.event(events))
+
+    def fast_embeddings(self, h: Tensor, x: Tensor) -> Tensor:
+        """Assimilate already projected events [T, n, w], retaining the trained GRU."""
         with torch.autocast(x.device.type, enabled=False):
             return self.gru(x.float(), h.float().unsqueeze(0).contiguous())[0]
 

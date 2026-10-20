@@ -2,22 +2,34 @@
 
 ## First multimodal training route
 
-The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Image, short-text and numeric inputs enter one persistent core. The new frontend is implemented; connecting a multimodal trajectory/environment adapter to the lifetime trainer is the next integration. Existing lifetime commands still train structured process events.
+The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Pretrained image/text features, native vision-language context and numeric inputs enter one persistent core. Load the released CDM core before training its new connections when the task schema matches. The frontend and semantic reader are implemented; the multimodal trajectory/environment adapter and joint trainer are the next integration. Existing lifetime commands still train structured process events.
 
 | Training phase | Updated parameters | Data and objective |
 | --- | --- | --- |
-| Representation and behavior initialization | Input projections, GRU, workspace, predictor and action heads | Observation–action–outcome sequences; action imitation and outcome prediction at zero and nonzero refinement depths |
+| Pretrained initialization | Load weights; no optimization | Frozen SigLIP 2 and Qwen3.5-2B; released CDM checkpoint with its original dimensions and action schema |
+| Connection and behavior training | Input projections, semantic reader, input gain and task heads; then the reused core at a lower rate | Observation–action–outcome sequences; action imitation and outcome prediction at zero and nonzero refinement depths |
+| Teacher transfer | Connections and student prediction/action parameters | Qwen3.6-35B-A3B candidate trajectories with measured task outcomes; imitate useful actions and distill supported predictions |
 | Joint interaction | The same shared core plus activity/value heads | Recurrent PPO over continuing lifetimes; prediction of received outcomes; operation value targets where useful |
 | Learning during interaction | Instance adapters during deployment; shared parameters through replayed adapter updates during training | Loss on outcomes after the learning step, using only experience available when that step occurred |
 | Quiet-period consolidation | Initially prediction/action parameters; later shared representations with state recomputation | Mixed recent and older experience, and distillation from useful deeper computation into the fast policy |
 
 These are initialization and optimization phases of one model. Do not require each auxiliary task to reach its best isolated score before integration.
 
+### Weight reuse and semantic training
+
+The checkpoint loader preserves every core tensor and the saved configuration. Start with the source observation path and train its new modality connection, then jointly update the reused core. New tasks retain compatible state modules and define new action/outcome heads; process-control actions do not become digital tools merely because their tensor shapes match.
+
+The semantic model remains frozen initially. Train its learned reader through CDM's action and prediction losses. Compress a semantic result to eight context tokens, then train the core using those tokens at different observation ages and with calls still pending. The policy should also perform useful actions when no semantic result is available. Semantic-call cost, elapsed time and resulting task return train its eventual call/target policy.
+
+The offline teacher receives the task's observation history and emits candidate actions or experiment sequences. Execute them in training environments and retain observations, actions, returned outcomes and task scores. Train action imitation and outcome prediction on these trajectories. A teacher's explanation can accompany a trajectory, but environment outcomes supply the prediction targets. Keep collection seeds and task compositions separate from evaluation. Record teacher revision, generation settings and inference time.
+
+Use the same frozen models, trajectories and compute accounting for recurrent, restarted-workspace and persistent-workspace comparisons. Include a direct pretrained vision-language agent and a fixed semantic-call schedule. This separates the contribution of pretrained competence from the contribution of CDM's persistent computation and learned activity.
+
 ### Trajectory adapter
 
 Each training item identifies a lifetime and an interval of arrival-ordered events. Store capture/arrival/action times, input assets, observed numeric values and presence fields, instruction chunks, pending requests, the executed action, chosen internal activity, returned outcomes, reward and terminal flags. Preserve the distinction between a training-window boundary, a changed task, and the end of a lifetime.
 
-Cache frozen image/text features once per asset and encoder revision. Apply the trainable projections during each training pass. Do not duplicate an unchanged cached image as a new independent measurement. During deployment, recompute perception when an image or instruction changes; numeric/timing events can update the model between expensive perception passes.
+Cache frozen image/text features once per asset and encoder revision. For the semantic model, key cached final-layer features by model revision, the complete input sequence, processor settings and included images. Recompute the trainable projections and reader during each training pass; their compressed outputs cannot be reused across reader updates. Do not duplicate an unchanged cached image as a new independent measurement. During deployment, recompute perception when an image or instruction changes; numeric/timing events can update the model between expensive perception passes.
 
 Start from available task-native interaction trajectories and reference policies. Report any reference policy's extra simulator information; its labels can initialize behavior without giving that information to CDM. Split environments, generated scientific rules, task compositions and collection seeds before making tensor windows. Public evaluation demonstrations are not training examples for that same evaluation split.
 
@@ -25,7 +37,7 @@ The first image/text task adapter targets DiscoveryWorld's official observation/
 
 ### Starting optimization settings
 
-Freeze the pretrained image/text towers. Start AdamW at **1e-4** for new projections/core parameters, with gradient norm clipping at **1.0**; tune on validation trajectories. Use BF16 dense computation and FP32 recurrent state and adaptation reductions. Start with **32-event unrolls**, **256-event rollout windows**, and **128 streams per GPU**, adjusting batch size from measured memory and throughput. These settings are a starting configuration, not measured optimal values.
+Freeze the pretrained image/text towers and semantic model. Start AdamW at **1e-4** for new projections, reader and task heads, and **1e-5** for the reused core when it is unfrozen, with gradient norm clipping at **1.0**; tune on validation trajectories. Use BF16 dense computation and FP32 recurrent state and adaptation reductions. Start with **32-event unrolls**, **256-event rollout windows**, and **128 streams per GPU**, adjusting batch size from measured memory and throughput. These settings are a starting configuration, not measured optimal values.
 
 Retain state, workspace, memory and instance adapters across tensor windows. Recompute representations under the current shared parameter version when replaying a window; include a preceding context segment and report its length. A finite context segment does not exactly reconstruct an arbitrarily long recurrent history.
 
@@ -53,7 +65,7 @@ Report official task completion and reward; adaptation speed after a change; per
 
 Use the same encoder and training data for recurrent, restarted-workspace, persistent-workspace and learning comparisons. Include task-native reference agents separately. Account for all failed and completed training runs in total compute.
 
-Use the two H100s for the main training/collection workload. Additional A100 machines can run independent seeds, fixed comparisons and data collection without forcing a heterogeneous synchronous group. Increase throughput after a complete observation–action–outcome–update path works; a longer run of an ineffective objective does not replace that integration.
+Use the two H100s for core training and semantic feature/trajectory production. The large offline teacher has a separate collection budget; it is not resident in every training worker. Additional A100 machines can run independent seeds, fixed comparisons and data collection without forcing a heterogeneous synchronous group. Increase throughput after a complete observation–action–outcome–update path works; a longer run of an ineffective objective does not replace that integration.
 
 ## Existing studies and detailed objectives
 
