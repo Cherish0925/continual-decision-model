@@ -1,0 +1,4 @@
+{"action": "TELEPORT_TO_OBJECT", "arg1": 53269}
+{"action": "PICKUP", "arg1": 53269}
+{"action": "TELEPORT_TO_OBJECT", "arg1": 16434}
+{"action": "USE", "arg1": 53269, "arg2": 16434}
