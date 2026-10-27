@@ -16,11 +16,12 @@ The present results are a trained navigation prototype with persistent computati
 The [complete-experiment comparison](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
 collects 302 native trials and trains success/cost selectors over complete
 experiments. On a new 24-instance cohort, the predictive parent completes
-14/24, posterior-ordered plans 16/24 and both learned selectors 17/24. Their
-mean action counts are 288.92, 277.38, 269.58 and 269.04 respectively. Prediction
-of whole-experiment outcomes now changes useful choices; the persistent-state
-input has no aggregate advantage over numerical evidence alone. A second
-initialization and transfer to the original action reader are being evaluated.
+14/24 and posterior-ordered plans 16/24. Numerical selectors trained from two
+initializations reach 17/24 and 18/24, using 269.04 and 265.17 actions against
+the parent's 288.92. State-conditioned selectors reach 17/24 and 16/24.
+Prediction of complete experimental outcomes changes useful choices; the
+persistent-state input has no consistent advantage over numerical evidence
+alone. Transfer to the original action reader is being evaluated.
 
 ## 27 October scientific-task continuation
 

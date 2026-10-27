@@ -28,7 +28,7 @@ head in 25/32; posterior order gives 25/32. On validation, both reproduce the
 posterior's choices and succeed in 6/8, with 12 actions on average. The best
 observed choices would succeed in 8/8 with 7.75 actions. That last value uses
 the collected outcomes and is an upper bound, not an executable learned policy.
-[Training curves](results/experimental_plan_training.csv) retain all epochs.
+[Training curves](results/experimental_plan_training.csv) report every ten epochs.
 
 All five policies then start from reset on the same 24 new instances with
 paired simulator randomness and a 400-action budget. These are the 2800-series
@@ -41,6 +41,8 @@ instances, separate from the earlier comparisons.
 | Complete experiments, posterior order | 8 / 16 | 8 / 8 | 0.9167 | 277.38 |
 | Learned choices with continuing state, seed 171 | 10 / 16 | 7 / 8 | 0.9200 | 269.58 |
 | Learned numerical choices, seed 171 | 9 / 16 | 8 / 8 | 0.9200 | 269.04 |
+| Learned choices with continuing state, seed 172 | 9 / 16 | 7 / 8 | 0.9167 | 278.38 |
+| Learned numerical choices, seed 172 | 10 / 16 | 8 / 8 | 0.9233 | 265.17 |
 
 Complete experiments improve the predictive parent's completion from 14/24 to
 16/24. Each learned selector reaches 17/24. Against posterior order, the
@@ -50,6 +52,15 @@ whole-experiment outcomes improves these choices, while the added neural-state
 input has no aggregate completion advantage in this first comparison. The
 [native table](results/experimental_plan_native.csv) exposes gains and losses.
 
+Independent initialization repeats this distinction. The numerical selector
+reaches 18/24, gaining 2802 and 2817 against posterior order without losing a
+completion. The state-conditioned selector reaches 16/24, gaining 2817 but
+losing 2834. Across the two trainings, numerical choices finish in 269.04 and
+265.17 actions on average, compared with 277.38 for posterior order. The neural
+state adds no consistent benefit in this data regime. Both initializations use
+the same fixed 24 instances; they are training repetitions, not separate test
+sets.
+
 Instance 2802 shows why the decision matters. The state-conditioned selector
 chooses two successful experiments and finishes in 214 actions. Posterior order
 first executes unsuccessful hypotheses and reaches only progress 0.92 at the
@@ -58,10 +69,9 @@ policies all finish, using 211, 236 and 264 actions. These are actual executed
 plans, rather than improvements in a prediction metric alone.
 
 The original reader still succeeds on some instances lost by the predictive
-parent before the new experiment selector is used. A second initialization
-repeats the head comparison. A separate fresh-cohort experiment transfers the
-fixed numerical selectors to the original reader, preserving its action
-policy. Both comparisons are in progress. The
+parent before the new experiment selector is used. A separate fresh-cohort
+experiment transfers both fixed numerical selectors to the original reader,
+preserving its action policy. That comparison is in progress. The
 [protocol](PREDICTION.md#learning-choices-between-complete-experiments) specifies
 the distinction between experiment outcomes and whole-task evaluation.
 

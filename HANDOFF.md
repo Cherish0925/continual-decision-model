@@ -6,18 +6,19 @@ protocols and results. The scientific-task code and results are integrated into
 `main`; [release downloads](experiments/discoveryworld/RELEASE.md) supply the run artifacts.
 
 **Current study — complete experimental choices.** The new collection executes
-302 complete hypothesis tests from 40 matched histories; every history has
-successful and unsuccessful alternatives. Two 317,314-parameter heads learn
+302 complete experimental plans from 40 matched histories; every history has
+successful and unsuccessful alternatives. Four 317,314-parameter heads learn
 success and cost with or without the persistent neural state. On 24 fresh
 from-reset instances, the predictive parent completes 14/24, posterior-ordered
-experiments 16/24 and both learned selectors 17/24. Mean actions fall from
-288.92 to 269.58/269.04. The added state input does not improve aggregate
-completion. A second initialization and transfer of the fixed numerical heads
-to the original successful reader are running. [Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
+experiments 16/24, numerical selectors 17/24 and 18/24, and state-conditioned
+selectors 17/24 and 16/24. The numerical selectors use 269.04 and 265.17 actions
+on average, against the parent's 288.92. The added neural-state input provides
+no consistent benefit. Transfer of both fixed numerical heads to the original
+successful reader is running. [Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
 and the [protocol](experiments/discoveryworld/PREDICTION.md#learning-choices-between-complete-experiments)
 describe this study. Outputs are in `runs/discoveryworld/experimental_plans/`.
 
-**Latest completed study — action consequences.** Two matched joint trainings
+**Earlier study — action consequences.** Two matched joint trainings
 use 141 training trajectories (32,578 actions) and 24 validation trajectories
 (5,000 actions), with a 53,970,907-parameter decision network. On 24 paired native
 instances, the original reader completes 18/24 and both prediction-training
@@ -184,7 +185,9 @@ They are errors of method, not of compute. Two H100s ran 35 training runs in 66 
 1. A capability is acquired only if the task makes it pay **and** training carries that payoff to the parameters producing it. Check both before scaling.
 2. Verify at small scale that a new training term changes the behaviour it is meant to train. A zero-gradient term reached a full campaign because this was not done.
 3. Measure first, with simple reference methods, how much room a capability has to pay in a task; then train for it.
-4. Leave a branch as soon as results show no gain.
+4. When a route repeatedly fails, reconsider the decision being learned and the
+   feedback reaching it before extending the same training. Complete experimental
+   choices produced informative outcomes after isolated action pairs did not.
 5. Removing an option at evaluation also changes the rest of the policy. Prefer a control that holds the activity fixed — as `discard`, `discard_refine` and `noidle` do.
 
 ## 6. Code: what is implemented and what is specified
@@ -205,6 +208,7 @@ They are errors of method, not of compute. Two H100s ran 35 training runs in 66 
 | Frozen semantic-model interface and state-conditioned reader; separate native-task generation with optional model-authored notes and a public-candidate decoder | [cdm/semantic.py](cdm/semantic.py), [semantic_policy.py](experiments/discoveryworld/semantic_policy.py), [native_decoding.py](experiments/discoveryworld/native_decoding.py) |
 | Public observations, dynamic object actions, learned outcome prediction, continued h/z and candidate-conditioned reading of object-bound measurements | [cdm/digital.py](cdm/digital.py) |
 | Native scientific-task interaction, exact public measurement ledger, complete trajectories, frozen feature cache, sequence imitation, on-policy actor–critic and strict prefix replay/evaluation | [experiments/discoveryworld/](experiments/discoveryworld/) |
+| Persistent experimental plans, observed success/cost learning, and transfer between predictive and original action readers | [experimental_plans.py](experiments/discoveryworld/experimental_plans.py), [collect_plans.py](experiments/discoveryworld/collect_plans.py), [train_plans.py](experiments/discoveryworld/train_plans.py) |
 
 **Specified, not implemented**
 
@@ -233,22 +237,22 @@ this overview have finished; planned capabilities are listed below.
 
 ## 8. Next steps, in order
 
-Joint prediction training makes the policy dependent on extra workspace updates,
-but reading the forecasts has not improved completion. The next paired-action
-study improves return prediction while preserving the same sixteen completions;
-its 48 low-margin action pairs produce no completion or progress differences.
-The useful next unit of comparison is an experimental choice with consequences
-for later evidence or operation, followed through to its outcome. The numerical
-tool remains useful; its calculations are not learned workspace operations.
+Joint prediction and isolated action comparisons did not improve completion.
+Learning complete experimental outcomes now improves decisions relative to the
+predictive parent and posterior-ordered plans. The numerical-only head is at
+least as effective as adding the continuing neural state in this comparison.
+The next question is how the model acquires the evidence needed for these
+choices, and where additional internal computation can improve them. Current
+plans begin after all nine quantities are measured; they do not choose which
+measurement to acquire. The numerical tool remains part of execution.
 
-1. **Learn the trade-off between more evidence and acting now.** Two reward
-   rounds and the two-pair preference update have finished without improving
-   completion. The direct action interventions do save work in two histories,
-   but teaching only those departures does not transfer reliably. Collect
-   complete experimental choices covering both useful and unnecessary measurements,
-   including uncertain predictions and variable measurement noise. Train the
-   choice on later intervention outcomes; evaluate it from reset on new
-   instances. The original reader and its numerical tool remain the reference.
+1. **Learn the trade-off between more evidence and acting now.** Extend the
+   complete-choice training to partial measurement histories. Compare acquiring
+   a discriminating measurement, checking another calibration object, and
+   executing a setting now. Follow each through the subsequent experimental
+   choice so its learning target includes the value of the acquired evidence.
+   Include both useful and unnecessary measurements. Preserve the strongest
+   existing reader and selector as references.
 
 2. **Make uncertainty useful to action and computation.** The current
    received-facts control already completes eleven of sixteen tasks. Construct

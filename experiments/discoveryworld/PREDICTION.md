@@ -249,3 +249,30 @@ A second initialization, seed 172, repeats both head trainings and evaluates
 them on the same fixed native cohort. It was added after the first run's initial
 native results; both repetitions retain the final 100-epoch checkpoint and all
 outcomes are reported. `plan_campaign --replicate 172` runs this comparison.
+
+### Transfer to the original action reader
+
+The predictive parent loses some instances before reaching the new plan
+selector. A second comparison reuses the original successful action reader,
+with its core and numerical prior unchanged, and attaches each fixed
+numerical-only selector. Neither selector is retrained. The state-conditioned
+heads are not transferred because they were trained on the predictive parent's
+internal states.
+
+Four policies execute a fresh paired cohort: the original reader, that reader
+with posterior-ordered complete experiments, and each of the two learned
+numerical selectors. Sixteen seeds are 3000–3018 excluding remainder 4; eight
+reserved-family seeds are 3004–3039 with remainder 4. The 400-action budget and
+paired initial simulator randomness match the first comparison. These cases
+were chosen after the first comparison, before any transfer execution, and
+are not used to fit or select a new checkpoint.
+
+```bash
+python -m experiments.discoveryworld.plan_campaign --transfer-reader
+python -m experiments.discoveryworld.summarize_plans --include-transfer
+```
+
+The summary command reconstructs the published trial, training, primary native
+and transfer tables directly from the released run records. The experiment
+designs and per-instance outcomes are included alongside the model packages in
+the [release guide](RELEASE.md).
