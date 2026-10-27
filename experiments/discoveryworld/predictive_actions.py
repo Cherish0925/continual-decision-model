@@ -96,6 +96,7 @@ class PredictivePolicy(BeliefPolicy):
         self.predictive.load_state_dict(saved["model"], strict=True)
         self.predictive.eval()
         self.predictive_training = saved["training"]
+        self.consequence_training = saved.get("consequence_training")
         self.use_forecasts = use_forecasts
         self.checkpoint = {**self.checkpoint, "epoch": saved["epoch"],
                            "train_instances": saved["training"]["train_instances"],
@@ -111,7 +112,8 @@ class PredictivePolicy(BeliefPolicy):
                 "prediction_feedback": self.predictive.feedback and self.use_forecasts,
                 "use_forecasts": self.use_forecasts, "return_horizons": list(HORIZONS),
                 "prediction_targets": "received_result_and_behavior_return; no_future_inputs",
-                "predictive_training": self.predictive_training}
+                "predictive_training": self.predictive_training,
+                "consequence_training": self.consequence_training}
 
     @torch.no_grad()
     def __call__(self, observation):
@@ -152,6 +154,7 @@ class PredictivePolicy(BeliefPolicy):
                                                              cycles=cycles, use_forecasts=self.use_forecasts)
         self.state = states[-1]
         self._last_candidates, self._last_forecasts = candidates, forecasts[0]
+        self._last_scores = scores[0]
         logits = scores[0, -1].float()
         selected = int(torch.multinomial((logits / self.temperature).softmax(-1), 1)) \
             if self.temperature > 0 else int(logits.argmax())

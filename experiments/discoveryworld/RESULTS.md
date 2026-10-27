@@ -4,6 +4,77 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Action-consequence prediction — 27 October
+
+A 53,970,907-parameter decision model now predicts returned observations and
+future progress for candidate actions. Its workspace can read those predictions
+before revising the action ranking. The GRU, Transformer workspace, input
+projections, action reader and predictor are jointly trained; the frozen visual
+encoder and explicit numerical tool are unchanged. The [protocol](PREDICTION.md)
+specifies the architecture, losses and data. Training uses 141 trajectories
+(32,578 actions, including eight failed executions) and 24 validation trajectories
+(5,000 actions). Both matched arms finish three epochs in about 35.3 minutes each
+on separate H100s. The final epoch was selected before native evaluation.
+
+All five policies execute the same 24 new native instances from reset, with
+paired initial simulator randomness and a 400-action budget. Sixteen instances
+use trained relation families; eight use the reserved relation family within
+Reactor Lab. They are distinct from the earlier eight- and sixteen-instance
+cohorts.
+
+| Policy | New instances | Reserved relation family | Mean progress | Mean actions, including failures |
+| --- | ---: | ---: | ---: | ---: |
+| Original successful reader | 12 / 16 | 6 / 8 | 0.9583 | 274.04 |
+| Joint prediction with workspace feedback | 11 / 16 | 5 / 8 | 0.9117 | 274.33 |
+| Matched prediction training without workspace feedback | 10 / 16 | 6 / 8 | 0.9150 | 277.29 |
+| Feedback model, zero extra prediction cycles | 6 / 16 | 3 / 8 | 0.8367 | 332.83 |
+| Feedback model, forecast scoring and feedback removed | 11 / 16 | 5 / 8 | 0.9050 | 274.33 |
+
+[Per-instance executions](results/prediction_native.csv) retain all failures.
+The feedback model completes 16/24, compared with 9/24 when its two additional
+workspace updates are removed. Seven paired cases change from success to
+failure and none changes in the opposite direction. This model uses the
+additional computation along its trajectory. It has not surpassed the original
+reader's 18/24, however, and the independently trained no-feedback arm also
+completes 16/24.
+
+Removing forecast scoring and forecast tokens while retaining ordinary
+workspace updates preserves completion and produces identical action sequences
+in 21/24 cases. The three changed sequences are failures under both settings.
+Thus this study does not establish decision value from reading the predicted
+consequences. The additional workspace computation and the forecast feedback
+must be interpreted separately. Comparing the new model with the original
+reader also changes training data and optimization; that comparison does not
+isolate the effect of prediction supervision.
+
+On the sixteen instances completed by both the reference and feedback models,
+the new policy uses 211.50 actions on average against 232.13. That conditional
+saving coexists with two lost completions and is not an overall improvement.
+[Training curves](results/prediction_training.csv) and
+[executed-action forecast errors](results/prediction_errors.csv) expose the
+prediction and imitation measurements separately from actual task success.
+Returned-number errors use transformed message contents, not a frequency-error
+measurement in hertz.
+
+A second comparison selects the first non-dialogue state where zero and two
+extra cycles propose different actions, between decisions 48 and 239 on each
+of sixteen training histories. Three histories qualify; the remaining thirteen
+are retained as unselected cases. Both branches replay each selected history
+exactly, change only the first takeover decision's compute budget, then use the
+same two-cycle policy. In one pair, zero extra cycles completes the task in
+222 total actions whereas two cycles ends at progress 0.72 after 400. The other
+two pairs fail under both settings; their progress is 0.76 versus 0.72, and
+0.84 versus 0.84. These [six native continuations](results/prediction_branches.csv)
+show that an individual refinement can harm a decision even when removing all
+additional computation harms aggregate performance. They do not supply a
+positive general rule for when to compute.
+
+The next comparison collects two candidate actions from each of 48 ambiguous
+training states and learns from their actual subsequent outcomes. It retains
+successful and failed branches and compares the resulting update against
+matched replay on a new evaluation cohort. Its results are separate from the
+completed study above.
+
 ## Joint state, action and computation training — 27 October
 
 The successful seed-61 reader now initializes a joint sequence learner. Both

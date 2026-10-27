@@ -5,20 +5,27 @@ scientific-task training and evaluation. Linked documents contain the detailed
 protocols and results. The scientific-task code and results are integrated into
 `main`; [v0.5.0](experiments/discoveryworld/RELEASE.md) supplies the run artifacts.
 
-**Active continuation — action-consequence learning.** The
-[prediction experiment](experiments/discoveryworld/PREDICTION.md) is now running
-two matched joint trainings. Its 141 training trajectories contain 32,578
-actions, including eight failed executions; 24 validation trajectories contain
-5,000 actions. The 53,970,907-parameter decision model predicts returned
-observations and behavior returns, then optionally feeds candidate consequences
-back into the persistent workspace. Both arms update the GRU, workspace,
-projections, action reader and predictor. A real GPU training pilot and native
-execution have completed; those checks are not a performance result. The full
-campaign runs three training epochs followed by paired execution on 16 new
-instances and eight unseen-rule instances. Its commands, outputs and automatic
-comparison are under `runs/discoveryworld/predictive_actions/` and
-`experiments/discoveryworld/predictive_campaign.py`. The original reference
-policy remains unchanged.
+**Latest completed study — action consequences.** Two matched joint trainings
+use 141 training trajectories (32,578 actions) and 24 validation trajectories
+(5,000 actions), with a 53,970,907-parameter decision network. On 24 paired native
+instances, the original reader completes 18/24 and both prediction-training
+arms complete 16/24. Removing extra workspace cycles from the feedback model
+reduces completion to 9/24; removing forecast scoring and feedback retains 16/24
+and identical action sequences in 21/24 cases. Extra computation affects the
+trained model, but reading the forecasts has not improved task completion.
+[Results](experiments/discoveryworld/RESULTS.md#action-consequence-prediction--27-october)
+include all five methods and the six selected same-prefix computation branches.
+
+**Active continuation — learning alternative actions.** Forty-eight ambiguous
+training states supply 96 paired native continuations. Two matched updates then
+compare learning from the alternatives' actual consequences with replay alone,
+followed by four policies on 24 fresh instances. The
+[protocol](experiments/discoveryworld/PREDICTION.md#learning-from-alternative-actions)
+and `experiments/discoveryworld/consequence_campaign.py` define the complete
+sequence. Outputs are under `runs/discoveryworld/action_consequences/` and
+`runs/discoveryworld/consequence_learning/`; the campaign log is
+`runs/discoveryworld/consequence_campaign.log`. A real preparation and training
+pilot passed. This follow-up is running; no improvement is claimed for it yet.
 
 **Latest continuation — joint training.** Observation reads now use the
 in-memory PNG implementation from PR #3; the measured read time is 78.78 ms
@@ -101,7 +108,7 @@ Choosing to observe, act, keep reasoning or learn serves this question. A capabi
 | [ref/PRETRAINED_COMPONENTS.md](ref/PRETRAINED_COMPONENTS.md) | Which pretrained models are reused, their pinned revisions and their roles |
 | [STATUS.md](STATUS.md) | Capability-by-capability coverage against the objective |
 | [EXPERIMENTS.md](EXPERIMENTS.md), [RUNNING.md](RUNNING.md) | The campaign design across all studies; executable commands |
-| [ref/](ref/README.md) | 122 source records and the closest related methods |
+| [ref/](ref/README.md) | 123 source records and the closest related methods |
 
 Earlier studies — neural pilot, dynamic grid, numerical transport, changing maze, continual agent — keep their own READMEs and results under `experiments/`. They are completed comparisons, not prerequisites.
 

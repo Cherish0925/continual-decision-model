@@ -30,14 +30,18 @@ IMAGES = {".png", ".jpg", ".jpeg"}
 SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
 
 
-def files(root):
-    for directory, names, filenames in os.walk(root / "runs/discoveryworld"):
-        names[:] = sorted(n for n in names if n not in {"features", "__pycache__", "contexts"})
-        for name in sorted(filenames):
-            path = Path(directory) / name
-            if path.is_symlink():
-                continue
-            yield path
+def files(root, runs=()):
+    base = root / "runs/discoveryworld"
+    for selected in ([base / run for run in runs] if runs else [base]):
+        if not selected.is_dir():
+            raise FileNotFoundError(selected)
+        for directory, names, filenames in os.walk(selected):
+            names[:] = sorted(n for n in names if n not in {"features", "__pycache__", "contexts"})
+            for name in sorted(filenames):
+                path = Path(directory) / name
+                if path.is_symlink():
+                    continue
+                yield path
 
 
 def portable(value, root):
@@ -52,18 +56,18 @@ def portable(value, root):
     return value
 
 
-def package(root, output, kind):
+def package(root, output, kind, runs=(), name="cdm-scientific"):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
-    archive = output / f"cdm-scientific-{kind}.tar.zst"
+    archive = output / f"{name}-{kind}.tar.zst"
     for previous_part in output.glob(archive.name + ".part*"):
         previous_part.unlink()
     inventory, images = [], {}
     with archive.open("wb") as target:
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
-            for path in files(root):
+            for path in files(root, runs):
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"epoch\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
                 record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf"}
@@ -129,15 +133,18 @@ def package(root, output, kind):
                         remaining -= len(block)
                 part += 1
         archive.unlink()
-    (output / f"{kind}-files.txt").write_text("\n".join(inventory) + "\n")
+    listing = f"{kind}-files.txt" if name == "cdm-scientific" else f"{name}-{kind}-files.txt"
+    (output / listing).write_text("\n".join(inventory) + "\n")
     print(json.dumps({"kind": kind, "files": len(inventory), "assets": [
         {"name": p.name, "bytes": p.stat().st_size}
-        for p in sorted(output.glob(f"cdm-scientific-{kind}.tar.zst*"))]}), flush=True)
+        for p in sorted(output.glob(f"{name}-{kind}.tar.zst*"))]}), flush=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kind", choices=("reference", "models", "records", "observations"), required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--run", action="append", default=[], help="Run directory relative to runs/discoveryworld; repeat for a delta release")
+    parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
     args = parser.parse_args()
-    package(Path.cwd().resolve(), args.output, args.kind)
+    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name)

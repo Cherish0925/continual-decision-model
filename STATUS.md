@@ -13,12 +13,15 @@ The present results are a trained navigation prototype with persistent computati
 
 ## 27 October scientific-task continuation
 
-An [action-consequence learning comparison](experiments/discoveryworld/PREDICTION.md)
-is running on 141 training and 24 validation trajectories. It jointly trains
-the persistent core, action reader and prediction modules, comparing predicted
-consequence feedback with the same prediction objective without workspace
-feedback. Native execution and reduced-computation comparisons follow the two
-three-epoch trainings. The release results below remain the completed reference.
+The [action-consequence learning comparison](experiments/discoveryworld/PREDICTION.md)
+finishes two joint trainings and 120 native executions. On its 24 new instances,
+the reference completes 18/24, feedback and no-feedback training both 16/24,
+and the feedback model without extra workspace cycles 9/24. Removing forecast
+inputs preserves 16/24. The results establish computation dependence within
+this trained policy, not a performance improvement over the reference or a
+benefit from reading forecast tokens. A separate comparison is now collecting
+96 action interventions and learning from their actual consequences, with matched
+replay and fresh-instance evaluation.
 
 The latest joint-training comparison updates the GRU, Transformer workspace,
 projections and action reader. On a separate eight-instance cohort, the

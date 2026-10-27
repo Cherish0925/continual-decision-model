@@ -20,6 +20,8 @@ Planning and observation consume time while the environment changes. The methods
 
 ## Learning how to use a world model
 
+**Magnino et al., 2026 — [Learning Robot Metareasoning: Adaptive Computation Budgets for Real-Time Control](https://arxiv.org/html/2610.23662v1).** This preprint couples action commitment and solver time in a semi-Markov policy, using state, the executing plan and solver statistics. The inspected formulation assumes an optimizer whose solutions improve with additional work; reported applications include navigation, quadrotor control and manipulation. For CDM, this identifies two separate learning questions: making internal computation improve a decision, and choosing its duration while acting. The current DiscoveryWorld experiment addresses the former; independently timed process tasks are needed for the latter. Sections I–V inspected on 27 October 2026.
+
 **Weber et al., 2017 — [Imagination-Augmented Agents for Deep Reinforcement Learning](https://arxiv.org/html/1707.06203v2).** A learned encoder extracts useful information from imagined trajectories and combines it with a direct policy path. Sokoban and MiniPacman experiments study imperfect predictions and transfer between tasks. Learned interpretation of simulations is already an established architectural idea.
 
 **Pascanu et al., 2017 — [Learning model-based planning from scratch](https://arxiv.org/abs/1707.06170).** The Imagination-based Planner learns variable-length imagination, accumulates a plan context, and selects among previously imagined states while accounting for computation costs. This is a particularly close predecessor for learned management of deliberation. Observation-conditioned revision across incoming observations requires a separate comparison.

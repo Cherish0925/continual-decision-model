@@ -104,6 +104,7 @@ Years identify the cited edition or documented initial release; they need not eq
 | 2022 | [Posterior and Computational Uncertainty in Gaussian Processes](https://arxiv.org/abs/2205.15449) | `abstract` | core | `wenger2022computationaluncertainty` |
 | 2024 | [Metareasoning in uncertain environments: a meta-BAMDP framework](https://arxiv.org/html/2408.01253v2) | `full_text` | core | `godara2024_metabamdp` |
 | 2026 | [When to Plan: Learning to Select Between Reactive Control and Deliberative Planning](https://arxiv.org/html/2607.16421v2) | `full_text` | core | `labiosa2026_when_to_plan` |
+| 2026 | [Learning Robot Metareasoning: Adaptive Computation Budgets for Real-Time Control](https://arxiv.org/html/2610.23662v1) | `full_text` | core | `magnino2026_robot_metareasoning` |
 
 ## Continual and meta-learning
 

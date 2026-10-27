@@ -3,7 +3,7 @@
   "reading_cutoff": "2026-10-15",
   "description": "Primary-source literature for Continual Decision Model, with mechanisms, evaluated tasks, and recorded reading depth.",
   "year_convention": "Year of the cited edition or initial release recorded in inspected_sections; preprint and publication years can differ.",
-  "paper_count": 122,
+  "paper_count": 123,
   "papers": [
     {
       "id": "hochreiter1997lstm",
@@ -2984,6 +2984,30 @@
       ],
       "reading_depth": "abstract",
       "inspected_sections": "arXiv abstract, ICML 2018 dblp record (pp. 2953-2961), and official repository README."
+    },
+    {
+      "id": "magnino2026_robot_metareasoning",
+      "title": "Learning Robot Metareasoning: Adaptive Computation Budgets for Real-Time Control",
+      "authors": [
+        "Lorenzo Magnino",
+        "Antonio Marino",
+        "Michael Amir",
+        "Daigo Shishika",
+        "Amanda Prorok"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/html/2610.23662v1",
+      "topic": "planning",
+      "mechanism": "A semi-Markov policy jointly selects action commitment and planning duration using current state, the executing plan and solver statistics.",
+      "demonstrated_scope": "The preprint reports navigation, quadrotor and manipulation experiments with sampling-based planners; the inspected formulation assumes a time-monotone optimizer.",
+      "cdm_relevance": "Separates establishing useful internal computation from allocating its duration while acting.",
+      "reading_priority": "core",
+      "topics": [
+        "planning"
+      ],
+      "reading_depth": "full_text",
+      "inspected_sections": "Version 1, Sections I-V; inspected 27 October 2026."
     }
-  ]
+  ],
+  "latest_targeted_update": "2026-10-27"
 }

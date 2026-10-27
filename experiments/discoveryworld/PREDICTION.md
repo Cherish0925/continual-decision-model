@@ -74,7 +74,7 @@ mass, as in the reference reader. The final epoch is the preselected comparison
 checkpoint; validation diagnoses prediction and action learning.
 
 Native evaluation starts from reset, uses a 400-action limit and pairs the
-simulator's initial random streams across methods. The planned new-instance
+simulator's initial random streams across methods. The new-instance
 cohort is 2400–2418 excluding remainder 4 (16 instances). The separate unseen
 relation-family cohort is 2404, 2409, 2414, 2419, 2424, 2429, 2434 and 2439.
 Neither cohort enters training or model selection. Compare the reference reader,
@@ -111,7 +111,49 @@ trained prediction path, not the performance of an independently trained
 alternative.
 
 The experiment output directory contains the collected trajectories, prepared
-data, configurations, epoch checkpoints and measured learning curves. New native
-results will be reported in [RESULTS.md](RESULTS.md) when execution finishes.
+data, configurations, epoch checkpoints and measured learning curves. The completed native
+comparison is reported in [RESULTS.md](RESULTS.md#action-consequence-prediction--27-october).
 Learning when to compute and retaining learned experimental skills across task
 switches remain further questions; they are not implied by this training run.
+
+## Learning from alternative actions
+
+The follow-up collects 96 native continuations from 48 training states. Sixteen
+training histories each contribute the smallest top-two action margin in three
+preassigned windows: decisions 48–111, 112–175 and 176–239. Numerical dialogues
+are excluded because the explicit scalar tool owns their execution. Each pair
+replays the same observations and random stream, forces one of the two candidate
+actions, then returns control to the same predictive policy until completion or
+400 total actions. Selection uses current policy scores, not future outcomes.
+
+The learning target combines the two actions' actual returned observations,
+finite-horizon returns and the difference in final progress minus 0.001 per
+subsequent action. Preference weights preserve that measured scale: a one-action
+saving is not rescaled into a task-completion gain. Both arms replay the parent
+policy distribution and successful training actions from the same incoming
+states. The paired arm additionally learns the observed consequences and action
+preferences. The GRU, workspace, projections, reader and predictor are updated
+through one observed transition; preceding recurrent states are cached from the
+parent. This is not full-lifetime backpropagation.
+
+Two epochs, seed 161, core learning rate 0.000001 and other learning rate 0.00001
+are fixed before evaluation. Native comparison uses the original reference,
+the predictive parent, matched replay and paired-consequence learning on sixteen
+new instances in 2600–2618 excluding remainder 4, and eight reserved-family
+instances 2604–2639 with remainder 4. Final-epoch weights are used for every arm.
+No held-out execution is used as a training example.
+
+```bash
+python -m experiments.discoveryworld.action_consequences \
+  --checkpoint runs/discoveryworld/predictive_actions/feedback/last.pt \
+  --source runs/discoveryworld/predictive_actions/interactions \
+  --output runs/discoveryworld/action_consequences \
+  --seeds 2100 2101 2102 2103 2105 2106 2107 2108 2110 2111 2112 2113 2115 2116 2117 2118
+python -m experiments.discoveryworld.consequence_campaign
+```
+
+The campaign waits for all selected branches, prepares parent-state contexts,
+runs matched trainings on two GPUs, and evaluates the three learned alternatives
+in parallel after collecting a shared reference random stream. Raw collection
+and learning outputs are in `runs/discoveryworld/action_consequences/` and
+`runs/discoveryworld/consequence_learning/`.

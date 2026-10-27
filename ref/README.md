@@ -1,10 +1,11 @@
 # Related research
 
-**Literature cutoff: 15 October 2026.**
+**Initial literature survey cutoff: 15 October 2026.** A focused update on
+27 October adds the robot metareasoning preprint to the planning comparison.
 
 [Pretrained component selection](PRETRAINED_COMPONENTS.md), dated 19 October 2026, records the SigLIP 2 checkpoint, input interface and the external scientific-interaction suite selected for the first multimodal implementation.
 
-The collection contains 122 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
+The collection contains 123 primary-source records across six research areas. It supports architecture choices, baseline implementation, and interpretation of experiments. Project objectives and plans are maintained in [RESEARCH.md](../RESEARCH.md), [DESIGN.md](../DESIGN.md), and [EXPERIMENTS.md](../EXPERIMENTS.md).
 
 | Area | Survey |
 | --- | --- |
@@ -19,4 +20,4 @@ The collection contains 122 primary-source records across six research areas. It
 
 [BIBLIOGRAPHY.md](BIBLIOGRAPHY.md) is the reading index. [papers.json](papers.json) stores bibliographic records, mechanisms, evaluated tasks, relevance, reading priority, and inspected sections. [references.bib](references.bib) contains the corresponding citation entries.
 
-Reading depth: 41 records use specified full-text sections, 76 use abstracts, four use official summaries, and one uses an indexed excerpt. The focused survey records its additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.
+Reading depth: 42 records use specified full-text sections, 76 use abstracts, four use official summaries, and one uses an indexed excerpt. The focused survey records its additional reading separately. [SEARCH_METHOD.md](SEARCH_METHOD.md) describes collection and updates.

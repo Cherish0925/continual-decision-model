@@ -21,6 +21,7 @@ contains trained policies, experimental records and simulator observations.
 | Autonomous Reactor Lab experiments | Two trained action readers complete **14/16 and 13/16** tasks from reset across two eight-instance cohorts | A continuing policy can collect its own evidence and use numerical tools to complete experiments. Its recurrence and perception are frozen in this comparison. |
 | Evidence and persistent-state controls | Matched readers without explicit evidence complete **0/8** on the first cohort; clearing the reference policy's workspace also gives **0/8** | Experimental facts and persistent state contribute to the trained policy. A received-facts reader without derived predictions completes 11/16. |
 | Joint state and computation training | On a separate eight-instance cohort: reference **3/8**, fixed-compute joint training **4/8**, adaptive joint training **2/8** | Training the GRU, workspace and action head is implemented. The allocator always selects one refinement; these results do not establish an improvement from adaptive computation. |
+| Action-consequence learning | On 24 fresh instances: reference **18/24**, joint prediction **16/24**, the same model without extra workspace cycles **9/24** | Additional computation affects this trained policy, but forecast feedback adds no demonstrated task benefit. Paired native action interventions now supply the next learning comparison. |
 | Learning during process control | Retained online updates give error **0.153 ± 0.003**, versus **0.307** when discarded at matched compute, over three training seeds | Training through the updates used during deployment makes online learning useful in the controlled process tasks. |
 
 The scientific-task policy uses nine explicit affine hypotheses and a numerical
@@ -29,11 +30,11 @@ Efficient experiment selection, useful additional reasoning and learning retaine
 across scientific tasks are the next research questions. Completed unsuccessful
 comparisons are included with their conditions and traces.
 
-The [current prediction experiment](experiments/discoveryworld/PREDICTION.md)
-trains the continuing core to predict and use candidate action consequences,
-with successful and failed native executions. It tests whether reading those
-predictions makes further internal computation useful; performance results are
-pending.
+The [prediction experiment](experiments/discoveryworld/PREDICTION.md) has completed
+joint training and 120 native evaluations. Its next comparison learns from
+96 paired continuations, where two candidate actions are executed from the same
+experimental history. [Results and active work](experiments/discoveryworld/RESULTS.md)
+keep the completed comparisons and the follow-up distinct.
 
 ## Model
 
