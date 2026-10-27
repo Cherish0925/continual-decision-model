@@ -3,7 +3,7 @@
 Updated 27 October 2026 after native
 scientific-task training and evaluation. Linked documents contain the detailed
 protocols and results. The scientific-task code and results are integrated into
-`main`; [v0.5.0](experiments/discoveryworld/RELEASE.md) supplies the run artifacts.
+`main`; [release downloads](experiments/discoveryworld/RELEASE.md) supply the run artifacts.
 
 **Latest completed study — action consequences.** Two matched joint trainings
 use 141 training trajectories (32,578 actions) and 24 validation trajectories
@@ -16,16 +16,20 @@ trained model, but reading the forecasts has not improved task completion.
 [Results](experiments/discoveryworld/RESULTS.md#action-consequence-prediction--27-october)
 include all five methods and the six selected same-prefix computation branches.
 
-**Active continuation — learning alternative actions.** Forty-eight ambiguous
-training states supply 96 paired native continuations. Two matched updates then
-compare learning from the alternatives' actual consequences with replay alone,
-followed by four policies on 24 fresh instances. The
+**Completed follow-up — learning alternative actions.** Forty-eight ambiguous
+training states supply 96 paired native continuations. No pair changes final
+completion or progress; 34 differ by one action. Two matched updates learn from
+these consequences or replay alone. On 24 fresh instances the reference
+completes 17/24, and the predictive parent, replay and paired updates complete
+the same 16/24. Return prediction improves without improving task completion.
+The
 [protocol](experiments/discoveryworld/PREDICTION.md#learning-from-alternative-actions)
-and `experiments/discoveryworld/consequence_campaign.py` define the complete
-sequence. Outputs are under `runs/discoveryworld/action_consequences/` and
-`runs/discoveryworld/consequence_learning/`; the campaign log is
-`runs/discoveryworld/consequence_campaign.log`. A real preparation and training
-pilot passed. This follow-up is running; no improvement is claimed for it yet.
+and [results](experiments/discoveryworld/RESULTS.md#learning-from-paired-action-consequences--27-october)
+describe the full comparison. Outputs are under
+`runs/discoveryworld/action_consequences/` and
+`runs/discoveryworld/consequence_learning/`. The next learning data need
+alternatives that change the experiment or evidence acquired; low action-score
+margins alone did not select such alternatives here.
 
 **Latest continuation — joint training.** Observation reads now use the
 in-memory PNG implementation from PR #3; the measured read time is 78.78 ms
@@ -44,7 +48,7 @@ prefixes match, and all four depths produce identical executed action
 sequences within each group. Those states supply no task-return preference
 for additional computation. Local plans and outputs are under
 `runs/discoveryworld/joint_compute/compute_branches/`; the committed CSV is
-linked from the task results. All work described in this update is finished.
+linked from the task results. Those joint-computation runs have finished.
 
 **The task policy now completes experiments from reset.** Across two cohorts of sixteen Reactor
 Lab Normal instances, two independently trained action readers complete **14/16
@@ -217,19 +221,19 @@ this overview have finished; planned capabilities are listed below.
 
 ## 8. Next steps, in order
 
-The latest joint-compute comparison is complete. Its learned allocator remains
-fixed at one iteration, and the eight controlled states give tied future
-behaviour at all four depths. Before another allocation update, identify
-training states where computation changes a proposed experiment or prediction,
-then obtain their matched later returns. Retaining a workspace and doing useful
-additional reasoning are separate capabilities. The numerical tool remains
-useful; its calculations are not currently learned workspace operations.
+Joint prediction training makes the policy dependent on extra workspace updates,
+but reading the forecasts has not improved completion. The next paired-action
+study improves return prediction while preserving the same sixteen completions;
+its 48 low-margin action pairs produce no completion or progress differences.
+The useful next unit of comparison is an experimental choice with consequences
+for later evidence or operation, followed through to its outcome. The numerical
+tool remains useful; its calculations are not learned workspace operations.
 
 1. **Learn the trade-off between more evidence and acting now.** Two reward
    rounds and the two-pair preference update have finished without improving
    completion. The direct action interventions do save work in two histories,
    but teaching only those departures does not transfer reliably. Collect
-   paired training decisions covering both useful and unnecessary measurements,
+   complete experimental choices covering both useful and unnecessary measurements,
    including uncertain predictions and variable measurement noise. Train the
    choice on later intervention outcomes; evaluate it from reset on new
    instances. The original reader and its numerical tool remain the reference.

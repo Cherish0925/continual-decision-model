@@ -69,11 +69,64 @@ show that an individual refinement can harm a decision even when removing all
 additional computation harms aggregate performance. They do not supply a
 positive general rule for when to compute.
 
-The next comparison collects two candidate actions from each of 48 ambiguous
-training states and learns from their actual subsequent outcomes. It retains
-successful and failed branches and compares the resulting update against
-matched replay on a new evaluation cohort. Its results are separate from the
-completed study above.
+## Learning from paired action consequences — 27 October
+
+The follow-up executes two alternatives from each of 48 training states. Each
+pair has the same replayed history and initial simulator randomness, changes
+only the first action, and then uses the same predictive policy. States are
+selected by a small top-two action-score margin within three preassigned
+history windows. All 96 continuations finish and reproduce their prefixes.
+
+The alternatives produce **no difference in completion or final progress in
+any of the 48 pairs**. Thirty-four pairs differ in cost by exactly one action;
+the remaining fourteen tie. Thus action-score ambiguity selected mostly
+interchangeable operations in this collection. It supplied little preference
+signal about completing an experiment. The full
+[intervention table](results/action_consequences.csv) preserves this result.
+
+Both learning arms replay 2,151 incoming contexts from the same 141 training
+histories. The paired arm also learns the two observed outcomes and their
+measured return difference at the 48 selected states. Both update the GRU,
+workspace, projections and action reader for two epochs, with the same parent,
+seed and schedule. Gradients pass through the next observed transition; earlier
+incoming states are fixed parent states. The preference loss keeps the real
+return scale, so a one-action saving receives weight 0.001. Details are in the
+[protocol](PREDICTION.md#learning-from-alternative-actions).
+
+Four policies then execute a fresh, paired cohort from reset. None of these
+24 instances supplies training targets or selects a checkpoint.
+
+| Policy | New instances | Reserved relation family | Mean progress | Mean actions, including failures |
+| --- | ---: | ---: | ---: | ---: |
+| Original successful reader | 11 / 16 | 6 / 8 | 0.9467 | 279.08 |
+| Predictive parent | 11 / 16 | 5 / 8 | 0.9117 | 273.08 |
+| Matched replay update | 11 / 16 | 5 / 8 | 0.9100 | 273.92 |
+| Paired-consequence update | 11 / 16 | 5 / 8 | 0.9117 | 274.42 |
+
+All three predictive policies complete the **same sixteen instances**.
+The paired update changes action sequences relative to replay in 18/24 cases,
+but gains no completion and uses slightly more actions. Relative to the
+original reader, the predictive parent gains two completions and loses three;
+its net result is 16/24 against 17/24. The
+[per-instance table](results/consequence_native.csv) records all outcomes.
+
+Prediction learning does respond to the observed consequences. Final training
+forecast loss is 0.0791 for paired learning versus 0.7859 for replay. On each
+model's own held-out executions, the final-cycle 128-action return MAE is
+0.0740 versus 0.1290; the predictive parent has 0.1177. These execution-weighted
+errors concern different realized trajectories and are not a common-input
+comparison. [Training curves](results/consequence_training.csv) and
+[per-instance forecast errors](results/consequence_errors.csv) retain the
+measurement conditions. Better return prediction has not improved task choice
+in this study.
+
+Together, the two studies separate three effects: a policy can depend on extra
+workspace updates; it can learn more accurate outcome predictions; and it can
+use those predictions to choose a better experiment. The first two are observed
+here, while the third remains unresolved. Further training needs alternatives
+that change the experiment being performed or the evidence acquired. More
+comparisons between nearly interchangeable low-level actions would repeat the
+weak learning signal found in these 48 pairs.
 
 ## Joint state, action and computation training — 27 October
 

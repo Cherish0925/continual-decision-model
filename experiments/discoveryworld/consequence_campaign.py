@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -16,10 +17,13 @@ SEEDS = [s for s in range(2600, 2620) if s % 5 != 4] + list(range(2604, 2640, 5)
 def launch(module, arguments, log):
     log.parent.mkdir(parents=True, exist_ok=True)
     with log.open("w") as stream:
-        return subprocess.Popen([sys.executable, "-m", module, *arguments], stdout=stream, stderr=subprocess.STDOUT)
+        return subprocess.Popen([sys.executable, "-m", module, *arguments], stdout=stream, stderr=subprocess.STDOUT,
+                                env={**os.environ, "TOKENIZERS_PARALLELISM": "false", "RAYON_NUM_THREADS": "2"})
 
 
 def finished(process, name):
+    if process is None:
+        return
     if process.wait() != 0:
         raise RuntimeError(f"{name} failed; its log retains the error")
     print(json.dumps({"completed": name}), flush=True)
@@ -32,21 +36,27 @@ def main():
     parser.add_argument("--checkpoint", type=Path, default=Path("runs/discoveryworld/predictive_actions/feedback/last.pt"))
     parser.add_argument("--reference", type=Path, default=Path("runs/discoveryworld/belief_actions/full_seed61/last.pt"))
     parser.add_argument("--prepared", type=Path, default=Path("runs/discoveryworld/predictive_actions/prepared"))
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
-    if args.root.exists():
+    if args.root.exists() and not args.resume:
         parser.error("Choose a fresh campaign directory")
-    args.root.mkdir(parents=True)
+    args.root.mkdir(parents=True, exist_ok=True)
     config = {k: str(v) for k, v in vars(args).items()}
     config.update(seeds=SEEDS, epochs=2, seed=161, core_lr=1e-6, lr=1e-5,
                   replay_stride=16, action_cost=.001,
                   comparison="paired native consequences versus matched replay; final epoch; new instances")
-    (args.root / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    if not (args.root / "config.json").exists():
+        (args.root / "config.json").write_text(json.dumps(config, indent=2) + "\n")
 
     def evaluate(arm, checkpoint, kind):
+        if args.resume and (args.root / "native" / arm / "summary.json").exists():
+            return None
         arguments = ["--policy-kind", kind, "--checkpoint", str(checkpoint),
                      "--feature-cache", "runs/discoveryworld/features", "--encoder-path", "data/cache/siglip2",
                      "--output", str(args.root / "native" / arm), "--seeds", *map(str, SEEDS),
-                     "--max-steps", "400", "--devices", "cuda:0", "cuda:1", "--workers", "8", "--threads", "2", "--local-probes"]
+                     "--max-steps", "400", "--devices", "cuda:0", "cuda:1", "--workers", "4", "--threads", "2", "--local-probes"]
+        if args.resume:
+            arguments.append("--resume")
         if arm != "reference":
             arguments += ["--initial-rng-root", str(args.root / "native/reference")]
         return launch("experiments.discoveryworld.evaluate", arguments, args.root / f"native_{arm}.log")
@@ -70,11 +80,17 @@ def main():
         time.sleep(10)
     print(json.dumps({"paired_native_branches": expected}), flush=True)
     contexts = args.root / "contexts.pt"
-    finished(launch("experiments.discoveryworld.train_consequences", ["--prepare", "--checkpoint", str(args.checkpoint),
-                    "--branches", str(args.collection), "--prepared", str(args.prepared), "--output", str(contexts)],
-                    args.root / "prepare.log"), "context preparation")
+    if not contexts.exists():
+        finished(launch("experiments.discoveryworld.train_consequences", ["--prepare", "--checkpoint", str(args.checkpoint),
+                        "--branches", str(args.collection), "--prepared", str(args.prepared), "--output", str(contexts)],
+                        args.root / "prepare.log"), "context preparation")
     trainings = []
     for device, arm in enumerate(("paired", "replay")):
+        if args.resume and (args.root / arm / "last.pt").exists():
+            saved_training = [json.loads(line) for line in (args.root / arm / "training.jsonl").read_text().splitlines()]
+            if saved_training[-1]["epoch"] != 2:
+                raise ValueError("The saved training is incomplete; resume its optimizer before evaluation")
+            continue
         command = ["--checkpoint", str(args.checkpoint), "--contexts", str(contexts),
                    "--output", str(args.root / arm), "--device", f"cuda:{device}"]
         if arm == "replay":

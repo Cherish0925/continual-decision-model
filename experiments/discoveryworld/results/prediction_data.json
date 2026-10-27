@@ -1,0 +1,1656 @@
+{
+  "train": [
+    {
+      "source": "runs/discoveryworld/reference/train/seed100/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        100
+      ],
+      "actions": 67,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/train/seed101/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        101
+      ],
+      "actions": 59,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/train/seed102/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        102
+      ],
+      "actions": 62,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/train/seed105/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        105
+      ],
+      "actions": 65,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/train/seed107/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        107
+      ],
+      "actions": 68,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed110/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        110
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed111/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        111
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed112/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        112
+      ],
+      "actions": 219,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed113/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        113
+      ],
+      "actions": 222,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed115/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        115
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed116/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        116
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed117/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        117
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed118/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        118
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed120/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        120
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed121/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        121
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed122/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        122
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed123/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        123
+      ],
+      "actions": 220,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed125/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        125
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed126/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        126
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed127/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        127
+      ],
+      "actions": 218,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/train/seed128/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        128
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed130/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        130
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed131/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        131
+      ],
+      "actions": 214,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed132/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        132
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed133/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        133
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed135/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        135
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed136/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        136
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed137/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        137
+      ],
+      "actions": 232,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed138/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        138
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed140/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        140
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed141/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        141
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed142/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        142
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed143/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        143
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed145/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        145
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed146/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        146
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed147/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        147
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed148/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        148
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed150/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        150
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed151/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        151
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed152/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        152
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed153/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        153
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed155/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        155
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed156/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        156
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed157/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        157
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/calibration_training/train/seed158/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        158
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2000/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2000
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2001/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2001
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2002/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2002
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2003/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2003
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2005/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2005
+      ],
+      "actions": 222,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2006/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2006
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2007/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2007
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2008/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2008
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2010/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2010
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2011/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2011
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2012/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2012
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2013/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2013
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2015/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2015
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2016/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2016
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2017/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2017
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2018/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2018
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2020/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2020
+      ],
+      "actions": 232,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2021/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2021
+      ],
+      "actions": 220,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2022/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2022
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2023/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2023
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2025/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2025
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2026/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2026
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2027/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2027
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2028/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2028
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2030/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2030
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2031/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2031
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2032/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2032
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2033/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2033
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2035/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2035
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2036/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2036
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2037/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2037
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2038/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2038
+      ],
+      "actions": 291,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2040/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2040
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2041/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2041
+      ],
+      "actions": 219,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2042/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2042
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2043/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2043
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2045/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2045
+      ],
+      "actions": 219,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2046/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2046
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2047/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2047
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2048/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2048
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2050/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2050
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2051/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2051
+      ],
+      "actions": 232,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2052/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2052
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2053/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2053
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2055/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2055
+      ],
+      "actions": 218,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2056/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2056
+      ],
+      "actions": 235,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2057/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2057
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2058/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2058
+      ],
+      "actions": 220,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2060/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2060
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2061/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2061
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2062/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2062
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2063/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2063
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2065/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2065
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2066/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2066
+      ],
+      "actions": 218,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2067/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2067
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2068/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2068
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2070/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2070
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2071/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2071
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2072/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2072
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2073/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2073
+      ],
+      "actions": 236,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2075/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2075
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2076/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2076
+      ],
+      "actions": 230,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2077/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2077
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/train/seed2078/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2078
+      ],
+      "actions": 233,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2100/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2100
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2101/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2101
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2102/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2102
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2103/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2103
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2105/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2105
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2106/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2106
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2107/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2107
+      ],
+      "actions": 232,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2108/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2108
+      ],
+      "actions": 226,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2110/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2110
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2111/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2111
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2112/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2112
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2113/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2113
+      ],
+      "actions": 240,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2115/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2115
+      ],
+      "actions": 239,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2116/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2116
+      ],
+      "actions": 236,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2117/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2117
+      ],
+      "actions": 331,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2118/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2118
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2120/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2120
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2121/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2121
+      ],
+      "actions": 234,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2122/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2122
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2123/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2123
+      ],
+      "actions": 400,
+      "successful": false
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2125/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2125
+      ],
+      "actions": 219,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2126/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2126
+      ],
+      "actions": 220,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2127/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2127
+      ],
+      "actions": 259,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2128/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2128
+      ],
+      "actions": 241,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2130/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2130
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2131/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2131
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2132/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2132
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2133/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2133
+      ],
+      "actions": 236,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2135/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2135
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2136/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2136
+      ],
+      "actions": 246,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2137/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2137
+      ],
+      "actions": 229,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/interactions/seed2138/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2138
+      ],
+      "actions": 234,
+      "successful": true
+    }
+  ],
+  "validation": [
+    {
+      "source": "runs/discoveryworld/reference/validation/seed200/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        200
+      ],
+      "actions": 117,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/validation/seed201/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        201
+      ],
+      "actions": 124,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/validation/seed202/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        202
+      ],
+      "actions": 118,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/validation/seed203/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        203
+      ],
+      "actions": 125,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/validation/seed220/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        220
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2200/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2200
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2201/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2201
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2202/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2202
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2203/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2203
+      ],
+      "actions": 228,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2205/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2205
+      ],
+      "actions": 235,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2206/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2206
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2207/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2207
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2208/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2208
+      ],
+      "actions": 225,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/validation/seed221/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        221
+      ],
+      "actions": 222,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2210/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2210
+      ],
+      "actions": 219,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2211/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2211
+      ],
+      "actions": 218,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2212/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2212
+      ],
+      "actions": 224,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2213/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2213
+      ],
+      "actions": 227,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2215/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2215
+      ],
+      "actions": 222,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2216/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2216
+      ],
+      "actions": 234,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2217/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2217
+      ],
+      "actions": 221,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/predictive_actions/reference/validation/seed2218/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        2218
+      ],
+      "actions": 231,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/validation/seed222/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        222
+      ],
+      "actions": 223,
+      "successful": true
+    },
+    {
+      "source": "runs/discoveryworld/reference/campaign2/validation/seed223/trajectory.jsonl",
+      "identity": [
+        "Reactor Lab",
+        "Normal",
+        223
+      ],
+      "actions": 226,
+      "successful": true
+    }
+  ]
+}

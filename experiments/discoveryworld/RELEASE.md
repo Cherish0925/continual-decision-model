@@ -1,6 +1,64 @@
 # Scientific-task models and experiments
 
-[v0.5.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.5.0) · [Results](RESULTS.md) · [Training commands](README.md)
+[v0.6.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.6.0) · [Results](RESULTS.md) · [Training commands](README.md)
+
+## Prediction and action consequences: v0.6.0
+
+The prediction study and its paired-action follow-up include model weights,
+training curves, all native executions, and their observations. The original
+successful reader remains the reference; these experiments have not established
+an overall improvement. The [results](RESULTS.md) distinguish task completion,
+prediction accuracy and reliance on additional workspace computation.
+
+| Archive group | Contents |
+| --- | --- |
+| `cdm-predictive-models.tar.zst` | Both joint prediction trainings, including their epoch checkpoints |
+| `cdm-predictive-records.tar.zst` | Collected training/validation histories, training logs, five-policy native comparison and computation branches |
+| `cdm-predictive-observations.tar.zst` | Images accompanying those histories and executions |
+| `cdm-consequences-models.tar.zst` | Paired-consequence learning and matched replay checkpoints |
+| `cdm-consequences-records.tar.zst` | All 96 alternative-action continuations, both training runs and the four-policy native comparison |
+| `cdm-consequences-observations.tar.zst` | Images accompanying the alternative-action and follow-up executions |
+
+Every group has a corresponding `*-files.txt` content list. Extract the archives
+in a fresh checkout; paths are relative to the repository. The shared source
+models and original demonstrations come from v0.5.0. Download its compact
+reference package to run the new policies; add its records and observations to
+retrain from all trajectories.
+
+```bash
+git clone --branch v0.6.0 https://github.com/Cherish0925/continual-decision-model.git
+cd continual-decision-model
+gh release download v0.5.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-scientific-reference.tar.zst' --dir artifacts/v0.5.0
+gh release download v0.6.0 --repo Cherish0925/continual-decision-model \
+  --pattern '*.tar.zst' --dir artifacts/v0.6.0
+for archive in artifacts/v0.5.0/*.tar.zst artifacts/v0.6.0/*.tar.zst; do
+  zstd -dc --long=30 "$archive" | tar -x
+done
+```
+
+After installing the dependencies and visual encoder described below:
+
+```bash
+python -m experiments.discoveryworld.evaluate \
+  --policy-kind predictive --local-probes \
+  --checkpoint runs/discoveryworld/predictive_actions/feedback/last.pt \
+  --feature-cache runs/discoveryworld/features \
+  --encoder-path data/cache/siglip2 --device cuda:0 \
+  --seeds 2400 --max-steps 400 --workers 1 \
+  --initial-rng-root runs/discoveryworld/predictive_actions/native/reference \
+  --output runs/reproduced-prediction-policy
+```
+
+[PREDICTION.md](PREDICTION.md) gives the complete data split, feature preparation,
+training objectives and paired comparisons. Native evaluation supports `--resume`
+to retain completed instances and restart an interrupted instance from its saved
+initial randomness. Prepared features and cached training states are rebuilt
+from the released records rather than distributed as duplicate data.
+
+## Scientific-task foundation: v0.5.0
+
+[Download v0.5.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.5.0)
 
 This release collects the scientific-task work completed on 26–27 October 2026:
 native environment integration, multimodal policies, numerical learning,
@@ -8,7 +66,7 @@ autonomous experimental action, feedback-based updates and joint state/action/
 computation training. Successful and unsuccessful comparisons are retained.
 The earlier process and navigation studies remain in releases v0.2.0–v0.4.0.
 
-## Download
+### Download
 
 | Archive | Contents |
 | --- | --- |
@@ -45,7 +103,7 @@ way. Checkpoint metadata and text records use relative
 project paths; trained tensor values are unchanged. The original run files
 remain preserved separately.
 
-## Run a released policy
+### Run a released policy
 
 Install Python 3.12 and a CUDA-compatible PyTorch/Torchvision pair, then:
 
@@ -78,7 +136,7 @@ The reference policy needs three checkpoints, all included: its action reader,
 `runs/discoveryworld/`. SigLIP is loaded separately from its upstream release.
 The successful policy does not require Qwen model weights.
 
-## Reproduce the comparisons
+### Reproduce the comparisons
 
 Use the [task README](README.md#reading-experimental-evidence-to-choose-actions)
 for feature preparation, independent reader seeds, evidence controls and native

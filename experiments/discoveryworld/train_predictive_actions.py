@@ -242,6 +242,7 @@ def main():
     parser.add_argument("--prepare", action="store_true")
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--base-manifest", type=Path)
+    parser.add_argument("--dataset", type=Path, help="JSON listing released train and validation trajectory sources")
     parser.add_argument("--trajectories", nargs="*", type=Path, default=[])
     parser.add_argument("--split", choices=("train", "validation"), default="train")
     parser.add_argument("--part", type=int, default=0)
@@ -265,6 +266,8 @@ def main():
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--threads", type=int, default=4)
     args = parser.parse_args()
+    if args.dataset:
+        args.trajectories = [Path(row["source"]) for row in json.loads(args.dataset.read_text())[args.split]]
     if not args.prepare and (args.prepared is None or (args.output / "training.jsonl").exists()):
         parser.error("Specify prepared data and a fresh training output")
     torch.set_num_threads(args.threads)

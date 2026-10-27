@@ -2,12 +2,14 @@
 
 The next campaign trains a model to choose experiments, continue useful inference as observations arrive, and retain what it learns. It extends the existing GRU/Transformer core and its deployed-update training. The main architecture remains in [DESIGN.md](../../DESIGN.md).
 
-Measured learned-policy results, the workspace intervention and the next learning comparison are in [RESULTS.md](RESULTS.md).
+Measured policy results, workspace interventions and paired learning comparisons are in [RESULTS.md](RESULTS.md).
 
-The current continuation trains [action-consequence prediction and workspace
-feedback](PREDICTION.md) on reference and autonomous execution traces, including
-failures. It directly tests whether additional internal computation improves
-scientific action selection.
+The completed [action-consequence prediction and workspace-feedback study](PREDICTION.md)
+trains on reference and autonomous execution traces, including failures. A
+second study learns from 96 native alternative-action continuations. The four
+trainings and 216 from-reset evaluations separate outcome prediction from
+improved scientific action selection. Their models and records are in the
+[release downloads](RELEASE.md).
 
 ## Application and comparison settings
 

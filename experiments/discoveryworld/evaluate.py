@@ -10,6 +10,7 @@ import json
 import multiprocessing
 import os
 from pathlib import Path
+import shutil
 from time import perf_counter
 
 import numpy as np
@@ -181,6 +182,8 @@ def _initialize_worker(policy_config: dict, threads: int, assignments):
     global _WORKER_AGENT
     device = assignments.get()
     torch.set_num_threads(threads)
+    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+    os.environ.setdefault("RAYON_NUM_THREADS", str(threads))
     _WORKER_AGENT = create_evaluation_policy({**policy_config, "device": device})
     atexit.register(_WORKER_AGENT.features.close)
 
@@ -203,6 +206,7 @@ def main(argv=None):
     parser.add_argument("--seeds", nargs="+", type=int, required=True)
     parser.add_argument("--max-steps", type=int, default=100)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--resume", action="store_true", help="Continue the same evaluation; keep completed episodes and preserve interrupted histories")
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--devices", nargs="+", help="Worker devices, assigned round-robin; defaults to --device")
     parser.add_argument("--workers", type=int, default=1, help="Independent spawned evaluator processes; 1 keeps serial execution")
@@ -220,9 +224,9 @@ def main(argv=None):
         parser.error("Workers, threads and max_steps must be positive")
     if len(set(args.seeds)) != len(args.seeds):
         parser.error("Episode seeds must be unique within one output directory")
-    if (args.output / "summary.json").exists() or any(
+    if not args.resume and ((args.output / "summary.json").exists() or any(
         (args.output / f"seed{seed}" / "trajectory.jsonl").exists() for seed in args.seeds
-    ):
+    )):
         parser.error("Choose a new evaluation output directory")
     torch.set_num_threads(args.threads)
     torch.manual_seed(args.random_seed)
@@ -243,13 +247,37 @@ def main(argv=None):
               "initial_rng_root": args.initial_rng_root,
               **({"shared_random_seed": args.random_seed} if workers == 1 else {"random_seed": args.random_seed + index})}
              for index, seed in enumerate(args.seeds)]
-    if workers == 1:
+    pending = []
+    for task in tasks:
+        output = task["output"]
+        if args.resume and (output / "summary.json").exists() and (output / "decisions.jsonl").exists():
+            continue
+        if args.resume and output.exists():
+            # Keep the actual interrupted history and reuse its measurement
+            # randomness. Completed episodes are never repeated or replaced.
+            attempt = 1
+            original = json.loads((output / "run.json").read_text()) if (output / "run.json").exists() else None
+            if original is not None and original["rng_mode"] != "per_episode_rng":
+                raise ValueError("Interrupted shared-RNG serial runs need a saved policy RNG state; resume separately seeded episodes")
+            while (args.output / "interrupted" / f"attempt{attempt}" / output.name).exists():
+                attempt += 1
+            backup = args.output / "interrupted" / f"attempt{attempt}" / output.name
+            backup.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(output, backup)
+            if (backup / "initial_rng.json.gz").exists():
+                task["initial_rng_root"] = backup.parent
+            if original is not None:
+                if original["rng_mode"] == "per_episode_rng":
+                    task.pop("shared_random_seed", None)
+                    task["random_seed"] = original["random_seed"]
+        pending.append(task)
+    if pending and workers == 1:
         agent = create_evaluation_policy({**policy_config, "device": devices[0]})
         try:
-            results = [evaluate_episode(agent, **task) for task in tasks]
+            results = [evaluate_episode(agent, **task) for task in pending]
         finally:
             agent.features.close()
-    else:
+    elif pending:
         context = multiprocessing.get_context("spawn")
         assignments = context.Queue()
         for worker in range(workers):
@@ -258,14 +286,16 @@ def main(argv=None):
             with ProcessPoolExecutor(max_workers=workers, mp_context=context,
                                      initializer=_initialize_worker,
                                      initargs=(policy_config, args.threads, assignments)) as pool:
-                results = list(pool.map(_worker_episode, tasks))
+                results = list(pool.map(_worker_episode, pending))
         finally:
             assignments.close()
             assignments.join_thread()
+    results = [json.loads((task["output"] / "summary.json").read_text()) for task in tasks]
     first = json.loads((tasks[0]["output"] / "run.json").read_text())
     summary = {"checkpoint": str(args.checkpoint.resolve()),
                "checkpoint_sha256": sha256(args.checkpoint.read_bytes()).hexdigest(),
                "mode": first["mode"], "persistent": first["persistent"], "restart_workspace": first["restart_workspace"],
+               "resumed": args.resume, "episodes_executed_this_call": len(pending),
                "features": first["features"], "episodes": results, "workers": workers, "devices": devices,
                "temperature": args.temperature, "random_seed": args.random_seed,
                "rng_mode": "serial_shared_rng" if workers == 1 else "per_episode_rng",

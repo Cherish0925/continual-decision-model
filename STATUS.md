@@ -4,7 +4,7 @@ Implementation updated **27 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier
 supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in
-[v0.5.0](experiments/discoveryworld/RELEASE.md).
+[v0.5.0 and v0.6.0](experiments/discoveryworld/RELEASE.md).
 Published planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1); the first continual-core campaign from [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0), and 35 second-round checkpoints with evaluations from [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
@@ -19,9 +19,11 @@ the reference completes 18/24, feedback and no-feedback training both 16/24,
 and the feedback model without extra workspace cycles 9/24. Removing forecast
 inputs preserves 16/24. The results establish computation dependence within
 this trained policy, not a performance improvement over the reference or a
-benefit from reading forecast tokens. A separate comparison is now collecting
-96 action interventions and learning from their actual consequences, with matched
-replay and fresh-instance evaluation.
+benefit from reading forecast tokens. A completed follow-up learns from 96
+native action interventions: none of the 48 pairs changes final completion or
+progress. On another 24 instances the original reader completes 17/24; the
+predictive parent, matched replay and paired-consequence update each complete
+the same 16/24. Forecast errors improve without a task-completion gain.
 
 The latest joint-training comparison updates the GRU, Transformer workspace,
 projections and action reader. On a separate eight-instance cohort, the
@@ -96,7 +98,7 @@ The runtime supplies time, observations, devices, tools, and execution. The rese
 | [Spatial planner](cdm/planner.py) | Shared gated convolutional refinement; spatial workspace; optional goal-cell read, learned rebuild gate, stored workspaces, map/goal split, and observation-age input | Supervised optimal-action and distance prediction in changing mazes; inference continues across changes. |
 | [Continual agent](experiments/continual_agent/README.md) | Spatial planner, last observed map and its age, request/survey counters, policy over refinement count, survey request, and move/stay | PPO trains the activity head with the planner frozen. A separate operation experiment updates planner parameters under a hand-written activity schedule. |
 | [Continual core](cdm/core.py) | GRU fast state; eight persistent slots refined by a shared Transformer block over the fast state and recent experience records, normalised after every refinement, optionally through a gate that keeps, revises or restarts each slot; action-conditioned prediction of the next reading for every action through an instance-owned low-rank adapter, optionally a bank of blocks weighed by a selector of the state, with learned sensor noise; per-action control scores; heads for precise measurement and for compute (refinements or an adapter learning step); critic; optional activity-value head | Recurrent PPO over instrument and thermal process lifetimes of 16,384 ticks whose state, experience and adapters persist; trained choice of measurement, refinement and learning ([lifetime experiment](experiments/lifetime/README.md)). A completed second round trains it through its deployed learning steps, its workspace across events and copies of processes, on instruments that also ask for their largest output, thermal processes and vehicles behind walls. |
-| [Scientific-task policy](experiments/discoveryworld/README.md) | Released continual core with SigLIP 2 input, continuing h/z, dynamic native actions, exact public measurement history and optional candidate-to-record binding. A separate frozen Qwen baseline generates native JSON, optionally constrained by a public-action trie. | Sequence imitation and returned-outcome learning are trained and natively evaluated; independent task completion remains 0/4. The binding comparison did not improve task completion. The separate semantic takeover pilots above do not establish joint training or deployed adapter learning. |
+| [Scientific-task policy](experiments/discoveryworld/README.md) | Released continual core with SigLIP 2 input, continuing h/z, dynamic native actions, exact experimental records, numerical tool and action-conditioned forecasts. A separate frozen Qwen baseline generates native JSON. | The trained reference readers complete 14/16 and 13/16 from reset on the original cohorts. Subsequent joint state/action/prediction training runs successfully, but does not surpass that reference on the new cohorts. Paired-consequence learning improves return prediction without improving task completion. |
 
 The sequence core and spatial planner are separate models. The continual agent wraps the spatial planner. The lifetime continual core integrates fast state, persistent workspace, world prediction, activity choice and instance learning for structured process events. DiscoveryWorld reuses that core for visual scientific actions, and now applies its adapter-learning mechanism to measured quantities. This transfer has not established reliable scientific inference. Frozen semantic generation remains a separate baseline; learned semantic-call allocation and long-term retrieval are not connected.
 

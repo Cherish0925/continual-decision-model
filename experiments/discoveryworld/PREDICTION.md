@@ -91,8 +91,21 @@ and supply subsequent activity-learning targets.
 
 The source reader is the `belief_actions/full_seed61/last.pt` checkpoint in the
 [v0.5.0 reference package](RELEASE.md). Collection uses `reference.py` and
-`evaluate.py`. `train_predictive_actions --prepare` derives prediction targets
-from actual transitions and reuses frozen feature caches. Example training:
+`evaluate.py`. The [data list](results/prediction_data.json) names every training
+and validation trajectory. `train_predictive_actions --prepare` derives targets
+and rebuilds frozen features from these released records:
+
+```bash
+for split in train validation; do
+  python -m experiments.discoveryworld.train_predictive_actions --prepare \
+    --checkpoint runs/discoveryworld/belief_actions/full_seed61/last.pt \
+    --dataset experiments/discoveryworld/results/prediction_data.json --split "$split" \
+    --output runs/discoveryworld/predictive_actions/prepared --device cuda:0
+done
+```
+
+Use `--parts 2 --part 0` and `--parts 2 --part 1` on separate GPUs to divide
+preparation. Example training:
 
 ```bash
 python -m experiments.discoveryworld.train_predictive_actions \
