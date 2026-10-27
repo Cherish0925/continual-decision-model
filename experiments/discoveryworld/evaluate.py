@@ -149,6 +149,8 @@ def evaluate_episode(agent: LearnedPolicy, output: Path, scenario: str, difficul
                "protocol": "official_step_based", "discovery_knowledge_score": None}
     (output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     (output / "decisions.jsonl").write_text("".join(json.dumps(row) + "\n" for row in agent.decisions))
+    if hasattr(agent, "trials"):
+        (output / "experimental_trials.json").write_text(json.dumps(agent.trials) + "\n")
     return summary
 
 
@@ -165,9 +167,10 @@ def create_evaluation_policy(policy_config):
     from .adaptive_compute import AdaptivePolicy
     from .mixture_policy import MixturePolicy
     from .predictive_actions import PredictivePolicy
+    from .experimental_plans import ExperimentalPolicy
     interventions = {key: config.pop(key, None) for key in ("mode", "restart_state", "restart_workspace")}
     policy = {"belief": BeliefPolicy, "mixture": MixturePolicy, "adaptive": AdaptivePolicy,
-              "predictive": PredictivePolicy}[kind](**config)
+              "predictive": PredictivePolicy, "experimental": ExperimentalPolicy}[kind](**config)
     if interventions["mode"] is not None:
         policy.mode = interventions["mode"]
     if interventions["restart_state"] is not None:
@@ -194,7 +197,8 @@ def _worker_episode(task: dict) -> dict:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--policy-kind", choices=("learned", "belief", "mixture", "adaptive", "predictive"), default="learned")
+    parser.add_argument("--policy-kind", choices=("learned", "belief", "mixture", "adaptive", "predictive", "experimental"), default="learned")
+    parser.add_argument("--plan-checkpoint", type=Path)
     parser.add_argument("--use-forecasts", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--local-probes", action="store_true")
     parser.add_argument("--mixture-probes", action="store_true", help="Use inactive feedback across all numerical hypotheses")
@@ -237,8 +241,10 @@ def main(argv=None):
                      "restart_state": args.restart_state, "restart_workspace": args.restart_workspace,
                      "mode": args.mode, "refinements": args.refinements, "temperature": args.temperature}
     policy_config["policy_kind"] = args.policy_kind
-    if args.policy_kind == "predictive":
+    if args.policy_kind in ("predictive", "experimental"):
         policy_config["use_forecasts"] = args.use_forecasts
+    if args.policy_kind == "experimental":
+        policy_config["plan_checkpoint"] = args.plan_checkpoint
     if args.policy_kind != "learned":
         policy_config["local_probes"] = args.local_probes
         policy_config["mixture_probes"] = args.mixture_probes

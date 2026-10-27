@@ -170,3 +170,78 @@ runs matched trainings on two GPUs, and evaluates the three learned alternatives
 in parallel after collecting a shared reference random stream. Raw collection
 and learning outputs are in `runs/discoveryworld/action_consequences/` and
 `runs/discoveryworld/consequence_learning/`.
+
+## Learning choices between complete experiments
+
+The alternative-action study found no completion or progress difference in its
+48 pairs. A single changed operation was quickly followed by the same behavior.
+This continuation compares choices that persist long enough to produce different
+experimental consequences.
+
+At the first uncalibrated crystal with two working calibration examples and all
+nine measured quantities, the policy chooses one of its existing affine
+measurement–frequency hypotheses. It reaches that hypothesis's predicted
+setting and uses the existing local numerical probe. The experiment ends when
+the device actually activates, the probe is exhausted, or the observed dialogue
+changes. A failed choice is retained for that object and reactor so that a later
+attempt can select a different hypothesis. Numerical operations and measurement
+records remain explicit tools.
+
+This is a temporally extended action, related to
+[options](https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf).
+The research question is whether learning its actual consequences makes CDM's
+experimental choices better, and whether its continuing neural state adds useful
+information beyond the numerical evidence. Temporal abstraction itself is not a
+new contribution of this project.
+
+### Outcomes and training
+
+For each selected training history, every currently valid hypothesis is executed
+in a separate native world after replaying exactly the same public observations
+and random stream. The policy's incoming neural state and candidate features
+must agree across alternatives. Each trial has a 64-action limit; unfinished
+trials are retained as censored records and excluded from completed-outcome
+labels. Activation while moving toward a setting counts as successful execution
+of that plan, **not** as confirmation of its proposed physical law.
+
+The fixed data split contains 32 training histories (2000–2038 excluding
+remainder 4 modulo 5) and eight validation histories (2200–2208 excluding that
+remainder). Selection reads only the history preceding the choice. Each plan
+is represented by its predicted setting, uncertainty, prior probability,
+distance from the current setting, and the amount of available evidence.
+A small shared network predicts activation and execution cost. Its objective
+combines observed success, cost, and preferences between alternatives from the
+same history; the preference is weighted by the actual difference in
+`success - 0.001 × actions`.
+
+Two heads train for 100 epochs, seed 171, AdamW learning rate 0.001 and batches
+of eight histories. One receives CDM's continuing state; the other receives the
+same numerical features with that state zeroed. Perception, the continuing core,
+the original action reader and the affine prior are fixed in this comparison.
+The final epoch is selected in advance. This experiment trains experimental
+choice; it does not yet train online neural updates or an adaptive computation
+schedule.
+
+### Execution from the initial observation
+
+Five policies execute the same 24 new instances with paired initial simulator
+random streams and a 400-action budget:
+
+1. The original successful action reader.
+2. The predictive parent used to collect experimental contexts.
+3. The parent with complete experiments selected by posterior order.
+4. Complete experiments selected by the head reading CDM's continuing state.
+5. Complete experiments selected by the numerical-only head.
+
+Sixteen instances are 2800–2818 excluding remainder 4; eight reserved-family
+instances are 2804–2839 with remainder 4. The comparison separates a change in
+execution structure from learned choice, and learned choice from the added
+neural-state input. Report full-task completion and action cost alongside
+single-experiment validation. Success on a replayed experiment is not a
+from-reset task-completion result.
+
+`collect_plans` writes the native trajectories, candidate inputs and measured
+outcomes. `train_plans` fits the two heads. `plan_campaign` runs the fixed
+training and execution comparison from
+`runs/discoveryworld/experimental_plans/design.json`. Collection can resume with
+`--resume`, reusing completed trials when changing the environment-worker count.

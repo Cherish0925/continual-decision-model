@@ -31,12 +31,14 @@ FACTORIES = {
     "experiments.discoveryworld.belief_actions:create": "cdm_belief_action_policy_with_explicit_numeric_primitive",
     "experiments.discoveryworld.adaptive_compute:create": "joint_cdm_action_and_compute_policy_with_explicit_numeric_primitive",
     "experiments.discoveryworld.predictive_actions:create": "predictive_cdm_with_explicit_numeric_primitive",
+    "experiments.discoveryworld.experimental_plans:create": "cdm_with_persistent_experimental_plans",
 }
 FORWARD_PRIMED_POLICIES = {"learned_dynamic_action_policy", "learned_calibration_with_native_scalar_control",
                          "learned_relation_mixture_with_native_scalar_control",
                          "cdm_belief_action_policy_with_explicit_numeric_primitive",
                          "joint_cdm_action_and_compute_policy_with_explicit_numeric_primitive",
                          "predictive_cdm_with_explicit_numeric_primitive",
+                         "cdm_with_persistent_experimental_plans",
                          "affine_reference_with_native_scalar_control"}
 
 
@@ -258,7 +260,11 @@ def evaluate_prefix(agent, source: Path, output: Path, *, prefix_steps: int,
                 takeover_curve = [_progress(env.metrics)]
                 phase_start = perf_counter()
                 while not env.ended and takeover_executed < takeover_steps:
+                    if getattr(agent, "stop_requested", False):
+                        break
                     action = propose("policy_takeover")
+                    if getattr(agent, "stop_requested", False):
+                        break
                     if first_action is not None and takeover_executed == 0:
                         action = deepcopy(first_action)
                     transition = execute(action, "policy_takeover")
@@ -304,6 +310,8 @@ def evaluate_prefix(agent, source: Path, output: Path, *, prefix_steps: int,
         (output / "decisions.jsonl").write_text("".join(json.dumps(row) + "\n" for row in agent.decisions))
     if hasattr(agent, "update_events"):
         (output / "instance_updates.jsonl").write_text("".join(json.dumps(row) + "\n" for row in agent.update_events))
+    if hasattr(agent, "trials"):
+        (output / "experimental_trials.json").write_text(json.dumps(agent.trials) + "\n")
     return summary
 
 
