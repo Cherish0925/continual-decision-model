@@ -1,6 +1,80 @@
 # Scientific-task models and experiments
 
-[v0.6.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.6.0) · [Results](RESULTS.md) · [Training commands](README.md)
+[v0.7.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.7.0) · [Results](RESULTS.md) · [Training commands](README.md)
+
+## Complete experimental choices: v0.7.0
+
+This study learns the success and cost of complete experimental plans. Four
+317,314-parameter selectors train on 237 native branches; 65 additional branches
+provide validation. The subsequent 264 from-reset evaluations compare complete
+execution, learned choice, neural-state inputs and transfer to the original
+action reader.
+
+On the first 24-instance cohort, the predictive parent completes 14/24,
+posterior-ordered plans 16/24, and numerical selectors from two trainings
+17/24 and 18/24. With the original reader on a fresh cohort, the same selectors
+both complete 23/24, compared with 19/24 for the reader and 21/24 for
+posterior-ordered plans. No transfer training is performed. Adding neural state
+to the selector does not give a consistent gain. [Full results](RESULTS.md#learning-complete-experimental-choices--28-october)
+retain individual gains, losses and action costs.
+
+| Archive | Contents |
+| --- | --- |
+| `cdm-experimental-plans-models.tar.zst` | All four final selectors: two training seeds, with and without continuing neural-state inputs |
+| `cdm-experimental-plans-records.tar.zst` | Collection choices, matched-prefix outcomes, training curves, experimental designs, all native executions and initial random states |
+| `cdm-experimental-plans-observations.tar.zst` | Simulator images accompanying collection and evaluation |
+
+Each archive has a corresponding `*-files.txt` list. The selectors reuse the
+original reader and numerical prior from v0.5.0. The first comparison also uses
+the predictive parent from v0.6.0; the transferred policy below needs only the
+v0.5.0 reference package and the new selector.
+
+```bash
+git clone --branch v0.7.0 https://github.com/Cherish0925/continual-decision-model.git
+cd continual-decision-model
+gh release download v0.5.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-scientific-reference.tar.zst' --dir artifacts/v0.5.0
+gh release download v0.7.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-experimental-plans-models.tar.zst' \
+  --pattern 'cdm-experimental-plans-records.tar.zst' --dir artifacts/v0.7.0
+for archive in artifacts/v0.5.0/*.tar.zst artifacts/v0.7.0/*.tar.zst; do
+  zstd -dc --long=30 "$archive" | tar -x
+done
+```
+
+Install the dependencies and visual encoder using the instructions below, then:
+
+```bash
+python -m experiments.discoveryworld.evaluate \
+  --policy-kind experimental_belief --local-probes \
+  --checkpoint runs/discoveryworld/belief_actions/full_seed61/last.pt \
+  --plan-checkpoint runs/discoveryworld/experimental_plans/numeric/last.pt \
+  --feature-cache runs/discoveryworld/features \
+  --encoder-path data/cache/siglip2 --device cuda:0 \
+  --seeds 3000 --max-steps 400 --workers 1 \
+  --initial-rng-root runs/discoveryworld/experimental_plans/transfer/reference \
+  --output runs/reproduced-experimental-selection
+```
+
+The records also contain the actual incoming features and measured alternatives
+needed to train a selector. Retraining this head does not require replaying
+image encoding or downloading the observation archive:
+
+```bash
+python -m experiments.discoveryworld.train_plans \
+  --train runs/discoveryworld/experimental_plans/train \
+  --validation runs/discoveryworld/experimental_plans/validation \
+  --no-state --seed 171 --epochs 100 --device cuda:0 \
+  --output runs/retrained-experimental-selector
+python -m experiments.discoveryworld.summarize_plans --include-transfer
+```
+
+Use seed 172 for the second numerical selector, or omit `--no-state` for the
+state-conditioned comparison. To recollect the experiments, also download the
+v0.6.0 predictive models and records. The optional v0.7.0 observation archive
+preserves the rendered views of the original runs. The
+[protocol](PREDICTION.md#learning-choices-between-complete-experiments) identifies
+the source histories, held-out instances, fixed budgets and outcome definitions.
 
 ## Prediction and action consequences: v0.6.0
 

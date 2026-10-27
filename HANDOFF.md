@@ -13,8 +13,12 @@ from-reset instances, the predictive parent completes 14/24, posterior-ordered
 experiments 16/24, numerical selectors 17/24 and 18/24, and state-conditioned
 selectors 17/24 and 16/24. The numerical selectors use 269.04 and 265.17 actions
 on average, against the parent's 288.92. The added neural-state input provides
-no consistent benefit. Transfer of both fixed numerical heads to the original
-successful reader is running. [Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
+no consistent benefit. On another 24 instances, both fixed numerical heads
+transfer to the original reader and complete 23/24, against 19/24 for that
+reader and 21/24 for posterior-ordered plans. Mean actions fall from 267.88 to
+249.46. The two transferred heads produce identical action sequences on these
+24 cases. All four trainings and 264 from-reset evaluations have finished.
+[Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
 and the [protocol](experiments/discoveryworld/PREDICTION.md#learning-choices-between-complete-experiments)
 describe this study. Outputs are in `runs/discoveryworld/experimental_plans/`.
 

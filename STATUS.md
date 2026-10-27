@@ -4,7 +4,7 @@ Implementation updated **28 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier
 supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in
-[v0.5.0 and v0.6.0](experiments/discoveryworld/RELEASE.md).
+[v0.5.0–v0.7.0](experiments/discoveryworld/RELEASE.md).
 Published planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1); the first continual-core campaign from [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0), and 35 second-round checkpoints with evaluations from [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
@@ -21,7 +21,14 @@ initializations reach 17/24 and 18/24, using 269.04 and 265.17 actions against
 the parent's 288.92. State-conditioned selectors reach 17/24 and 16/24.
 Prediction of complete experimental outcomes changes useful choices; the
 persistent-state input has no consistent advantage over numerical evidence
-alone. Transfer to the original action reader is being evaluated.
+alone. Both numerical selectors then transfer without retraining to the original
+reader. On another 24 instances, each completes 23/24 against 19/24 for that
+reader and 21/24 for posterior-ordered complete experiments. Mean actions are
+249.46, compared with 267.88 and 262.13. Against posterior order, each selector
+gains three cases and loses one. The two transferred policies produce identical
+actions on this cohort. All four trainings and 264 from-reset evaluations are
+complete; active computation selection and cross-task retention remain further
+research.
 
 ## 27 October scientific-task continuation
 

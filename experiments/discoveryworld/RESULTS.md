@@ -69,11 +69,45 @@ policies all finish, using 211, 236 and 264 actions. These are actual executed
 plans, rather than improvements in a prediction metric alone.
 
 The original reader still succeeds on some instances lost by the predictive
-parent before the new experiment selector is used. A separate fresh-cohort
-experiment transfers both fixed numerical selectors to the original reader,
-preserving its action policy. That comparison is in progress. The
-[protocol](PREDICTION.md#learning-choices-between-complete-experiments) specifies
-the distinction between experiment outcomes and whole-task evaluation.
+parent before the new experiment selector is used. A separate comparison
+therefore transfers both fixed numerical selectors to that reader. Neither
+selector is retrained. All four policies start from reset on another 24 paired
+instances, the 3000 series, with the same 400-action budget.
+
+| Policy with the original reader | New instances | Reserved relation family | Mean progress | Mean actions, including failures |
+| --- | ---: | ---: | ---: | ---: |
+| Original reader | 12 / 16 | 7 / 8 | 0.9667 | 267.88 |
+| Complete experiments, posterior order | 15 / 16 | 6 / 8 | 0.9850 | 262.13 |
+| Learned numerical choices, seed 171 | 15 / 16 | 8 / 8 | 0.9967 | 249.46 |
+| Learned numerical choices, seed 172 | 15 / 16 | 8 / 8 | 0.9967 | 249.46 |
+
+The learned selectors both complete **23/24**, against **19/24** for the
+original reader and **21/24** for posterior-ordered experiments. Relative to
+posterior order, each gains instances 3014, 3018 and 3029, and loses 3012.
+Mean actions fall by 6.88% against the original reader and 4.83% against
+posterior order. Both trainings produce identical action sequences on this
+cohort; these are two trained weights evaluated on the same 24 cases, not 48
+independent test instances. The [transfer table](results/experimental_plan_transfer.csv)
+contains every endpoint.
+
+The lost case is informative. In 3012, posterior order chooses a successful
+five-action plan. Both learned selectors instead choose a 25-action failed
+plan for that object; the surrounding policy does not finish the whole task
+within the remaining budget. A successful experiment for another object later
+in the trajectory does not repair that loss. Learning improves the aggregate
+choice while still making an occasional consequential mistake.
+
+Across this study, four head trainings are followed by **264 from-reset native
+evaluations**, separate from the 302 collected experimental branches. The
+results support learning the consequences of complete experimental plans and
+reusing that selector with a second action reader. They do not establish a
+benefit from additional neural-state input or learned internal computation.
+The training histories contain only the first fully measured decision, with
+two calibration objects and no previous failed plan. Later decisions in an
+episode can have more calibration evidence or previous failures. Expanding
+that experience, and learning which evidence to acquire before execution, are
+the next substantive questions. The [protocol](PREDICTION.md#learning-choices-between-complete-experiments)
+and [release](RELEASE.md) provide the methods, models and native records.
 
 ## Action-consequence prediction — 27 October
 
