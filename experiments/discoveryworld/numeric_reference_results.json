@@ -1,0 +1,197 @@
+{
+  "schema": "public_numeric_reference_result_v1",
+  "experiment": "Training-only leave-one-entire-instance-out numerical reference; no learned-policy deployment.",
+  "source": "experiments/discoveryworld/numeric_reference.py",
+  "source_sha256": "ffdea05f9ae22294f6b2773afceb310ec439779f7cdae4d414870863583e708c",
+  "raw_artifacts": "runs/discoveryworld/calibration/numeric_reference/reproducible",
+  "input_directories": [
+    "runs/discoveryworld/reference/train",
+    "runs/discoveryworld/reference/campaign2/train",
+    "runs/discoveryworld/reference/calibration_training/train"
+  ],
+  "input_episodes": 48,
+  "effective_instances": 45,
+  "clean_queries": 90,
+  "zero_query_seeds": [
+    103,
+    106,
+    108
+  ],
+  "condition_audit": {
+    "vectors": 315,
+    "quantity_rows": 2835,
+    "vectors_with_multiple_condition_groups": 0
+  },
+  "methodology": {
+    "split": "Leave one entire instance out of training data only; both queries of that instance are excluded from scaling/hyperparameter/prior fitting.",
+    "features": [
+      "density_g_cm3",
+      "temperature_c",
+      "radiation_usv_h",
+      "quantum_gap_nm",
+      "spectrum_channel_1",
+      "spectrum_channel_2",
+      "spectrum_channel_3",
+      "spectrum_channel_4",
+      "spectrum_channel_5"
+    ],
+    "representation": "Native-unit mean of latest received condition per named quantity, selected by last_sequence then first_sequence, never labels. Full condition rows, units, sample counts/ranges and causal sequences are preserved in public_inputs.json.gz; no cross-condition pooling.",
+    "ridge": "Fit held-instance then-available support using standardized nine-dimensional inputs and unpenalized intercept. Standardization uses other instances only. Alpha selected by their future-query MAE separately for support2/3.",
+    "affine": "Standard OLS slope/intercept per quantity on held-instance support. Mixture posterior is prior_j * exp(-support_MSE_j/(2*temperature^2)); no held-target-dependent weight. Temperature selected using other instances only. Empirical-prior variant estimates expert frequencies with 30 EM steps and .1 symmetric pseudocount using other instances future labels only; it is not a discoveryworld rule label or an original formula.",
+    "grids": {
+      "ridge_alphas": [
+        0.0,
+        1e-06,
+        0.0001,
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0
+      ],
+      "mixture_temperatures_hz": [
+        1.0,
+        3.0,
+        10.0,
+        30.0,
+        100.0,
+        300.0,
+        1000.0,
+        3000.0
+      ]
+    },
+    "limits": [
+      "Numerical reference, not the main CDM; no policy deployment or native activation test. Within2Hz refers to an observed public valid setting, not hidden exact resonance.",
+      "Two support points interpolate every nonconstant single-variable affine candidate, so support residual alone cannot identify one. A third point can distinguish the candidates represented here, but near-collinearity or noisy conditions can remain ambiguous.",
+      "A nine-dimensional affine function has ten coefficients. Two or three supports underdetermine a general sum of quantities; a mixture of single-variable affine experts is not a general additive or nonlinear law learner. Low three-support error on these training instances does not establish held-law transfer.",
+      "No validation, heldout, seed modulo, hidden rule, or held-instance future target enters predictions. The empirical expert prior reflects only the other training instances, so it favors their observed patterns.",
+      "Unconstrained numerical predictions are not clipped to the native control range. Ill-conditioned two-point slopes can extrapolate far outside it."
+    ]
+  },
+  "metrics": {
+    "affine_train_fold_prior": {
+      "2": {
+        "queries": 45,
+        "future_mae_hz": 2835.0872742597876,
+        "future_median_absolute_error_hz": 1997.2914151037585,
+        "future_rmse_hz": 4984.792858044908,
+        "future_max_absolute_error_hz": 26086.936299014244,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 4.1432536414100063e-13,
+        "known_support_max_absolute_error_hz": 1.8189894035458565e-12
+      },
+      "3": {
+        "queries": 45,
+        "future_mae_hz": 1.5252611428552023,
+        "future_median_absolute_error_hz": 1.423858004060321,
+        "future_rmse_hz": 1.9529249816041785,
+        "future_max_absolute_error_hz": 8.12505523739901,
+        "within_2hz_of_public_working_setting": 36,
+        "known_support_mae_hz": 0.3224829535773046,
+        "known_support_max_absolute_error_hz": 1.206749218316645
+      }
+    },
+    "affine_uniform_prior": {
+      "2": {
+        "queries": 45,
+        "future_mae_hz": 8892.930814541234,
+        "future_median_absolute_error_hz": 2625.1031859004033,
+        "future_rmse_hz": 26857.026498726955,
+        "future_max_absolute_error_hz": 158542.5813829188,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 5.583286919217143e-13,
+        "known_support_max_absolute_error_hz": 1.1368683772161603e-11
+      },
+      "3": {
+        "queries": 45,
+        "future_mae_hz": 5.464014299240196,
+        "future_median_absolute_error_hz": 1.4367684895823913,
+        "future_rmse_hz": 25.45410560569899,
+        "future_max_absolute_error_hz": 170.00568580015351,
+        "within_2hz_of_public_working_setting": 34,
+        "known_support_mae_hz": 0.32940543082590246,
+        "known_support_max_absolute_error_hz": 1.206749218316645
+      }
+    },
+    "ridge_min_norm": {
+      "2": {
+        "queries": 45,
+        "future_mae_hz": 1513.7158325624794,
+        "future_median_absolute_error_hz": 1469.6671649130458,
+        "future_rmse_hz": 1893.7800279642117,
+        "future_max_absolute_error_hz": 4782.822584859348,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 1.8947806286936006e-13,
+        "known_support_max_absolute_error_hz": 1.3642420526593924e-12
+      },
+      "3": {
+        "queries": 45,
+        "future_mae_hz": 1176.6476977933373,
+        "future_median_absolute_error_hz": 898.5217107588714,
+        "future_rmse_hz": 1545.1236656646408,
+        "future_max_absolute_error_hz": 4261.873578877358,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 3.637978807091713e-13,
+        "known_support_max_absolute_error_hz": 1.8189894035458565e-12
+      }
+    },
+    "ridge_train_fold_selected": {
+      "2": {
+        "queries": 45,
+        "future_mae_hz": 1524.4200323600933,
+        "future_median_absolute_error_hz": 1474.7907600674848,
+        "future_rmse_hz": 1895.8991880037927,
+        "future_max_absolute_error_hz": 4718.930723746915,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 73.17414421480915,
+        "known_support_max_absolute_error_hz": 369.51791599030275
+      },
+      "3": {
+        "queries": 45,
+        "future_mae_hz": 1176.6476977933373,
+        "future_median_absolute_error_hz": 898.5217107588714,
+        "future_rmse_hz": 1545.1236656646408,
+        "future_max_absolute_error_hz": 4261.873578877358,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 3.637978807091713e-13,
+        "known_support_max_absolute_error_hz": 1.8189894035458565e-12
+      }
+    },
+    "support_mean": {
+      "2": {
+        "queries": 45,
+        "future_mae_hz": 1574.9407777777778,
+        "future_median_absolute_error_hz": 1419.8450000000003,
+        "future_rmse_hz": 1912.4194625463606,
+        "future_max_absolute_error_hz": 4334.5,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 886.2776666666667,
+        "known_support_max_absolute_error_hz": 2754.94
+      },
+      "3": {
+        "queries": 45,
+        "future_mae_hz": 1535.867703703704,
+        "future_median_absolute_error_hz": 1346.0999999999995,
+        "future_rmse_hz": 1936.8093777651463,
+        "future_max_absolute_error_hz": 4620.166666666667,
+        "within_2hz_of_public_working_setting": 0,
+        "known_support_mae_hz": 1059.3761975308644,
+        "known_support_max_absolute_error_hz": 3537.8999999999996
+      }
+    }
+  },
+  "interpretation": "Known-anchor fitting is achievable with public native-unit measurements. Exact two-anchor interpolation does not identify a law or guarantee future accuracy. Within the single-variable affine candidate class, three observed working settings sharply distinguish hypotheses on these training instances. This is a numerical reference, not evidence of held-law transfer, native success, or an original inference mechanism.",
+  "separate_native_audit": {
+    "path": "runs/discoveryworld/calibration/numeric_reference/native_success_audit.json",
+    "runs": 64,
+    "new_activation_runs": 1,
+    "example": "native_seed31/retained/support3/seed344",
+    "actual_active_hz": 4160.0,
+    "first_prediction_hz": 3862.748291015625,
+    "second_prediction_hz": 4159.8125,
+    "support_updates_between_predictions": 0,
+    "takeover_steps": 17,
+    "paired_discard_new_activations": 0,
+    "paired_discard_takeover_steps": 48
+  }
+}

@@ -2,17 +2,48 @@
   <img src="assets/readme-header.png" alt="Continual Decision Model — Continual operation, decision, and evolution." width="1280">
 </p>
 
-[Status](STATUS.md) · [Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
+[Results](experiments/discoveryworld/RESULTS.md) · [Downloads](experiments/discoveryworld/RELEASE.md) · [Progress](HANDOFF.md) · [Status](STATUS.md) · [Research](RESEARCH.md) · [Model](DESIGN.md) · [Experiments](EXPERIMENTS.md) · [Run](RUNNING.md) · [References](ref/README.md)
 
 **CDM studies how a model can keep perceiving, reasoning, acting, and learning while the world changes.** Internal state persists across interactions. The model learns external actions and the choice of its next observation or computation. A conversation is one event in that continuing process.
 
 An observation can become outdated while inference is still running. The research question is how to preserve useful computation, incorporate new observations, and spend additional computation where it improves subsequent decisions.
 
+## Current results
+
+The [scientific-task release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.5.0)
+contains trained policies, experimental records and simulator observations.
+[Download and reproduce](experiments/discoveryworld/RELEASE.md) ·
+[Full results](experiments/discoveryworld/RESULTS.md) ·
+[Training and evaluation](experiments/discoveryworld/README.md).
+
+| Study | Measured result | What it establishes |
+| --- | --- | --- |
+| Autonomous Reactor Lab experiments | Two trained action readers complete **14/16 and 13/16** tasks from reset across two eight-instance cohorts | A continuing policy can collect its own evidence and use numerical tools to complete experiments. Its recurrence and perception are frozen in this comparison. |
+| Evidence and persistent-state controls | Matched readers without explicit evidence complete **0/8** on the first cohort; clearing the reference policy's workspace also gives **0/8** | Experimental facts and persistent state contribute to the trained policy. A received-facts reader without derived predictions completes 11/16. |
+| Joint state and computation training | On a separate eight-instance cohort: reference **3/8**, fixed-compute joint training **4/8**, adaptive joint training **2/8** | Training the GRU, workspace and action head is implemented. The allocator always selects one refinement; these results do not establish an improvement from adaptive computation. |
+| Learning during process control | Retained online updates give error **0.153 ± 0.003**, versus **0.307** when discarded at matched compute, over three training seeds | Training through the updates used during deployment makes online learning useful in the controlled process tasks. |
+
+The scientific-task policy uses nine explicit affine hypotheses and a numerical
+setting/probe tool. The reported cohorts remain separate in the result tables.
+Efficient experiment selection, useful additional reasoning and learning retained
+across scientific tasks are the next research questions. Completed unsuccessful
+comparisons are included with their conditions and traces.
+
 ## Model
 
-The **first multimodal architecture is selected**: pretrained SigLIP perception, on-demand Qwen3.5-2B semantic context, a persistent GRU/Transformer core, action-conditioned prediction, and separate action/activity heads. Reuse a released CDM core checkpoint; the width-512 reference configuration remains available for explicit initialization comparisons. [DESIGN.md](DESIGN.md) specifies the complete architecture, including episodic retrieval and continued learning; [the configuration](configs/cdm_multimodal_v1.json) fixes its initial dimensions.
+The trained scientific-task policy combines **frozen SigLIP image/text features,
+a persistent GRU/Transformer state, an action reader and exact experimental
+records with a numerical tool**. Its decision network is about **0.053B**
+parameters; the frozen perception model adds about **0.375B**. The successful
+reader comparison trains 442,753 parameters. The later joint-training comparison
+also updates recurrence, workspace and projections.
 
-[cdm/multimodal.py](cdm/multimodal.py) loads the trained core and connects perception tokens to its recurrent state and workspace. [cdm/semantic.py](cdm/semantic.py) retains a pretrained model's native image/text processing and decoder, with a learned reader that compresses its final-layer features to eight cached context tokens. Qwen3.6-35B-A3B is selected as an offline trajectory teacher. The new connections pass forward and gradient tests; multimodal task training, learned semantic-call scheduling and consolidation remain. [TRAINING.md](TRAINING.md#first-multimodal-training-route) gives the training route; [RUNNING.md](RUNNING.md#multimodal-input-and-state-path) gives the executable input example.
+[DESIGN.md](DESIGN.md) specifies the broader model, including activity selection,
+episodic retrieval and continued learning. The on-demand Qwen3.5-2B semantic
+interface is implemented separately; it is not used by the successful scientific
+policy. Qwen3.6-35B-A3B is a proposed offline teacher and has not generated the
+current demonstrations. [TRAINING.md](TRAINING.md) distinguishes these routes
+from the completed experiments.
 
 The existing trained studies use these implementations:
 
@@ -34,7 +65,7 @@ The existing trained studies use these implementations:
 | [Continual agent](experiments/continual_agent/RESULTS.md) | One running process over a stream of changing sites: partial view, asynchronous surveys, requests with idle periods; PPO-trained choice of refinements, surveys and moves; learning from unused compute | Three PPO seeds per planner: the learned activity head beats the best hand-written schedule on two of three planners (+0.048, +0.014) and ties on the third, with 42–51% fewer refinements and more surveys. Learning paid from unused compute raises the running agent's reward on larger mazes with a full view (+0.026, six paired runs); with a partial view it has not improved reward |
 | [Lifetime](experiments/lifetime/RESULTS.md) | One 35.9 M-parameter model over instrument, thermal and vehicle lifetimes with unannounced, returning condition changes. First round: eight settings, five seeds of 2·10⁷ interactions each. Second round: the model trained through its deployed learning steps, workspace across events and copies of processes, three seeds; held-out dynamics; three families; control against an independent clock with power | First round: prediction supervision lowers tracking error from 0.146 to 0.109 without the policy reading a prediction; refinement and online learning add nothing, and the instance's updates slightly hurt. Second round: trained through the learning steps it actually takes, the model's own updates halve its error against discarding them at matched compute (0.153 against 0.307), on held-out dynamics and against a real clock. Unrolling the workspace and an adapter bank did not help; activity-value guidance was not effectively tested; retention of returning conditions and proactive work are not yet achieved ([phase review](research/PHASE_REVIEW.md)) |
 
-[STATUS.md](STATUS.md) maps the full objective to code, measured results, and remaining work. The released checkpoints and evaluations are in [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0), [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1) and, for the continual core, [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0) (first round) and [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0) (second round).
+[STATUS.md](STATUS.md) maps the full objective to code, measured results, and remaining work. Scientific-task artifacts are in [v0.5.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.5.0). Earlier checkpoints and evaluations are in [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0), [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1) and, for the continual core, [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0) (first round) and [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0) (second round).
 
 The neural pilot trains action prediction with a fixed memory-write schedule. The changing-maze planners and the continual agent run on GPUs; their training, evaluation and analysis commands are in the [maze](experiments/dynamic_maze/README.md#run) and [agent](experiments/continual_agent/README.md#run) READMEs.
 
@@ -51,8 +82,11 @@ Each command writes configuration and raw measurements to its run directory. Arc
 
 ## Research map
 
+Start at [HANDOFF.md](HANDOFF.md): what the experiments established, what failed and why, what is implemented against what is specified, and the next steps.
+
 | Document | Contents |
 | --- | --- |
+| [HANDOFF.md](HANDOFF.md) | Research progress, evidence, unfinished questions and next steps |
 | [STATUS.md](STATUS.md) | Capability coverage, measured performance, released artifacts, remaining research |
 | [research/PHASE_REVIEW.md](research/PHASE_REVIEW.md) | Where the project stands after two rounds: goals, results, unsuccessful methods, hypotheses and the next phase |
 | [RESEARCH.md](RESEARCH.md) | Objectives, proactivity, continuous operation, learning, applications |

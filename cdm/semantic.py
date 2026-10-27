@@ -27,8 +27,8 @@ class SemanticExpert(nn.Module):
     @classmethod
     def from_pretrained(cls, model_id: str = SEMANTIC_ID,
                         revision: str = SEMANTIC_REVISION, **load_kwargs):
-        from transformers import Qwen3_5ForConditionalGeneration
-        return cls(Qwen3_5ForConditionalGeneration.from_pretrained(
+        from transformers import AutoModelForImageTextToText
+        return cls(AutoModelForImageTextToText.from_pretrained(
             model_id, revision=revision, **load_kwargs))
 
     def train(self, mode: bool = True):

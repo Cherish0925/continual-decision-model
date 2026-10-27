@@ -1,0 +1,1060 @@
+{
+  "date": "2026-10-27",
+  "scope": "conditional_public_frequency_prediction_with_explicit_affine_hypotheses",
+  "implementation_commits": [
+    "6456f99",
+    "e9db5db"
+  ],
+  "source_checkpoint": "runs/discoveryworld/measurement_memory/action_run/last.pt",
+  "learned_parameters": 54,
+  "training_instances_requested": 48,
+  "training_instances_effective": 45,
+  "training_queries": 90,
+  "validation_instances": 8,
+  "heldout_rule_instances": 4,
+  "epochs": 100,
+  "lr": 0.001,
+  "batch_size": 16,
+  "coefficient_basis": "nine named single-quantity affine candidates; this is an explicit task prior, not learned discovery of affine laws",
+  "comparison": "train-normalized uniform initialization versus fixed learned final; retained posterior versus same posterior computed then discarded",
+  "runs": {
+    "31": {
+      "initial_checkpoint": "runs/discoveryworld/calibration/mixture/seed31/initial.pt",
+      "final_checkpoint": "runs/discoveryworld/calibration/mixture/seed31/last.pt",
+      "final_checkpoint_sha256": "671996726b3989ca82a93482573a6bd670ea6d50126df3f6fd8c597beb6050c8",
+      "normalization": {
+        "x_mean": [
+          38.93150000000003,
+          30.1141111111111,
+          33.53703472222222,
+          40.862944444444466,
+          39.56772222222222,
+          40.07977777777777,
+          40.19077777777777,
+          41.73449999999998,
+          41.99150000000001
+        ],
+        "x_scale": [
+          18.504172576746036,
+          11.193744869786723,
+          13.162416768273868,
+          18.7919604765567,
+          16.55775943748145,
+          17.449647909709803,
+          16.245438862631758,
+          16.271403861956376,
+          17.058173944052623
+        ],
+        "y_mean_hz": 3674.635333333334,
+        "y_scale_hz": 1703.815729734423,
+        "training_objects": 180,
+        "training_labels": 180,
+        "quantity_names": [
+          "density_g_cm3",
+          "temperature_c",
+          "radiation_usv_h",
+          "quantum_gap_nm",
+          "spectrum_channel_1",
+          "spectrum_channel_2",
+          "spectrum_channel_3",
+          "spectrum_channel_4",
+          "spectrum_channel_5"
+        ],
+        "scope": "training_instances_only"
+      },
+      "initial_validation": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 3.3164766043259304,
+            "known_support_mae_hz": 0.1584059245480134,
+            "mixture_mean": {
+              "mae_hz": 670.7510894489648,
+              "median_absolute_error_hz": 130.15522917363455,
+              "rmse_hz": 1046.33323166126,
+              "within_2hz": 8
+            },
+            "map_expert": {
+              "mae_hz": 121.29616900152229,
+              "median_absolute_error_hz": 1.3855312695693556,
+              "rmse_hz": 480.5060634978771,
+              "within_2hz": 15
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 4.29301307149076,
+              "known_support_mae_hz": 0.00849775843384748,
+              "mixture_mean": {
+                "mae_hz": 1340.2977840634276,
+                "median_absolute_error_hz": 1570.2513456177783,
+                "rmse_hz": 1479.7380775160057,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 241.38794316854268,
+                "median_absolute_error_hz": 1.3855312695693556,
+                "rmse_hz": 679.5369517618775,
+                "within_2hz": 7
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 2.3399401371611006,
+              "known_support_mae_hz": 0.3083140906621793,
+              "mixture_mean": {
+                "mae_hz": 1.2043948345018975,
+                "median_absolute_error_hz": 1.2869375398083776,
+                "rmse_hz": 1.298193601756211,
+                "within_2hz": 8
+              },
+              "map_expert": {
+                "mae_hz": 1.2043948345018975,
+                "median_absolute_error_hz": 1.2869375398083776,
+                "rmse_hz": 1.298193601756211,
+                "within_2hz": 8
+              }
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 8.824661798170446,
+            "known_support_mae_hz": 1207.8593194444443,
+            "mixture_mean": {
+              "mae_hz": 1194.3031666666666,
+              "median_absolute_error_hz": 1286.1353333333336,
+              "rmse_hz": 1352.3319314296612,
+              "within_2hz": 0
+            },
+            "map_expert": {
+              "mae_hz": 1194.3031666666666,
+              "median_absolute_error_hz": 1286.135333333334,
+              "rmse_hz": 1352.3319314296612,
+              "within_2hz": 0
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 8.87078562949867,
+              "known_support_mae_hz": 1165.7494166666665,
+              "mixture_mean": {
+                "mae_hz": 1418.4088333333334,
+                "median_absolute_error_hz": 1467.5,
+                "rmse_hz": 1507.6619813412349,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1418.4088333333334,
+                "median_absolute_error_hz": 1467.5,
+                "rmse_hz": 1507.6619813412349,
+                "within_2hz": 0
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.778537966842222,
+              "known_support_mae_hz": 1249.9692222222222,
+              "mixture_mean": {
+                "mae_hz": 970.1975,
+                "median_absolute_error_hz": 960.6003333333335,
+                "rmse_hz": 1176.6727053632108,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 970.1975,
+                "median_absolute_error_hz": 960.600333333334,
+                "rmse_hz": 1176.6727053632108,
+                "within_2hz": 0
+              }
+            }
+          }
+        }
+      },
+      "final_validation": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 2.716101918830611,
+            "known_support_mae_hz": 0.15670482697126903,
+            "mixture_mean": {
+              "mae_hz": 349.2795722183523,
+              "median_absolute_error_hz": 60.34476031117072,
+              "rmse_hz": 611.113182162263,
+              "within_2hz": 8
+            },
+            "map_expert": {
+              "mae_hz": 19.715194616330564,
+              "median_absolute_error_hz": 1.4092249599225397,
+              "rmse_hz": 74.13290523642233,
+              "within_2hz": 15
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 3.2496708517647708,
+              "known_support_mae_hz": 0.004830998676055742,
+              "mixture_mean": {
+                "mae_hz": 697.3549319008739,
+                "median_absolute_error_hz": 591.3074402512821,
+                "rmse_hz": 864.2435755575194,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 38.226176696830464,
+                "median_absolute_error_hz": 1.4092249599225397,
+                "rmse_hz": 104.8317239439284,
+                "within_2hz": 7
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 2.1825329858964513,
+              "known_support_mae_hz": 0.3085786552664823,
+              "mixture_mean": {
+                "mae_hz": 1.2042125358306635,
+                "median_absolute_error_hz": 1.2868783076478394,
+                "rmse_hz": 1.2980495093549638,
+                "within_2hz": 8
+              },
+              "map_expert": {
+                "mae_hz": 1.2042125358306635,
+                "median_absolute_error_hz": 1.2868783076478394,
+                "rmse_hz": 1.2980495093549638,
+                "within_2hz": 8
+              }
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 8.739880507119176,
+            "known_support_mae_hz": 1012.0403089793734,
+            "mixture_mean": {
+              "mae_hz": 1117.9061402475738,
+              "median_absolute_error_hz": 1112.198334196758,
+              "rmse_hz": 1275.6681315040514,
+              "within_2hz": 0
+            },
+            "map_expert": {
+              "mae_hz": 1046.9866425294742,
+              "median_absolute_error_hz": 862.6675464204561,
+              "rmse_hz": 1391.125034696439,
+              "within_2hz": 0
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 8.762207348682368,
+              "known_support_mae_hz": 1053.344267752247,
+              "mixture_mean": {
+                "mae_hz": 1272.6769069547145,
+                "median_absolute_error_hz": 1348.0970069600269,
+                "rmse_hz": 1371.594364563922,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 805.5205151150055,
+                "median_absolute_error_hz": 579.0909980535755,
+                "rmse_hz": 1046.1669480407766,
+                "within_2hz": 0
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.717553665555982,
+              "known_support_mae_hz": 970.7363502064998,
+              "mixture_mean": {
+                "mae_hz": 963.1353735404332,
+                "median_absolute_error_hz": 836.4091314146901,
+                "rmse_hz": 1171.916064642245,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1288.4527699439427,
+                "median_absolute_error_hz": 1324.1604509168053,
+                "rmse_hz": 1666.1309795887548,
+                "within_2hz": 0
+              }
+            }
+          }
+        }
+      },
+      "heldout_final_only": {
+        "initial_uniform": {
+          "retained": {
+            "all": {
+              "queries": 8,
+              "nll": 3.210107613750438,
+              "known_support_mae_hz": 0.11749973998950243,
+              "mixture_mean": {
+                "mae_hz": 433.1757387015186,
+                "median_absolute_error_hz": 110.23198216746823,
+                "rmse_hz": 770.5627570286325,
+                "within_2hz": 4
+              },
+              "map_expert": {
+                "mae_hz": 639.1859982245561,
+                "median_absolute_error_hz": 1.779478766401553,
+                "rmse_hz": 1805.0902792286493,
+                "within_2hz": 7
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 3.934357379280446,
+                "known_support_mae_hz": 0.006019079739871813,
+                "mixture_mean": {
+                  "mae_hz": 864.8340084052264,
+                  "median_absolute_error_hz": 635.7683836555611,
+                  "rmse_hz": 1089.7391279083831,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1276.8545274513015,
+                  "median_absolute_error_hz": 0.9261064750194237,
+                  "rmse_hz": 2552.7826531428236,
+                  "within_2hz": 3
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 2.48585784822043,
+                "known_support_mae_hz": 0.22898040023913305,
+                "mixture_mean": {
+                  "mae_hz": 1.517468997810738,
+                  "median_absolute_error_hz": 1.779478766401553,
+                  "rmse_hz": 1.5994200858685077,
+                  "within_2hz": 4
+                },
+                "map_expert": {
+                  "mae_hz": 1.517468997810738,
+                  "median_absolute_error_hz": 1.779478766401553,
+                  "rmse_hz": 1.5994200858685077,
+                  "within_2hz": 4
+                }
+              }
+            }
+          },
+          "computed_discarded": {
+            "all": {
+              "queries": 8,
+              "nll": 8.954169416770393,
+              "known_support_mae_hz": 1264.1560416666666,
+              "mixture_mean": {
+                "mae_hz": 1602.1775,
+                "median_absolute_error_hz": 1869.3653333333336,
+                "rmse_hz": 1717.487449313224,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1602.1775,
+                "median_absolute_error_hz": 1869.365333333334,
+                "rmse_hz": 1717.487449313224,
+                "within_2hz": 0
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 8.915269159697116,
+                "known_support_mae_hz": 1209.41625,
+                "mixture_mean": {
+                  "mae_hz": 1537.855,
+                  "median_absolute_error_hz": 1595.23,
+                  "rmse_hz": 1579.804952765302,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1537.855,
+                  "median_absolute_error_hz": 1595.23,
+                  "rmse_hz": 1579.804952765302,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 8.993069673843667,
+                "known_support_mae_hz": 1318.8958333333333,
+                "mixture_mean": {
+                  "mae_hz": 1666.5,
+                  "median_absolute_error_hz": 2086.3646666666664,
+                  "rmse_hz": 1844.9234640805864,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1666.5,
+                  "median_absolute_error_hz": 2086.364666666666,
+                  "rmse_hz": 1844.9234640805864,
+                  "within_2hz": 0
+                }
+              }
+            }
+          }
+        },
+        "learned_final": {
+          "retained": {
+            "all": {
+              "queries": 8,
+              "nll": 3.4239628739233403,
+              "known_support_mae_hz": 0.11687296387952983,
+              "mixture_mean": {
+                "mae_hz": 562.7040512161079,
+                "median_absolute_error_hz": 197.342499212828,
+                "rmse_hz": 864.8097179484062,
+                "within_2hz": 4
+              },
+              "map_expert": {
+                "mae_hz": 795.510588713501,
+                "median_absolute_error_hz": 412.29770807577074,
+                "rmse_hz": 1178.4945755503813,
+                "within_2hz": 4
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 4.426888673919272,
+                "known_support_mae_hz": 0.005311592818941335,
+                "mixture_mean": {
+                  "mae_hz": 1123.8899151584799,
+                  "median_absolute_error_hz": 1179.9331231469694,
+                  "rmse_hz": 1223.024585901221,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1589.5029901532662,
+                  "median_absolute_error_hz": 1655.1336268172026,
+                  "rmse_hz": 1666.6422442762562,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 2.4210370739274087,
+                "known_support_mae_hz": 0.22843433494011833,
+                "mixture_mean": {
+                  "mae_hz": 1.518187273735748,
+                  "median_absolute_error_hz": 1.779192412112934,
+                  "rmse_hz": 1.5996240654006657,
+                  "within_2hz": 4
+                },
+                "map_expert": {
+                  "mae_hz": 1.518187273735748,
+                  "median_absolute_error_hz": 1.779192412112934,
+                  "rmse_hz": 1.5996240654006657,
+                  "within_2hz": 4
+                }
+              }
+            }
+          },
+          "computed_discarded": {
+            "all": {
+              "queries": 8,
+              "nll": 9.013661037507472,
+              "known_support_mae_hz": 1577.9204459850066,
+              "mixture_mean": {
+                "mae_hz": 1638.3618604554795,
+                "median_absolute_error_hz": 1857.9926736279651,
+                "rmse_hz": 1769.3488438010256,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1587.3887854992256,
+                "median_absolute_error_hz": 1521.101450895731,
+                "rmse_hz": 1840.8542251305782,
+                "within_2hz": 0
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 8.955076921036953,
+                "known_support_mae_hz": 1623.2207205583682,
+                "mixture_mean": {
+                  "mae_hz": 1617.2623749906547,
+                  "median_absolute_error_hz": 1600.367590551993,
+                  "rmse_hz": 1660.2421506142705,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1351.4190731182002,
+                  "median_absolute_error_hz": 1490.792587772581,
+                  "rmse_hz": 1404.902256231639,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 9.07224515397799,
+                "known_support_mae_hz": 1532.6201714116453,
+                "mixture_mean": {
+                  "mae_hz": 1659.4613459203042,
+                  "median_absolute_error_hz": 2017.3810348384486,
+                  "rmse_hz": 1872.107545907487,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1823.358497880251,
+                  "median_absolute_error_hz": 2007.0777343163882,
+                  "rmse_hz": 2191.7431890614953,
+                  "within_2hz": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "final_expert_prior": [
+        0.15344563442400883,
+        0.16000006922843224,
+        0.15449729833981313,
+        0.15305196308607275,
+        0.07584705878804857,
+        0.07555718255109048,
+        0.07583050729408325,
+        0.076053353578077,
+        0.0757169327103738
+      ],
+      "final_noise_std_hz": [
+        2.3528973649332636,
+        2.3565844858380096,
+        2.357109925737871,
+        2.350384107393419,
+        2.732154927434575,
+        2.8265379749452046,
+        3.1700108358197094,
+        2.8255164914030533,
+        2.6249181113869957
+      ],
+      "training_seconds": 79.36861823685467,
+      "full_evaluation": "runs/discoveryworld/calibration/mixture/seed31/final_evaluation.json"
+    },
+    "32": {
+      "initial_checkpoint": "runs/discoveryworld/calibration/mixture/seed32/initial.pt",
+      "final_checkpoint": "runs/discoveryworld/calibration/mixture/seed32/last.pt",
+      "final_checkpoint_sha256": "710b7d9c1b551bb5706f06ce04ef8a195e46bce6fc15d66233d6ed87ea761d58",
+      "normalization": {
+        "x_mean": [
+          38.93150000000003,
+          30.1141111111111,
+          33.53703472222222,
+          40.862944444444466,
+          39.56772222222222,
+          40.07977777777777,
+          40.19077777777777,
+          41.73449999999998,
+          41.99150000000001
+        ],
+        "x_scale": [
+          18.504172576746036,
+          11.193744869786723,
+          13.162416768273868,
+          18.7919604765567,
+          16.55775943748145,
+          17.449647909709803,
+          16.245438862631758,
+          16.271403861956376,
+          17.058173944052623
+        ],
+        "y_mean_hz": 3674.635333333334,
+        "y_scale_hz": 1703.815729734423,
+        "training_objects": 180,
+        "training_labels": 180,
+        "quantity_names": [
+          "density_g_cm3",
+          "temperature_c",
+          "radiation_usv_h",
+          "quantum_gap_nm",
+          "spectrum_channel_1",
+          "spectrum_channel_2",
+          "spectrum_channel_3",
+          "spectrum_channel_4",
+          "spectrum_channel_5"
+        ],
+        "scope": "training_instances_only"
+      },
+      "initial_validation": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 3.3164766043259304,
+            "known_support_mae_hz": 0.1584059245480134,
+            "mixture_mean": {
+              "mae_hz": 670.7510894489648,
+              "median_absolute_error_hz": 130.15522917363455,
+              "rmse_hz": 1046.33323166126,
+              "within_2hz": 8
+            },
+            "map_expert": {
+              "mae_hz": 121.29616900152229,
+              "median_absolute_error_hz": 1.3855312695693556,
+              "rmse_hz": 480.5060634978771,
+              "within_2hz": 15
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 4.29301307149076,
+              "known_support_mae_hz": 0.00849775843384748,
+              "mixture_mean": {
+                "mae_hz": 1340.2977840634276,
+                "median_absolute_error_hz": 1570.2513456177783,
+                "rmse_hz": 1479.7380775160057,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 241.38794316854268,
+                "median_absolute_error_hz": 1.3855312695693556,
+                "rmse_hz": 679.5369517618775,
+                "within_2hz": 7
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 2.3399401371611006,
+              "known_support_mae_hz": 0.3083140906621793,
+              "mixture_mean": {
+                "mae_hz": 1.2043948345018975,
+                "median_absolute_error_hz": 1.2869375398083776,
+                "rmse_hz": 1.298193601756211,
+                "within_2hz": 8
+              },
+              "map_expert": {
+                "mae_hz": 1.2043948345018975,
+                "median_absolute_error_hz": 1.2869375398083776,
+                "rmse_hz": 1.298193601756211,
+                "within_2hz": 8
+              }
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 8.824661798170446,
+            "known_support_mae_hz": 1207.8593194444443,
+            "mixture_mean": {
+              "mae_hz": 1194.3031666666666,
+              "median_absolute_error_hz": 1286.1353333333336,
+              "rmse_hz": 1352.3319314296612,
+              "within_2hz": 0
+            },
+            "map_expert": {
+              "mae_hz": 1194.3031666666666,
+              "median_absolute_error_hz": 1286.135333333334,
+              "rmse_hz": 1352.3319314296612,
+              "within_2hz": 0
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 8.87078562949867,
+              "known_support_mae_hz": 1165.7494166666665,
+              "mixture_mean": {
+                "mae_hz": 1418.4088333333334,
+                "median_absolute_error_hz": 1467.5,
+                "rmse_hz": 1507.6619813412349,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1418.4088333333334,
+                "median_absolute_error_hz": 1467.5,
+                "rmse_hz": 1507.6619813412349,
+                "within_2hz": 0
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.778537966842222,
+              "known_support_mae_hz": 1249.9692222222222,
+              "mixture_mean": {
+                "mae_hz": 970.1975,
+                "median_absolute_error_hz": 960.6003333333335,
+                "rmse_hz": 1176.6727053632108,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 970.1975,
+                "median_absolute_error_hz": 960.600333333334,
+                "rmse_hz": 1176.6727053632108,
+                "within_2hz": 0
+              }
+            }
+          }
+        }
+      },
+      "final_validation": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 2.717011429446269,
+            "known_support_mae_hz": 0.15671081490754563,
+            "mixture_mean": {
+              "mae_hz": 348.2547434246378,
+              "median_absolute_error_hz": 56.67641368550039,
+              "rmse_hz": 611.884858808058,
+              "within_2hz": 8
+            },
+            "map_expert": {
+              "mae_hz": 19.715067484666264,
+              "median_absolute_error_hz": 1.4077193668285872,
+              "rmse_hz": 74.13291116332852,
+              "within_2hz": 15
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 3.251315207327761,
+              "known_support_mae_hz": 0.004843571365427124,
+              "mixture_mean": {
+                "mae_hz": 695.3052705924246,
+                "median_absolute_error_hz": 588.5717895944986,
+                "rmse_hz": 865.3348923635351,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 38.225918712481445,
+                "median_absolute_error_hz": 1.4077193668285872,
+                "rmse_hz": 104.83173231324886,
+                "within_2hz": 7
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 2.182707651564777,
+              "known_support_mae_hz": 0.3085780584496641,
+              "mixture_mean": {
+                "mae_hz": 1.2042162568510832,
+                "median_absolute_error_hz": 1.2868746397081168,
+                "rmse_hz": 1.2980505780778833,
+                "within_2hz": 8
+              },
+              "map_expert": {
+                "mae_hz": 1.2042162568510832,
+                "median_absolute_error_hz": 1.2868746397081168,
+                "rmse_hz": 1.2980505780778833,
+                "within_2hz": 8
+              }
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 8.73943714568437,
+            "known_support_mae_hz": 1012.0367353429083,
+            "mixture_mean": {
+              "mae_hz": 1118.342821462354,
+              "median_absolute_error_hz": 1109.2689611208257,
+              "rmse_hz": 1275.203633569919,
+              "within_2hz": 0
+            },
+            "map_expert": {
+              "mae_hz": 1047.0241475075973,
+              "median_absolute_error_hz": 851.3476100284229,
+              "rmse_hz": 1395.8231714193287,
+              "within_2hz": 0
+            }
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 8.761025472216158,
+              "known_support_mae_hz": 1054.3900953653451,
+              "mixture_mean": {
+                "mae_hz": 1272.2821065761764,
+                "median_absolute_error_hz": 1347.2596038711947,
+                "rmse_hz": 1370.4864248554024,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 800.269935230724,
+                "median_absolute_error_hz": 564.0740454845686,
+                "rmse_hz": 1045.9266400986617,
+                "within_2hz": 0
+              }
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.717848819152586,
+              "known_support_mae_hz": 969.6833753204714,
+              "mixture_mean": {
+                "mae_hz": 964.4035363485316,
+                "median_absolute_error_hz": 836.934605213957,
+                "rmse_hz": 1172.2011659382133,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1293.7783597844702,
+                "median_absolute_error_hz": 1327.8916475220828,
+                "rmse_hz": 1674.1212964639537,
+                "within_2hz": 0
+              }
+            }
+          }
+        }
+      },
+      "heldout_final_only": {
+        "initial_uniform": {
+          "retained": {
+            "all": {
+              "queries": 8,
+              "nll": 3.210107613750438,
+              "known_support_mae_hz": 0.11749973998950243,
+              "mixture_mean": {
+                "mae_hz": 433.1757387015186,
+                "median_absolute_error_hz": 110.23198216746823,
+                "rmse_hz": 770.5627570286325,
+                "within_2hz": 4
+              },
+              "map_expert": {
+                "mae_hz": 639.1859982245561,
+                "median_absolute_error_hz": 1.779478766401553,
+                "rmse_hz": 1805.0902792286493,
+                "within_2hz": 7
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 3.934357379280446,
+                "known_support_mae_hz": 0.006019079739871813,
+                "mixture_mean": {
+                  "mae_hz": 864.8340084052264,
+                  "median_absolute_error_hz": 635.7683836555611,
+                  "rmse_hz": 1089.7391279083831,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1276.8545274513015,
+                  "median_absolute_error_hz": 0.9261064750194237,
+                  "rmse_hz": 2552.7826531428236,
+                  "within_2hz": 3
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 2.48585784822043,
+                "known_support_mae_hz": 0.22898040023913305,
+                "mixture_mean": {
+                  "mae_hz": 1.517468997810738,
+                  "median_absolute_error_hz": 1.779478766401553,
+                  "rmse_hz": 1.5994200858685077,
+                  "within_2hz": 4
+                },
+                "map_expert": {
+                  "mae_hz": 1.517468997810738,
+                  "median_absolute_error_hz": 1.779478766401553,
+                  "rmse_hz": 1.5994200858685077,
+                  "within_2hz": 4
+                }
+              }
+            }
+          },
+          "computed_discarded": {
+            "all": {
+              "queries": 8,
+              "nll": 8.954169416770393,
+              "known_support_mae_hz": 1264.1560416666666,
+              "mixture_mean": {
+                "mae_hz": 1602.1775,
+                "median_absolute_error_hz": 1869.3653333333336,
+                "rmse_hz": 1717.487449313224,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1602.1775,
+                "median_absolute_error_hz": 1869.365333333334,
+                "rmse_hz": 1717.487449313224,
+                "within_2hz": 0
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 8.915269159697116,
+                "known_support_mae_hz": 1209.41625,
+                "mixture_mean": {
+                  "mae_hz": 1537.855,
+                  "median_absolute_error_hz": 1595.23,
+                  "rmse_hz": 1579.804952765302,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1537.855,
+                  "median_absolute_error_hz": 1595.23,
+                  "rmse_hz": 1579.804952765302,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 8.993069673843667,
+                "known_support_mae_hz": 1318.8958333333333,
+                "mixture_mean": {
+                  "mae_hz": 1666.5,
+                  "median_absolute_error_hz": 2086.3646666666664,
+                  "rmse_hz": 1844.9234640805864,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1666.5,
+                  "median_absolute_error_hz": 2086.364666666666,
+                  "rmse_hz": 1844.9234640805864,
+                  "within_2hz": 0
+                }
+              }
+            }
+          }
+        },
+        "learned_final": {
+          "retained": {
+            "all": {
+              "queries": 8,
+              "nll": 3.425849596623357,
+              "known_support_mae_hz": 0.116883516059346,
+              "mixture_mean": {
+                "mae_hz": 563.4866549046311,
+                "median_absolute_error_hz": 194.8751721434578,
+                "rmse_hz": 867.2026666637651,
+                "within_2hz": 4
+              },
+              "map_expert": {
+                "mae_hz": 795.5105754479889,
+                "median_absolute_error_hz": 412.2976861881432,
+                "rmse_hz": 1178.4945847178517,
+                "within_2hz": 4
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 4.428746593782595,
+                "known_support_mae_hz": 0.005317407196002932,
+                "mixture_mean": {
+                  "mae_hz": 1125.4551540463333,
+                  "median_absolute_error_hz": 1181.5559330938547,
+                  "rmse_hz": 1226.4087293438356,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1589.502995133049,
+                  "median_absolute_error_hz": 1655.1335968092214,
+                  "rmse_hz": 1666.6422572621498,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 2.422952599464119,
+                "known_support_mae_hz": 0.22844962492268903,
+                "mixture_mean": {
+                  "mae_hz": 1.5181557629289273,
+                  "median_absolute_error_hz": 1.779185521376803,
+                  "rmse_hz": 1.599602053358567,
+                  "within_2hz": 4
+                },
+                "map_expert": {
+                  "mae_hz": 1.5181557629289273,
+                  "median_absolute_error_hz": 1.779185521376803,
+                  "rmse_hz": 1.599602053358567,
+                  "within_2hz": 4
+                }
+              }
+            }
+          },
+          "computed_discarded": {
+            "all": {
+              "queries": 8,
+              "nll": 9.013715067295378,
+              "known_support_mae_hz": 1581.716259774882,
+              "mixture_mean": {
+                "mae_hz": 1639.9217998464574,
+                "median_absolute_error_hz": 1860.0499796107997,
+                "rmse_hz": 1771.0241883579072,
+                "within_2hz": 0
+              },
+              "map_expert": {
+                "mae_hz": 1587.2248748089485,
+                "median_absolute_error_hz": 1515.8103838351142,
+                "rmse_hz": 1842.935850798377,
+                "within_2hz": 0
+              }
+            },
+            "by_support_count": {
+              "2": {
+                "queries": 4,
+                "nll": 8.955464586182353,
+                "known_support_mae_hz": 1628.1889695575333,
+                "mixture_mean": {
+                  "mae_hz": 1617.2849717642266,
+                  "median_absolute_error_hz": 1601.1303908901223,
+                  "rmse_hz": 1660.7632063696092,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1349.3527108616256,
+                  "median_absolute_error_hz": 1488.8008009959428,
+                  "rmse_hz": 1403.1966967269725,
+                  "within_2hz": 0
+                }
+              },
+              "3": {
+                "queries": 4,
+                "nll": 9.071965548408404,
+                "known_support_mae_hz": 1535.2435499922308,
+                "mixture_mean": {
+                  "mae_hz": 1662.558627928688,
+                  "median_absolute_error_hz": 2021.4018506983907,
+                  "rmse_hz": 1874.8117035762557,
+                  "within_2hz": 0
+                },
+                "map_expert": {
+                  "mae_hz": 1825.0970387562716,
+                  "median_absolute_error_hz": 2005.8317023391155,
+                  "rmse_hz": 2196.3296953350123,
+                  "within_2hz": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "final_expert_prior": [
+        0.15330090359498572,
+        0.16168036185916843,
+        0.1534718364392745,
+        0.15271660962974767,
+        0.07594699425555577,
+        0.07583991827078929,
+        0.07556103746245675,
+        0.07586385919627604,
+        0.07561847929174592
+      ],
+      "final_noise_std_hz": [
+        2.3537821474310006,
+        2.355023122470713,
+        2.358111980494614,
+        2.352230995774233,
+        2.733685174245573,
+        2.818240309675112,
+        3.161227070354213,
+        2.833483399770829,
+        2.6307870773707633
+      ],
+      "training_seconds": 78.7906448263675,
+      "full_evaluation": "runs/discoveryworld/calibration/mixture/seed32/final_evaluation.json"
+    }
+  }
+}

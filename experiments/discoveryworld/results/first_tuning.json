@@ -1,0 +1,50 @@
+{
+  "question": "Can the policies tune an untried crystal once measurement collection, placement and dialogue entry are supplied?",
+  "scope": "Two instances; exact first-new-crystal dialogue prefix before any unknown-frequency adjustment; not autonomous task completion.",
+  "models": {
+    "identity": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 205,
+        "prefix_replay_matched": true,
+        "takeover_steps": 48,
+        "takeover_start_progress": 0.76,
+        "progress": 0.8,
+        "takeover_new_activations": 0,
+        "error": null
+      },
+      {
+        "seed": 311,
+        "prefix_steps_executed": 206,
+        "prefix_replay_matched": true,
+        "takeover_steps": 48,
+        "takeover_start_progress": 0.76,
+        "progress": 0.8,
+        "takeover_new_activations": 0,
+        "error": null
+      }
+    ],
+    "unbound": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 205,
+        "prefix_replay_matched": true,
+        "takeover_steps": 48,
+        "takeover_start_progress": 0.76,
+        "progress": 0.8,
+        "takeover_new_activations": 0,
+        "error": null
+      },
+      {
+        "seed": 311,
+        "prefix_steps_executed": 206,
+        "prefix_replay_matched": true,
+        "takeover_steps": 48,
+        "takeover_start_progress": 0.76,
+        "progress": 0.8,
+        "takeover_new_activations": 0,
+        "error": null
+      }
+    ]
+  }
+}

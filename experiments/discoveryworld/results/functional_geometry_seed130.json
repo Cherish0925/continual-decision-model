@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "scope": "diagnostic_only_training_instance130_no_parameter_fit_or_heldout_tuning",
+  "checkpoint": {
+    "path": "runs/discoveryworld/calibration/seed31/last.pt",
+    "sha256": "81b98c71d7ccaa55bafc41188525ebeedb3ab2ac8e5fe545fb76bfa92e681b7b"
+  },
+  "program": {
+    "path": "runs/discoveryworld/calibration/contexts/0493e1bdfcea4e6981c111d4023b757e898604e01386424343e84d1b314250c0.pt",
+    "sha256": "09fdc152cb502c8885fde2b3a5a4d44c564cb68ba50546383a286123f4070098",
+    "identity": [
+      "Reactor Lab",
+      "Normal",
+      130
+    ]
+  },
+  "source_revision": "68e7f39f026cb11a947577a7c3ca33e3fbc5818e",
+  "raw_result": "runs/discoveryworld/calibration/functional_geometry_seed130.json",
+  "raw_sha256": "044512f2833ccb7194909601f7a28c446a8329e7a0cd26d2cd526162d67b663d",
+  "method": {
+    "jacobian": "native Hz mean autograd with respect to actual A/B, model FP32; Gram/eigensolve FP64",
+    "parameter_coordinates": "unscaled concatenated A/B; same Euclidean coordinates as deployed update",
+    "gauss_newton": "delta = J.T @ solve(J@J.T + lambda*I, y-mu); evaluate actual nonlinear predictor on adapter copies",
+    "damping_rules": [
+      "0.01 * largest eigenvalue",
+      "max(smallest eigenvalue, 1e-10 * largest eigenvalue)"
+    ],
+    "trust_diagnostic": "also cap proposal norm at 0.1 times current A/B norm",
+    "noise_comparison_std_hz": 2.0,
+    "gauss_newton_is_diagnostic_not_trained_method": true
+  },
+  "cost": {
+    "device": "cpu",
+    "threads": 4,
+    "adapter_parameters": 32768,
+    "updates_replayed": 65,
+    "scalar_mean_backward_calls": 10,
+    "scalar_nll_backward_calls": 10,
+    "load_replay_seconds": 1.5629408545792103,
+    "diagnostic_seconds": 0.058108141645789146,
+    "total_seconds": 1.9016440715640783
+  },
+  "snapshots": [
+    {
+      "sequence": 206,
+      "support_count": 2,
+      "targets_hz": [
+        4046.070068359375,
+        5526.2900390625
+      ],
+      "mean_hz": [
+        3925.0634765625,
+        3926.94580078125
+      ],
+      "std_hz": [
+        1686.28076171875,
+        1687.192138671875
+      ],
+      "mae_hz": 860.1754150390625,
+      "jacobian_cosines": [
+        [
+          1.0,
+          0.9999880616115272
+        ],
+        [
+          0.9999880616115272,
+          1.0
+        ]
+      ],
+      "gram_eigenvalues": [
+        21.724795368965715,
+        3639463.742447274
+      ],
+      "gram_condition": 167525.80084810912,
+      "variance_mean_gradient_cosine": -0.9514035293252167,
+      "full_gaussian_gradient_cosines": [
+        [
+          1.0000000000000024,
+          -0.9303950653978247
+        ],
+        [
+          -0.9303950653978247,
+          0.9999999999999956
+        ]
+      ],
+      "full_gaussian_step_mean_hz": [
+        3943.43212890625,
+        3945.3115234375
+      ],
+      "noise_only_step_mean_hz": [
+        4019.653564453125,
+        4021.525146484375
+      ],
+      "gauss_newton": [
+        {
+          "damping": "one_percent_largest_eigenvalue",
+          "lambda": 36394.63742447274,
+          "delta_norm": 0.6453298844561725,
+          "relative_delta_norm": 0.3418374586678564,
+          "linear_mae_hz": 738.7783331987534,
+          "actual_mean_hz": [
+            4413.28076171875,
+            4415.46630859375
+          ],
+          "actual_mae_hz": 739.0172119140625,
+          "ten_percent_norm_cap_mae_hz": 739.0797119140625
+        },
+        {
+          "damping": "weakest_eigenvalue",
+          "lambda": 21.724795368965715,
+          "delta_norm": 112.14703216638378,
+          "relative_delta_norm": 59.405363669474646,
+          "linear_mae_hz": 369.60991600634406,
+          "actual_mean_hz": [
+            -17411.349609375,
+            -13985.568359375
+          ],
+          "actual_mae_hz": 20484.639038085938,
+          "ten_percent_norm_cap_mae_hz": 861.7298583984375
+        }
+      ]
+    },
+    {
+      "sequence": 222,
+      "support_count": 3,
+      "targets_hz": [
+        4046.070068359375,
+        5526.2900390625,
+        1943.0
+      ],
+      "mean_hz": [
+        3540.660400390625,
+        3542.602294921875,
+        3504.039306640625
+      ],
+      "std_hz": [
+        1475.6439208984375,
+        1476.4427490234375,
+        1462.88330078125
+      ],
+      "mae_hz": 1350.0455729166667,
+      "jacobian_cosines": [
+        [
+          1.0,
+          0.9999886028596708,
+          0.9979166127077626
+        ],
+        [
+          0.9999886028596708,
+          1.0000000000000002,
+          0.9976728477146635
+        ],
+        [
+          0.9979166127077626,
+          0.9976728477146635,
+          1.0
+        ]
+      ],
+      "gram_eigenvalues": [
+        8.175890358525285,
+        5044.703203777954,
+        5213764.591334499
+      ],
+      "gram_condition": 637699.9155691864,
+      "variance_mean_gradient_cosine": 0.9246237467634411,
+      "full_gaussian_gradient_cosines": [
+        [
+          0.9999999999999997,
+          -0.6548705722588423,
+          0.5719979901809589
+        ],
+        [
+          -0.6548705722588423,
+          0.9999999999999979,
+          -0.9923220968706865
+        ],
+        [
+          0.5719979901809589,
+          -0.9923220968706865,
+          0.9999999999999971
+        ]
+      ],
+      "full_gaussian_step_mean_hz": [
+        3563.770263671875,
+        3565.739990234375,
+        3526.49755859375
+      ],
+      "noise_only_step_mean_hz": [
+        3634.59228515625,
+        3636.63330078125,
+        3595.65087890625
+      ],
+      "gauss_newton": [
+        {
+          "damping": "one_percent_largest_eigenvalue",
+          "lambda": 52137.645913345,
+          "delta_norm": 2.908892767515473,
+          "relative_delta_norm": 1.532507844322141,
+          "linear_mae_hz": 1128.632005086305,
+          "actual_mean_hz": [
+            3838.600830078125,
+            3845.84228515625,
+            3732.287353515625
+          ],
+          "actual_mae_hz": 1225.7347819010417,
+          "ten_percent_norm_cap_mae_hz": 1337.1429036458333
+        },
+        {
+          "damping": "weakest_eigenvalue",
+          "lambda": 8.175890358525285,
+          "delta_norm": 166.25726445225666,
+          "relative_delta_norm": 87.59022154200763,
+          "linear_mae_hz": 224.70733369187838,
+          "actual_mean_hz": [
+            -4334.01123046875,
+            2465.02734375,
+            -49434.140625
+          ],
+          "actual_mae_hz": 20939.494873046875,
+          "ten_percent_norm_cap_mae_hz": 1349.1216634114583
+        }
+      ]
+    }
+  ]
+}

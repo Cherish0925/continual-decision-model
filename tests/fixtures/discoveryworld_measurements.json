@@ -1,0 +1,5396 @@
+{
+  "description": "Public UI excerpts from recorded native transitions. No scorecard, expert ledger, hypotheses or hidden state. Object lists are excerpts retaining action participants, instruments, crystals and reactors; unrelated object entries are omitted.",
+  "sources": [
+    {
+      "path": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "sha256": "c2e7b2752f01dc5f7c50eed499f52e12fd481b11e941e23a2e3f7b740c1707b4"
+    },
+    {
+      "path": "runs/discoveryworld/siglip_pilot/eval_cdm/seed310/trajectory.jsonl",
+      "sha256": "030b14afaeb54ca47e6863883dd27873c4374f1ce1670fe73d090ce908cd6fa5"
+    },
+    {
+      "path": "runs/discoveryworld/corrections/train/seed111/trajectory.jsonl",
+      "sha256": "a56bec3ddd8fcb53165b1d2bd53c40c20f93f8835d7d7c0654358983d7de9126"
+    }
+  ],
+  "cases": [
+    {
+      "label": "density",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 13,
+        "action": {
+          "action": "USE",
+          "arg1": 18629,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 14,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I teleported to the object with UUID 63031 (quantum crystal 4) at (15, 18).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 15,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the densitometer to examine the quantum crystal 4.\nThe results are as follows:\nThe density of the quantum crystal 4 appears to be approximately 56.630 grams per cubic centimeter.\n",
+            "extended_action_message": "You use the densitometer to examine the quantum crystal 4.\nThe results are as follows:\nThe density of the quantum crystal 4 appears to be approximately 56.630 grams per cubic centimeter.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "temperature",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 14,
+        "action": {
+          "action": "USE",
+          "arg1": 53269,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 15,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the densitometer to examine the quantum crystal 4.\nThe results are as follows:\nThe density of the quantum crystal 4 appears to be approximately 56.630 grams per cubic centimeter.\n",
+            "extended_action_message": "You use the densitometer to examine the quantum crystal 4.\nThe results are as follows:\nThe density of the quantum crystal 4 appears to be approximately 56.630 grams per cubic centimeter.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 16,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the thermometer to measure the temperature of the quantum crystal 4.\nThe thermometer reports a temperature of 19.11 degrees Celsius.\n",
+            "extended_action_message": "You use the thermometer to measure the temperature of the quantum crystal 4.\nThe thermometer reports a temperature of 19.11 degrees Celsius.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "gap",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 15,
+        "action": {
+          "action": "USE",
+          "arg1": 51465,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 16,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the thermometer to measure the temperature of the quantum crystal 4.\nThe thermometer reports a temperature of 19.11 degrees Celsius.\n",
+            "extended_action_message": "You use the thermometer to measure the temperature of the quantum crystal 4.\nThe thermometer reports a temperature of 19.11 degrees Celsius.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 17,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the microscope to observe the quantum crystal 4.\nObserving the quantum crystal 4, you see the following: The quantum gap of this crystal appears to be 31.77 nm.\n",
+            "extended_action_message": "You use the microscope to observe the quantum crystal 4.\nObserving the quantum crystal 4, you see the following: The quantum gap of this crystal appears to be 31.77 nm.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "spectrum",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 16,
+        "action": {
+          "action": "USE",
+          "arg1": 16419,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 17,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the microscope to observe the quantum crystal 4.\nObserving the quantum crystal 4, you see the following: The quantum gap of this crystal appears to be 31.77 nm.\n",
+            "extended_action_message": "You use the microscope to observe the quantum crystal 4.\nObserving the quantum crystal 4, you see the following: The quantum gap of this crystal appears to be 31.77 nm.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 18,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on table [uuid: 34205])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 6122
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the spectrometer to examine the quantum crystal 4.\nThe results are as follows:\n- Channel 1: 23.81\n- Channel 2: 45.10\n- Channel 3: 38.96\n- Channel 4: 39.41\n- Channel 5: 16.46\n",
+            "extended_action_message": "You use the spectrometer to examine the quantum crystal 4.\nThe results are as follows:\n- Channel 1: 23.81\n- Channel 2: 45.10\n- Channel 3: 38.96\n- Channel 4: 39.41\n- Channel 5: 16.46\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "radiation_a1",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 22,
+        "action": {
+          "action": "USE",
+          "arg1": 36055,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 23,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I teleported to the object with UUID 61196 (grass) at (7, 5).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 24,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.15 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.15 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "radiation_a2",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 23,
+        "action": {
+          "action": "USE",
+          "arg1": 36055,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 24,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.15 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.15 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 25,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.16 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.16 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "radiation_a3",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 24,
+        "action": {
+          "action": "USE",
+          "arg1": 36055,
+          "arg2": 63031
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 25,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.16 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.16 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 26,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 63031
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.19 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 4.\nThe radiation meter reports a level of 17.19 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "radiation_b",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 67,
+        "action": {
+          "action": "USE",
+          "arg1": 36055,
+          "arg2": 16434
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 68,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I teleported to the object with UUID 61196 (grass) at (7, 5).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 7,
+              "y": 5,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": []
+            },
+            "world_steps": 69,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "You use the radiation meter to investigate the quantum crystal 3.\nThe radiation meter reports a level of 30.47 micro Seiverts per hour.\n",
+            "extended_action_message": "You use the radiation meter to investigate the quantum crystal 3.\nThe radiation meter reports a level of 30.47 micro Seiverts per hour.\n",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "reactor1",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 103,
+        "action": {
+          "action": "TALK",
+          "arg1": 50759
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 104,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              },
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I teleported to the object with UUID 50759 (crystal reactor (activated)) at (18, 18).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 105,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              },
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (activated) said: Hello, I am Crystal Reactor #1.\nThe current resonance frequence is: 1657.6 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #1.\nThe current resonance frequence is: 1657.6 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "exit1",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 104,
+        "action": {
+          "chosen_dialog_option_int": 9
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 105,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              },
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (activated) said: Hello, I am Crystal Reactor #1.\nThe current resonance frequence is: 1657.6 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #1.\nThe current resonance frequence is: 1657.6 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 106,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              },
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on table [uuid: 34205])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Exit\n\ncrystal reactor (activated) said: Exiting crystal reactor controls.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Exiting crystal reactor controls.",
+              "dialogOptions": {}
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "reactor3",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 204,
+        "action": {
+          "action": "TALK",
+          "arg1": 10581
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 205,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I put the quantum crystal 4 into the crystal reactor (no crystal present).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 206,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "adjust3a",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 205,
+        "action": {
+          "chosen_dialog_option_int": 5
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 206,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 207,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Decrease frequency by 1000 Hz\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 4000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 4000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "adjust3b",
+      "source": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+      "transition": {
+        "index": 206,
+        "action": {
+          "chosen_dialog_option_int": 5
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 207,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Decrease frequency by 1000 Hz\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 4000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 4000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 20,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 208,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 10581,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 3,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Decrease frequency by 1000 Hz\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 3000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 3000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "swapped_device",
+      "source": "runs/discoveryworld/siglip_pilot/eval_cdm/seed310/trajectory.jsonl",
+      "transition": {
+        "index": 50,
+        "action": {
+          "action": "USE",
+          "arg1": 6122,
+          "arg2": 50759
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 51,
+            "inventoryObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Exit\n\ncrystal reactor (activated) said: Exiting crystal reactor controls.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Exiting crystal reactor controls.",
+              "dialogOptions": {}
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 18,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "east",
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north"
+              ]
+            },
+            "world_steps": 52,
+            "inventoryObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 50759,
+                "name": "crystal reactor (activated)",
+                "description": "crystal reactor (activated)"
+              },
+              {
+                "uuid": 63031,
+                "name": "quantum crystal 1",
+                "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 1,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 1,
+                    "uuid": 63031
+                  }
+                ],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 2,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 3,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 4,
+                    "uuid": 34810
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 6122
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16434
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: \n\ncrystal reactor (activated) said: Hello, I am Crystal Reactor #1.\nThe current resonance frequence is: 2171.12 Hertz.\nThe allowable range is 0 to 10,000 Hz.\n Note, the original action failed (USE, arg1:quantum crystal 4, arg2:crystal reactor (activated)), but the arguments were switched and the action succeeded (USE, arg1:crystal reactor (activated), arg2:quantum crystal 4). Try to enter the arguments in the correct order next time.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "failed_action",
+      "source": "runs/discoveryworld/siglip_pilot/eval_cdm/seed310/trajectory.jsonl",
+      "transition": {
+        "index": 28,
+        "action": {
+          "action": "USE",
+          "arg1": 6122,
+          "arg2": 34205
+        },
+        "action_result": {
+          "errors": [],
+          "success": false
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 29,
+            "inventoryObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 34205,
+                "name": "table",
+                "description": "table"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "table",
+                    "description": "table",
+                    "distance": 1,
+                    "uuid": 34205
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 6122
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I teleported to the object with UUID 34205 (table) at (15, 18).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 15,
+              "y": 18,
+              "faceDirection": "south",
+              "directions_you_can_move": [
+                "north",
+                "east",
+                "west"
+              ],
+              "directions_blocked": [
+                "south"
+              ]
+            },
+            "world_steps": 30,
+            "inventoryObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 34205,
+                "name": "table",
+                "description": "table"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [],
+                "north": [],
+                "north-east": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 63031
+                  }
+                ],
+                "east": [],
+                "south-east": [],
+                "south": [
+                  {
+                    "name": "table",
+                    "description": "table",
+                    "distance": 1,
+                    "uuid": 34205
+                  }
+                ],
+                "south-west": [
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (on table [uuid: 26424])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 6122
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "That object (quantum crystal 4) is not usable.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "reactor_contents_before",
+      "source": "runs/discoveryworld/corrections/train/seed111/trajectory.jsonl",
+      "transition": {
+        "index": 70,
+        "action": {
+          "action": "TALK",
+          "arg1": 34810
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 71,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 10581
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 16434
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I put the quantum crystal 3 into the crystal reactor (no crystal present).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 72,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 16434,
+                "name": "quantum crystal 3",
+                "description": "quantum crystal 3 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (no crystal present)",
+                    "description": "crystal reactor (no crystal present)",
+                    "distance": 2,
+                    "uuid": 10581
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 16434
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "reactor_contents_after",
+      "source": "runs/discoveryworld/corrections/train/seed111/trajectory.jsonl",
+      "transition": {
+        "index": 266,
+        "action": {
+          "action": "TALK",
+          "arg1": 34810
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 267,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (activated) [uuid: 10581])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "I put the quantum crystal 4 into the crystal reactor (no crystal present).",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": false
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 268,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (activated) [uuid: 10581])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "reactor_contents_after_again",
+      "source": "runs/discoveryworld/corrections/train/seed111/trajectory.jsonl",
+      "transition": {
+        "index": 268,
+        "action": {
+          "action": "TALK",
+          "arg1": 34810
+        },
+        "action_result": {
+          "errors": [],
+          "success": true
+        },
+        "observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 269,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (activated) [uuid: 10581])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Exit\n\ncrystal reactor (uncalibrated) said: Exiting crystal reactor controls.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Exiting crystal reactor controls.",
+              "dialogOptions": {}
+            }
+          }
+        },
+        "next_observation": {
+          "ui": {
+            "agentLocation": {
+              "x": 21,
+              "y": 18,
+              "faceDirection": "north",
+              "directions_you_can_move": [
+                "south",
+                "west"
+              ],
+              "directions_blocked": [
+                "north",
+                "east"
+              ]
+            },
+            "world_steps": 270,
+            "inventoryObjects": [
+              {
+                "uuid": 16419,
+                "name": "spectrometer",
+                "description": "spectrometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 18629,
+                "name": "densitometer",
+                "description": "densitometer (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 36055,
+                "name": "radiation meter",
+                "description": "radiation meter (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 51465,
+                "name": "microscope",
+                "description": "microscope (on agent [uuid: 42378])"
+              },
+              {
+                "uuid": 53269,
+                "name": "thermometer",
+                "description": "thermometer (on agent [uuid: 42378])"
+              }
+            ],
+            "accessibleEnvironmentObjects": [
+              {
+                "uuid": 6122,
+                "name": "quantum crystal 4",
+                "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])"
+              },
+              {
+                "uuid": 34810,
+                "name": "crystal reactor (uncalibrated)",
+                "description": "crystal reactor (uncalibrated)"
+              }
+            ],
+            "nearbyObjects": {
+              "objects": {
+                "north-west": [
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 4,
+                    "uuid": 50759
+                  },
+                  {
+                    "name": "quantum crystal 1",
+                    "description": "quantum crystal 1 (in crystal reactor (activated) [uuid: 50759])",
+                    "distance": 4,
+                    "uuid": 17557
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 3,
+                    "uuid": 45180
+                  },
+                  {
+                    "name": "quantum crystal 2",
+                    "description": "quantum crystal 2 (in crystal reactor (activated) [uuid: 45180])",
+                    "distance": 3,
+                    "uuid": 63031
+                  },
+                  {
+                    "name": "crystal reactor (activated)",
+                    "description": "crystal reactor (activated)",
+                    "distance": 2,
+                    "uuid": 10581
+                  },
+                  {
+                    "name": "quantum crystal 3",
+                    "description": "quantum crystal 3 (in crystal reactor (activated) [uuid: 10581])",
+                    "distance": 2,
+                    "uuid": 16434
+                  }
+                ],
+                "north": [
+                  {
+                    "name": "crystal reactor (uncalibrated)",
+                    "description": "crystal reactor (uncalibrated)",
+                    "distance": 1,
+                    "uuid": 34810
+                  },
+                  {
+                    "name": "quantum crystal 4",
+                    "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 34810])",
+                    "distance": 1,
+                    "uuid": 6122
+                  }
+                ],
+                "north-east": [],
+                "east": [],
+                "south-east": [],
+                "south": [],
+                "south-west": [],
+                "west": [],
+                "same_location": [
+                  {
+                    "name": "densitometer",
+                    "description": "densitometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 18629
+                  },
+                  {
+                    "name": "thermometer",
+                    "description": "thermometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 53269
+                  },
+                  {
+                    "name": "radiation meter",
+                    "description": "radiation meter (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 36055
+                  },
+                  {
+                    "name": "microscope",
+                    "description": "microscope (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 51465
+                  },
+                  {
+                    "name": "spectrometer",
+                    "description": "spectrometer (on agent [uuid: 42378])",
+                    "distance": 0,
+                    "uuid": 16419
+                  }
+                ]
+              }
+            },
+            "lastActionMessage": "We are talking.  You said: Hello!\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+            "extended_action_message": "",
+            "dialog_box": {
+              "is_in_dialog": true,
+              "dialogIn": "Hello, I am Crystal Reactor #4.\nThe current resonance frequence is: 5000 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+              "dialogOptions": {
+                "1": "Increase frequency by 1000 Hz",
+                "2": "Increase frequency by 100 Hz",
+                "3": "Increase frequency by 10 Hz",
+                "4": "Increase frequency by 1 Hz",
+                "5": "Decrease frequency by 1000 Hz",
+                "6": "Decrease frequency by 100 Hz",
+                "7": "Decrease frequency by 10 Hz",
+                "8": "Decrease frequency by 1 Hz",
+                "9": "Exit"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

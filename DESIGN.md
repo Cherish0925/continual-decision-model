@@ -170,7 +170,7 @@ The first application is a **digital experimental operator**: receive an objecti
 Two complementary evaluations serve that application:
 
 1. The existing instrument/thermal processes measure continual control, delayed feedback, adaptation and elapsed-time behavior under controlled conditions.
-2. [DiscoveryWorld](https://github.com/allenai/discoveryworld) is the selected external task suite for visual scientific interaction and experiment sequences. Its adapter and training integration remain to be built. Preserve its official protocol and scores; an independently timed extension is a separately reported setting.
+2. [DiscoveryWorld](https://github.com/allenai/discoveryworld) is the selected external task suite for visual scientific interaction and experiment sequences. Its native adapter, dynamic task policy, trajectory trainer and on-policy fine-tuning path are implemented in [the task experiment](experiments/discoveryworld/README.md). Preserve its official protocol and scores; an independently timed extension is a separately reported setting.
 
 These task suites keep the same core architecture. Tool schemas and output heads differ. Neither benchmark alone covers general multimodal agency, lifetime learning and real-time execution.
 
@@ -188,9 +188,11 @@ Compare a recurrent policy, a restarted workspace, persistent inference without 
 | Frozen native vision-language model, trainable latent reader, bounded semantic cache and native generation interface | Implemented in [cdm/semantic.py](cdm/semantic.py); actual small Qwen3.5 modules tested with image/text inputs |
 | Persistent core, process predictor, activity/action heads, prediction adapters | Existing implementation and structured-process experiments |
 | Correct option-value policy gradient | Fixed in [experiments/lifetime/train.py](experiments/lifetime/train.py); detached centering weights |
+| Dynamic scientific actions and received-result prediction | Implemented in [cdm/digital.py](cdm/digital.py), using the existing GRU/workspace and a public-observation object registry |
+| Scientific-task trajectory training and fresh-interaction policy updates | Implemented in [experiments/discoveryworld/](experiments/discoveryworld/README.md); task execution is evaluated separately from imitation accuracy |
 | Full pretrained-weight multimodal training and teacher distillation | Not run in this update |
 | Asynchronous semantic execution and learned semantic-call policy | Interfaces defined above; worker and policy training remain |
 | Long-term retrieval, prediction extension, tool/subgoal heads, action adapters and consolidation | Specified above; implementation remains |
-| Autonomous digital experimentation | Application target; not a completed result |
+| Autonomous digital experimentation | Native Reactor Lab completion from reset: 14/16 and 13/16 across two trained evidence readers; fixed source core, explicit numerical hypotheses and scalar primitive. Cross-domain experimentation remains an objective. See [task results](experiments/discoveryworld/RESULTS.md). |
 
-The next integration is a trajectory/environment adapter that connects multimodal events to the lifetime learner, followed by joint training. A new encoder implementation does not require redesigning the persistent core.
+The task learner now reads received evidence when selecting actions and can complete native Reactor Lab experiments. Refinement remains fixed; instance-local relation fitting uses a specified numerical model. Learned computation schedules and later-task retention remain the next integration. A new encoder implementation does not require redesigning the persistent core.

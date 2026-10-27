@@ -1,0 +1,115 @@
+{
+  "purpose": "Initial native generation and protocol probes; unequal action/token budgets; not a ranked scientific-capability comparison.",
+  "runs": [
+    {
+      "condition": "2B, greedy",
+      "seed": 310,
+      "steps": 32,
+      "successful_actions": 0,
+      "progress": 0.08,
+      "completed": false,
+      "model_calls": 32,
+      "seconds": 406.6991348192096,
+      "error": null,
+      "configuration": {
+        "model_path": "data/cache/qwen3.5-2b",
+        "revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+        "device": "cuda:0",
+        "dtype": "bfloat16",
+        "max_input_tokens": 32768,
+        "max_new_tokens": 128,
+        "temperature": 0.0,
+        "history_steps": 32,
+        "vision": true,
+        "image_max_pixels": 262144,
+        "enable_thinking": false,
+        "local_files_only": true
+      }
+    },
+    {
+      "condition": "35B, greedy",
+      "seed": 310,
+      "steps": 32,
+      "successful_actions": 18,
+      "progress": 0.08,
+      "completed": false,
+      "model_calls": 32,
+      "seconds": 414.92044645920396,
+      "error": null,
+      "configuration": {
+        "model_path": "data/cache/qwen3.6-35b-a3b",
+        "revision": "local_snapshot",
+        "device": "cuda:0",
+        "dtype": "bfloat16",
+        "max_input_tokens": 32768,
+        "max_new_tokens": 128,
+        "temperature": 0.0,
+        "history_steps": 32,
+        "vision": true,
+        "image_max_pixels": 262144,
+        "enable_thinking": false,
+        "local_files_only": true
+      }
+    },
+    {
+      "condition": "2B, thinking",
+      "seed": 310,
+      "steps": 0,
+      "successful_actions": 0,
+      "progress": 0.08,
+      "completed": false,
+      "model_calls": 1,
+      "seconds": 861.247012346983,
+      "error": {
+        "type": "SemanticPolicyError",
+        "message": "Generation stopped before the </think> boundary; no final action"
+      },
+      "configuration": {
+        "model_path": "data/cache/qwen3.5-2b",
+        "revision": "15852e8c16360a2fea060d615a32b45270f8a8fc",
+        "device": "cuda:0",
+        "dtype": "bfloat16",
+        "max_input_tokens": 32768,
+        "max_new_tokens": 2048,
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "history_steps": 32,
+        "vision": true,
+        "image_max_pixels": 262144,
+        "enable_thinking": true,
+        "local_files_only": true
+      }
+    },
+    {
+      "condition": "35B, thinking",
+      "seed": 310,
+      "steps": 1,
+      "successful_actions": 1,
+      "progress": 0.08,
+      "completed": false,
+      "model_calls": 2,
+      "seconds": 722.1453824285418,
+      "error": {
+        "type": "SemanticPolicyError",
+        "message": "Expecting value: line 3 column 1 (char 2)"
+      },
+      "configuration": {
+        "model_path": "data/cache/qwen3.6-35b-a3b",
+        "revision": "local_snapshot",
+        "device": "cuda:0",
+        "dtype": "bfloat16",
+        "max_input_tokens": 32768,
+        "max_new_tokens": 2048,
+        "temperature": 0.6,
+        "top_p": 0.95,
+        "top_k": 20,
+        "history_steps": 32,
+        "vision": true,
+        "image_max_pixels": 262144,
+        "enable_thinking": true,
+        "local_files_only": true
+      }
+    }
+  ]
+}

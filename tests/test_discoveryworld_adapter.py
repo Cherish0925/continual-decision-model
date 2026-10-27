@@ -52,6 +52,36 @@ class DiscoveryWorldAdapterTests(unittest.TestCase):
         self.assertEqual(len(self.env.api.ui), 1)
         self.assertEqual(fresh["ui"]["world_steps"], 1)
 
+    def test_use_npc_device_renders_dialog_in_both_argument_orders(self):
+        env = DiscoveryWorldEnv(Path(self.folder.name) / "dialog", max_steps=8)
+        with contextlib.redirect_stdout(io.StringIO()):
+            observation = env.reset("Reactor Lab", "Normal", 310)
+            first_step = observation["ui"]["world_steps"]
+            env.step({"action": "TELEPORT_TO_LOCATION", "arg1": "reactor lab"})
+            observation = env.policy_input()
+            visible = [obj for group in observation["ui"]["nearbyObjects"]["objects"].values() for obj in group]
+            reactor = next(obj["uuid"] for obj in visible if obj["name"] == "crystal reactor (activated)")
+            env.step({"action": "TELEPORT_TO_OBJECT", "arg1": reactor})
+            crystal = next(obj["uuid"] for obj in env.policy_input()["ui"]["accessibleEnvironmentObjects"]
+                           if obj["name"].startswith("quantum crystal") and f"[uuid: {reactor}]" in obj["description"])
+            for first, second in ((reactor, crystal), (crystal, reactor)):
+                result = env.step({"action": "USE", "arg1": first, "arg2": second})
+                self.assertTrue(result["action_result"]["success"])
+                self.assertTrue(env.api.isAgentInDialog(agentIdx=0))
+                dialog = result["next_observation"]["ui"]["dialog_box"]
+                self.assertTrue(dialog["is_in_dialog"])
+                self.assertIn("current resonance", dialog["dialogIn"])
+                self.assertTrue(dialog["dialogOptions"])
+                exit_index = next(int(index) for index, label in dialog["dialogOptions"].items() if label == "Exit")
+                result = env.step({"chosen_dialog_option_int": exit_index})
+                self.assertTrue(result["action_result"]["success"])
+                self.assertFalse(env.api.isAgentInDialog(agentIdx=0))
+            result = env.step({"action": "ROTATE_DIRECTION", "arg1": "north"})
+        self.assertTrue(result["action_result"]["success"])
+        self.assertEqual(env.steps, 7)
+        self.assertEqual(result["next_observation"]["ui"]["world_steps"], first_step + 7)
+        self.assertNotIn("criticalHypotheses", json.dumps(env.policy_input()))
+
 
 if __name__ == "__main__":
     unittest.main()

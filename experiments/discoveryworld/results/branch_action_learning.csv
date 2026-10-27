@@ -1,0 +1,25 @@
+model,seed,scenario,difficulty,steps,progress,success,new_activations,measurement_actions,radiation_samples,tuning_actions,max_same_action_run
+unchanged_reader,810,Reactor Lab,Normal,227,1.0,True,2,148,132,13,35
+unchanged_reader,811,Reactor Lab,Normal,236,1.0,True,2,152,136,18,34
+unchanged_reader,812,Reactor Lab,Normal,220,1.0,True,2,143,127,11,33
+unchanged_reader,813,Reactor Lab,Normal,231,1.0,True,2,143,127,22,34
+unchanged_reader,834,Reactor Lab,Normal,224,1.0,True,2,149,133,9,37
+unchanged_reader,839,Reactor Lab,Normal,400,0.92,False,1,142,126,39,34
+unchanged_reader,844,Reactor Lab,Normal,227,1.0,True,2,145,129,14,35
+unchanged_reader,849,Reactor Lab,Normal,400,0.84,False,0,152,136,44,35
+additional_replay,810,Reactor Lab,Normal,216,1.0,True,2,137,121,13,32
+additional_replay,811,Reactor Lab,Normal,218,1.0,True,2,135,119,18,30
+additional_replay,812,Reactor Lab,Normal,208,1.0,True,2,132,116,11,30
+additional_replay,813,Reactor Lab,Normal,219,1.0,True,2,131,115,22,30
+additional_replay,834,Reactor Lab,Normal,208,1.0,True,2,134,118,9,31
+additional_replay,839,Reactor Lab,Normal,400,0.92,False,1,131,115,39,30
+additional_replay,844,Reactor Lab,Normal,213,1.0,True,2,133,117,14,30
+additional_replay,849,Reactor Lab,Normal,400,0.76,False,0,61,20,44,17
+paired_return_training,810,Reactor Lab,Normal,400,0.6,False,0,17,7,117,5
+paired_return_training,811,Reactor Lab,Normal,222,1.0,True,2,139,123,18,41
+paired_return_training,812,Reactor Lab,Normal,178,1.0,True,2,102,86,11,32
+paired_return_training,813,Reactor Lab,Normal,177,1.0,True,2,89,73,22,33
+paired_return_training,834,Reactor Lab,Normal,228,1.0,True,2,154,138,9,49
+paired_return_training,839,Reactor Lab,Normal,400,0.92,False,1,75,59,39,28
+paired_return_training,844,Reactor Lab,Normal,167,1.0,True,2,87,71,14,32
+paired_return_training,849,Reactor Lab,Normal,400,0.72,False,0,34,11,47,7

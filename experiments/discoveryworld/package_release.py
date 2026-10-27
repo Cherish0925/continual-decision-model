@@ -1,0 +1,134 @@
+"""Package scientific-task runs without regenerable features or pretrained weights.
+
+Run from the repository root. Original experiment files are never modified.
+The archives restore project-relative paths under runs/discoveryworld/.
+"""
+from __future__ import annotations
+
+import argparse
+import filecmp
+import gzip
+import io
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import tarfile
+import tempfile
+
+
+CHECKPOINTS = {"last.pt", "best.pt", "initial.pt", "critic.pt"}
+TEXT = {".json", ".jsonl", ".csv", ".log", ".txt", ".md", ".py", ".yaml", ".yml"}
+IMAGES = {".png", ".jpg", ".jpeg"}
+SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
+
+
+def files(root):
+    for directory, names, filenames in os.walk(root / "runs/discoveryworld"):
+        names[:] = sorted(n for n in names if n not in {"features", "__pycache__", "contexts"})
+        for name in sorted(filenames):
+            path = Path(directory) / name
+            if path.is_symlink():
+                continue
+            yield path
+
+
+def portable(value, root):
+    if isinstance(value, str):
+        return value.replace(str(root) + "/", "").replace(str(root), ".")
+    if isinstance(value, dict):
+        return {k: portable(v, root) for k, v in value.items()}
+    if isinstance(value, list):
+        return [portable(v, root) for v in value]
+    if isinstance(value, tuple):
+        return tuple(portable(v, root) for v in value)
+    return value
+
+
+def package(root, output, kind):
+    import torch
+
+    output.mkdir(parents=True, exist_ok=True)
+    archive = output / f"cdm-scientific-{kind}.tar.gz"
+    inventory, images = [], {}
+    with archive.open("wb") as target:
+        compressor = subprocess.Popen(["pigz", "-2", "-p", "8", "-c"], stdin=subprocess.PIPE, stdout=target)
+        with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
+            for path in files(root):
+                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"epoch\d+\.pt", path.name))
+                image = path.suffix.lower() in IMAGES
+                record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf"}
+                if not {"models": checkpoint, "observations": image, "records": record}[kind]:
+                    continue
+                relative = path.relative_to(root).as_posix()
+                info = tar.gettarinfo(str(path), arcname=relative)
+                info.uid = info.gid = 0
+                info.uname = info.gname = ""
+                info.mode = 0o644
+                if checkpoint:
+                    # Change metadata paths only; tensor values and training results stay intact.
+                    saved = portable(torch.load(path, map_location="cpu", weights_only=True), root)
+                    with tempfile.TemporaryFile() as stream:
+                        torch.save(saved, stream)
+                        info.size = stream.tell()
+                        stream.seek(0)
+                        tar.addfile(info, stream)
+                elif image:
+                    key = (path.name, info.size)
+                    previous = images.get(key)
+                    if previous is not None and filecmp.cmp(previous, path, shallow=False):
+                        info.type = tarfile.LNKTYPE
+                        info.linkname = previous.relative_to(root).as_posix()
+                        info.size = 0
+                        tar.addfile(info)
+                    else:
+                        images[key] = path
+                        with path.open("rb") as stream:
+                            tar.addfile(info, stream)
+                else:
+                    data = path.read_bytes()
+                    compressed = path.name.endswith(".json.gz")
+                    if compressed:
+                        data = gzip.decompress(data)
+                    if SECRET.search(data):
+                        raise ValueError(f"Credential-like content in {relative}; exclude before publication")
+                    if path.suffix in TEXT or compressed:
+                        data = portable(data.decode("utf-8"), root).encode("utf-8")
+                    if compressed:
+                        data = gzip.compress(data, compresslevel=6, mtime=0)
+                    info.size = len(data)
+                    tar.addfile(info, io.BytesIO(data))
+                inventory.append(relative)
+        compressor.stdin.close()
+        if compressor.wait() != 0:
+            raise RuntimeError("Archive compression failed")
+    # Separate pieces keep every asset below the GitHub per-file limit.
+    limit = 1800 * 1024**2
+    if archive.stat().st_size > limit:
+        with archive.open("rb") as source:
+            part = 0
+            while source.peek(1):
+                piece = archive.with_name(archive.name + f".part{part:02d}")
+                with piece.open("wb") as destination:
+                    remaining = limit
+                    while remaining:
+                        block = source.read(min(8 * 1024**2, remaining))
+                        if not block:
+                            break
+                        destination.write(block)
+                        remaining -= len(block)
+                part += 1
+        archive.unlink()
+    (output / f"{kind}-files.txt").write_text("\n".join(inventory) + "\n")
+    print(json.dumps({"kind": kind, "files": len(inventory), "assets": [
+        {"name": p.name, "bytes": p.stat().st_size}
+        for p in sorted(output.glob(f"cdm-scientific-{kind}.tar.gz*"))]}), flush=True)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--kind", choices=("models", "records", "observations"), required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    package(Path.cwd().resolve(), args.output, args.kind)

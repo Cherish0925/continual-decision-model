@@ -1,0 +1,415 @@
+{
+  "scope": "train_only_in_sample_typed_interaction_single_intervention",
+  "implementation_commit": "d8003cb",
+  "config": {
+    "scope": "in_sample_train_only_typed_interaction_pilot_not_validation_or_native_completion",
+    "query_encoding": "typed_interaction",
+    "context_mode": "current",
+    "baseline": "object_only_train_pilot/current",
+    "training_instance_seeds": [
+      130,
+      131,
+      132,
+      133,
+      135,
+      136,
+      137,
+      138
+    ],
+    "outer_seed": 31,
+    "epochs": 10,
+    "lr": 0.0001,
+    "batch_size": 2,
+    "source_checkpoint": "runs/discoveryworld/measurement_memory/action_run/last.pt",
+    "adapter_initialization_seed": 0
+  },
+  "analysis_script": "runs/discoveryworld/calibration/typed_interaction_train_pilot/analysis.py",
+  "analysis_script_sha256": "e0b8e46859a1af6354048bcc0ccec5816bafffdbec429f31b79e49d75947b671",
+  "embedding_comparison_file": "runs/discoveryworld/calibration/typed_interaction_train_pilot/embedding_comparison.json",
+  "embedding_summary": {
+    "late_binding_initial": {
+      "2": {
+        "distance": 0.13216815423220396,
+        "cosine": 0.9999912977218628,
+        "pairs": 8
+      },
+      "3": {
+        "distance": 1.4951937965427835,
+        "cosine": 0.998454729715983,
+        "pairs": 24
+      }
+    },
+    "typed_interaction_initial": {
+      "2": {
+        "distance": 0.21901210770010948,
+        "cosine": 0.9999762251973152,
+        "pairs": 8
+      },
+      "3": {
+        "distance": 2.711030434196194,
+        "cosine": 0.9948944921294848,
+        "pairs": 24
+      }
+    },
+    "late_binding_epoch10": {
+      "2": {
+        "distance": 0.12346841115504503,
+        "cosine": 0.999992311000824,
+        "pairs": 8
+      },
+      "3": {
+        "distance": 1.3824481976528962,
+        "cosine": 0.9986811329921087,
+        "pairs": 24
+      }
+    },
+    "typed_interaction_epoch10": {
+      "2": {
+        "distance": 0.17497463338077068,
+        "cosine": 0.9999849647283554,
+        "pairs": 8
+      },
+      "3": {
+        "distance": 2.1478218839814267,
+        "cosine": 0.9967997943361601,
+        "pairs": 24
+      }
+    }
+  },
+  "conditions": {
+    "late_binding": {
+      "curve_file": "runs/discoveryworld/calibration/object_only_train_pilot/current/curve.jsonl",
+      "curve_sha256": "6fda1acb322850a3b0c40b47aa12b23dbf87420698a3aca77905f38aebb02c26",
+      "checkpoint": "runs/discoveryworld/calibration/object_only_train_pilot/current/last.pt",
+      "initial_future_metrics": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 7.915565669536591,
+            "mae_hz": 1365.597183227539,
+            "rmse_hz": 1652.626642181365,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1541.327247619629
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.8120949268341064,
+              "mae_hz": 1226.1384887695312,
+              "rmse_hz": 1495.4540038153225,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1541.9392700195312
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.019036412239075,
+              "mae_hz": 1505.0558776855469,
+              "rmse_hz": 1796.0977031798766,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1540.7152252197266
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 7.923572301864624,
+            "mae_hz": 1373.3128204345703,
+            "rmse_hz": 1663.729008507172,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1540.4612426757812
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.815706014633179,
+              "mae_hz": 1234.2524108886719,
+              "rmse_hz": 1502.1246246841345,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1541.1640014648438
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.03143858909607,
+              "mae_hz": 1512.3732299804688,
+              "rmse_hz": 1810.9693645708264,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1539.7584838867188
+            }
+          }
+        }
+      },
+      "final_future_metrics": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 7.854869842529297,
+            "mae_hz": 1296.8489837646484,
+            "rmse_hz": 1545.1718227702772,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1345.0104064941406
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.809433460235596,
+              "mae_hz": 1245.2286071777344,
+              "rmse_hz": 1475.8258551708325,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1339.6740112304688
+            },
+            "3": {
+              "queries": 8,
+              "nll": 7.900306224822998,
+              "mae_hz": 1348.4693603515625,
+              "rmse_hz": 1611.536524245021,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1350.3468017578125
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 7.989470899105072,
+            "mae_hz": 1408.3324737548828,
+            "rmse_hz": 1689.0545093789058,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1320.071388244629
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.897266089916229,
+              "mae_hz": 1364.8529968261719,
+              "rmse_hz": 1576.6445610770577,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1312.1503143310547
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.081675708293915,
+              "mae_hz": 1451.8119506835938,
+              "rmse_hz": 1794.4364573125918,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1327.9924621582031
+            }
+          }
+        }
+      },
+      "final_known_support_fit": {
+        "2": {
+          "mae_hz": 1177.0918884277344,
+          "nll": 7.763497471809387,
+          "mean_std_hz": 1338.857421875
+        },
+        "3": {
+          "mae_hz": 1215.6392059326172,
+          "nll": 7.789764821529388,
+          "mean_std_hz": 1349.86474609375
+        }
+      },
+      "final_train130_known_support": [
+        {
+          "seed": 130,
+          "support_count": 2,
+          "mae_hz": 740.1068115234375,
+          "nll": 7.4625244140625,
+          "mean_std_hz": 1328.28759765625,
+          "mean_hz": [
+            4147.39404296875,
+            4147.400390625
+          ],
+          "targets_hz": [
+            4046.07,
+            5526.29
+          ]
+        },
+        {
+          "seed": 130,
+          "support_count": 3,
+          "mae_hz": 1267.6163330078125,
+          "nll": 7.846065521240234,
+          "mean_std_hz": 1373.3173828125,
+          "mean_hz": [
+            4266.42138671875,
+            4266.41015625,
+            4265.61767578125
+          ],
+          "targets_hz": [
+            4046.07,
+            5526.29,
+            1943.0
+          ]
+        }
+      ]
+    },
+    "typed_interaction": {
+      "curve_file": "runs/discoveryworld/calibration/typed_interaction_train_pilot/current/curve.jsonl",
+      "curve_sha256": "e721f4b843775a09d7d8b0f64de176654ade6d65071eb5626d9785911f31a138",
+      "checkpoint": "runs/discoveryworld/calibration/typed_interaction_train_pilot/current/last.pt",
+      "initial_future_metrics": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 7.917017459869385,
+            "mae_hz": 1366.1924438476562,
+            "rmse_hz": 1653.7715409619045,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1537.805305480957
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.812313258647919,
+              "mae_hz": 1227.4776306152344,
+              "rmse_hz": 1496.128384802909,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1538.7115173339844
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.02172166109085,
+              "mae_hz": 1504.9072570800781,
+              "rmse_hz": 1797.6430334129361,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1536.8990936279297
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 7.924253225326538,
+            "mae_hz": 1373.6025390625,
+            "rmse_hz": 1663.760250129224,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1537.0655212402344
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.8158769607543945,
+              "mae_hz": 1235.0186157226562,
+              "rmse_hz": 1502.2846953272158,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1538.0341796875
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.032629489898682,
+              "mae_hz": 1512.1864624023438,
+              "rmse_hz": 1810.893987511619,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1536.0968627929688
+            }
+          }
+        }
+      },
+      "final_future_metrics": {
+        "retained": {
+          "all": {
+            "queries": 16,
+            "nll": 7.813624173402786,
+            "mae_hz": 1241.2424774169922,
+            "rmse_hz": 1502.0712802567546,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1411.0457916259766
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.770784378051758,
+              "mae_hz": 1154.8099060058594,
+              "rmse_hz": 1428.7804080324765,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1403.4799346923828
+            },
+            "3": {
+              "queries": 8,
+              "nll": 7.856463968753815,
+              "mae_hz": 1327.675048828125,
+              "rmse_hz": 1571.9487293060424,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1418.6116485595703
+            }
+          }
+        },
+        "computed_discarded": {
+          "all": {
+            "queries": 16,
+            "nll": 7.952953815460205,
+            "mae_hz": 1392.1106262207031,
+            "rmse_hz": 1675.94360565268,
+            "within_2hz_of_public_working_setting": 0.0,
+            "mean_std_hz": 1375.128662109375
+          },
+          "by_support_count": {
+            "2": {
+              "queries": 8,
+              "nll": 7.8647580742836,
+              "mae_hz": 1334.8006286621094,
+              "rmse_hz": 1558.6263380966423,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1365.435043334961
+            },
+            "3": {
+              "queries": 8,
+              "nll": 8.04114955663681,
+              "mae_hz": 1449.4206237792969,
+              "rmse_hz": 1785.5693424920976,
+              "within_2hz_of_public_working_setting": 0.0,
+              "mean_std_hz": 1384.822280883789
+            }
+          }
+        }
+      },
+      "final_known_support_fit": {
+        "2": {
+          "mae_hz": 1160.3135070800781,
+          "nll": 7.721030116081238,
+          "mean_std_hz": 1404.7661895751953
+        },
+        "3": {
+          "mae_hz": 1176.2259826660156,
+          "nll": 7.749105870723724,
+          "mean_std_hz": 1419.4172058105469
+        }
+      },
+      "final_train130_known_support": [
+        {
+          "seed": 130,
+          "support_count": 2,
+          "mae_hz": 740.1279296875,
+          "nll": 7.511021614074707,
+          "mean_std_hz": 1391.546875,
+          "mean_hz": [
+            4072.865966796875,
+            4072.830078125
+          ],
+          "targets_hz": [
+            4046.07,
+            5526.29
+          ]
+        },
+        {
+          "seed": 130,
+          "support_count": 3,
+          "mae_hz": 1239.964599609375,
+          "nll": 7.822687149047852,
+          "mean_std_hz": 1439.0599365234375,
+          "mean_hz": [
+            4182.13623046875,
+            4182.1044921875,
+            4182.64208984375
+          ],
+          "targets_hz": [
+            4046.07,
+            5526.29,
+            1943.0
+          ]
+        }
+      ]
+    }
+  }
+}

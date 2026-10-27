@@ -54,3 +54,4 @@ def get_observation(api, agentIdx: int = 0, *, rgb: bool = False) -> dict:
     api.taskProgress = result["ui"]["taskProgress"]
     api.steps = result["ui"]["world_steps"]
     return result
+

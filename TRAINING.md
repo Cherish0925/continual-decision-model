@@ -2,7 +2,7 @@
 
 ## First multimodal training route
 
-The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Pretrained image/text features, native vision-language context and numeric inputs enter one persistent core. Load the released CDM core before training its new connections when the task schema matches. The frontend and semantic reader are implemented; the multimodal trajectory/environment adapter and joint trainer are the next integration. Existing lifetime commands still train structured process events.
+The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Pretrained image/text features, native vision-language context and numeric inputs enter one persistent core. Load the released CDM core before training its new connections when the task schema matches. The frontend and semantic reader are implemented. The [DiscoveryWorld task path](experiments/discoveryworld/README.md) now connects public observations, dynamic actions, trajectory imitation, numerical-result prediction and fresh-interaction actor–critic updates. Learned activity selection and deployment-time adaptation are still specific to the process learner until connected to this path. Existing lifetime commands continue to train structured process events.
 
 | Training phase | Updated parameters | Data and objective |
 | --- | --- | --- |
@@ -52,6 +52,213 @@ Prediction adaptation is already implemented in the lifetime model. Its deployed
 The proposed action-adapter update uses recent on-policy action returns. Older experience supports prediction, value learning or explicitly defined teacher distillation; stale action log-probabilities are not treated as fresh PPO data. Training must include revisited conditions and later tasks so that useful retention receives a learning signal.
 
 During quiet intervals, train on both recent and retained episodes. Distill a deeper policy only on tasks where its actions improve measured outcomes, or use a task-native reference. Repeatedly matching a model's own unsupported prediction is not a source of new observations. Evaluate the resulting fast policy on held-out interactions and returning task conditions.
+
+### DiscoveryWorld instance updates
+
+The [public calibration records](experiments/discoveryworld/calibration.py) and [task-specific scalar likelihood](cdm/core.py) are implemented. The quantitative path now deploys the core scalar predictor and A/B updates with causal future-query training. Native evaluation uses an explicit additive-setting controller; the learned action-score route below remains a proposed extension. The completed 64 trials include one successful takeover after supplied evidence, with no established repeatable numerical inference. [Task results](experiments/discoveryworld/RESULTS.md) give the actual comparisons.
+
+Start with Reactor Lab's measured relation between crystal properties and a working resonance frequency. Store received facts as `(action_id, object_handle, quantity, value, unit, received_step, conditions)`, retaining raw messages. Bind instrument readings to the actually measured crystal; bind the current dialogue's Hz and proposed delta to its reactor and currently observed crystal. UUIDs identify these relations, without supplying numerical features. A calibration label is a publicly read frequency paired with that crystal's observed reactor activation; an arbitrary uncalibrated setting is not a correct-frequency label. Preserve measurement conditions, particularly the radiation meter's surrounding sources. Repeated observations of one fact do not add independent evidence.
+
+Build a width-`w` query from the named quantity and that object's available measurements, with presence and unit fields. Concatenate it with `core.state_features(h,z)` to retain the existing `3w` predictor input. For this first integration, adapt one scalar relation—working frequency—from these calibration records. Use invertible Hz scaling and a likelihood whose variance limits respect the required physical precision; the process task's sensor/noise constants must not silently become frequency tolerances. Keep exact current Hz and the public dialogue delta outside compressed text. For each tuning candidate, compute its proposed setting from these numbers and the public range. Its learned action score reads the predicted frequency, uncertainty and proposed-setting residual. Navigation and measurement candidates remain in the same dynamic action set.
+
+The intended interfaces are:
+
+```python
+queries = bind_queries(public_facts, native_candidates)
+mean, logvar = core.predict(query_inputs(h, z, queries), state["A"], state["B"])
+logits = score_candidates(h, z, native_candidates, mean, logvar, bound_controls)
+# Only after a native action returns new, correctly associated evidence:
+A, B, loss = adapter_update(core, A, B, support_x, support_y,
+                            precision, present, learning_rate, differentiable=replay)
+```
+
+Online, update only the instance's `A/B`; freeze shared perception, GRU/workspace, query encoding and action readout. Begin with one fixed update after newly completed calibration evidence becomes available, effective at the next decision. Reuse the existing low-rank update and enable its evidence step rule, `eta / (gradient_norm + kappa)`; the outer objective trains these shared step parameters along with query/prediction/readout weights. During outer training, replay every update on its then-available buffer, preserving the adapter version used for each prediction/action, as in [lifetime objectives](experiments/lifetime/objectives.py). Optimize later received-reading likelihood and native-action return through those actual updates. Unlike `predictions_per_tick`'s current detached policy path, this proposed action path must retain gradients through `A/B` and their prediction readout; detach the return/advantage, not the learning trajectory. Keep shared weights fixed during collection and this replay, then take the outer step. The update-to-payoff horizon must reach the new crystal's tuning outcome; truncating `h/z` gradients need not detach `A/B` every 16 actions. First check replayed adapters and action probabilities against collection before claiming this objective works.
+
+The deciding experiment uses a common public measurement/calibration prefix on held-out instances, then actual tuning of a crystal whose working frequency has not been observed. Its other physical properties may have been measured. Compare **updates retained** with **the same updates computed and discarded**, holding shared weights, prefix, `h/z`, facts, refinement budget and native-action budget equal. Score unseen-frequency error against a later, independently observed public working setting, and report it separately from native activation rate and actions required; lower offline prediction loss alone does not establish the route. Two calibrated crystals fit an affine relation for several candidate physical quantities, so they do not identify the correct law. Preserve that ambiguity: use native trials on the third crystal to reject hypotheses, admit a new calibration only after observed activation, and test the remaining crystal. Neither the reference procedure nor the model receives the hidden generating law. A useful result requires retained updates to improve later native actions; if only prediction improves, repair the prediction-to-action connection before scaling training.
+
+Report prediction after two confirmed calibrations separately from prediction
+after the next confirmed calibration. Freeze each query at its first fully
+measured, uncalibrated dialogue, before any frequency trial. Its eventual
+working setting is a later evaluation target. The outer objective differentiates
+future prediction loss through the updates actually made from earlier evidence,
+following the adaptation objective of
+[gradient-based meta-learning](https://proceedings.mlr.press/v70/finn17a.html).
+The research question here is whether those updates improve subsequent physical
+decisions in a continuing model. When several relations remain compatible with
+the evidence, uncertainty and the value of another experiment matter; a single
+mean estimate need not be a useful setting to try. Probabilistic predictions
+over such alternatives are an extension, related to
+[prior-data fitted inference](https://arxiv.org/abs/2112.10510), rather than a
+capability already established by this Gaussian predictor.
+
+### Named numerical relations and executable experiment feedback
+
+`train_calibration_mixture.py` learns coefficient and observation-noise priors
+through future-query likelihood after actual public calibrations. The typed
+variant learns 54 parameters; `--prior-mode shared` ties coefficient and noise
+priors across the nine named quantities and fixes their prior weights uniformly,
+leaving five learned parameters. The affine basis is specified. Measurements
+retain their native units and condition groups; a vector reads the latest
+complete condition for each quantity. Normalization uses training instances only.
+
+`mixture_policy.py` preserves the frozen source policy's perception and ongoing
+state, fits the numerical posterior on the received support, and sends its
+highest-probability candidate setting to explicit native control. With
+`--local-probes`, a failed point prediction can initiate trials within two
+candidate standard deviations, at most sixteen extra adjustments per target and
+within the same total native budget. Only actual returned frequency/activation
+feedback advances that probe. External prefix priming updates source state and
+received evidence without initiating unexecuted trials.
+
+These components have completed numerical and native comparisons. They do not
+train the original action head to invent hypotheses or choose experiments.
+The next objective is to train that head and its continuing state through the
+use of posterior beliefs, actual intervention outcomes and successful subsequent
+actions, then evaluate autonomous evidence collection from reset.
+
+### Reading numerical beliefs when choosing actions — 27 October
+
+The next comparison connects the same continued CDM state to a learned residual
+action reader. It receives public object-bound measurement summaries, confirmed
+calibrations, observed activation/containment, candidate relation uncertainty,
+and actual recent action feedback. No feature selects or removes an action.
+The source recurrence, perception and shared-prior numerical model remain fixed
+in this first comparison; the new action reader alone is trained on the 45
+successful reference training instances, with eight separate validation
+instances. Unsuccessful raw traces remain available for outcome and recovery
+learning. Its zero initial output preserves the parent policy.
+
+The paired control has identical parameters and training, with this explicit
+evidence vector zeroed. Both retain the same source state and the same numerical
+control primitive. Thirty epochs of action-run-weighted imitation, seed 61,
+batch size 32 and learning rate 0.001 precede fixed-final native evaluation.
+The question is whether reading the accumulated evidence lets the model finish
+sampling, acquire calibrations and complete an experiment from reset. Compare
+whole-task success, new activations and actions; offline accuracy is secondary.
+Further reward training will use states actually visited by these policies.
+
+### Joint state, action and computation training — 27 October
+
+`experiments.discoveryworld.train_joint_policy` starts from the successful
+seed-61 evidence reader. Unlike reader-only training, it replays received
+observations through the current GRU, Transformer workspace, multimodal
+projections and action head, and updates them together. Frozen SigLIP features
+and the five-parameter numerical prior are reused. Old cached recurrent states
+are not training inputs.
+
+Each observation advances the GRU once. A compute allocator reads the updated
+state and candidate-pooled public evidence, and chooses 0, 1, 2 or 4 shared
+workspace refinements. These refinements neither obtain another measurement
+nor advance the native world. Instrument actions acquire new information.
+The existing numerical primitive and received-support updates remain fixed.
+
+The first comparison uses the same 45 successful training traces and eight
+validation traces as the established reader. It trains three epochs, batch
+size four, truncated sequences of 16, core learning rate 0.00001, reader and
+allocator rate 0.0001, gradient clipping 1, and BF16 linear/attention operations
+with FP32 GRU. The fixed-compute arm always uses one refinement. The adaptive
+arm trains all four depths with half uniformly weighted imitation loss and
+half allocator-weighted imitation loss plus 0.01 per refinement. A sampled
+depth carries the state to the next training observation. Greedy allocation
+is used when acting. This objective is a warm start from executable behaviour;
+it does not yet learn compute value from later task return.
+
+The adaptive arm has additional training computation. We report that cost and
+also execute its *same final weights* with a fixed one-refinement schedule,
+which isolates allocation at execution from the different learned parameters.
+All final checkpoints are evaluated from reset on instances 1010–1013 and
+1034, 1039, 1044, 1049, using the parent's saved initial native noise streams
+and the unchanged 400-action budget. No checkpoint is selected on that set.
+Report task completion, actions including failures, refinement counts and
+separate perception/policy/environment time. Cross-task experience retention
+requires a separate task-return experiment; per-instance posterior fitting
+does not establish it.
+
+After that completed comparison, a conditional computation experiment uses
+four existing *training* trajectories, 710–713. In each it selects the prior
+measurement decision (after eight readings in a long run) and the first
+numerical-setting decision. These eight public prefixes are replayed exactly,
+including their initial native noise. Each is continued four ways: 0, 1, 2 or
+4 refinements at the first decision, then the same fixed-one policy. The
+trained multi-depth model, numerical primitive and 400-action total budget are
+held fixed. Compare subsequent completion and progress minus 0.001 per native
+action; record refinement counts separately. A supplied prefix is a controlled
+training-state experiment, not another autonomous task completion. These 32
+branches ask whether internal computation changes later return before using
+such outcomes as allocation targets.
+
+### Training the cost of actual experimental decisions
+
+After the reset-based comparison, the seed-61 evidence reader initializes a
+policy-gradient phase. The continuing source and numerical prior remain fixed.
+The policy collects native Reactor Lab trajectories from fresh training seeds
+710, 711, 712, 713, 715, 716, 717 and 718 with temperature 0.5. No reference
+trajectory or supplied measurement prefix enters these rollouts.
+
+The finite 400-action objective is received task-progress change minus 0.001
+per native action, discounted by 0.999. Every scalar adjustment consumes this
+same budget. Only actions actually chosen and executed by the learned reader
+receive its policy gradient; a proposal overridden by the numerical primitive
+has no actor gradient. Its time, cost and returned task reward still enter the
+return of preceding learned choices. Cached frozen-core states are retained in
+full precision so action probabilities can be recomputed under the exact state
+seen at collection. The value head reads that state and public evidence.
+
+The initial update uses four PPO passes, learning rate 0.0001, clip 0.1,
+batches of 64, entropy coefficient 0.001 and value-loss coefficient 0.5.
+Evaluation uses new instances 810–813 and 834, 839, 844, 849, with fixed-final
+weights, 400 actions and paired initial native noise. The existing 610-series
+comparison is not used to select this update. Success and total native actions
+are reported together. This phase trains the action reader on task return;
+the internal refinement schedule and cross-task retention remain separate work.
+
+The first eight native rollouts finish four tasks. The unconstrained PPO update
+changes the greedy action on 9.8% of their 2,048 reader-controlled decisions,
+with mean behaviour-policy KL 1.376. A subsequent step-length comparison uses
+only these training decisions: halve the parameter-update fraction until their
+mean KL is at most 0.02. It selects one eighth of the proposed update (measured
+KL 0.00247). This is a policy optimization choice, not additional task knowledge;
+the fixed parent, full update and projected update are all evaluated and retained.
+
+A second round continues the projected policy and value estimator on fresh
+training instances 720, 721, 722, 723, 725, 726, 727 and 728. It retains the same
+objective and optimizer settings. The 810-series set is a development validation
+set for this continuation. Both rounds and the unchanged parent remain in the
+[completed results](experiments/discoveryworld/RESULTS.md#further-instances-and-actual-return-training);
+there is no efficiency gain to report from these two rounds.
+
+The next comparison measures the consequence of ending a measurement run.
+It uses the first repeated measurement sequence of at least 24 actions in each
+of training trajectories 710–713. Both branches replay the same actual prefix
+through eight measurements, restoring the initial native RNG streams and
+checking every returned public observation. One branch takes another reading;
+the other executes the different action that this same training policy took
+when it eventually left that run. No later reading is supplied. Both then use
+the unchanged full seed-61 policy greedily, with a total budget of 400 actions.
+The action intervention, proposals, actual feedback and later task results are
+recorded separately. These are conditional training-state comparisons, not
+additional autonomous completions or test-set results.
+
+Those four pairs yield two equal-completion improvements (29 and 24 fewer
+actions) and two tied failures. The next fixed comparison starts both readers
+from the original full seed-61 checkpoint and replays the same 9,354 reference
+actions for one epoch, batch size 32, learning rate 0.0001 and order seed 81.
+One reader additionally learns the two informative action pairs with a
+pairwise ranking loss, weighted by their actual return differences and scaled
+by 0.25 relative to reference replay. The matched control computes the same
+loss with coefficient zero. Source states, features, numerical prior and
+controller remain fixed. Tied branches do not supply preferred-action labels.
+Both final checkpoints are evaluated from reset on the paired 810-series
+development instances. This tests whether an actual improvement from a
+training-state action intervention can be learned and used elsewhere; the
+conditional branch successes themselves are not the endpoint.
+
+The completed comparison yields 6/8 tasks in 260.250 mean actions for replay
+alone and 5/8 in 271.500 for paired-return training. The latter learns the two
+sampled preferences but loses a previously successful instance. No additional
+coefficient search or rollout training has been started from this model.
+Future paired data must cover both useful and unnecessary measurements, then
+test the resulting choice policy on new instances.
 
 ### Option-value gradient correction, 19 October 2026
 

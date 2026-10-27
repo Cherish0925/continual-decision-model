@@ -35,7 +35,7 @@ python -m unittest discover -s tests -p 'test_activity_value_gradient.py' -v
 python -m unittest discover -s tests -p 'test_lifetime*.py' -v
 ~~~
 
-The existing lifetime training commands below continue to use structured events. The multimodal environment/trajectory adapter and joint trainer are not connected by the forward example.
+The existing lifetime training commands below continue to use structured events. The [DiscoveryWorld experiment](experiments/discoveryworld/README.md#train-and-execute-a-learned-policy) provides the native environment, dynamic-action policy, trajectory trainer, actual task evaluation and on-policy fine-tuning commands. The forward example alone is not a task policy.
 
 
 

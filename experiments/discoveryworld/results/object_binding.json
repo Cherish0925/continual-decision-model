@@ -1,0 +1,218 @@
+{
+  "question": "Does binding candidate actions to the objects in received measurements improve subsequent native decisions?",
+  "conditions": "Same parent, reader parameter count, 1915 training and 946 validation transitions, seed47, 12 epochs, batch2, 64-action windows, learning rate3e-5; object-relation flags present or zeroed.",
+  "models": {
+    "identity": {
+      "parameters": 55360574,
+      "final_stage_epoch": 12,
+      "final_training": {
+        "imitation_loss": 0.6621678937100681,
+        "outcome_loss": 0.022405701380769548,
+        "immediate_loss": 1.0026401724713316,
+        "raw_imitation_loss": 0.9764855113475346,
+        "loss": 0.9240307875182858,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.6569190600522193,
+        "raw_event_imitation_accuracy": 0.6569190600522193,
+        "action_run_weighted_accuracy": 0.7945529975543716,
+        "repeated_run_exit_accuracy": 0.5833333333333334,
+        "repeated_run_exits": 96,
+        "transitions": 1915
+      },
+      "final_validation": {
+        "imitation_loss": 1.5787074322585422,
+        "outcome_loss": 0.01782144581242888,
+        "immediate_loss": 1.920960172590101,
+        "raw_imitation_loss": 1.060747277702323,
+        "loss": 2.067858198312282,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.7484143763213531,
+        "raw_event_imitation_accuracy": 0.7484143763213531,
+        "action_run_weighted_accuracy": 0.6560215234732644,
+        "repeated_run_exit_accuracy": 0.4,
+        "repeated_run_exits": 50,
+        "transitions": 946
+      },
+      "runtime": {
+        "peak_gpu_allocated_bytes": 44709201408,
+        "peak_gpu_reserved_bytes": 84160806912
+      },
+      "full_native": [
+        {
+          "seed": 310,
+          "steps": 300,
+          "progress": 0.4,
+          "completed_successfully": false
+        },
+        {
+          "seed": 311,
+          "steps": 300,
+          "progress": 0.4,
+          "completed_successfully": false
+        },
+        {
+          "seed": 312,
+          "steps": 300,
+          "progress": 0.32,
+          "completed_successfully": false
+        },
+        {
+          "seed": 313,
+          "steps": 300,
+          "progress": 0.4,
+          "completed_successfully": false
+        }
+      ],
+      "supplied_prefix": [
+        {
+          "seed": 310,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.72,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 311,
+          "prefix_steps_executed": 194,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.72,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 312,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.72,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 313,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.72,
+          "takeover_new_activations": 0,
+          "error": null
+        }
+      ],
+      "mean_full_progress": 0.38,
+      "mean_conditional_progress": 0.72
+    },
+    "unbound": {
+      "parameters": 55360574,
+      "final_stage_epoch": 12,
+      "final_training": {
+        "imitation_loss": 0.734096385721458,
+        "outcome_loss": 0.028846670844769665,
+        "immediate_loss": 1.1811801596021838,
+        "raw_imitation_loss": 0.9961185922021379,
+        "loss": 1.0438147610443886,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.635509138381201,
+        "raw_event_imitation_accuracy": 0.635509138381201,
+        "action_run_weighted_accuracy": 0.7697973376468219,
+        "repeated_run_exit_accuracy": 0.5104166666666666,
+        "repeated_run_exits": 96,
+        "transitions": 1915
+      },
+      "final_validation": {
+        "imitation_loss": 1.6512984642540578,
+        "outcome_loss": 0.036129238692370204,
+        "immediate_loss": 2.009970855990217,
+        "raw_imitation_loss": 2.2222481870579687,
+        "loss": 2.171855797597797,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.36257928118393234,
+        "raw_event_imitation_accuracy": 0.36257928118393234,
+        "action_run_weighted_accuracy": 0.6315205613597167,
+        "repeated_run_exit_accuracy": 0.52,
+        "repeated_run_exits": 50,
+        "transitions": 946
+      },
+      "runtime": {
+        "peak_gpu_allocated_bytes": 44709201408,
+        "peak_gpu_reserved_bytes": 84160806912
+      },
+      "full_native": [
+        {
+          "seed": 310,
+          "steps": 300,
+          "progress": 0.64,
+          "completed_successfully": false
+        },
+        {
+          "seed": 311,
+          "steps": 300,
+          "progress": 0.36,
+          "completed_successfully": false
+        },
+        {
+          "seed": 312,
+          "steps": 300,
+          "progress": 0.28,
+          "completed_successfully": false
+        },
+        {
+          "seed": 313,
+          "steps": 300,
+          "progress": 0.4,
+          "completed_successfully": false
+        }
+      ],
+      "supplied_prefix": [
+        {
+          "seed": 310,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.76,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 311,
+          "prefix_steps_executed": 194,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.8,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 312,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.8,
+          "takeover_new_activations": 0,
+          "error": null
+        },
+        {
+          "seed": 313,
+          "prefix_steps_executed": 193,
+          "prefix_replay_matched": true,
+          "takeover_steps": 64,
+          "takeover_start_progress": 0.72,
+          "progress": 0.76,
+          "takeover_new_activations": 0,
+          "error": null
+        }
+      ],
+      "mean_full_progress": 0.42000000000000004,
+      "mean_conditional_progress": 0.78
+    }
+  }
+}

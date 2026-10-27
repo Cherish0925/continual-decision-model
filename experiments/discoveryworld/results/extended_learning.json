@@ -1,0 +1,47 @@
+{
+  "experiment": "24 additional epochs of action-run correction training without measurement-history inputs",
+  "parent": "action_run correction policy",
+  "epochs": 24,
+  "seed": 47,
+  "training_transitions": 1915,
+  "validation_transitions": 946,
+  "max_native_actions": 300,
+  "history_arm": "No completed result: the concurrent measurement-history run exhausted GPU memory before its first completed epoch.",
+  "models": {
+    "no_history": [
+      {
+        "seed": 310,
+        "steps": 300,
+        "progress": 0.4,
+        "completed": false,
+        "completed_successfully": false,
+        "truncated": true
+      },
+      {
+        "seed": 311,
+        "steps": 300,
+        "progress": 0.52,
+        "completed": false,
+        "completed_successfully": false,
+        "truncated": true
+      },
+      {
+        "seed": 312,
+        "steps": 300,
+        "progress": 0.32,
+        "completed": false,
+        "completed_successfully": false,
+        "truncated": true
+      },
+      {
+        "seed": 313,
+        "steps": 300,
+        "progress": 0.52,
+        "completed": false,
+        "completed_successfully": false,
+        "truncated": true
+      }
+    ]
+  },
+  "mean_progress": 0.44
+}

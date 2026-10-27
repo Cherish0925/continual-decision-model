@@ -1,0 +1,406 @@
+{
+  "source": {
+    "path": "runs/discoveryworld/reference/revision4/train/seed108/trajectory.jsonl",
+    "sha256": "c2e7b2752f01dc5f7c50eed499f52e12fd481b11e941e23a2e3f7b740c1707b4",
+    "index": 215
+  },
+  "transition": {
+    "index": 215,
+    "observation": {
+      "ui": {
+        "agentLocation": {
+          "x": 20,
+          "y": 18,
+          "faceDirection": "north",
+          "directions_you_can_move": [
+            "east",
+            "south",
+            "west"
+          ],
+          "directions_blocked": [
+            "north"
+          ]
+        },
+        "world_steps": 216,
+        "inventoryObjects": [
+          {
+            "uuid": 16419,
+            "name": "spectrometer",
+            "description": "spectrometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 16434,
+            "name": "quantum crystal 3",
+            "description": "quantum crystal 3 (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 18629,
+            "name": "densitometer",
+            "description": "densitometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 36055,
+            "name": "radiation meter",
+            "description": "radiation meter (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 51465,
+            "name": "microscope",
+            "description": "microscope (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 53269,
+            "name": "thermometer",
+            "description": "thermometer (on agent [uuid: 42378])"
+          }
+        ],
+        "accessibleEnvironmentObjects": [
+          {
+            "uuid": 10581,
+            "name": "crystal reactor (uncalibrated)",
+            "description": "crystal reactor (uncalibrated)"
+          },
+          {
+            "uuid": 10852,
+            "name": "table",
+            "description": "table"
+          },
+          {
+            "uuid": 45538,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 47319,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 63031,
+            "name": "quantum crystal 4",
+            "description": "quantum crystal 4 (in crystal reactor (uncalibrated) [uuid: 10581])"
+          }
+        ],
+        "dialog_box": {
+          "is_in_dialog": true,
+          "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1660 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+          "dialogOptions": {
+            "1": "Increase frequency by 1000 Hz",
+            "2": "Increase frequency by 100 Hz",
+            "3": "Increase frequency by 10 Hz",
+            "4": "Increase frequency by 1 Hz",
+            "5": "Decrease frequency by 1000 Hz",
+            "6": "Decrease frequency by 100 Hz",
+            "7": "Decrease frequency by 10 Hz",
+            "8": "Decrease frequency by 1 Hz",
+            "9": "Exit"
+          }
+        },
+        "extended_action_message": "",
+        "lastActionMessage": "We are talking.  You said: Decrease frequency by 10 Hz\n\ncrystal reactor (uncalibrated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1660 Hertz.\nThe allowable range is 0 to 10,000 Hz."
+      },
+      "vision": {}
+    },
+    "action": {
+      "chosen_dialog_option_int": 7
+    },
+    "action_result": {
+      "errors": [],
+      "success": true
+    },
+    "next_observation": {
+      "ui": {
+        "agentLocation": {
+          "x": 20,
+          "y": 18,
+          "faceDirection": "north",
+          "directions_you_can_move": [
+            "east",
+            "south",
+            "west"
+          ],
+          "directions_blocked": [
+            "north"
+          ]
+        },
+        "world_steps": 217,
+        "inventoryObjects": [
+          {
+            "uuid": 16419,
+            "name": "spectrometer",
+            "description": "spectrometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 16434,
+            "name": "quantum crystal 3",
+            "description": "quantum crystal 3 (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 18629,
+            "name": "densitometer",
+            "description": "densitometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 36055,
+            "name": "radiation meter",
+            "description": "radiation meter (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 51465,
+            "name": "microscope",
+            "description": "microscope (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 53269,
+            "name": "thermometer",
+            "description": "thermometer (on agent [uuid: 42378])"
+          }
+        ],
+        "accessibleEnvironmentObjects": [
+          {
+            "uuid": 10581,
+            "name": "crystal reactor (activated)",
+            "description": "crystal reactor (activated)"
+          },
+          {
+            "uuid": 10852,
+            "name": "table",
+            "description": "table"
+          },
+          {
+            "uuid": 45538,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 47319,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 63031,
+            "name": "quantum crystal 4",
+            "description": "quantum crystal 4 (in crystal reactor (activated) [uuid: 10581])"
+          }
+        ],
+        "dialog_box": {
+          "is_in_dialog": true,
+          "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1650 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+          "dialogOptions": {
+            "1": "Increase frequency by 1000 Hz",
+            "2": "Increase frequency by 100 Hz",
+            "3": "Increase frequency by 10 Hz",
+            "4": "Increase frequency by 1 Hz",
+            "5": "Decrease frequency by 1000 Hz",
+            "6": "Decrease frequency by 100 Hz",
+            "7": "Decrease frequency by 10 Hz",
+            "8": "Decrease frequency by 1 Hz",
+            "9": "Exit"
+          }
+        },
+        "extended_action_message": "",
+        "lastActionMessage": "We are talking.  You said: Decrease frequency by 10 Hz\n\ncrystal reactor (activated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1650 Hertz.\nThe allowable range is 0 to 10,000 Hz."
+      },
+      "vision": {}
+    }
+  },
+  "retained_ui_fields": [
+    "agentLocation",
+    "world_steps",
+    "inventoryObjects",
+    "accessibleEnvironmentObjects",
+    "dialog_box",
+    "lastActionMessage",
+    "extended_action_message"
+  ],
+  "following_transition": {
+    "index": 216,
+    "observation": {
+      "ui": {
+        "agentLocation": {
+          "x": 20,
+          "y": 18,
+          "faceDirection": "north",
+          "directions_you_can_move": [
+            "east",
+            "south",
+            "west"
+          ],
+          "directions_blocked": [
+            "north"
+          ]
+        },
+        "world_steps": 217,
+        "inventoryObjects": [
+          {
+            "uuid": 16419,
+            "name": "spectrometer",
+            "description": "spectrometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 16434,
+            "name": "quantum crystal 3",
+            "description": "quantum crystal 3 (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 18629,
+            "name": "densitometer",
+            "description": "densitometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 36055,
+            "name": "radiation meter",
+            "description": "radiation meter (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 51465,
+            "name": "microscope",
+            "description": "microscope (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 53269,
+            "name": "thermometer",
+            "description": "thermometer (on agent [uuid: 42378])"
+          }
+        ],
+        "accessibleEnvironmentObjects": [
+          {
+            "uuid": 10581,
+            "name": "crystal reactor (activated)",
+            "description": "crystal reactor (activated)"
+          },
+          {
+            "uuid": 10852,
+            "name": "table",
+            "description": "table"
+          },
+          {
+            "uuid": 45538,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 47319,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 63031,
+            "name": "quantum crystal 4",
+            "description": "quantum crystal 4 (in crystal reactor (activated) [uuid: 10581])"
+          }
+        ],
+        "dialog_box": {
+          "is_in_dialog": true,
+          "dialogIn": "Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1650 Hertz.\nThe allowable range is 0 to 10,000 Hz.",
+          "dialogOptions": {
+            "1": "Increase frequency by 1000 Hz",
+            "2": "Increase frequency by 100 Hz",
+            "3": "Increase frequency by 10 Hz",
+            "4": "Increase frequency by 1 Hz",
+            "5": "Decrease frequency by 1000 Hz",
+            "6": "Decrease frequency by 100 Hz",
+            "7": "Decrease frequency by 10 Hz",
+            "8": "Decrease frequency by 1 Hz",
+            "9": "Exit"
+          }
+        },
+        "extended_action_message": "",
+        "lastActionMessage": "We are talking.  You said: Decrease frequency by 10 Hz\n\ncrystal reactor (activated) said: Hello, I am Crystal Reactor #3.\nThe current resonance frequence is: 1650 Hertz.\nThe allowable range is 0 to 10,000 Hz."
+      },
+      "vision": {}
+    },
+    "action": {
+      "chosen_dialog_option_int": 9
+    },
+    "action_result": {
+      "errors": [],
+      "success": true
+    },
+    "next_observation": {
+      "ui": {
+        "agentLocation": {
+          "x": 20,
+          "y": 18,
+          "faceDirection": "north",
+          "directions_you_can_move": [
+            "east",
+            "south",
+            "west"
+          ],
+          "directions_blocked": [
+            "north"
+          ]
+        },
+        "world_steps": 218,
+        "inventoryObjects": [
+          {
+            "uuid": 16419,
+            "name": "spectrometer",
+            "description": "spectrometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 16434,
+            "name": "quantum crystal 3",
+            "description": "quantum crystal 3 (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 18629,
+            "name": "densitometer",
+            "description": "densitometer (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 36055,
+            "name": "radiation meter",
+            "description": "radiation meter (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 51465,
+            "name": "microscope",
+            "description": "microscope (on agent [uuid: 42378])"
+          },
+          {
+            "uuid": 53269,
+            "name": "thermometer",
+            "description": "thermometer (on agent [uuid: 42378])"
+          }
+        ],
+        "accessibleEnvironmentObjects": [
+          {
+            "uuid": 10581,
+            "name": "crystal reactor (activated)",
+            "description": "crystal reactor (activated)"
+          },
+          {
+            "uuid": 10852,
+            "name": "table",
+            "description": "table"
+          },
+          {
+            "uuid": 45538,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 47319,
+            "name": "floor",
+            "description": "floor"
+          },
+          {
+            "uuid": 63031,
+            "name": "quantum crystal 4",
+            "description": "quantum crystal 4 (in crystal reactor (activated) [uuid: 10581])"
+          }
+        ],
+        "dialog_box": {
+          "is_in_dialog": true,
+          "dialogIn": "Exiting crystal reactor controls.",
+          "dialogOptions": {}
+        },
+        "extended_action_message": "",
+        "lastActionMessage": "We are talking.  You said: Exit\n\ncrystal reactor (activated) said: Exiting crystal reactor controls."
+      },
+      "vision": {}
+    }
+  }
+}

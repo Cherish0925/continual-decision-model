@@ -1,0 +1,9 @@
+instance,arm,prefix_actions,total_actions,progress,completed,prefix_matched,return_progress_minus_cost
+710,continue,30,224,1.0,True,True,0.776
+710,switch,30,195,1.0,True,True,0.8049999999999999
+711,continue,31,400,0.84,False,True,0.43999999999999995
+711,switch,31,400,0.84,False,True,0.43999999999999995
+712,continue,31,221,1.0,True,True,0.779
+712,switch,31,197,1.0,True,True,0.8029999999999999
+713,continue,57,400,0.8,False,True,0.4
+713,switch,57,400,0.8,False,True,0.4

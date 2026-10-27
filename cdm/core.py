@@ -34,6 +34,8 @@ and change only through its learning steps.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
+from typing import Callable
 
 import torch
 import torch.nn.functional as F
@@ -205,12 +207,22 @@ class ContinualCore(nn.Module):
 
     def predict(self, x: Tensor, A: Tensor | None = None, B: Tensor | None = None) -> tuple[Tensor, Tensor]:
         """Mean and log-variance of the next reading for predictor inputs x [n, k, 3w]."""
+        mean, logvar = self.predict_raw(x, A, B)
+        return mean, logvar.clamp(-8.0, 4.0)
+
+    def predict_raw(self, x: Tensor, A: Tensor | None = None, B: Tensor | None = None) -> tuple[Tensor, Tensor]:
+        """Predict without the process task's log-variance bounds or sensor noise.
+
+        A task-specific likelihood owns the units, variance bounds and noise of
+        these outputs. The shared predictor and instance adapters are unchanged.
+        """
         pre = self.pred_in(x)
         if A is not None:
             low = torch.einsum("nrd,nkd->nkr", B, x)
             gates = self.gates(x[..., :2 * self.config.width])
             pre = pre + torch.einsum("nhr,nkr->nkh", A, low if gates is None else low * gates.to(low.dtype))
-        return self._head(pre)
+        out = self.pred_out(pre)
+        return out[..., 0], out[..., 1]
 
     def predict_actions(self, state: Tensor, A: Tensor | None = None, B: Tensor | None = None):
         """``predict`` for every action from state features [n, 2w], without forming the [n, actions, 3w] input."""
@@ -261,6 +273,43 @@ def gaussian_nll(mean: Tensor, logvar: Tensor, target: Tensor) -> Tensor:
     return 0.5 * (logvar + (target - mean) ** 2 * torch.exp(-logvar))
 
 
+@dataclass(frozen=True)
+class GaussianQuantityLikelihood:
+    """Scalar observation likelihood with explicit native units.
+
+    Predictor outputs describe ``(value - offset) / scale``. Targets and
+    ``noise_std`` use native units; ``logvar_bounds`` bound the noise-free
+    variance in those units, before adding observation noise. No process-task
+    sensor parameters are read. Reductions use at least FP32 precision.
+    """
+    scale: float = 1.0
+    offset: float = 0.0
+    noise_std: float = 0.0
+    logvar_bounds: tuple[float, float] = (-20.0, 20.0)
+
+    def __post_init__(self):
+        if not math.isfinite(self.scale) or self.scale <= 0:
+            raise ValueError("Quantity scale must be finite and positive")
+        if not math.isfinite(self.offset) or not math.isfinite(self.noise_std) or self.noise_std < 0:
+            raise ValueError("Quantity offset and noise must be finite, with nonnegative noise")
+        low, high = self.logvar_bounds
+        if not math.isfinite(low) or not math.isfinite(high) or low >= high:
+            raise ValueError("Quantity log-variance bounds must be finite and increasing")
+
+    def distribution(self, mean: Tensor, logvar: Tensor) -> tuple[Tensor, Tensor]:
+        """Observed mean and log-variance in native units, also usable by control."""
+        dtype = torch.promote_types(mean.dtype, torch.float32)
+        value = mean.to(dtype) * self.scale + self.offset
+        variance = (logvar.to(dtype) + 2 * math.log(self.scale)).clamp(*self.logvar_bounds)
+        if self.noise_std:
+            variance = torch.logaddexp(variance, variance.new_tensor(2 * math.log(self.noise_std)))
+        return value, variance
+
+    def __call__(self, mean: Tensor, logvar: Tensor, target: Tensor) -> Tensor:
+        value, variance = self.distribution(mean, logvar)
+        return gaussian_nll(value, variance, target.to(value.dtype))
+
+
 def reading_nll(model: ContinualCore, mean: Tensor, logvar: Tensor, target: Tensor,
                 precise: Tensor | None = None) -> Tensor:
     """Negative log-likelihood of readings. With sensor noise, ``mean`` and ``logvar`` describe the noise-free
@@ -274,19 +323,28 @@ def reading_nll(model: ContinualCore, mean: Tensor, logvar: Tensor, target: Tens
 
 def adapter_update(model: ContinualCore, A: Tensor, B: Tensor, inputs: Tensor, targets: Tensor,
                    precise: Tensor | None, mask: Tensor | None, learning_rate: float,
-                   differentiable: bool = False) -> tuple[Tensor, Tensor, Tensor]:
+                   differentiable: bool = False, *,
+                   likelihood: Callable[[Tensor, Tensor, Tensor], Tensor] | None = None) -> tuple[Tensor, Tensor, Tensor]:
     """One learning step of instance adapters on their own experience.
 
     inputs [n, T, 3w] (predictor inputs of past ticks for the action taken), targets [n, T] (readings that
     followed), precise [n, T] (the reading is a precise one), mask [n, T] (entries that hold experience). The
     gradient is scaled by ``ContinualCore.step_scale``. With ``differentiable`` the step keeps its graph, so a
     loss after it trains the shared parameters and the step size through it.
+
+    An explicit ``likelihood(mean, raw_logvar, targets)`` uses ``predict_raw``
+    and owns observation units/noise; ``precise`` applies only to the default
+    process likelihood. The callable returns one loss per support item [n, T].
     """
     with torch.enable_grad():
         A_ = A if differentiable and A.requires_grad else A.detach().requires_grad_(True)
         B_ = B if differentiable and B.requires_grad else B.detach().requires_grad_(True)
-        mean, logvar = model.predict(inputs, A_, B_)
-        nll = reading_nll(model, mean, logvar, targets, precise)
+        if likelihood is None:
+            mean, logvar = model.predict(inputs, A_, B_)
+            nll = reading_nll(model, mean, logvar, targets, precise)
+        else:
+            mean, logvar = model.predict_raw(inputs, A_, B_)
+            nll = likelihood(mean, logvar, targets)
         loss = nll.mean(1) if mask is None else (nll * mask).sum(1) / mask.sum(1).clamp_min(1)
         gA, gB = torch.autograd.grad(loss.sum(), (A_, B_), create_graph=differentiable)
     norm = torch.sqrt(gA.pow(2).sum((1, 2)) + gB.pow(2).sum((1, 2)) + 1e-12).view(-1, 1, 1)

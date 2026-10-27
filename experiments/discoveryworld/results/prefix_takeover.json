@@ -1,0 +1,171 @@
+{
+  "evaluation": "Native takeover after actually replayed public measurements and calibration anchors. Prefix progress is externally supplied, not autonomous performance.",
+  "same_evidence": "Initial native RNG states restored; every prefix action result and public observation matched the recorded source.",
+  "models": {
+    "expanded": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 311,
+        "prefix_steps_executed": 194,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 312,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 313,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      }
+    ],
+    "no_history": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 311,
+        "prefix_steps_executed": 194,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 312,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 313,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      }
+    ],
+    "history": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 311,
+        "prefix_steps_executed": 194,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 312,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      },
+      {
+        "seed": 313,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      }
+    ],
+    "qwen3_5_2b_native_candidates": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.72,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      }
+    ],
+    "qwen3_6_35b_a3b_native_candidates": [
+      {
+        "seed": 310,
+        "prefix_steps_executed": 193,
+        "prefix_replay_matched": true,
+        "takeover_steps": 64,
+        "takeover_start_progress": 0.72,
+        "progress": 0.76,
+        "takeover_new_activations": 0,
+        "takeover_completed_successfully": false,
+        "error": null
+      }
+    ]
+  },
+  "semantic_scope": "Single-instance action-only greedy probes; same public native candidates and exact evidence prefix. Neither thinking nor notebook enabled; not matched four-instance model ranking."
+}

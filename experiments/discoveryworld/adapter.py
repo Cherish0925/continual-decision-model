@@ -8,25 +8,27 @@ from __future__ import annotations
 
 import base64
 from copy import deepcopy
+import gzip
 from hashlib import sha256
 import json
 from pathlib import Path
+import random
 from time import perf_counter
 from uuid import uuid4
 
 UPSTREAM_REVISION = "fd591323920be0d3786ef350955de1945aa571e5"
+RNG_SNAPSHOT_SCHEMA = "discoveryworld_initial_python_rng_v1"
 
 
 class DiscoveryWorldEnv:
-    def __init__(self, output: str | Path, max_steps: int = 1000,
-                 observation_mode: str = "native"):
+    def __init__(self, output: str | Path, max_steps: int = 1000, *, observation_mode: str = "png"):
         self.output = Path(output).resolve()
         self.output.mkdir(parents=True, exist_ok=True)
         if max_steps <= 0:
             raise ValueError("max_steps must be positive")
         self.max_steps = max_steps
         if observation_mode not in ("native", "png"):
-            raise ValueError("observation_mode must be native or png")
+            raise ValueError("Use native or PNG observations with the trajectory adapter")
         self.observation_mode = observation_mode
         self.api = None
 
@@ -45,6 +47,7 @@ class DiscoveryWorldEnv:
             "difficulty": difficulty, "seed": seed, "max_steps": self.max_steps,
             "protocol": "official_step_based", "api_version": self.api.VERSION,
             "requested_upstream_revision": UPSTREAM_REVISION,
+            "observation_adapter": "active_dialog_render_sync_v1",
             "observation_mode": self.observation_mode,
         }
         self.actions = self.api.listKnownActions(limited=False)
@@ -54,13 +57,93 @@ class DiscoveryWorldEnv:
         self.ended = all(m["completed"] for m in self.metrics)
         return self.policy_input()
 
+    def _initial_rng_generators(self) -> dict:
+        """Evaluator-only RNG handles. Never include these in policy_input.
+
+        Native Object creates an unseeded random.Random, so scenario seed alone
+        cannot replay instrument noise. Contents and parts also own such RNGs.
+        """
+        if self.api is None or self.steps != 0:
+            raise RuntimeError("Initial RNG snapshots require reset and zero executed actions")
+        world = self.api.world
+        objects = {}
+        for outer in world.getAllWorldObjects():
+            for obj in outer.getAllContainedObjectsAndParts():
+                objects[str(obj.uuid)] = obj.rng
+        return {"world": world.rng, "api": self.api.r, "uuid_generator": world.uuidGenerator.random,
+                "python_global": random, "objects": objects}
+
+    def save_initial_rng(self, path: str | Path) -> dict:
+        """Capture native Python RNG states without reseeding, drawing or ticking.
+
+        This is an evaluator artifact, not an observation or a complete world
+        checkpoint. Only the post-reset/pre-action boundary is supported.
+        """
+        generators = self._initial_rng_generators()
+        snapshot = {"schema": RNG_SNAPSHOT_SCHEMA,
+                    "environment": {key: self.configuration[key] for key in
+                                    ("scenario", "difficulty", "seed", "api_version", "requested_upstream_revision")},
+                    "world_steps": self.current["ui"]["world_steps"],
+                    "rng": {name: rng.getstate() for name, rng in generators.items() if name != "objects"},
+                    "object_rng": {key: rng.getstate() for key, rng in sorted(generators["objects"].items())}}
+        payload = gzip.compress(json.dumps(snapshot, separators=(",", ":")).encode(), compresslevel=6, mtime=0)
+        with Path(path).open("xb") as stream:
+            stream.write(payload)
+        return {"schema": RNG_SNAPSHOT_SCHEMA, "sha256": sha256(payload).hexdigest(),
+                "object_rngs": len(snapshot["object_rng"]), "world_steps": snapshot["world_steps"]}
+
+    def restore_initial_rng(self, path: str | Path, *, expected_sha256: str | None = None) -> dict:
+        """Restore a matching initial evaluator snapshot, leaving world state intact."""
+        generators = self._initial_rng_generators()
+        payload = Path(path).read_bytes()
+        digest = sha256(payload).hexdigest()
+        if expected_sha256 is not None and digest != expected_sha256:
+            raise ValueError("Initial RNG snapshot hash mismatch")
+        snapshot = json.loads(gzip.decompress(payload))
+        identity = {key: self.configuration[key] for key in
+                    ("scenario", "difficulty", "seed", "api_version", "requested_upstream_revision")}
+        if snapshot.get("schema") != RNG_SNAPSHOT_SCHEMA or snapshot.get("environment") != identity:
+            raise ValueError("Initial RNG snapshot environment/schema mismatch")
+        if snapshot.get("world_steps") != self.current["ui"]["world_steps"]:
+            raise ValueError("Initial RNG snapshot world-step mismatch")
+        if set(snapshot["object_rng"]) != set(generators["objects"]):
+            raise ValueError("Initial RNG snapshot object UUID set mismatch")
+        if set(snapshot["rng"]) != set(generators) - {"objects"}:
+            raise ValueError("Initial RNG snapshot generator set mismatch")
+
+        def tuples(value):
+            return tuple(tuples(item) for item in value) if isinstance(value, list) else value
+
+        states = [(generators[name], tuples(state)) for name, state in snapshot["rng"].items()]
+        states += [(generators["objects"][key], tuples(state)) for key, state in snapshot["object_rng"].items()]
+        # Validate every state before mutating any live generator.
+        probe = random.Random(0)
+        for _, state in states:
+            probe.setstate(state)
+        for rng, state in states:
+            rng.setstate(state)
+        return {"schema": RNG_SNAPSHOT_SCHEMA, "sha256": digest,
+                "object_rngs": len(snapshot["object_rng"]), "world_steps": snapshot["world_steps"]}
+
     def _observe(self) -> dict:
         capture = perf_counter() - self.started
+        # The pinned JSON USE handler can enter an NPC device's dialogue,
+        # including after swapping arguments, without updating dialogToDisplay.
+        # TALK and keyboard USE already render this exact current-dialog view.
+        # Synchronize that UI cache before both image and JSON rendering. This
+        # reads only the current conversation, never task rules or unseen objects;
+        # it submits no action and advances neither the dialogue nor the clock.
+        if self.api.isAgentInDialog(agentIdx=0):
+            ui = self.api.ui[0]
+            text, options = ui.currentAgent.getAgentInDialogWith().dialogTree.getCurrentDialog()
+            ui.dialogToDisplay = {"dialogText": text, "dialogOptions": options}
+        # Leave a completed dialogue's final message visible for its native
+        # final observation; empty options already permit normal actions.
         if self.observation_mode == "native":
             raw = self.api.getAgentObservation(agentIdx=0)
         else:
             from .observation import get_observation
-            raw = get_observation(self.api)
+            raw = get_observation(self.api, agentIdx=0)
         arrival = perf_counter() - self.started
         if raw["errors"]:
             raise RuntimeError("; ".join(raw["errors"]))
