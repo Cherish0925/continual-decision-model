@@ -16,7 +16,9 @@ ROOT=Path("runs/discoveryworld/experimental_plans")
 def start(module,args,name):
     with (ROOT/f"{name}.log").open("w") as stream:
         return subprocess.Popen([sys.executable,"-m",module,*map(str,args)],stdout=stream,stderr=subprocess.STDOUT,
-                                env={**os.environ,"TOKENIZERS_PARALLELISM":"false","RAYON_NUM_THREADS":"2"})
+                                env={**os.environ,"TOKENIZERS_PARALLELISM":"false","RAYON_NUM_THREADS":"2",
+                                     "OMP_NUM_THREADS":"2","OPENBLAS_NUM_THREADS":"2","MKL_NUM_THREADS":"2",
+                                     "PYTHONFAULTHANDLER":"1"})
 
 
 def done(p,name):
@@ -46,11 +48,7 @@ def collection_complete(split):
 
 
 def main():
-    baselines=[]
     while not all(collection_complete(s) for s in ('train','validation')):
-        if not baselines and (ROOT/'native/reference/summary.json').exists():
-            baselines=[('parent',evaluate('parent','predictive')),
-                       ('posterior',evaluate('posterior','experimental'))]
         time.sleep(5)
     print(json.dumps({'completed':'plan outcome collection'}),flush=True)
     trainers=[]
@@ -61,9 +59,8 @@ def main():
         trainers.append((arm,start('experiments.discoveryworld.train_plans',args,'train_'+arm)))
     for arm,p in trainers:done(p,arm+' training')
     while not (ROOT/'native/reference/summary.json').exists():time.sleep(5)
-    if not baselines:
-        baselines=[('parent',evaluate('parent','predictive')),
-                   ('posterior',evaluate('posterior','experimental'))]
+    baselines=[('parent',evaluate('parent','predictive')),
+               ('posterior',evaluate('posterior','experimental'))]
     learned=[(arm,evaluate(arm,'experimental',ROOT/arm/'last.pt')) for arm in ('state','numeric')]
     for arm,p in baselines+learned:done(p,arm+' native evaluation')
     rows=[]
