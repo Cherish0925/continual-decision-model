@@ -15,6 +15,7 @@ import torch
 from torch import nn
 
 from .predictive_actions import PredictivePolicy
+from .belief_actions import BeliefPolicy
 from .numeric_reference import quantity_vector
 from .quantitative_policy import scalar_dialog_action
 from .scalar_probe import ScalarProbe, public_scalar_control
@@ -41,7 +42,7 @@ class PlanValue(nn.Module):
         return self.result(torch.cat((c, p, c * p), -1))
 
 
-class ExperimentalPolicy(PredictivePolicy):
+class ExperimentExecution:
     policy_type = "cdm_with_persistent_experimental_plans"
 
     def __init__(self, checkpoint, feature_cache, *, plan_checkpoint=None,
@@ -178,6 +179,14 @@ class ExperimentalPolicy(PredictivePolicy):
                                  hypothesis=plan["hypothesis"], plan_target_hz=plan["mean_hz"],
                                  selected_action=selected)
         return selected
+
+
+class ExperimentalPolicy(ExperimentExecution, PredictivePolicy):
+    """Experimental choices over the jointly trained predictive parent."""
+
+
+class ExperimentalBeliefPolicy(ExperimentExecution, BeliefPolicy):
+    """Use the same experiment executor with the original successful reader."""
 
 
 def create(config):

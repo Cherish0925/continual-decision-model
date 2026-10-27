@@ -1,9 +1,21 @@
 # Research progress
 
-Updated 27 October 2026 after native
+Updated 28 October 2026 after native
 scientific-task training and evaluation. Linked documents contain the detailed
 protocols and results. The scientific-task code and results are integrated into
 `main`; [release downloads](experiments/discoveryworld/RELEASE.md) supply the run artifacts.
+
+**Current study — complete experimental choices.** The new collection executes
+302 complete hypothesis tests from 40 matched histories; every history has
+successful and unsuccessful alternatives. Two 317,314-parameter heads learn
+success and cost with or without the persistent neural state. On 24 fresh
+from-reset instances, the predictive parent completes 14/24, posterior-ordered
+experiments 16/24 and both learned selectors 17/24. Mean actions fall from
+288.92 to 269.58/269.04. The added state input does not improve aggregate
+completion. A second initialization and transfer of the fixed numerical heads
+to the original successful reader are running. [Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
+and the [protocol](experiments/discoveryworld/PREDICTION.md#learning-choices-between-complete-experiments)
+describe this study. Outputs are in `runs/discoveryworld/experimental_plans/`.
 
 **Latest completed study — action consequences.** Two matched joint trainings
 use 141 training trajectories (32,578 actions) and 24 validation trajectories

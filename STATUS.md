@@ -1,6 +1,6 @@
 # CDM: objective, implementation, and results
 
-Implementation updated **27 October 2026**, including autonomous Reactor Lab
+Implementation updated **28 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier
 supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in
@@ -10,6 +10,17 @@ Published planner numbers come from release [v0.2.0](https://github.com/Cherish0
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
 The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Recall of situations met before, revision of inference in progress, and proactive work are not yet achieved. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+
+## 28 October experimental choices
+
+The [complete-experiment comparison](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
+collects 302 native trials and trains success/cost selectors over complete
+experiments. On a new 24-instance cohort, the predictive parent completes
+14/24, posterior-ordered plans 16/24 and both learned selectors 17/24. Their
+mean action counts are 288.92, 277.38, 269.58 and 269.04 respectively. Prediction
+of whole-experiment outcomes now changes useful choices; the persistent-state
+input has no aggregate advantage over numerical evidence alone. A second
+initialization and transfer to the original action reader are being evaluated.
 
 ## 27 October scientific-task continuation
 

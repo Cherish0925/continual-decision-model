@@ -4,6 +4,67 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Learning complete experimental choices — 28 October
+
+The next study changes the decision being learned. A choice now selects and
+executes a complete numerical experiment: reach a candidate setting, use the
+existing local probe, and retain its observed outcome before choosing another
+experiment. The continuing action policy handles the surrounding task. A
+317,314-parameter head predicts each plan's success and cost; its inputs are
+the numerical evidence, with or without the continuing CDM state. The source
+core, perception and numerical prior are fixed.
+
+The collection contains 237 trials from 32 training histories and 65 trials
+from eight validation histories. All 40 histories have both successful and
+unsuccessful alternatives. Every replayed prefix matches; no trial is censored.
+The alternatives consume 5,048 training and 1,372 validation actions after
+their common histories. The [trial table](results/experimental_plan_trials.csv)
+records all outcomes. This differs from the previous 48 low-level action
+pairs, which produced no completion or progress differences.
+
+Both heads train for 100 epochs. On training histories, the state-conditioned
+head selects a successful experiment in 27/32 cases and the numerical-only
+head in 25/32; posterior order gives 25/32. On validation, both reproduce the
+posterior's choices and succeed in 6/8, with 12 actions on average. The best
+observed choices would succeed in 8/8 with 7.75 actions. That last value uses
+the collected outcomes and is an upper bound, not an executable learned policy.
+[Training curves](results/experimental_plan_training.csv) retain all epochs.
+
+All five policies then start from reset on the same 24 new instances with
+paired simulator randomness and a 400-action budget. These are the 2800-series
+instances, separate from the earlier comparisons.
+
+| Policy | New instances | Reserved relation family | Mean progress | Mean actions, including failures |
+| --- | ---: | ---: | ---: | ---: |
+| Original successful reader | 9 / 16 | 7 / 8 | 0.9333 | 287.04 |
+| Predictive parent | 7 / 16 | 7 / 8 | 0.8967 | 288.92 |
+| Complete experiments, posterior order | 8 / 16 | 8 / 8 | 0.9167 | 277.38 |
+| Learned choices with continuing state, seed 171 | 10 / 16 | 7 / 8 | 0.9200 | 269.58 |
+| Learned numerical choices, seed 171 | 9 / 16 | 8 / 8 | 0.9200 | 269.04 |
+
+Complete experiments improve the predictive parent's completion from 14/24 to
+16/24. Each learned selector reaches 17/24. Against posterior order, the
+numerical selector gains instance 2817 without losing a completion; the
+state-conditioned selector gains 2802 and 2817 but loses 2834. Thus learning
+whole-experiment outcomes improves these choices, while the added neural-state
+input has no aggregate completion advantage in this first comparison. The
+[native table](results/experimental_plan_native.csv) exposes gains and losses.
+
+Instance 2802 shows why the decision matters. The state-conditioned selector
+chooses two successful experiments and finishes in 214 actions. Posterior order
+first executes unsuccessful hypotheses and reaches only progress 0.92 at the
+400-action limit. In 2803, the state-conditioned, numerical and posterior-order
+policies all finish, using 211, 236 and 264 actions. These are actual executed
+plans, rather than improvements in a prediction metric alone.
+
+The original reader still succeeds on some instances lost by the predictive
+parent before the new experiment selector is used. A second initialization
+repeats the head comparison. A separate fresh-cohort experiment transfers the
+fixed numerical selectors to the original reader, preserving its action
+policy. Both comparisons are in progress. The
+[protocol](PREDICTION.md#learning-choices-between-complete-experiments) specifies
+the distinction between experiment outcomes and whole-task evaluation.
+
 ## Action-consequence prediction — 27 October
 
 A 53,970,907-parameter decision model now predicts returned observations and

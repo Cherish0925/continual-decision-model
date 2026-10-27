@@ -187,12 +187,11 @@ changes. A failed choice is retained for that object and reactor so that a later
 attempt can select a different hypothesis. Numerical operations and measurement
 records remain explicit tools.
 
-This is a temporally extended action, related to
-[options](https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf).
-The research question is whether learning its actual consequences makes CDM's
+The experiment is a temporally extended action, following the
+[options](https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf)
+framework. The research question is whether learning its actual consequences makes CDM's
 experimental choices better, and whether its continuing neural state adds useful
-information beyond the numerical evidence. Temporal abstraction itself is not a
-new contribution of this project.
+information beyond the numerical evidence.
 
 ### Outcomes and training
 
@@ -214,7 +213,7 @@ combines observed success, cost, and preferences between alternatives from the
 same history; the preference is weighted by the actual difference in
 `success - 0.001 × actions`.
 
-Two heads train for 100 epochs, seed 171, AdamW learning rate 0.001 and batches
+Two 317,314-parameter heads train for 100 epochs, seed 171, AdamW learning rate 0.001 and batches
 of eight histories. One receives CDM's continuing state; the other receives the
 same numerical features with that state zeroed. Perception, the continuing core,
 the original action reader and the affine prior are fixed in this comparison.
@@ -245,3 +244,8 @@ outcomes. `train_plans` fits the two heads. `plan_campaign` runs the fixed
 training and execution comparison from
 `runs/discoveryworld/experimental_plans/design.json`. Collection can resume with
 `--resume`, reusing completed trials when changing the environment-worker count.
+
+A second initialization, seed 172, repeats both head trainings and evaluates
+them on the same fixed native cohort. It was added after the first run's initial
+native results; both repetitions retain the final 100-epoch checkpoint and all
+outcomes are reported. `plan_campaign --replicate 172` runs this comparison.

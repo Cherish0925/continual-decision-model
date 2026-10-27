@@ -167,10 +167,11 @@ def create_evaluation_policy(policy_config):
     from .adaptive_compute import AdaptivePolicy
     from .mixture_policy import MixturePolicy
     from .predictive_actions import PredictivePolicy
-    from .experimental_plans import ExperimentalPolicy
+    from .experimental_plans import ExperimentalPolicy, ExperimentalBeliefPolicy
     interventions = {key: config.pop(key, None) for key in ("mode", "restart_state", "restart_workspace")}
     policy = {"belief": BeliefPolicy, "mixture": MixturePolicy, "adaptive": AdaptivePolicy,
-              "predictive": PredictivePolicy, "experimental": ExperimentalPolicy}[kind](**config)
+              "predictive": PredictivePolicy, "experimental": ExperimentalPolicy,
+              "experimental_belief": ExperimentalBeliefPolicy}[kind](**config)
     if interventions["mode"] is not None:
         policy.mode = interventions["mode"]
     if interventions["restart_state"] is not None:
@@ -197,7 +198,7 @@ def _worker_episode(task: dict) -> dict:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--policy-kind", choices=("learned", "belief", "mixture", "adaptive", "predictive", "experimental"), default="learned")
+    parser.add_argument("--policy-kind", choices=("learned", "belief", "mixture", "adaptive", "predictive", "experimental", "experimental_belief"), default="learned")
     parser.add_argument("--plan-checkpoint", type=Path)
     parser.add_argument("--use-forecasts", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--local-probes", action="store_true")
@@ -243,7 +244,7 @@ def main(argv=None):
     policy_config["policy_kind"] = args.policy_kind
     if args.policy_kind in ("predictive", "experimental"):
         policy_config["use_forecasts"] = args.use_forecasts
-    if args.policy_kind == "experimental":
+    if args.policy_kind in ("experimental", "experimental_belief"):
         policy_config["plan_checkpoint"] = args.plan_checkpoint
     if args.policy_kind != "learned":
         policy_config["local_probes"] = args.local_probes
