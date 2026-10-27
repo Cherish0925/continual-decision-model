@@ -15,6 +15,8 @@ def main():
     parser.add_argument("--difficulty", default="Normal")
     parser.add_argument("--seed", type=int, default=100)
     parser.add_argument("--max-steps", type=int, default=1000)
+    parser.add_argument("--observation-mode", choices=("native", "png"), default="native",
+                        help="png preserves native image inputs without per-step frame-file writes")
     parser.add_argument("--output", type=Path, required=True)
     policy = parser.add_mutually_exclusive_group(required=True)
     policy.add_argument("--policy", help="module:factory; factory(config) returns an observation-to-action callable")
@@ -24,7 +26,7 @@ def main():
     if (args.output / "trajectory.jsonl").exists():
         parser.error("Choose a new output directory for each trajectory")
 
-    env = DiscoveryWorldEnv(args.output, args.max_steps)
+    env = DiscoveryWorldEnv(args.output, args.max_steps, args.observation_mode)
     observation = env.reset(args.scenario, args.difficulty, args.seed)
     config = {} if args.policy_config is None else json.loads(args.policy_config.read_text())
     if args.policy:

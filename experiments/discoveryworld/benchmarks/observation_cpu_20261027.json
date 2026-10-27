@@ -1,0 +1,37 @@
+{
+  "upstream_revision": "fd591323920be0d3786ef350955de1945aa571e5",
+  "scenario": "Reactor Lab",
+  "difficulty": "Normal",
+  "seed": 100,
+  "scope": "CPU observation reads only; no model inference, training, or world ticks in the timings",
+  "samples_per_mode": 24,
+  "modes": {
+    "native": {
+      "median_seconds": 0.206818189999467,
+      "mean_seconds": 0.20658577316673168,
+      "median_vision_bytes": 113154.0,
+      "frame_files": 27,
+      "observation_speedup": 1.0
+    },
+    "png": {
+      "median_seconds": 0.06676087999949232,
+      "mean_seconds": 0.06703513216636263,
+      "median_vision_bytes": 175800.0,
+      "frame_files": 0,
+      "observation_speedup": 3.0978949049359406
+    },
+    "rgb": {
+      "median_seconds": 0.05857896050019917,
+      "mean_seconds": 0.05864008116661049,
+      "median_vision_bytes": 9437184.0,
+      "frame_files": 0,
+      "observation_speedup": 3.530588256149813
+    }
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "machine": "x86_64",
+    "logical_cpus": 9
+  },
+  "measured_date": "2026-10-27"
+}

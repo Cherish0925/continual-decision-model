@@ -23,7 +23,7 @@ Do not relabel the standard DiscoveryWorld run as real-time. Its API advances on
 
 The simulator is pinned to **fd591323920be0d3786ef350955de1945aa571e5**. Two integration tests run its real Reactor Lab scenario and cover world advancement, current observations, episode replacement and image persistence. No model weights or GPUs are needed for these tests.
 
-The CDM task policy and multimodal trainer are not implemented by this adapter. The next code change must connect its trajectories to action learning and then closed-loop collection.
+This adapter supplies the environment and trajectory interface. Task policies and multimodal trainers connect through the stateful policy factory below.
 
 ## Model work that directly enables training
 
@@ -51,6 +51,24 @@ Keep numeric observations available alongside compressed semantic context. Eight
 5. **Train and measure quiet-period work.** Replay old and recent received experience, then distill useful prediction/action behavior. Initially keep state-producing shared parameters fixed during live local adaptation. Recompute state when a later consolidation phase changes those parameters.
 
 Stages initialize one continuing model. Begin the first complete observation–action–outcome–gradient–new-action loop immediately, then improve it; do not require a collection of isolated modules to be perfected first.
+
+Once a policy completes tasks, train conditional activity choices from that checkpoint.
+Use matched continuations from the same model/environment state to compare acting
+now, observing again, refining the workspace, and taking a local learning step.
+Include both states where another observation helps and states where it is redundant.
+Targets use subsequent task outcomes and operation costs; a shorter continuation
+that fails the task is not automatically preferable. The existing lifetime
+[trainer](../lifetime/train.py) and [runtime](../lifetime/runtime.py) already contain
+activity-value learning and matched continuation rollouts. Adapt these mechanisms
+to the native scientific-task actions rather than duplicating the learning code.
+
+An initial activity-head fit can use a fixed successful core. Continue with joint
+updates of the recurrent core, workspace, trainable connections and action/activity
+heads so that the state can represent what those choices need. Keep the pretrained
+perception frozen initially. Return to earlier conditions after intervening tasks,
+retaining instance updates and experience, so the optimization includes their later
+use. Task completion, activity selection and retained learning belong to the same
+training run.
 
 Split before generating training windows. Reserve official evaluation instances from training. Different random seeds do not necessarily define different scientific rules: Reactor Lab selects a relevant dimension with seed modulo 5, and Plant Nutrients Challenge selects a logical form with seed modulo 4. Record rule families and parameter combinations for dataset splitting, without exposing those labels to the policy. Report new-instance and held-out-rule performance separately. Public benchmark logs are not a training set for the same scored instances.
 
@@ -122,6 +140,54 @@ python -m experiments.discoveryworld.collect --scenario "Reactor Lab" \
 The factory receives that configuration and returns a callable. The callable receives the public observation plus action descriptions and teleport locations, and returns a native action dictionary or dialog choice. Its recurrent state remains in that callable across decisions. This is the connection point for the server's teacher and the trained CDM policy; no hosted model API is required.
 
 Read trajectory.jsonl for transitions, images/ for assets, run.json for the episode configuration, and summary.json for task results. Use a new output directory per run.
+
+## Observation throughput
+
+[observation.py](observation.py) uses the native world and UI renderers while avoiding
+the two debug-frame writes per observation. Its PNG mode preserves both image keys
+and decoded pixels, with lighter lossless PNG compression. The image transport is
+larger; this mode is intended for local collection. RGB mode returns HWC uint8
+arrays directly to a local image processor and skips PNG/base64 encoding.
+
+Use `--observation-mode png` with the collection command, or construct
+`DiscoveryWorldEnv(output, observation_mode="png")`. Existing native observation
+behavior remains available. For direct model integration:
+
+~~~python
+from experiments.discoveryworld.observation import get_observation
+
+observation = get_observation(api)            # native-compatible PNG data URLs
+observation = get_observation(api, rgb=True)  # arrays in vision["rgb_no_grid"] and vision["rgb_with_grid"]
+~~~
+
+Call only one reader per environment decision: reading the native UI consumes a
+queued tool message. Save trajectory images separately when collecting training
+data. In RGB mode, send the array directly to the existing image processor; the
+PNG trajectory writer expects PNG mode.
+
+On this CPU execution environment, 24 observation reads per mode in Reactor Lab
+Normal seed 100 gave the following medians. These timings exclude world ticks,
+model inference, training, and trajectory serialization.
+
+| Reader | Time per observation | Relative speed |
+| --- | ---: | ---: |
+| Native API | 206.8 ms | 1.00× |
+| In-memory PNG | 66.8 ms | 3.10× |
+| In-memory RGB | 58.6 ms | 3.53× |
+
+[The recorded run](benchmarks/observation_cpu_20261027.json) also includes payload
+sizes. RGB arrays use more transport memory and should stay inside the local
+inference process or use shared memory when collected by separate workers.
+The native-simulator comparison checks both image views pixel for pixel, public
+UI, action results and step counters through the four-action instrument sequence.
+This is an observation-reader speedup; whole-training throughput depends on the
+remaining simulator, inference and training time.
+
+~~~bash
+python -m unittest discover -s tests -p 'test_discoveryworld_observation.py' -v
+python -m experiments.discoveryworld.benchmark_observation --steps 24 \
+  --output runs/discoveryworld/observation-performance.json
+~~~
 
 ## Sources and continuation
 

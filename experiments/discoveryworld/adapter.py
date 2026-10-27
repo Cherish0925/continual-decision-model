@@ -18,12 +18,16 @@ UPSTREAM_REVISION = "fd591323920be0d3786ef350955de1945aa571e5"
 
 
 class DiscoveryWorldEnv:
-    def __init__(self, output: str | Path, max_steps: int = 1000):
+    def __init__(self, output: str | Path, max_steps: int = 1000,
+                 observation_mode: str = "native"):
         self.output = Path(output).resolve()
         self.output.mkdir(parents=True, exist_ok=True)
         if max_steps <= 0:
             raise ValueError("max_steps must be positive")
         self.max_steps = max_steps
+        if observation_mode not in ("native", "png"):
+            raise ValueError("observation_mode must be native or png")
+        self.observation_mode = observation_mode
         self.api = None
 
     def reset(self, scenario: str, difficulty: str, seed: int) -> dict:
@@ -41,6 +45,7 @@ class DiscoveryWorldEnv:
             "difficulty": difficulty, "seed": seed, "max_steps": self.max_steps,
             "protocol": "official_step_based", "api_version": self.api.VERSION,
             "requested_upstream_revision": UPSTREAM_REVISION,
+            "observation_mode": self.observation_mode,
         }
         self.actions = self.api.listKnownActions(limited=False)
         self.teleports = self.api.listTeleportLocationsDict()
@@ -51,7 +56,11 @@ class DiscoveryWorldEnv:
 
     def _observe(self) -> dict:
         capture = perf_counter() - self.started
-        raw = self.api.getAgentObservation(agentIdx=0)
+        if self.observation_mode == "native":
+            raw = self.api.getAgentObservation(agentIdx=0)
+        else:
+            from .observation import get_observation
+            raw = get_observation(self.api)
         arrival = perf_counter() - self.started
         if raw["errors"]:
             raise RuntimeError("; ".join(raw["errors"]))
