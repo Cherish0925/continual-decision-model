@@ -12,12 +12,12 @@ The earlier process and navigation studies remain in releases v0.2.0–v0.4.0.
 
 | Archive | Contents |
 | --- | --- |
-| `cdm-scientific-models.tar.gz*` | Saved policy and numerical checkpoints, including earlier alternatives, matched controls and the latest joint-training models |
-| `cdm-scientific-records.tar.gz*` | Run configurations, training curves, summaries, action/decision trajectories, initial random-state records, numerical analyses and experiment scripts saved with the runs |
-| `cdm-scientific-observations.tar.gz*` | Collected simulator images for reference demonstrations and policy evaluations; identical images share storage inside the archive |
+| `cdm-scientific-models.tar.zst*` | Saved policy and numerical checkpoints, including earlier alternatives, matched controls and the latest joint-training models |
+| `cdm-scientific-records.tar.zst*` | Run configurations, training curves, summaries, action/decision trajectories, initial random-state records, numerical analyses and experiment scripts saved with the runs |
+| `cdm-scientific-observations.tar.zst*` | Collected simulator images for reference demonstrations and policy evaluations; identical images share storage inside the archive |
 
 Each archive restores relative paths below `runs/discoveryworld/`. Large
-archives are split into numbered parts; join every part before extraction.
+archives are split into numbered parts; join every part before extraction. Install the standard `zstd` command for decompression.
 The accompanying `models-files.txt`, `records-files.txt` and
 `observations-files.txt` list the exact contents. Existing local runs should be
 kept separately; extract into a fresh checkout.
@@ -28,7 +28,7 @@ cd continual-decision-model
 gh release download v0.5.0 --repo Cherish0925/continual-decision-model \
   --pattern 'cdm-scientific-*' --dir artifacts/scientific-v0.5.0
 for group in models records observations; do
-  cat artifacts/scientific-v0.5.0/cdm-scientific-${group}.tar.gz* | tar -xz
+  cat artifacts/scientific-v0.5.0/cdm-scientific-${group}.tar.zst* | zstd -dc --long=30 | tar -x
 done
 ```
 
@@ -88,8 +88,7 @@ retention has not yet been demonstrated by these scientific-task experiments.
 
 To rebuild the release archives from original runs, use
 `python -m experiments.discoveryworld.package_release --kind models --output artifacts/scientific-v0.5.0`
-and repeat for `records` and `observations`. Packaging requires `pigz`; this is
-not needed to download or use the release.
+and repeat for `records` and `observations`. Packaging and extraction use `zstd`; compression is lossless.
 
 Simulator observations are generated with
 [DiscoveryWorld](https://github.com/allenai/discoveryworld); its code and visual

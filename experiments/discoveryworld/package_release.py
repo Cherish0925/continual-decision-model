@@ -50,12 +50,12 @@ def package(root, output, kind):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
-    archive = output / f"cdm-scientific-{kind}.tar.gz"
+    archive = output / f"cdm-scientific-{kind}.tar.zst"
     for previous_part in output.glob(archive.name + ".part*"):
         previous_part.unlink()
     inventory, images = [], {}
     with archive.open("wb") as target:
-        compressor = subprocess.Popen(["pigz", "-2", "-p", "8", "-c"], stdin=subprocess.PIPE, stdout=target)
+        compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
             for path in files(root):
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"epoch\d+\.pt", path.name))
@@ -125,7 +125,7 @@ def package(root, output, kind):
     (output / f"{kind}-files.txt").write_text("\n".join(inventory) + "\n")
     print(json.dumps({"kind": kind, "files": len(inventory), "assets": [
         {"name": p.name, "bytes": p.stat().st_size}
-        for p in sorted(output.glob(f"cdm-scientific-{kind}.tar.gz*"))]}), flush=True)
+        for p in sorted(output.glob(f"cdm-scientific-{kind}.tar.zst*"))]}), flush=True)
 
 
 if __name__ == "__main__":
