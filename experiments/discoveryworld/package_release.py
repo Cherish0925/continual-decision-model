@@ -19,7 +19,7 @@ import tempfile
 
 
 CHECKPOINTS = {"last.pt", "best.pt", "initial.pt", "critic.pt"}
-TEXT = {".json", ".jsonl", ".csv", ".log", ".txt", ".md", ".py", ".yaml", ".yml"}
+TEXT = {".json", ".jsonl", ".csv", ".txt", ".md", ".py", ".yaml", ".yml"}
 IMAGES = {".png", ".jpg", ".jpeg"}
 SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
 
@@ -51,6 +51,8 @@ def package(root, output, kind):
 
     output.mkdir(parents=True, exist_ok=True)
     archive = output / f"cdm-scientific-{kind}.tar.gz"
+    for previous_part in output.glob(archive.name + ".part*"):
+        previous_part.unlink()
     inventory, images = [], {}
     with archive.open("wb") as target:
         compressor = subprocess.Popen(["pigz", "-2", "-p", "8", "-c"], stdin=subprocess.PIPE, stdout=target)
@@ -89,14 +91,14 @@ def package(root, output, kind):
                 else:
                     data = path.read_bytes()
                     compressed = path.name.endswith(".json.gz")
-                    if compressed:
-                        data = gzip.decompress(data)
-                    if SECRET.search(data):
+                    original = data
+                    content = gzip.decompress(data) if compressed else data
+                    if SECRET.search(content):
                         raise ValueError(f"Credential-like content in {relative}; exclude before publication")
                     if path.suffix in TEXT or compressed:
-                        data = portable(data.decode("utf-8"), root).encode("utf-8")
+                        data = portable(content.decode("utf-8"), root).encode("utf-8")
                     if compressed:
-                        data = gzip.compress(data, compresslevel=6, mtime=0)
+                        data = original if data == content else gzip.compress(data, compresslevel=6, mtime=0)
                     info.size = len(data)
                     tar.addfile(info, io.BytesIO(data))
                 inventory.append(relative)
