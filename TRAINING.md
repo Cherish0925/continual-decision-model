@@ -187,6 +187,16 @@ training-state experiment, not another autonomous task completion. These 32
 branches ask whether internal computation changes later return before using
 such outcomes as allocation targets.
 
+### Action-consequence prediction and workspace feedback — 27 October
+
+The next comparison trains action-conditioned result and behavior-return
+forecasts, then lets the persistent workspace read and revise those forecasts
+before acting. Both successes and failures supply prediction targets. The
+GRU, workspace, projections and action reader train jointly; frozen perception
+and numerical tools remain shared with the reference. The data, loss, matched
+comparison and executable commands are specified in
+[the prediction experiment](experiments/discoveryworld/PREDICTION.md).
+
 ### Training the cost of actual experimental decisions
 
 After the reset-based comparison, the seed-61 evidence reader initializes a

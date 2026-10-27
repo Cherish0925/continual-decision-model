@@ -385,9 +385,16 @@ def split_for_seed(seed: int) -> str:
     return "train" if seed < 200 else "validation"
 
 
-def collect_episode(output: Path, seed: int, max_steps: int = 500, *, capture_initial_rng: bool = False) -> dict:
+def collect_episode(output: Path, seed: int, max_steps: int = 500, *, capture_initial_rng: bool = False,
+                    split: str | None = None) -> dict:
     """Seed and evaluator remain in collector scope, never reference inputs."""
-    split = split_for_seed(seed)
+    if seed < 100:
+        raise ValueError("Reference collection reserves official seeds and starts at 100")
+    split = split_for_seed(seed) if split is None else split
+    if split not in ("train", "validation", "heldout_rule"):
+        raise ValueError(f"Unknown collection split: {split}")
+    if (seed % 5 == 4) != (split == "heldout_rule"):
+        raise ValueError("The reserved rule family belongs exclusively to heldout_rule")
     output.mkdir(parents=True, exist_ok=True)
     if (output / "trajectory.jsonl").exists():
         raise FileExistsError(f"Preserving existing trajectory {output}")
@@ -439,9 +446,10 @@ def collect_episode(output: Path, seed: int, max_steps: int = 500, *, capture_in
 
 
 def _collect_seed(job):
-    seed, root, max_steps, capture_initial_rng = job
-    output = root / split_for_seed(seed) / f"seed{seed}"
-    result = collect_episode(output, seed, max_steps, capture_initial_rng=capture_initial_rng)
+    seed, root, max_steps, capture_initial_rng, split = job
+    split = split_for_seed(seed) if split is None else split
+    output = root / split / f"seed{seed}"
+    result = collect_episode(output, seed, max_steps, capture_initial_rng=capture_initial_rng, split=split)
     return {"seed": seed, "output": str(output), **result}
 
 
@@ -451,12 +459,14 @@ def main():
     parser.add_argument("--seeds", default="100,101,102,103,105,106,107,108")
     parser.add_argument("--max-steps", type=int, default=500)
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--split", choices=("train", "validation", "heldout_rule"),
+                        help="Explicit campaign split; the reserved rule family remains held out")
     parser.add_argument("--capture-initial-rng", action="store_true",
                         help="Save evaluator-only native RNG states for exact action-prefix replay")
     args = parser.parse_args()
     if args.workers < 1:
         parser.error("workers must be positive")
-    jobs = [(int(s), args.output, args.max_steps, args.capture_initial_rng) for s in args.seeds.split(",")]
+    jobs = [(int(s), args.output, args.max_steps, args.capture_initial_rng, args.split) for s in args.seeds.split(",")]
     if args.workers == 1:
         for result in map(_collect_seed, jobs):
             print(json.dumps(result), flush=True)

@@ -60,6 +60,7 @@ PY
 python -m experiments.discoveryworld.evaluate \
   --policy-kind belief --local-probes \
   --checkpoint runs/discoveryworld/belief_actions/full_seed61/last.pt \
+  --feature-cache runs/discoveryworld/features \
   --encoder-path data/cache/siglip2 --device cuda:0 \
   --seeds 610 --max-steps 400 --workers 1 \
   --initial-rng-root runs/discoveryworld/belief_actions/native_full_seed61 \

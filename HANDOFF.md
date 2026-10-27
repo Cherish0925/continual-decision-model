@@ -5,6 +5,21 @@ scientific-task training and evaluation. Linked documents contain the detailed
 protocols and results. The scientific-task code and results are integrated into
 `main`; [v0.5.0](experiments/discoveryworld/RELEASE.md) supplies the run artifacts.
 
+**Active continuation — action-consequence learning.** The
+[prediction experiment](experiments/discoveryworld/PREDICTION.md) is now running
+two matched joint trainings. Its 141 training trajectories contain 32,578
+actions, including eight failed executions; 24 validation trajectories contain
+5,000 actions. The 53,970,907-parameter decision model predicts returned
+observations and behavior returns, then optionally feeds candidate consequences
+back into the persistent workspace. Both arms update the GRU, workspace,
+projections, action reader and predictor. A real GPU training pilot and native
+execution have completed; those checks are not a performance result. The full
+campaign runs three training epochs followed by paired execution on 16 new
+instances and eight unseen-rule instances. Its commands, outputs and automatic
+comparison are under `runs/discoveryworld/predictive_actions/` and
+`experiments/discoveryworld/predictive_campaign.py`. The original reference
+policy remains unchanged.
+
 **Latest continuation — joint training.** Observation reads now use the
 in-memory PNG implementation from PR #3; the measured read time is 78.78 ms
 versus 216.97 ms for the native API. A new sequence trainer updates the GRU,

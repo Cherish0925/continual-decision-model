@@ -29,6 +29,12 @@ Efficient experiment selection, useful additional reasoning and learning retaine
 across scientific tasks are the next research questions. Completed unsuccessful
 comparisons are included with their conditions and traces.
 
+The [current prediction experiment](experiments/discoveryworld/PREDICTION.md)
+trains the continuing core to predict and use candidate action consequences,
+with successful and failed native executions. It tests whether reading those
+predictions makes further internal computation useful; performance results are
+pending.
+
 ## Model
 
 The trained scientific-task policy combines **frozen SigLIP image/text features,

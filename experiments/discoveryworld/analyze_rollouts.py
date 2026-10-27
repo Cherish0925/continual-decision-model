@@ -22,6 +22,8 @@ EVALUATION_POLICIES = {
     "learned_dynamic_action_policy", "frozen_semantic_native_generation",
     "learned_relation_mixture_with_native_scalar_control",
     "cdm_belief_action_policy_with_explicit_numeric_primitive",
+    "joint_cdm_action_and_compute_policy_with_explicit_numeric_primitive",
+    "predictive_cdm_with_explicit_numeric_primitive",
 }
 
 

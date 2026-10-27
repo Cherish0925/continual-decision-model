@@ -4,6 +4,11 @@ The next campaign trains a model to choose experiments, continue useful inferenc
 
 Measured learned-policy results, the workspace intervention and the next learning comparison are in [RESULTS.md](RESULTS.md).
 
+The current continuation trains [action-consequence prediction and workspace
+feedback](PREDICTION.md) on reference and autonomous execution traces, including
+failures. It directly tests whether additional internal computation improves
+scientific action selection.
+
 ## Application and comparison settings
 
 Use **Reactor Lab**, **Combinatorial Chemistry**, and **Plant Nutrients** as the initial application families. They provide instrument use and quantitative relations, multistep interventions, and delayed experimental outcomes. Expand to the remaining official discovery topics after the same model can learn and act across these families.

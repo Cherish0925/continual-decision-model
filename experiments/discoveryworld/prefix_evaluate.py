@@ -30,11 +30,13 @@ FACTORIES = {
     "experiments.discoveryworld.affine_reference_policy:create": "affine_reference_with_native_scalar_control",
     "experiments.discoveryworld.belief_actions:create": "cdm_belief_action_policy_with_explicit_numeric_primitive",
     "experiments.discoveryworld.adaptive_compute:create": "joint_cdm_action_and_compute_policy_with_explicit_numeric_primitive",
+    "experiments.discoveryworld.predictive_actions:create": "predictive_cdm_with_explicit_numeric_primitive",
 }
 FORWARD_PRIMED_POLICIES = {"learned_dynamic_action_policy", "learned_calibration_with_native_scalar_control",
                          "learned_relation_mixture_with_native_scalar_control",
                          "cdm_belief_action_policy_with_explicit_numeric_primitive",
                          "joint_cdm_action_and_compute_policy_with_explicit_numeric_primitive",
+                         "predictive_cdm_with_explicit_numeric_primitive",
                          "affine_reference_with_native_scalar_control"}
 
 
