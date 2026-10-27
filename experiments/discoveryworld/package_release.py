@@ -19,6 +19,12 @@ import tempfile
 
 
 CHECKPOINTS = {"last.pt", "best.pt", "initial.pt", "critic.pt"}
+REFERENCE = {
+    "measurement_memory/action_run/last.pt",
+    "calibration/mixture/shared_seed31/last.pt",
+    *(f"belief_actions/{name}/last.pt" for name in
+      ("full_seed61", "full_seed62", "none_seed61", "none_seed62", "observations_seed61")),
+}
 TEXT = {".json", ".jsonl", ".csv", ".txt", ".md", ".py", ".yaml", ".yml"}
 IMAGES = {".png", ".jpg", ".jpeg"}
 SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
@@ -61,7 +67,8 @@ def package(root, output, kind):
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"epoch\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
                 record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf"}
-                if not {"models": checkpoint, "observations": image, "records": record}[kind]:
+                reference = path.relative_to(root / "runs/discoveryworld").as_posix() in REFERENCE
+                if not {"reference": reference, "models": checkpoint, "observations": image, "records": record}[kind]:
                     continue
                 relative = path.relative_to(root).as_posix()
                 info = tar.gettarinfo(str(path), arcname=relative)
@@ -130,7 +137,7 @@ def package(root, output, kind):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--kind", choices=("models", "records", "observations"), required=True)
+    parser.add_argument("--kind", choices=("reference", "models", "records", "observations"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     package(Path.cwd().resolve(), args.output, args.kind)

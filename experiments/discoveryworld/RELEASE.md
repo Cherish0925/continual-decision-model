@@ -12,6 +12,7 @@ The earlier process and navigation studies remain in releases v0.2.0–v0.4.0.
 
 | Archive | Contents |
 | --- | --- |
+| `cdm-scientific-reference.tar.zst` | Compact runnable package: the two reference readers, evidence controls and their shared model dependencies |
 | `cdm-scientific-models.tar.zst*` | Saved policy and numerical checkpoints, including earlier alternatives, matched controls and the latest joint-training models |
 | `cdm-scientific-records.tar.zst*` | Run configurations, training curves, summaries, action/decision trajectories, initial random-state records, numerical analyses and experiment scripts saved with the runs |
 | `cdm-scientific-observations.tar.zst*` | Collected simulator images for reference demonstrations and policy evaluations; identical images share storage inside the archive |
@@ -26,17 +27,21 @@ kept separately; extract into a fresh checkout.
 git clone --branch v0.5.0 https://github.com/Cherish0925/continual-decision-model.git
 cd continual-decision-model
 gh release download v0.5.0 --repo Cherish0925/continual-decision-model \
-  --pattern 'cdm-scientific-*' --dir artifacts/scientific-v0.5.0
-for group in models records observations; do
+  --pattern 'cdm-scientific-reference.tar.zst' \
+  --pattern 'cdm-scientific-records.tar.zst' --dir artifacts/scientific-v0.5.0
+for group in reference records; do
   cat artifacts/scientific-v0.5.0/cdm-scientific-${group}.tar.zst* | zstd -dc --long=30 | tar -x
 done
 ```
 
-Models and records suffice for examining results and running fresh evaluations.
-Download observations as well to rebuild frozen features and train on the
+The reference package and records suffice for examining results and running
+the reference policies. The full model archive adds historical alternatives
+and joint-training checkpoints. Download observations as well to rebuild frozen features and train on the
 recorded trajectories. Feature caches, prepared feature tensors, third-party
 pretrained weights and Python environments are excluded. They can be rebuilt
-with the supplied code. Checkpoint metadata and text records use relative
+with the supplied code. To obtain all materials, repeat the download with
+`--pattern 'cdm-scientific-*'`, then extract each remaining archive in the same
+way. Checkpoint metadata and text records use relative
 project paths; trained tensor values are unchanged. The original run files
 remain preserved separately.
 
