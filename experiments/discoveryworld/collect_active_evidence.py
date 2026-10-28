@@ -16,7 +16,7 @@ from .structured_observation import StructuredDiscoveryWorldEnv
 
 
 def collect(job):
-    seed, root, max_steps = job
+    seed, root, max_steps, split = job
     output = root / f"seed{seed}"
     output.mkdir(parents=True)
     reference = ReactorLabReference()
@@ -26,7 +26,7 @@ def collect(job):
         observation = env.reset("Reactor Lab", "Normal", seed)
         initial = env.save_initial_rng(output / "initial_rng.json.gz")
         metadata = {**env.configuration, "policy": "scripted_public_reactor_reference_v1",
-                    "is_learned_policy": False, "split": "train",
+                    "is_learned_policy": False, "split": split,
                     "initial_rng_snapshot": {"path": "initial_rng.json.gz", **initial},
                     "action_descriptions": env.actions, "teleport_locations": env.teleports,
                     "collection": "public_UI_without_image_rendering"}
@@ -60,13 +60,14 @@ def main():
     parser.add_argument("--seeds", type=int, nargs="+", required=True)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--max-steps", type=int, default=500)
+    parser.add_argument("--split", choices=("train", "validation"), default="train")
     args = parser.parse_args()
     if any(seed % 5 == 4 for seed in args.seeds):
         parser.error("Training collection excludes the reserved relation family")
     args.output.mkdir(parents=True, exist_ok=True)
     rows = []
     with ProcessPoolExecutor(max_workers=args.workers, mp_context=multiprocessing.get_context("spawn")) as pool:
-        futures = [pool.submit(collect, (seed, args.output, args.max_steps)) for seed in args.seeds]
+        futures = [pool.submit(collect, (seed, args.output, args.max_steps, args.split)) for seed in args.seeds]
         for future in as_completed(futures):
             row = future.result()
             rows.append(row)
