@@ -27,7 +27,7 @@ class Activity(IntEnum):
 
 @dataclass(frozen=True)
 class ContinualExperimentConfig:
-    memory_size: int = 32
+    memory_size: int = 128
     adapter_width: int = 32
     max_internal_steps: int = 4
     modality_dim: int = 0
@@ -54,13 +54,16 @@ class ContinualExperimentPolicy(nn.Module):
             raise ValueError("Invalid memory, adapter, or compute dimensions")
         if not 0 <= config.fast_decay <= 1:
             raise ValueError("fast_decay must be in [0, 1]")
-        if config.activity_mode not in {"learned", "fixed", "no_adaptation"}:
+        if config.activity_mode not in {"learned", "fixed", "fixed_schedule", "no_adaptation"}:
             raise ValueError("Unknown activity mode")
         if config.activity_mode == "fixed" and not 0 <= config.fixed_refinements <= config.max_internal_steps:
             raise ValueError("Fixed refinements must fit the internal budget")
+        if config.activity_mode == "fixed_schedule" and config.max_internal_steps < 4:
+            raise ValueError("The complete fixed schedule needs four internal activities")
         self.base, self.continual_config = base, config
+        self.retain_adaptation = True  # Deployment intervention; shared weights stay unchanged.
         w, a, r = base.core.config.width, base.config.action_width, config.adapter_width
-        self.activity = nn.Sequential(nn.Linear(2 * w + 4, a), nn.GELU(), nn.Linear(a, len(Activity)))
+        self.activity = nn.Sequential(nn.Linear(2 * w + 6, a), nn.GELU(), nn.Linear(a, len(Activity)))
         # Warm-start deployment with the inherited policy; training still samples all available activities.
         nn.init.zeros_(self.activity[-1].weight)
         nn.init.zeros_(self.activity[-1].bias)
@@ -72,7 +75,7 @@ class ContinualExperimentPolicy(nn.Module):
         self.memory_token = nn.Linear(r + 2, w)
         self.prediction_to_action = nn.Linear(2, 1, bias=False)
         nn.init.zeros_(self.prediction_to_action.weight)
-        self.activity_value = nn.Sequential(nn.Linear(2 * w + 4, a), nn.GELU(), nn.Linear(a, 1))
+        self.activity_value = nn.Sequential(nn.Linear(2 * w + 6, a), nn.GELU(), nn.Linear(a, 1))
         self.fast_step = nn.Parameter(torch.tensor(-2.))
         self.slow_step = nn.Parameter(torch.tensor(-4.))
         self.modality_projection = nn.Linear(config.modality_dim, w) if config.modality_dim else None
@@ -164,6 +167,17 @@ class ContinualExperimentPolicy(nn.Module):
                 "pending": state["pending"] | selected,
                 "internal_steps": torch.where(selected, 0, state["internal_steps"])}
 
+    def replay_error(self, state):
+        """Current prediction error on received outcomes, visible to the scheduler.
+
+        Updating fast or slow weights changes this readout immediately, before
+        any new external observation or workspace refinement.
+        """
+        x = state["memory_x"]
+        predicted = self.predictor(x) + torch.bmm(x, state["fast"] + state["slow"])
+        valid = state["memory_valid"].float()
+        return ((predicted - state["memory_y"]).square() * valid[..., None]).sum(1) / valid.sum(-1, keepdim=True).clamp_min(1)
+
     def readout(self, state, candidates, action_mask):
         f = self.core.state_features(state["h"], state["z"])
         q = self.base.state_query(f)[:, None].expand(-1, candidates.shape[1], -1)
@@ -175,7 +189,7 @@ class ContinualExperimentPolicy(nn.Module):
         scalars = torch.stack((state["memory_valid"].float().mean(-1), state["pending"].float(),
                               state["internal_steps"].float() / max(1, self.continual_config.max_internal_steps),
                               action_mask.any(-1).float()), -1)
-        activity_input = torch.cat((f, scalars), -1)
+        activity_input = torch.cat((f, scalars, self.replay_error(state)), -1)
         mask = torch.ones(len(f), len(Activity), dtype=torch.bool, device=f.device)
         mask[:, Activity.ACT] = action_mask.any(-1) & ~state["pending"]
         has_memory = state["memory_valid"].any(-1)
@@ -189,6 +203,15 @@ class ContinualExperimentPolicy(nn.Module):
             fixed = torch.where(state["internal_steps"] < self.continual_config.fixed_refinements,
                                 int(Activity.REFINE), int(Activity.ACT))
             fixed = torch.where(mask[:, Activity.ACT], fixed, int(Activity.WAIT))
+            mask &= F.one_hot(fixed, len(Activity)).bool()
+        elif self.continual_config.activity_mode == "fixed_schedule":
+            schedule = torch.tensor([Activity.REFINE, Activity.RETRIEVE, Activity.LEARN,
+                                     Activity.CONSOLIDATE, Activity.ACT], device=f.device)
+            fixed = schedule[state["internal_steps"].clamp_max(4)]
+            needs_memory = (fixed >= Activity.RETRIEVE) & (fixed <= Activity.CONSOLIDATE)
+            fixed = torch.where(needs_memory & ~has_memory, int(Activity.ACT), fixed)
+            available = mask.gather(1, fixed[:, None]).squeeze(1)
+            fixed = torch.where(available, fixed, int(Activity.WAIT))
             mask &= F.one_hot(fixed, len(Activity)).bool()
         return {"logits": logits.masked_fill(~action_mask, -torch.inf), "features": x,
                 "predictions": predictions, "activity_mask": mask,
@@ -224,6 +247,8 @@ class ContinualExperimentPolicy(nn.Module):
                 # Exact gradient of 1/(2N) sum ||prediction - target||^2.
                 gradient = torch.bmm(x.transpose(1, 2), residual) / weights.sum(-1)[:, None, None].clamp_min(1)
                 revised = state[name] - step.sigmoid() * gradient
+                if not self.retain_adaptation:
+                    revised = state[name]
                 state = {**state, name: torch.where(selected[:, None, None], revised, state[name])}
         internal = (activity > Activity.ACT) & (activity < Activity.WAIT)
         return {**state, "internal_steps": original["internal_steps"] + internal.long(),
@@ -232,19 +257,21 @@ class ContinualExperimentPolicy(nn.Module):
     def configuration(self):
         return {**self.base.configuration(), "continual_config": asdict(self.continual_config)}
 
-    def advance(self, event, evidence, evidence_mask, state, refinements=1):
+    def advance(self, event, evidence, evidence_mask, state, refinements=1, feedback_targets=None):
         """v0.9 evaluator compatibility; feedback is the received event, once."""
         if refinements != 1:
             raise ValueError("Use learned internal activities; base assimilation uses one refinement")
-        targets = torch.stack((event[:, 29], (event[:, 30] * 20).clamp_min(0).log1p()), -1)
+        targets = (torch.stack((event[:, 29], (event[:, 30] * 20).clamp_min(0).log1p()), -1)
+                   if feedback_targets is None else feedback_targets)
         state = self.feedback(state, targets)
         return self.receive(state, {"event": event, "evidence": evidence, "evidence_mask": evidence_mask})
 
-    def forward(self, event, evidence, evidence_mask, candidates, action_mask, state, refinements=1):
+    def forward(self, event, evidence, evidence_mask, candidates, action_mask, state, refinements=1,
+                feedback_targets=None):
         """Greedy synchronous deployment for the existing native stream evaluator."""
         observation = dict(event=event, evidence=evidence, evidence_mask=evidence_mask,
                            candidates=candidates, action_mask=action_mask)
-        state = self.advance(event, evidence, evidence_mask, state, refinements)
+        state = self.advance(event, evidence, evidence_mask, state, refinements, feedback_targets)
         finished = torch.zeros(len(event), dtype=torch.bool, device=event.device)
         for _ in range(self.continual_config.max_internal_steps + 1):
             out = self.readout(state, candidates, action_mask)

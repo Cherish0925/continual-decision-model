@@ -95,6 +95,55 @@ def test_runtime_updates_reduce_replay_error_and_have_outer_gradients():
     assert model.memory_query.weight.grad is not None
 
 
+def test_activity_readout_can_observe_effect_of_learning_without_a_new_event():
+    model, obs = make_model(), observation()
+    state, _ = remember(model, model.receive(model.initial(2, "cpu"), obs), obs)
+    # A learned scheduler must distinguish different adaptation states even
+    # when their recurrent state, observations and computation count agree.
+    torch.nn.init.normal_(model.activity[-1].weight, std=.1)
+    before = model.readout(state, obs["candidates"], obs["action_mask"])
+    revised = model.internal(state, torch.full((2,), int(Activity.LEARN)), obs)
+    revised["internal_steps"] = state["internal_steps"]
+    after = model.readout(revised, obs["candidates"], obs["action_mask"])
+    assert torch.equal(state["h"], revised["h"])
+    assert torch.equal(state["z"], revised["z"])
+    assert model.replay_error(revised).mean() < model.replay_error(state).mean()
+    valid = before["activity_mask"] & after["activity_mask"]
+    assert not torch.equal(before["activity_logits"][valid], after["activity_logits"][valid])
+
+
+def test_fixed_schedule_uses_all_learning_mechanisms():
+    model, obs = make_model(activity_mode="fixed_schedule"), observation()
+    state = model.receive(model.initial(2, "cpu"), obs)
+    first = model.readout(state, obs["candidates"], obs["action_mask"])
+    assert (first["activity_logits"].argmax(-1) == Activity.REFINE).all()
+    state = model.internal(state, first["activity_logits"].argmax(-1), obs)
+    assert (model.readout(state, obs["candidates"], obs["action_mask"])["activity_logits"].argmax(-1)
+            == Activity.ACT).all()
+    state, _ = remember(model, model.receive(model.initial(2, "cpu"), obs), obs)
+    for expected in (Activity.REFINE, Activity.RETRIEVE, Activity.LEARN, Activity.CONSOLIDATE, Activity.ACT):
+        selected = model.readout(state, obs["candidates"], obs["action_mask"])["activity_logits"].argmax(-1)
+        assert (selected == expected).all()
+        state = model.internal(state, selected, obs)
+    assert state["fast"].norm() > 0
+    assert state["slow"].norm() > 0
+
+
+def test_execution_feedback_does_not_change_inherited_event_semantics():
+    model, obs = make_model(), observation()
+    base_state, state = model.base.initial(2, "cpu"), model.initial(2, "cpu")
+    parent = model.base(**obs, state=base_state)
+    first = model(**obs, state=state)
+    returned = observation()
+    returned["event"][:, 30] = 5 / 20
+    actual = torch.tensor([[1., 31.], [0., 17.]])
+    actual[:, 1] = actual[:, 1].log1p()
+    parent_next = model.base(**returned, state=parent["state"])
+    continued = model(**returned, state=first["state"], feedback_targets=actual)
+    torch.testing.assert_close(parent_next["logits"], continued["logits"])
+    torch.testing.assert_close(continued["state"]["memory_y"][:, 0], actual)
+
+
 def test_async_observation_does_not_complete_pending_tool_and_budget_yields():
     model = make_model(max_internal_steps=1)
     session = ContinualSession(model)
