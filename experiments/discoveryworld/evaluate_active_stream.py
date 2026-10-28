@@ -60,6 +60,16 @@ def feedback_targets(decision, device, *, cost_mode="native"):
     return torch.tensor([[float(decision["success"]), math.log1p(cost)]], device=device)
 
 
+def selected_prediction(model, result, action, previous_activity):
+    """Record the prediction made before an action returns its actual outcome."""
+    total = result["predictions"][0, action]
+    shared = model.predictor(result["features"][0, action])
+    state = result["state"]
+    return {"total": total.tolist(), "shared": shared.tolist(), "adaptation": (total - shared).tolist(),
+            "activity_counts": (state["activity_counts"] - previous_activity)[0].tolist(),
+            "fast_adapter_norm": float(state["fast"].norm()), "slow_adapter_norm": float(state["slow"].norm())}
+
+
 def consume_final_observation(model, state, obs, refinements, *, feedback=None):
     """Consume an executed outcome once without choosing or executing an action."""
     extra = {"feedback_targets": feedback} if feedback is not None else {}
@@ -151,6 +161,7 @@ def run_stream(job):
                         "event_cost": "measurement=1,test=5",
                         "adaptation_feedback_cost": options.get("feedback_cost", "native") if continual else None,
                         "retain_adaptation": model.retain_adaptation if continual else None,
+                        **({"prediction_target_order": ["test_success", "log1p_cost"]} if continual else {}),
                         "ledger": "fresh_for_each_instance",
                         "numerical_posterior": "recomputed_from_current_instance_public_measurements",
                         "initial_rng_snapshot": {"path": "initial_rng.json.gz", **rng},
@@ -177,6 +188,7 @@ def run_stream(job):
                         obs, beliefs = observation(episode, event, mixture, step,
                                                   options["max_decisions"], device)
                         extra = {"feedback_targets": feedback} if continual else {}
+                        previous_activity = state["activity_counts"].clone() if continual else None
                         result = model(**obs, state=state, refinements=options["refinements"], **extra)
                         state = result["state"]
                         outcome_pending = False
@@ -187,7 +199,10 @@ def run_stream(job):
                             break
                         mean = float(beliefs["means"][0, action - 20]) if action >= 20 else None
                         spread = float(beliefs["std"][0, action - 20]) if action >= 20 else None
+                        prediction = selected_prediction(model, result, action, previous_activity) if continual else None
                         decision = episode.apply(action, mean_hz=mean, std_hz=spread)
+                        if continual:
+                            decision["model_prediction"] = prediction
                         event = _event_from_result(decision, episode, mixture, step=step + 1,
                                                    max_steps=options["max_decisions"], device=device)
                         if continual:

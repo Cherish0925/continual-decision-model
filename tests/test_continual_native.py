@@ -92,7 +92,12 @@ class RecordingPolicy:
         action = 20 if bool(event[0, 27:29].any()) else 0
         logits = torch.full((1, 29), -100.)
         logits[0, action] = 1.
-        return {"state": revised, "logits": logits}
+        features = torch.ones(1, 29, 2)
+        return {"state": revised, "logits": logits, "features": features,
+                "predictions": self.predictor(features) + .25}
+
+    def predictor(self, features):
+        return features * 2.
 
     def advance(self, event, evidence, evidence_mask, state, **extra):
         return self._receive("terminal", event, state, extra)
@@ -144,6 +149,16 @@ def test_feedback_reaches_next_action_and_terminal_once_without_changing_event(t
     metadata = json.loads((tmp_path / "output/development/episode000_seed2200/run.json").read_text())
     assert metadata["event_cost"] == "measurement=1,test=5"
     assert metadata["adaptation_feedback_cost"] == (cost_mode if continual else None)
+    summary = json.loads((tmp_path / "output/development/episode000_seed2200/summary.json").read_text())
+    if continual:
+        assert metadata["prediction_target_order"] == ["test_success", "log1p_cost"]
+        for decision in summary["decisions"]:
+            prediction = decision["model_prediction"]
+            assert prediction["total"] == [2.25, 2.25]
+            assert prediction["shared"] == [2., 2.]
+            assert prediction["adaptation"] == [.25, .25]
+    else:
+        assert all("model_prediction" not in decision for decision in summary["decisions"])
 
 
 def test_fresh_native_schedule_covers_each_directed_pair_once():
