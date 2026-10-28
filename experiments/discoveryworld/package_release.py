@@ -73,7 +73,8 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
             for path in files(root, runs):
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update)\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
-                record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf", ".npz"}
+                compressed_text = path.name.endswith((".json.gz", ".jsonl.gz"))
+                record = path.suffix in TEXT or compressed_text or path.suffix in {".svg", ".pdf", ".npz"}
                 reference = path.relative_to(root / "runs/discoveryworld").as_posix() in REFERENCE
                 if not {"reference": reference, "models": checkpoint, "inference": checkpoint,
                         "observations": image, "records": record}[kind]:
@@ -107,7 +108,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
                             tar.addfile(info, stream)
                 else:
                     data = path.read_bytes()
-                    compressed = path.name.endswith(".json.gz")
+                    compressed = compressed_text
                     original = data
                     content = gzip.decompress(data) if compressed else data
                     if SECRET.search(content):
