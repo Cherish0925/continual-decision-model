@@ -1,0 +1,27 @@
+{
+  "batch": 128,
+  "device": "cuda:0",
+  "background": "two concurrent training processes on this GPU",
+  "compile_seconds": 34.73424104601145,
+  "output_agreement": {
+    "event": true,
+    "evidence": true,
+    "evidence_mask": true,
+    "candidates": true,
+    "action_mask": true
+  },
+  "eager_ms": [
+    27.29845382273197,
+    27.18557845801115,
+    26.90293863415718,
+    27.095592208206654,
+    27.167087607085705
+  ],
+  "compiled_ms": [
+    1.8557976931333542,
+    1.7821284011006355,
+    1.7989950254559517,
+    1.8220573663711548,
+    1.836225762963295
+  ]
+}

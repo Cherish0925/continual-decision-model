@@ -4,6 +4,28 @@ The next campaign trains a model to choose experiments, continue useful inferenc
 
 Measured policy results, workspace interventions and paired learning comparisons are in [RESULTS.md](RESULTS.md).
 
+The [active-measurement method](ACTIVE_LEARNING.md) trains the continuing core
+jointly with its experimental decisions; calibration rehearsal improves native
+coverage across two matched training repetitions. The [task-stream study](ACTIVE_STREAM.md)
+now trains and evaluates state carried through fresh instances, changes and
+returning relations. Its training and final native comparisons are in progress.
+
+`collect_chemistry.py` supplies a second native scientific interface. A policy
+reads public component names, prior experiments and current rust condition,
+chooses a component-count recipe, and receives observed changes and action cost.
+The current bounded-enumeration reference collected 15 complete Normal/Challenge
+trajectories and 262 experiments, including 247 that did not fully remove rust.
+These are training resources; no learned chemistry-policy result is claimed.
+Rust can accumulate across trials, so each record keeps the preceding state and
+history. For example:
+
+```bash
+python -m experiments.discoveryworld.collect_chemistry \
+  --difficulty Normal --seeds 7101 7102 7103 7104 --workers 4 \
+  --output runs/chemical-experiments
+```
+
+
 The completed [action-consequence prediction and workspace-feedback study](PREDICTION.md)
 trains on reference and autonomous execution traces, including failures. A
 second study learns from 96 native alternative-action continuations. The four

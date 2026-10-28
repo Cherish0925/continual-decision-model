@@ -21,7 +21,7 @@ import torch.nn.functional as F
 
 from cdm.active_experiment import load_active_checkpoint
 from .calibration_mixture import load_mixture_checkpoint
-from .train_active_core import ActiveTableEnvironment, counterfactual_calibration
+from .train_active_core import ActiveTableEnvironment, counterfactual_calibration, make_observation
 
 
 class CalibrationTaskPool:
@@ -101,7 +101,8 @@ _TASK_FIELDS = ("indices", "permutation", "samples", "sample_present", "sample_c
 
 
 class ActiveLifetimeEnvironment:
-    def __init__(self, pool, plan, mixture, *, max_steps=160, tolerance_hz=8.):
+    def __init__(self, pool, plan, mixture, *, max_steps=160, tolerance_hz=8.,
+                 observation_encoder=make_observation):
         self.pool, self.plan, self.mixture = pool, plan, mixture
         self.batch, self.device = plan.streams, pool.device
         self.lifetime = torch.zeros(self.batch, dtype=torch.long, device=self.device)
@@ -112,7 +113,8 @@ class ActiveLifetimeEnvironment:
         self.table = ActiveTableEnvironment.__new__(ActiveTableEnvironment)
         self.table.__dict__.update(data=pool.data, size=pool.size, batch=self.batch, device=self.device,
                                    mixture=mixture, max_steps=max_steps, tolerance=tolerance_hz,
-                                   measurement_cost=.005, test_cost=.025, test_retry_rule="changed_evidence")
+                                   measurement_cost=.005, test_cost=.025, test_retry_rule="changed_evidence",
+                                   encode_observation=observation_encoder)
         self._begin_tasks(torch.arange(self.batch, device=self.device), initial=True)
 
     @torch.no_grad()
@@ -217,9 +219,11 @@ def flush_terminal_state(model, state, observation, done, refinements=1):
 
 
 @torch.no_grad()
-def evaluate(model, pool, mixture, *, state_mode, streams, seed, max_steps, refinements):
+def evaluate(model, pool, mixture, *, state_mode, streams, seed, max_steps, refinements,
+             observation_encoder=make_observation):
     plan = TaskStreamPlan(pool, streams=streams, lifetimes=2, seed=seed, device=pool.device)
-    env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=max_steps)
+    env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=max_steps,
+                                    observation_encoder=observation_encoder)
     state = model.initial(streams, pool.device)
     finished = torch.zeros(streams, dtype=torch.bool, device=pool.device)
     model.eval()
@@ -257,6 +261,8 @@ def main():
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--head-lr", type=float, default=3e-4)
     parser.add_argument("--bf16", action="store_true")
+    parser.add_argument("--compile-observations", action="store_true",
+                        help="Fuse observation construction with torch.compile; model and task dynamics are unchanged")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(4)
@@ -269,7 +275,9 @@ def main():
     # at least five tasks, so this reserves more than the maximum needed plans.
     lifetimes = (args.updates * args.unroll + 19) // 20 + 2
     plan = TaskStreamPlan(pool, streams=args.batch, lifetimes=lifetimes, seed=args.seed, device=args.device)
-    env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=args.max_steps)
+    encoder = torch.compile(make_observation, fullgraph=True, dynamic=False) if args.compile_observations else make_observation
+    env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=args.max_steps,
+                                    observation_encoder=encoder)
     model, parent = load_active_checkpoint(args.checkpoint, args.device)
     if model.config.mode != "persistent":
         raise ValueError("Both arms must start from the same persistent policy")
@@ -353,7 +361,8 @@ def main():
         if (update + 1) % args.eval_every == 0 or update + 1 == args.updates:
             result = evaluate(model, validation_pool, mixture, state_mode=args.state_mode,
                               streams=args.validation_streams, seed=args.seed + 100000,
-                              max_steps=args.max_steps, refinements=args.refinements)
+                              max_steps=args.max_steps, refinements=args.refinements,
+                              observation_encoder=encoder)
             row = {"update": update + 1, "validation": result["summary"], "elapsed_seconds": time.monotonic() - started}
             print(json.dumps(row), flush=True); history.append(row)
             saved = {**model.configuration(), "model": model.state_dict(), "optimizer": optimizer.state_dict(),

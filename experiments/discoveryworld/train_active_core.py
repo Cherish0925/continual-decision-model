@@ -186,6 +186,8 @@ def make_observation(values, counts, known_hz, known, query, failed, event, mixt
 
 class ActiveTableEnvironment:
     """Acquisition over literal native returns, with an explicit activation proxy."""
+    encode_observation = staticmethod(make_observation)
+
     def __init__(self, path, mixture, *, batch=64, max_steps=160, tolerance_hz=8., measurement_cost=.005,
                  test_cost=.025, device="cpu", permute=True, test_retry_rule="changed_evidence",
                  counterfactual_fraction=0.):
@@ -285,9 +287,9 @@ class ActiveTableEnvironment:
 
     @torch.no_grad()
     def observation(self):
-        obs = make_observation(self.values, self.counts, self.known_hz, self.known, self.query, self.failed,
-                               self.event, self.mixture, self.steps, self.max_steps,
-                               self.group_counts < self.sample_count)
+        obs = self.encode_observation(self.values, self.counts, self.known_hz, self.known, self.query, self.failed,
+                                      self.event, self.mixture, self.steps, self.max_steps,
+                                      self.group_counts < self.sample_count)
         # Terminal rows are ignored by the vectorized rollout until reset.
         obs["action_mask"][~self.alive, 0] = True
         return obs

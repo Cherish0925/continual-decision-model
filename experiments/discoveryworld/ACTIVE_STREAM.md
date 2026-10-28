@@ -112,6 +112,18 @@ The model archives, rather than the inference-only archive, provide the retained
 optimizer state. These trainings are in progress; the native comparison will
 use their fixed final checkpoints.
 
+### Observation-construction throughput
+
+The optional `--compile-observations` flag fuses the numerical belief and input
+construction with `torch.compile`. On an H100 with two other trainings running,
+a batch of 128 took a median 27.17 ms without fusion and 1.82 ms with fusion;
+the first compilation took 34.73 s. The [timings](results/active_observation_runtime.json)
+cover this component. Model computation, environment updates and validation
+also contribute to total training time. All output tensors agreed over 24
+successive partial histories, and an end-to-end training/validation run exercised
+the compiled path. The four fixed comparison runs use the original, uncompiled
+path throughout.
+
 ## Run
 
 From the repository root, select a fixed endpoint and state condition:
