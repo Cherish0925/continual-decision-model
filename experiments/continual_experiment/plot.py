@@ -63,8 +63,8 @@ def draw(summary, output):
         ax.set_axisbelow(True)
         ax.grid(axis="x", color="#E7E9EC", linewidth=.7)
         ax.xaxis.set_major_locator(MaxNLocator(5))
-    offsets = {"baseline_parent": (0, 12), "baseline_rehearsal": (0, -19),
-               "baseline_explicit": (0, 12)}
+    offsets = {"baseline_parent": (16, 15), "baseline_rehearsal": (0, -19),
+               "baseline_explicit": (0, 22)}
     for name in BASELINES:
         if name not in totals:
             continue
@@ -72,8 +72,9 @@ def draw(summary, output):
         point = row["mean_native_actions"], row["completed"]
         quality.scatter(*point, marker="D", s=44, color="#50565C", zorder=3)
         quality.annotate(BASELINES[name], point, xytext=offsets[name],
-                         textcoords="offset points", ha="center", fontsize=9,
-                         color="#42474C")
+                         textcoords="offset points",
+                         ha="left" if name == "baseline_parent" else "center", fontsize=9,
+                         color="#42474C", arrowprops={"arrowstyle": "-", "color": "#92989E", "lw": .6})
     for index, seed in enumerate(seeds):
         for mode, (_, color) in MODES.items():
             name = f"{mode}_seed{seed}"
@@ -134,13 +135,13 @@ def draw(summary, output):
                        markersize=6, label=f"Training seed {seed}") for i, seed in enumerate(seeds)]
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(.067, .105), ncol=3,
                frameon=False, fontsize=9.5, columnspacing=2.6, handletextpad=.7)
-    fig.suptitle("Native continual experiment comparison", x=.075, y=.965,
+    fig.suptitle("Continual experimental decisions", x=.075, y=.965,
                  ha="left", fontsize=14, fontweight="bold")
-    status = "Partial results" if partial else "Complete comparison"
-    fig.text(.075, .9, f"{status} · {len(main)}/{len(main_names)} main conditions · "
-             f"{len(same)}/{len(same_names)} same-weight conditions", fontsize=10, color="#626970")
+    status = "Partial results · " if partial else ""
+    fig.text(.075, .9, f"{status}{instances} instances · {streams} ordered task streams · "
+             f"{len(seeds)} training repetitions", fontsize=10, color="#626970")
     fig.text(.075, .065, f"{instances} instances in {streams} ordered streams; training repetitions use the same instances and are shown separately.", fontsize=9)
-    fig.text(.075, .03, "Action means include successes and failures. Missing conditions are omitted; point estimates do not show uncertainty.", fontsize=9)
+    fig.text(.075, .03, "Action means include successes and failures. Points show observed means; paired uncertainty is reported in the result tables.", fontsize=9)
     output.parent.mkdir(parents=True, exist_ok=True)
     for extension in ("pdf", "svg", "png"):
         fig.savefig(output.with_suffix(f".{extension}"), dpi=250, bbox_inches="tight", pad_inches=.15)

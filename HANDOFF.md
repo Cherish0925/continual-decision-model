@@ -1,31 +1,37 @@
 # Research progress
 
-## Integrated activity and learning implementation
+## Joint activity and learning
 
-The [continual-experiment path](experiments/continual_experiment/README.md) now
-joins the v0.9 active core, internal computation, experience retrieval and
-per-stream prediction updates in one trainer. Existing checkpoints initialize
-the new model without changing its initial action scores. The native stream
-evaluator accepts `--continual`; an asynchronous session handles observations
-arriving while a tool request is pending. Nineteen integration checks and both
-full-model and fixed-schedule H100 training paths have completed. Eight formal
-trainings are running, two jobs per GPU: full, no adaptation, task reset, and
-a complete fixed activity schedule, each with two training seeds. The output
-root is `runs/continual-experiment/joint_activity_20261028`.
+The [integrated model](experiments/continual_experiment/README.md) now trains the
+scientific-task core, internal activity selection, bounded experience retrieval
+and fast/slow prediction updates together. All eight trainings and twenty native
+conditions have completed. The [results](experiments/continual_experiment/results/README.md)
+include 184 common instances in twenty changing-relation streams, three reference
+policies, same-weight interventions and separately identified exploratory checks.
 
-The next research unit is the full model and its complete fixed-schedule, no-adaptation and
-task-reset comparisons, with task success, native operations, internal compute
-and return-to-relation performance reported together. The linked document owns
-the current commands and the distinction between this implementation and the
-completed v0.9 experiments below.
+The two full models complete 179/184 and 174/184, using 148.58 and 193.76 native
+actions per instance. Calibration rehearsal completes 179/184 with 116.32.
+Learned activities use fewer actions than the fixed complete activity schedule
+in both repetitions, but the new models do not outperform that stronger
+reference. The second model uses slow prediction updates during execution;
+the first does not under the primary greedy protocol. Sampling internal
+activities activates learning in both, and retained updates improve later cost
+forecasts. They have not produced a clear completion or action-cost benefit over
+computing and discarding the same updates.
 
-The activity policy now observes the residual prediction errors on received
-experience, so it can condition further learning on the effect of its last
-update. Internal activities pay explicit computation costs without also applying
-an external-transition discount. Native costs enter adaptation through a
-separate feedback channel; the inherited event representation keeps its original
-meaning. A fresh 184-instance manifest and three fixed references have been
-prepared independently of the new training outcomes.
+Continuing state helps later instances while a relation remains unchanged.
+It does not provide rapid recovery when an earlier relation returns: the first
+returning instance costs 23.20 and 32.60 more native actions than resetting the
+same weights. The next research unit below connects learning to the physical
+beliefs used for experimental decisions. This distinction follows from the
+completed comparison and the actual prediction-to-action path.
+
+The study fixes final checkpoints after 1,200 updates, with 128 parallel streams
+and 32 model ticks per update. Both training repetitions start from the same
+v0.9 parent. Optional multimodal tokens and event-driven operation are implemented;
+this experiment trains structured observations and evaluates synchronous native
+tools. The [release guide](experiments/discoveryworld/RELEASE.md) supplies models,
+prepared data and full execution records.
 
 Updated 28 October 2026. The current study trains the continuing core to select
 measurements and setting experiments from incomplete evidence. Its
@@ -65,8 +71,8 @@ Earlier scientific studies, including successful task execution, prediction
 training, unsuccessful computation allocation and learned complete-experiment
 selection, remain in [RESULTS.md](experiments/discoveryworld/RESULTS.md). The
 separate process-lifetime studies below establish useful online parameter
-learning. Connecting that capability and adaptive computation to this active
-scientific policy remains the next research step.
+learning. The joint study above connects those mechanisms to the active scientific policy;
+improving experimental decisions through them remains the research question.
 
 ## 1. The question
 
@@ -177,10 +183,18 @@ They are errors of method, not of compute. Two H100s ran 35 training runs in 66 
 | Public observations, dynamic object actions, learned outcome prediction, continued h/z and candidate-conditioned reading of object-bound measurements | [cdm/digital.py](cdm/digital.py) |
 | Native scientific-task interaction, exact public measurement ledger, complete trajectories, frozen feature cache, sequence imitation, on-policy actor–critic and strict prefix replay/evaluation | [experiments/discoveryworld/](experiments/discoveryworld/) |
 | Persistent experimental plans, observed success/cost learning, and transfer between predictive and original action readers | [experimental_plans.py](experiments/discoveryworld/experimental_plans.py), [collect_plans.py](experiments/discoveryworld/collect_plans.py), [train_plans.py](experiments/discoveryworld/train_plans.py) |
+| Joint scientific-task core, learned internal activities, bounded experience retrieval, fast/slow prediction updates and event-driven execution | [cdm/continual_experiment.py](cdm/continual_experiment.py), [training and comparison](experiments/continual_experiment/README.md) |
 
 **Specified, not implemented**
 
-Asynchronous semantic execution and a learned semantic-call policy; long-term episode retrieval; consolidation; teacher distillation from Qwen3.6-35B-A3B. The native decoder constrains syntax and public argument domains while the frozen model chooses the action; it supplies no scientific solution. Neither that baseline nor the new binding reader connects semantic reasoning to CDM through joint training. The scientific-task path includes deployed A/B updates and a causal future-query training objective. Its numerical prediction-to-action connection currently uses an explicit scalar controller; the action head has not learned this control. A learned computation schedule and long-term retrieval remain to be connected. Cross-instance state reuse is now trained and measured in the task-stream study above. Shared-parameter actor–critic updates are distinct from those capabilities.
+Asynchronous semantic-model execution, a learned semantic-call policy, general
+long-term episode retrieval, skill consolidation and teacher distillation from
+Qwen3.6-35B-A3B remain proposed. The implemented bounded retrieval and slow
+prediction updates are narrower mechanisms, now jointly trained with the
+scientific-task core. Neither the frozen semantic baseline nor the binding
+reader supplies joint semantic–CDM learning. Physical prediction and precise
+setting still use numerical tools. Cross-instance state reuse, deployed
+prediction updates and shared-parameter training have separate measured results.
 
 The first application is a **digital experimental operator**, with [DiscoveryWorld](https://github.com/allenai/discoveryworld) selected as the external task suite ([DESIGN.md §9](DESIGN.md)). Reactor Lab is the first trained task. Handwritten reference completion establishes a usable task/data path; learned policies are evaluated separately for actual completion.
 
@@ -188,7 +202,7 @@ The first application is a **digital experimental operator**, with [DiscoveryWor
 
 The [scientific-task release guide](experiments/discoveryworld/RELEASE.md)
 provides checkpoints, records, observations and executable loading instructions.
-Archives restore the relative `runs/discoveryworld/` paths used in the commands.
+Archives restore the relative `runs/` paths used in the commands.
 Regenerable feature caches and third-party pretrained weights are excluded;
 perception is downloaded from its pinned upstream model.
 

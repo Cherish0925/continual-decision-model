@@ -129,7 +129,12 @@ External action and internal work use separate heads. An activity has an operati
 - rehearse experience or distill useful computation;
 - wait until a chosen reconsideration time or an arriving event.
 
-The existing code learns measurement and refinement/learning choices. Retrieval, general tool targets, subgoals and reconsideration time extend this policy; they are not yet trained capabilities.
+The [joint scientific-task model](experiments/continual_experiment/README.md)
+trains measurement and experiment choices together with refinement, retrieval
+from a bounded received-experience bank, and fast/slow prediction updates.
+General tool targets, learned subgoals and reconsideration time remain design
+extensions. The comparison measures actual activity use and task benefit
+separately.
 
 A subgoal is a task-grounded target with an estimated completion value and duration. In digital experimentation, candidates include measuring a variable, testing a candidate condition, acquiring a required object or repeating a measurement. The policy selects and revises them using downstream task return. Free-form goal descriptions alone are not an objective.
 
@@ -249,9 +254,16 @@ Compare a recurrent policy, a restarted workspace, persistent inference without 
 | Correct option-value policy gradient | Fixed in [experiments/lifetime/train.py](experiments/lifetime/train.py); detached centering weights |
 | Dynamic scientific actions and received-result prediction | Implemented in [cdm/digital.py](cdm/digital.py), using the existing GRU/workspace and a public-observation object registry |
 | Scientific-task trajectory training and fresh-interaction policy updates | Implemented in [experiments/discoveryworld/](experiments/discoveryworld/README.md); task execution is evaluated separately from imitation accuracy |
+| Scientific-task activity choice, bounded experience retrieval and fast/slow prediction updates | Jointly trained in [continual_experiment](experiments/continual_experiment/README.md); eight trainings and paired native task-stream comparisons |
+| Observations arriving during internal work or one pending tool request | Implemented by `ContinualSession` in [cdm/continual_experiment.py](cdm/continual_experiment.py); the native scientific study uses synchronous tool execution |
 | Full pretrained-weight multimodal training and teacher distillation | Not run in this update |
 | Asynchronous semantic execution and learned semantic-call policy | Interfaces defined above; worker and policy training remain |
-| Long-term retrieval, prediction extension, tool/subgoal heads, action adapters and consolidation | Specified above; implementation remains |
+| General long-term retrieval, latent world prediction, learned subgoals and skill consolidation | Specified above; beyond the implemented bounded memory and prediction adapters |
 | Autonomous digital experimentation | Native Reactor Lab completion from reset: 14/16 and 13/16 across two trained evidence readers; fixed source core, explicit numerical hypotheses and scalar primitive. Cross-domain experimentation remains an objective. See [task results](experiments/discoveryworld/RESULTS.md). |
 
-The task learner now reads received evidence when selecting actions and can complete native Reactor Lab experiments. Refinement remains fixed; instance-local relation fitting uses a specified numerical model. Learned computation schedules and later-task retention remain the next integration. A new encoder implementation does not require redesigning the persistent core.
+The task learner reads received evidence and completes native Reactor Lab
+experiments. Its latest training path also learns internal activity choices and
+updates prediction adapters during execution. The [results](experiments/continual_experiment/results/README.md)
+measure the use and benefit of those mechanisms. Physical relation fitting still
+uses the numerical model. Learning that improves later experiments, rapid recall
+after interference and broad multimodal operation remain open research goals.

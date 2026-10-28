@@ -5,9 +5,57 @@ activities, experience retrieval and deployment-time prediction updates. The
 research question is whether choosing **how to compute and learn**, alongside
 **what to measure and do**, improves performance over a changing task stream.
 
-Eight joint trainings are running on two H100s, with two processes per GPU.
-Their final scientific-task performance has not yet been measured. Existing
-v0.9 results remain results of the original model.
+Eight joint trainings and twenty native evaluation conditions are complete.
+The campaign used two H100s with two training processes per GPU, then parallel
+CPU workers for native execution. [Full results](results/README.md) retain all
+conditions, training exposure and paired task-stream intervals.
+
+## Findings
+
+The full model completes **179/184 and 174/184** tasks in two continuations from
+the same parent, using **148.58 and 193.76** native actions per instance.
+Calibration rehearsal, the strongest earlier quality–cost reference here,
+completes **179/184** with **116.32** actions. The joint model therefore has not
+improved that tradeoff. Its learned activities do use fewer external actions
+than the fixed complete schedule in both repetitions, by 33.53 and 25.24 per
+instance. These are native operation savings, not measured compute savings.
+
+![Native task completion, operation cost and same-weight interventions](results/native_comparison.svg)
+
+**Continuing state and recall after interference differ.** Within the initial
+unchanged relation, later instances save 82.24 and 41.88 actions relative to
+resetting the same weights. The first instance after returning to an earlier
+relation instead costs 23.20 and 32.60 more actions. The respective 95%
+whole-stream bootstrap intervals are [1.45, 47.85] and [3.05, 65.45]. State
+continuity supports recent relation reuse without establishing rapid recovery
+of a previously encountered relation.
+
+**Online prediction learning does run, but has little effect on task outcomes.**
+Under greedy activity selection, repetition 201 requests no updates, while
+202 executes 4,937 slow-weight updates. The latter reduces pre-action
+measurement log-cost MSE from 0.6962 to 0.2421 and test log-cost MSE from 2.3952
+to 0.7264 on its executed actions. Retaining versus discarding those updates
+nevertheless completes exactly the same 174 instances, with only eight fewer
+native actions in total. That model uses all four allowed internal operations
+before each of its 3,003 external decisions; activity selection has not yielded
+adaptive reductions in computation on this cohort.
+
+Exploratory sampling of the learned internal activity distributions activates
+both fast and slow updates in both repetitions. Relative to discarding updates,
+retention changes experiment-request sequences in 4 and 9 instances, but leaves
+the completed-instance sets unchanged. Action differences per instance are
++0.16 [−0.13, +0.66] and −0.84 [−2.40, +0.02]. Thus better prediction calibration
+does not yet establish better experimental decisions. These follow-ups reuse
+the primary instances and are identified separately in the results.
+
+The implemented update target helps explain the next design choice. Received
+experience trains operation-success and cost forecasts. The physical relation
+fits, uncertainty and exact setting values still come from `visible_beliefs`
+and the numerical tools; at fixed measurements and a fixed hypothesis, the
+fast/slow update cannot change that physical prediction. A stronger shared
+learning path should make acquired experimental evidence change the beliefs
+used for subsequent measurements and actions. This is a proposed extension,
+not a measured capability of the released model.
 
 ## Run the comparison
 
@@ -269,6 +317,14 @@ The queue passes `--feedback-cost native`. For a single condition, the underlyin
 supports `--feedback-cost replay`, which keeps the adapter's 1/5 cost targets.
 Both settings preserve the inherited recurrent-event encoding. Exact selected
 action predictions and subsequent outcomes are saved with the native decisions.
+
+The exploratory comparisons use `--activity-selection sample --activity-seed 233`
+with external actions still greedy. Each stream uses an independent activity
+generator seeded by 233 plus its manifest index; it persists across tasks and
+does not change simulator randomness. Add `--discard-adaptation` for the paired
+update intervention. The released `followup_plan.json` records these commands
+and when they were selected. The feedback-scale check uses repetition 201 with
+`--feedback-cost replay`; its external trajectory is unchanged.
 
 Report completion and actual native operations on all instances, including
 failures, and costs on commonly completed instances. Separate the first and

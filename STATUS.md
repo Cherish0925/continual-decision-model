@@ -1,11 +1,13 @@
 # CDM: objective, implementation, and results
 
-**New implementation:** the [integrated activity and learning path](experiments/continual_experiment/README.md)
-adds a shared scientific-task trainer, per-stream fast/slow prediction updates,
-experience retrieval and asynchronous event handling. CPU integration checks
-are complete. Eight GPU trainings are running; their final native comparisons
-are pending. The
-reported v0.9 performance below belongs to the original active policy.
+**Completed joint comparison:** the [integrated activity and learning path](experiments/continual_experiment/README.md)
+connects the scientific-task core, bounded experience retrieval and per-stream
+prediction updates. Eight trainings and twenty native conditions are complete.
+Full models finish 179/184 and 174/184 tasks; the calibration-rehearsal reference
+finishes 179/184 with fewer actions. Learned activity schedules outperform the
+fixed complete schedule in action cost, while retained online updates do not
+establish a task benefit. [Results and paired comparisons](experiments/continual_experiment/results/README.md)
+report the two repetitions separately.
 
 Implementation updated **28 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
@@ -129,7 +131,7 @@ The new record reader connects action arguments to measured objects, tools and o
 - Updated the [forward example](examples/multimodal_forward.py) to accept a released core checkpoint and optional semantic input. It retains the checkpoint's core width and task schema. New projections and the semantic reader remain untrained.
 - Passed **43 relevant tests** on CPU with PyTorch 2.11.0 and Transformers 5.4.0: 35 lifetime tests, 1 activity-gradient test, 3 multimodal tests and 4 pretrained-integration tests. The new tests instantiate actual Siglip and Qwen3.5 classes at small random dimensions; they cover checkpoint equivalence, image/text dependence, connection gradients, frozen weights and missing/padded results.
 
-At the earlier integration stage, the task adapter and trainer were still pending. They now exist in [experiments/discoveryworld](experiments/discoveryworld/README.md), including real policy training, outcome learning, recovery-data collection and evaluation. Asynchronous semantic execution, its learned call policy, long-term retrieval and consolidation remain to be connected. The historical integration tests below are separate from the later GPU training and task scores.
+At the earlier integration stage, the task adapter and trainer were still pending. They now exist in [experiments/discoveryworld](experiments/discoveryworld/README.md), including real policy training, outcome learning, recovery-data collection and evaluation. Asynchronous semantic execution, its learned call policy, general long-term retrieval and skill consolidation remain open. The later joint study implements bounded retrieval and slow prediction updates. The historical integration tests below are separate from the later GPU training and task scores.
 
 ## 19 October implementation update
 

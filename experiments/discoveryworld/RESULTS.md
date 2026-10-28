@@ -4,6 +4,35 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Joint activity and learning — 28 October
+
+Eight trainings connect the scientific core, internal activity selection,
+received-experience retrieval and fast/slow prediction updates. A new native
+comparison uses 184 instances in twenty A–B–A streams. It includes three earlier
+references, six primary conditions per training repetition and five exploratory
+deployment checks: 3,680 instance executions in total, on the same 184 instances.
+All conditions completed without execution errors.
+
+The full models complete 179/184 and 174/184, using 148.58 and 193.76 native
+actions per instance. The strongest earlier calibration-rehearsal reference
+completes 179/184 with 116.32 actions. The full model saves actions relative to
+a fixed complete activity schedule in both repetitions, but does not improve
+the overall quality–cost tradeoff over that reference.
+
+State reuse and learning have different outcomes. Continuing state helps later
+instances of an unchanged relation; the first return to an earlier relation
+instead costs more than resetting the same weights. The second full model
+executes slow prediction updates under greedy deployment. Exploratory sampling
+activates updates in both models and improves forecasts of operation cost, yet
+retaining the updates does not change their completed-instance sets relative to
+discarding them. Physical relation fitting still follows the separate numerical
+path. The experiment therefore connects the learning mechanisms while leaving
+their desired experimental decision benefit unresolved.
+
+[Complete results and intervals](../continual_experiment/results/README.md)
+· [Model, objective and reproduction](../continual_experiment/README.md)
+· [Models and full records](RELEASE.md#joint-activity-and-learning-v0100)
+
 ## Experience across experimental instances — 28 October
 
 Four completed trainings extend the active policy across A–B–A streams with

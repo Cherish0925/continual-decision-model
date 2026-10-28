@@ -1,6 +1,67 @@
 # Scientific-task models and experiments
 
-[v0.9.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.9.0) · [Results](RESULTS.md) · [Training commands](ACTIVE_STREAM.md)
+[Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
+
+## Joint activity and learning: v0.10.0
+
+[Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.10.0)
+· [Results](../continual_experiment/results/README.md)
+· [Model and training](../continual_experiment/README.md)
+
+Eight trainings connect the scientific-task core, internal activity policy,
+experience retrieval and fast/slow prediction updates. Four conditions are
+repeated from the same v0.9 parent: learned activities, no adaptation,
+task-boundary resets and a fixed complete activity schedule. Native comparisons
+use 184 instances in 20 changing-relation streams, with three earlier policies
+as references and same-weight state/update interventions. Exploratory deployment
+checks are reported separately.
+
+| Archive | Contents |
+| --- | --- |
+| `cdm-joint-activity-seed201-inference.tar.zst` | Four final policies from repetition 201 and the numerical prior; optimizer state omitted |
+| `cdm-joint-activity-seed202-inference.tar.zst` | The corresponding four policies from repetition 202 and the numerical prior |
+| `cdm-joint-activity-seed201-models.tar.zst` | The four repetition-201 checkpoints with optimizer state |
+| `cdm-joint-activity-seed202-models.tar.zst` | The four repetition-202 checkpoints with optimizer state |
+| `cdm-joint-activity-records.tar.zst` | All eight training histories, primary and exploratory native executions, comparison plans and shared simulator randomness |
+| `cdm-joint-activity-data-records.tar.zst` | Prepared measurement data and calibration worlds used for training |
+
+Each inference archive is approximately 467 MB and restores project-relative
+paths. The structured-observation policy needs PyTorch and the pinned simulator;
+visual-encoder and language-model weights are not used in this study. Start with
+one inference archive and the records to reproduce a trained policy:
+
+```bash
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.10.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-joint-activity-seed201-inference.tar.zst' \
+  --pattern 'cdm-joint-activity-records.tar.zst*' --dir artifacts/v0.10.0
+zstd -dc --long=30 artifacts/v0.10.0/cdm-joint-activity-seed201-inference.tar.zst | tar -x
+cat artifacts/v0.10.0/cdm-joint-activity-records.tar.zst* | zstd -dc --long=30 | tar -x
+python -m experiments.discoveryworld.evaluate_active_stream \
+  --continual \
+  --checkpoint runs/continual-experiment/joint_activity_20261028/full_seed201/last.pt \
+  --manifest experiments/continual_experiment/native_comparison.json \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --initial-rng-root runs/discoveryworld/continual_experiment/native/initial_rng \
+  --state-mode carry --feedback-cost native --device cpu \
+  --max-actions 400 --max-decisions 160 --workers 6 --threads 1 \
+  --output runs/reproduced-joint-201
+```
+
+Use `--state-mode reset` for the same-weight state intervention or
+`--discard-adaptation` to compute updates without retaining their changes.
+`--activity-selection sample --activity-seed 233` reproduces the exploratory
+internal-activity sampling condition; external actions remain greedy.
+Use a separate output directory for each condition. Repetition 202 uses its
+corresponding archive and checkpoint paths.
+
+The [training commands](../continual_experiment/README.md#run-the-comparison)
+start from `active_lifetime/carry_seed191/update1200.pt` in the v0.9.0 model
+release, with the prepared data above. Model archives also preserve the outer
+optimizer for further research; the present training CLI loads checkpoint
+weights and starts a fresh optimizer. The records retain the training budget
+and actual interactions separately. These repetitions share one parent and the
+same native test instances.
 
 ## Experience across experimental instances: v0.9.0
 
