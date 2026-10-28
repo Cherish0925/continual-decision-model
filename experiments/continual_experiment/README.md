@@ -70,15 +70,50 @@ new tasks and resets at the end of the training lifetime.
 
 The actor-critic return spans task boundaries. It includes task rewards,
 measurement and test costs, and an explicit cost per internal activity. An
-auxiliary loss predicts the returned test success and `log(1 + cost)`. The new
-trainer does not use the simulator's hindsight action oracle. The received
-feedback trains both the prediction interface and the activity/action policy.
-Discounting is per model tick, not elapsed wall time.
+auxiliary loss predicts the returned test success and `log(1 + cost)`. Received
+feedback trains both the prediction interface and the activity/action policy;
+the trainer does not use the simulator's hindsight action oracle. The discount
+factor applies when ACT advances the environment. Internal activities have
+their explicit cost and do not add another discount step. Neither quantity is
+elapsed wall time.
 
 Training uses the existing recorded-instrument calibration streams. Their
-measurement/test costs are proxies of 1/5 operations. Native evaluation supplies
-actual executed action counts to the new model. Both quantities must be reported
-separately; improvement in replay does not establish native efficiency.
+measurement/test costs are proxies of 1/5 operations. Native execution records
+actual action counts separately. The inherited recurrent event retains the
+1/5 convention; actual native costs reach the prediction adapters through a
+separate feedback target. Thus runtime adaptation receives costs different
+from the replay target. The same-weight no-adaptation intervention measures
+the effect of using these returned costs and successes, while the recurrent
+input convention remains unchanged.
+
+### Eight-run comparison
+
+All conditions start from the same v0.9 model trained with carried state
+(training seed 191). Seeds 201 and 202 independently initialize the added heads
+and sample training activity; they are repetitions from one parent, not
+independent pretrained models. Within each seed, conditions use the same
+initialization and precomputed task-stream plan.
+
+| Training condition | Internal activities | State at a new task |
+| --- | --- | --- |
+| `full` | Learned choice among action, refinement, retrieval and the two updates | Retained |
+| `no_adaptation` | Learned choice; LEARN and CONSOLIDATE disabled, retrieval retained | Retained |
+| `task_reset` | Same learned choices as `full` | All model state reset, including memory and adapters |
+| `fixed_schedule` | REFINE → RETRIEVE → LEARN → CONSOLIDATE → ACT; skip the three memory-dependent operations when no experience is available | Retained |
+
+The fixed schedule retains the full model's prediction, retrieval and update
+paths. Its trainable components and losses are shared with the learned-schedule
+condition; only activity selection is fixed. Each condition allows at most four
+internal operations between actions, in addition to the single workspace
+update that assimilates a received observation.
+
+The default budget is 1,200 optimizer updates × 32 ticks × 128 streams:
+**4,915,200 stream-ticks per run**. Different activity policies execute different
+numbers of environment actions within that budget. This comparison fixes the
+number of model decision opportunities, not training exposure, FLOPs or wall
+time. Report completed tasks and actual external interactions alongside internal
+activity counts, elapsed time and throughput. The memory holds 128 returned
+experiences per stream; `--memory-size` changes that capacity for all conditions.
 
 From the repository root, after unpacking the existing scientific-task data and
 checkpoints described in [the task-stream study](../discoveryworld/ACTIVE_STREAM.md):
@@ -89,55 +124,64 @@ python -m experiments.continual_experiment.launch \
   --checkpoint "$CDM_CHECKPOINT" \
   --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
   --output runs/continual-experiment \
-  --gpus 0 1 --seeds 201 202 --updates 1200 --batch 128
+  --gpus 0 1 --jobs-per-gpu 1 --seeds 201 202 \
+  --updates 1200 --batch 128 --unroll 32 --memory-size 128 --gamma 0.99
 ```
 
-`CDM_CHECKPOINT` is the chosen v0.9 active-policy checkpoint. All arms start
-from the same parent. The launcher runs one training per GPU and queues fourteen
-jobs: two seeds for the full model, no-adaptation control, task-reset control,
-and fixed additional refinement depths 0, 1, 2 and 4. `--dry-run` writes the exact
-commands without launching training. GPU memory and throughput of this new path
-must be measured on the target hardware; the launcher uses ordinary batched
-PyTorch, without distributed training or a custom recurrent kernel.
+`CDM_CHECKPOINT` names the fixed carried-state parent above. The launcher queues
+eight jobs and writes their exact commands and planned tick budgets to
+`jobs.json`. `--dry-run` writes that file without starting training. One worker
+per GPU is the default; `--jobs-per-gpu 2` permits two concurrent processes on
+each GPU. Workers take the next queued job as capacity becomes available.
+Concurrency changes scheduling, not model configuration. Use measured memory
+and aggregate throughput to choose it.
 
-Each run writes its configuration, per-update losses and activity counts,
-completed-task records, and `last.pt`. Checkpoints use a fixed training endpoint;
-this command does not select the best checkpoint on a test cohort. Shared
-parameters are updated by the outer optimizer. Fast and slow adapters are
-per-stream model state, not global optimizer updates at deployment.
+Each run writes its configuration, per-update losses, actual external
+interactions, internal activity counts, elapsed time, adapter norms and memory
+occupancy, plus completed-task records and `last.pt`. The launcher also records
+each process's GPU, worker slot, exit status and wall time in `completion.json`.
+Checkpoints use the fixed final update. Shared parameters are updated by the
+outer optimizer; fast and slow adapters are per-stream model state and remain
+updatable during deployment.
 
 ## Native execution and comparisons
 
 ```bash
 python -m experiments.discoveryworld.evaluate_active_stream \
   --continual \
-  --checkpoint runs/continual-experiment/full_depth1_seed201/last.pt \
+  --checkpoint runs/continual-experiment/full_seed201/last.pt \
   --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
-  --manifest experiments/discoveryworld/active_lifetime_comparison.json \
+  --manifest experiments/continual_experiment/native_comparison.json \
   --state-mode carry --workers 2 --threads 4 --device cpu \
-  --initial-rng-root runs/discoveryworld/active_experiments/lifetime_native/initial_rng \
+  --initial-rng-root runs/discoveryworld/continual_experiment/native/initial_rng \
   --max-actions 400 --max-decisions 160 \
   --output runs/continual-experiment-native/full201
 ```
 
-Use the corresponding checkpoint for every trained arm. Evaluate task-reset
-training with `--state-mode reset`; the other trained controls use `carry`.
-Also evaluate the full model with `reset` to measure the effect of retained state
-at fixed weights. Evaluate the unchanged v0.9 parent without `--continual`.
-Fixed-depth and no-adaptation modes are stored in the new checkpoint and apply
-at deployment. Native records add internal-activity counts, adapter norms and
-memory occupancy to the existing task outcomes and operation traces.
+[`native_comparison.json`](native_comparison.json) fixes 20 ordered native task
+streams and 184 new instances, starting from scenario seed 9000. It covers all
+ordered pairs of distinct native relation families, with two to four instances
+per A–B–A segment. The initial-RNG directory holds shared simulator states.
+The earlier 184-instance cohort remains a development and regression comparison;
+the new manifest is fixed before evaluating these trained policies.
 
-Compare completion, native operations including failures, first-task performance
-after a relation returns, model runtime and internal activity counts. Report the
-fixed-depth performance/compute curve, rather than treating an equal maximum
-budget as equal computation. Use the same initial RNG snapshots and ordered
-streams across methods. Group comparisons by independent task stream.
+Use the corresponding checkpoint for every trained condition. Evaluate
+task-reset training with `--state-mode reset`; the other trained conditions use
+`carry`. In addition, evaluate the full checkpoint with task-boundary resets
+and with its learning updates disabled. These same-weight interventions isolate
+the use of retained state and online adaptation from differences in training.
+Keep retrieval available in the no-adaptation intervention. Include the unchanged
+v0.9 parent without `--continual`. Fixed-schedule and no-adaptation settings in
+trained checkpoints also apply at deployment.
 
-The existing 184-instance cohort is useful for regression comparison and is
-already exposed to development. A paper result also needs a separately reserved
-cohort fixed before these new trainings are evaluated. Continuing to optimize
-that one cohort would not establish generalization.
+Report completion and actual native operations on all instances, including
+failures, and costs on commonly completed instances. Separate the first and
+later tasks in initial A, switched B and returned A. Record internal operations
+and model runtime so a saved environment action is not mistaken for a saved
+unit of computation. Use identical initial simulator states and task order,
+with paired uncertainty calculated over complete task streams. Report the two
+training repetitions separately: their shared evaluation instances do not
+become twice as many independent observations.
 
 ## Completion of the research program
 
