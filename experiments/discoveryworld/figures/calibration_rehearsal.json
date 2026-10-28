@@ -1,0 +1,105 @@
+{
+  "source_npz": "runs/discoveryworld/active_experiments/data_large/train.npz",
+  "source_trajectory": "runs/discoveryworld/reference/train/seed100/trajectory.jsonl",
+  "world_index": 0,
+  "selection": "Fixed training world and quantity axes; first target object. Native query outcomes are not used to fit or select relations.",
+  "support_slots": [
+    0,
+    1
+  ],
+  "target_slots": [
+    2,
+    3
+  ],
+  "plotted_query_slot": 2,
+  "original_working_frequency_hz": [
+    4638.2099609375,
+    6242.68994140625,
+    2011.0,
+    7439.0
+  ],
+  "original_query_settings_role": "Recorded for provenance only; not used in the fit.",
+  "reading_summary": "Exact training summary: mean of available readings per instrument; radiation uses the minimum of its recorded samples.",
+  "formula": "a = (f_s2 - f_s1) / (x_s2 - x_s1); b = f_s1 - a*x_s1; generated query label = a*x_query + b",
+  "support_and_samples_changed": false,
+  "relations": [
+    {
+      "quantity_index": 0,
+      "quantity": "density_g_cm3",
+      "first_recorded_readings": [
+        41.689998626708984,
+        56.40999984741211,
+        17.600000381469727,
+        67.37000274658203
+      ],
+      "recorded_samples_by_object": [
+        [
+          41.689998626708984
+        ],
+        [
+          56.40999984741211
+        ],
+        [
+          17.600000381469727
+        ],
+        [
+          67.37000274658203
+        ]
+      ],
+      "training_reading_summary": [
+        41.689998626708984,
+        56.40999984741211,
+        17.600000381469727,
+        67.37000274658203
+      ],
+      "slope": 108.99998963397569,
+      "intercept": 94.00054278576044,
+      "accepted_by_training_function": true,
+      "generated_settings_hz": [
+        4638.2099609375,
+        6242.68994140625,
+        2012.400390625,
+        7437.330078125
+      ]
+    },
+    {
+      "quantity_index": 1,
+      "quantity": "temperature_c",
+      "first_recorded_readings": [
+        23.729999542236328,
+        32.650001525878906,
+        32.15999984741211,
+        32.220001220703125
+      ],
+      "recorded_samples_by_object": [
+        [
+          23.729999542236328
+        ],
+        [
+          32.650001525878906
+        ],
+        [
+          32.15999984741211
+        ],
+        [
+          32.220001220703125
+        ]
+      ],
+      "training_reading_summary": [
+        23.729999542236328,
+        32.650001525878906,
+        32.15999984741211,
+        32.220001220703125
+      ],
+      "slope": 179.87439727155123,
+      "intercept": 369.7905960235539,
+      "accepted_by_training_function": true,
+      "generated_settings_hz": [
+        4638.2099609375,
+        6242.68994140625,
+        6154.55126953125,
+        6165.34375
+      ]
+    }
+  ]
+}
