@@ -71,6 +71,38 @@ of each segment, the switch to B, and the return to A. This permits comparisons
 of initial exploration, within-family reuse, interference and return. The
 structured public observation interface is the same in all four conditions.
 
+### Explicit relation memory
+
+An additional fixed reference stores only the candidate relation used in the
+most recent successful test. At the next target it measures that candidate's
+two supports and target, fits the current calibration, and executes the same
+scalar-setting tool as the neural policy. After a failed test or an unavailable
+prediction, it selects the highest current public posterior among the remaining
+candidates and acquires that candidate's required measurements. Spectrometry
+shares its five returned channels; radiation uses 32 separately paid readings
+per object. It does not collect every quantity before choosing.
+
+The `carry` condition retains the successful candidate index across instances;
+`reset` clears it at each instance. Both discard measurements, coefficients and
+failed tests at the boundary. No hidden relation label enters this policy: a
+candidate that happens to fit approximately can also be recorded as successful.
+This comparison tests how far simple reuse of the last successful relation can
+explain any benefit from neural state. Its rule was fixed on the six development
+instances before evaluating the 184-instance manifest.
+
+```bash
+python -m experiments.discoveryworld.evaluate_relation_memory \
+  --manifest experiments/discoveryworld/active_lifetime_comparison.json \
+  --state-mode carry \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --initial-rng-root runs/discoveryworld/active_experiments/lifetime_native/initial_rng \
+  --output runs/discoveryworld/active_experiments/lifetime_native/relation_memory \
+  --workers 16 --threads 2
+```
+
+Use `--state-mode reset` and a separate output directory for the stateless
+reference. Both execute the same fixed native streams as the neural models.
+
 ## Training through a task stream
 
 `train_active_lifetime.py` constructs A–B–A streams from recorded instrument
