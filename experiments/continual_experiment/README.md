@@ -198,6 +198,14 @@ from the replay target. The same-weight no-adaptation intervention measures
 the effect of using these returned costs and successes, while the recurrent
 input convention remains unchanged.
 
+Replay rewards include improvement in closeness to the hidden training target
+and count a prediction within eight hertz as successful, approximating a setting
+followed by local adjustment. This shaping enters the reward, not the policy
+observation. Native evaluation executes and counts the existing adjustment
+procedure, requires the official activation tolerance of less than two hertz,
+and reports the simulator's completion flag. Replay completion is therefore
+not a substitute for native task completion.
+
 ### Eight-run comparison
 
 All conditions start from the same v0.9 model trained with carried state
