@@ -135,6 +135,15 @@ both arms share initial weights, optimizer, task stream and training budget.
 The final update is selected in advance. The fixed native streams above are
 not used for training or checkpoint selection.
 
+This training formulation builds on recurrent meta-reinforcement learning:
+[RL²](https://arxiv.org/abs/1611.02779) learns an adaptation procedure in the
+state of a recurrent policy across episodes. Here, the relation itself changes
+within the stream and returns with new calibration coefficients. The practical
+question is which experimental knowledge the learned state carries forward,
+given that every numerical fit and measurement ledger starts afresh. The
+explicit relation-memory comparison separates this question from the benefit
+of simply retrying the last successful kind of experiment.
+
 ```bash
 python -m experiments.discoveryworld.train_active_lifetime \
   --data runs/discoveryworld/active_experiments/data_large \

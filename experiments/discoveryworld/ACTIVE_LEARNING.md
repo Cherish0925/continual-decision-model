@@ -109,6 +109,23 @@ the uncalibrated objects. Degenerate fits and settings outside the public
 0–10,000 Hz range are rejected. Generated labels remain environment-side until
 the corresponding simulated experiment succeeds.
 
+More precisely, let the two public support settings be $f_1,f_2$, and let
+$x_{1q},x_{2q}$ be their recorded readings for candidate quantity $q$.
+The proposed calibration is
+
+$$
+a_q=\frac{f_2-f_1}{x_{2q}-x_{1q}},\qquad
+b_q=f_1-a_qx_{1q},\qquad
+\widetilde f_{jq}=a_qx_{jq}+b_q.
+$$
+
+Different quantities can explain the same two public working settings while
+predicting different settings for a new object. Rehearsal makes the policy
+practice resolving this ambiguity through paid measurements and tests.
+Reading sequences and instrument noise come from the recorded experiments;
+the target-setting relation is generated. The resulting policy is evaluated
+against the original simulator's settings and success criterion.
+
 The experimental arm proposes this replacement on half of training-world
 resets; rejection reduces the effective fraction, which is recorded. Its
 control continues training on the original tasks. Both start from the same
