@@ -8,6 +8,12 @@
 
 An observation can become outdated while inference is still running. The research question is how to preserve useful computation, incorporate new observations, and spend additional computation where it improves subsequent decisions.
 
+The [integrated training path](experiments/continual_experiment/README.md) connects
+the scientific-task core to internal activity selection, experience retrieval,
+and fast/slow prediction updates. It includes a two-GPU comparison launcher and
+native evaluation support. Implementation checks are complete; the new training
+and native comparisons are pending.
+
 ## Current results
 
 The current scientific-task study trains the continuing core to choose what to

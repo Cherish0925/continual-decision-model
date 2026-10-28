@@ -1,5 +1,23 @@
 # Research progress
 
+## Integrated activity and learning implementation
+
+The [continual-experiment path](experiments/continual_experiment/README.md) now
+joins the v0.9 active core, internal computation, experience retrieval and
+per-stream prediction updates in one trainer. Existing checkpoints initialize
+the new model without changing its initial action scores. The native stream
+evaluator accepts `--continual`; an asynchronous session handles observations
+arriving while a tool request is pending. CPU integration checks and a short
+generated-data training run are complete. The fourteen-run, two-seed GPU
+comparison is prepared but has not been launched. No new task-performance claim
+is attached to this implementation.
+
+The next research unit is the full model and its fixed-depth, no-adaptation and
+task-reset comparisons, with task success, native operations, internal compute
+and return-to-relation performance reported together. The linked document owns
+the current commands and the distinction between this implementation and the
+completed v0.9 experiments below.
+
 Updated 28 October 2026. The current study trains the continuing core to select
 measurements and setting experiments from incomplete evidence. Its
 [method](experiments/discoveryworld/ACTIVE_LEARNING.md),

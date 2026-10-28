@@ -1,5 +1,11 @@
 # CDM: objective, implementation, and results
 
+**New implementation:** the [integrated activity and learning path](experiments/continual_experiment/README.md)
+adds a shared scientific-task trainer, per-stream fast/slow prediction updates,
+experience retrieval and asynchronous event handling. CPU integration checks
+are complete. Its GPU training and native task comparisons are pending; the
+reported v0.9 performance below belongs to the original active policy.
+
 Implementation updated **28 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier

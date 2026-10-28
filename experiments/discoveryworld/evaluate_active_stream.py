@@ -1,8 +1,9 @@
 """Run ordered native task instances with a continuing neural state.
 
 Each instance has a fresh public measurement ledger and numerical posterior.
-Only the GRU state and Transformer workspace can cross instance boundaries.
-The reset control clears those tensors between instances, not between actions.
+The default carries GRU state and Transformer workspace across instances.
+With --continual, experience memory and per-stream adapters also persist.
+The reset control clears the model state between instances, not between actions.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ from time import perf_counter
 import torch
 
 from cdm.active_experiment import load_active_checkpoint
+from cdm.continual_experiment import load_continual_checkpoint
 from .active_native import NativeActiveEpisode
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .calibration_mixture import load_mixture_checkpoint
@@ -62,7 +64,7 @@ def copy_state(state):
 
 
 def state_distance(left, right):
-    return {key: float((left[key].cpu() - right[key].cpu()).norm()) for key in left}
+    return {key: float((left[key].cpu().float() - right[key].cpu().float()).norm()) for key in left}
 
 
 def public_object_order(episode):
@@ -88,7 +90,9 @@ def run_stream(job):
     options, stream = job
     torch.set_num_threads(options["threads"])
     device = torch.device(options["device"])
-    model, _ = load_active_checkpoint(options["checkpoint"], device)
+    continual = options.get("continual", False)
+    loader = load_continual_checkpoint if continual else load_active_checkpoint
+    model, _ = loader(options["checkpoint"], device)
     model.eval()
     if model.config.mode != "persistent":
         raise ValueError("A stream comparison requires a core that persists within each instance")
@@ -131,7 +135,9 @@ def run_stream(job):
             metadata = {**env.configuration, "policy": "active_stream",
                         "policy_inputs": "public_structured_measurements_and_native_feedback",
                         "state_mode": options["state_mode"],
-                        "carried_state": ["gru_hidden", "transformer_workspace"] if options["state_mode"] == "carry" else [],
+                        "carried_state": list(state) if options["state_mode"] == "carry" else [],
+                        "continual_activities": continual,
+                        "feedback_cost": "native actions" if continual else "measurement=1,test=5",
                         "ledger": "fresh_for_each_instance",
                         "numerical_posterior": "recomputed_from_current_instance_public_measurements",
                         "initial_rng_snapshot": {"path": "initial_rng.json.gz", **rng},
@@ -169,6 +175,8 @@ def run_stream(job):
                         decision = episode.apply(action, mean_hz=mean, std_hz=spread)
                         event = _event_from_result(decision, episode, mixture, step=step + 1,
                                                    max_steps=options["max_decisions"], device=device)
+                        if continual:
+                            event[:, 30] = decision["native_actions"] / 20.
                         outcome_pending = True
                     else:
                         if env.ended:
@@ -197,6 +205,12 @@ def run_stream(job):
                                 "final_feedback_query": final_feedback_query,
                                 "final_feedback_object": final_feedback_object,
                                 "final_outcome_state_change": final_state_change}, **episode.summary()}
+            if continual:
+                row["internal_activity"] = {
+                    "counts": (final_state["activity_counts"] - entry_state["activity_counts"]).sum(0).tolist(),
+                    "fast_adapter_norm": float(final_state["fast"].norm()),
+                    "slow_adapter_norm": float(final_state["slow"].norm()),
+                    "memory_entries": int(final_state["memory_valid"].sum())}
             (output / "summary.json").write_text(json.dumps(row, indent=2) + "\n")
         previous = final_state
         if options["save_boundary_states"]:
@@ -224,7 +238,7 @@ def main():
     source.add_argument("--manifest", type=Path, help="JSON object with streams: [{name, seeds}]")
     source.add_argument("--seeds", type=int, nargs="+", help="One ordered sequence of native instances")
     parser.add_argument("--state-mode", choices=("carry", "reset"), required=True,
-                        help="Carry h/z or reset them between instances; both persist within an instance")
+                        help="Carry all model state or reset it between instances")
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--mixture-checkpoint", required=True)
     parser.add_argument("--initial-rng-root", required=True)
@@ -236,6 +250,8 @@ def main():
     parser.add_argument("--refinements", type=int, default=1)
     parser.add_argument("--observation-mode", choices=("structured", "png"), default="structured")
     parser.add_argument("--save-boundary-states", action="store_true")
+    parser.add_argument("--continual", action="store_true",
+                        help="Use the integrated activity policy and runtime adapter updates")
     args = parser.parse_args()
     if args.manifest:
         streams = json.loads(args.manifest.read_text())["streams"]
