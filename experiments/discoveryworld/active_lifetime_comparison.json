@@ -1,0 +1,503 @@
+{
+  "scenario": "Reactor Lab",
+  "difficulty": "Normal",
+  "schedule_seed": 7419,
+  "native_action_budget_per_instance": 400,
+  "macro_decision_budget_per_instance": 160,
+  "protocol": "A-B-A with independently generated instances and coefficients; segment lengths vary from two to four.",
+  "policy_boundary": "Fresh public measurement ledger and numerical posterior; only h/z may continue.",
+  "analysis_only": "The schedule, seed, relation, phase and instance index are never model inputs.",
+  "comparison": [
+    "carry_trained_carry",
+    "carry_trained_task_reset",
+    "reset_trained_task_reset",
+    "frozen_rehearsal_task_reset"
+  ],
+  "initial_randomness": "Identical per native seed across all four arms.",
+  "streams": [
+    {
+      "name": "sequence_00",
+      "relations": [
+        "spectrum_channel_5",
+        "temperature",
+        "spectrum_channel_5"
+      ],
+      "segment_lengths": [
+        2,
+        3,
+        3
+      ],
+      "seeds": [
+        7004,
+        7009,
+        7001,
+        7006,
+        7011,
+        7014,
+        7019,
+        7024
+      ]
+    },
+    {
+      "name": "sequence_01",
+      "relations": [
+        "spectrum_channel_5",
+        "density",
+        "spectrum_channel_5"
+      ],
+      "segment_lengths": [
+        3,
+        4,
+        4
+      ],
+      "seeds": [
+        7029,
+        7034,
+        7039,
+        7000,
+        7005,
+        7010,
+        7015,
+        7044,
+        7049,
+        7054,
+        7059
+      ]
+    },
+    {
+      "name": "sequence_02",
+      "relations": [
+        "spectrum_channel_5",
+        "quantum_gap",
+        "spectrum_channel_5"
+      ],
+      "segment_lengths": [
+        3,
+        3,
+        3
+      ],
+      "seeds": [
+        7064,
+        7069,
+        7074,
+        7002,
+        7007,
+        7012,
+        7079,
+        7084,
+        7089
+      ]
+    },
+    {
+      "name": "sequence_03",
+      "relations": [
+        "quantum_gap",
+        "radiation",
+        "quantum_gap"
+      ],
+      "segment_lengths": [
+        3,
+        4,
+        4
+      ],
+      "seeds": [
+        7017,
+        7022,
+        7027,
+        7003,
+        7008,
+        7013,
+        7018,
+        7032,
+        7037,
+        7042,
+        7047
+      ]
+    },
+    {
+      "name": "sequence_04",
+      "relations": [
+        "spectrum_channel_5",
+        "radiation",
+        "spectrum_channel_5"
+      ],
+      "segment_lengths": [
+        4,
+        3,
+        2
+      ],
+      "seeds": [
+        7094,
+        7099,
+        7104,
+        7109,
+        7023,
+        7028,
+        7033,
+        7114,
+        7119
+      ]
+    },
+    {
+      "name": "sequence_05",
+      "relations": [
+        "quantum_gap",
+        "spectrum_channel_5",
+        "quantum_gap"
+      ],
+      "segment_lengths": [
+        4,
+        3,
+        3
+      ],
+      "seeds": [
+        7052,
+        7057,
+        7062,
+        7067,
+        7124,
+        7129,
+        7134,
+        7072,
+        7077,
+        7082
+      ]
+    },
+    {
+      "name": "sequence_06",
+      "relations": [
+        "density",
+        "radiation",
+        "density"
+      ],
+      "segment_lengths": [
+        2,
+        4,
+        2
+      ],
+      "seeds": [
+        7020,
+        7025,
+        7038,
+        7043,
+        7048,
+        7053,
+        7030,
+        7035
+      ]
+    },
+    {
+      "name": "sequence_07",
+      "relations": [
+        "radiation",
+        "quantum_gap",
+        "radiation"
+      ],
+      "segment_lengths": [
+        4,
+        4,
+        4
+      ],
+      "seeds": [
+        7058,
+        7063,
+        7068,
+        7073,
+        7087,
+        7092,
+        7097,
+        7102,
+        7078,
+        7083,
+        7088,
+        7093
+      ]
+    },
+    {
+      "name": "sequence_08",
+      "relations": [
+        "radiation",
+        "temperature",
+        "radiation"
+      ],
+      "segment_lengths": [
+        2,
+        3,
+        2
+      ],
+      "seeds": [
+        7098,
+        7103,
+        7016,
+        7021,
+        7026,
+        7108,
+        7113
+      ]
+    },
+    {
+      "name": "sequence_09",
+      "relations": [
+        "density",
+        "spectrum_channel_5",
+        "density"
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        3
+      ],
+      "seeds": [
+        7040,
+        7045,
+        7139,
+        7144,
+        7050,
+        7055,
+        7060
+      ]
+    },
+    {
+      "name": "sequence_10",
+      "relations": [
+        "density",
+        "quantum_gap",
+        "density"
+      ],
+      "segment_lengths": [
+        3,
+        3,
+        3
+      ],
+      "seeds": [
+        7065,
+        7070,
+        7075,
+        7107,
+        7112,
+        7117,
+        7080,
+        7085,
+        7090
+      ]
+    },
+    {
+      "name": "sequence_11",
+      "relations": [
+        "quantum_gap",
+        "density",
+        "quantum_gap"
+      ],
+      "segment_lengths": [
+        2,
+        3,
+        4
+      ],
+      "seeds": [
+        7122,
+        7127,
+        7095,
+        7100,
+        7105,
+        7132,
+        7137,
+        7142,
+        7147
+      ]
+    },
+    {
+      "name": "sequence_12",
+      "relations": [
+        "temperature",
+        "quantum_gap",
+        "temperature"
+      ],
+      "segment_lengths": [
+        4,
+        3,
+        4
+      ],
+      "seeds": [
+        7031,
+        7036,
+        7041,
+        7046,
+        7152,
+        7157,
+        7162,
+        7051,
+        7056,
+        7061,
+        7066
+      ]
+    },
+    {
+      "name": "sequence_13",
+      "relations": [
+        "radiation",
+        "spectrum_channel_5",
+        "radiation"
+      ],
+      "segment_lengths": [
+        3,
+        3,
+        2
+      ],
+      "seeds": [
+        7118,
+        7123,
+        7128,
+        7149,
+        7154,
+        7159,
+        7133,
+        7138
+      ]
+    },
+    {
+      "name": "sequence_14",
+      "relations": [
+        "radiation",
+        "density",
+        "radiation"
+      ],
+      "segment_lengths": [
+        2,
+        3,
+        2
+      ],
+      "seeds": [
+        7143,
+        7148,
+        7110,
+        7115,
+        7120,
+        7153,
+        7158
+      ]
+    },
+    {
+      "name": "sequence_15",
+      "relations": [
+        "temperature",
+        "spectrum_channel_5",
+        "temperature"
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        3
+      ],
+      "seeds": [
+        7071,
+        7076,
+        7164,
+        7169,
+        7081,
+        7086,
+        7091
+      ]
+    },
+    {
+      "name": "sequence_16",
+      "relations": [
+        "quantum_gap",
+        "temperature",
+        "quantum_gap"
+      ],
+      "segment_lengths": [
+        2,
+        4,
+        3
+      ],
+      "seeds": [
+        7167,
+        7172,
+        7096,
+        7101,
+        7106,
+        7111,
+        7177,
+        7182,
+        7187
+      ]
+    },
+    {
+      "name": "sequence_17",
+      "relations": [
+        "density",
+        "temperature",
+        "density"
+      ],
+      "segment_lengths": [
+        4,
+        4,
+        4
+      ],
+      "seeds": [
+        7125,
+        7130,
+        7135,
+        7140,
+        7116,
+        7121,
+        7126,
+        7131,
+        7145,
+        7150,
+        7155,
+        7160
+      ]
+    },
+    {
+      "name": "sequence_18",
+      "relations": [
+        "temperature",
+        "density",
+        "temperature"
+      ],
+      "segment_lengths": [
+        4,
+        3,
+        2
+      ],
+      "seeds": [
+        7136,
+        7141,
+        7146,
+        7151,
+        7165,
+        7170,
+        7175,
+        7156,
+        7161
+      ]
+    },
+    {
+      "name": "sequence_19",
+      "relations": [
+        "temperature",
+        "radiation",
+        "temperature"
+      ],
+      "segment_lengths": [
+        4,
+        4,
+        3
+      ],
+      "seeds": [
+        7166,
+        7171,
+        7176,
+        7181,
+        7163,
+        7168,
+        7173,
+        7178,
+        7186,
+        7191,
+        7196
+      ]
+    }
+  ]
+}
