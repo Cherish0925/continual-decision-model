@@ -16,7 +16,8 @@ from .structured_observation import StructuredDiscoveryWorldEnv
 
 
 def collect(job):
-    seed, root, max_steps, split = job
+    seed, root, max_steps, *metadata = job
+    split = metadata[0] if metadata else "train"
     output = root / f"seed{seed}"
     output.mkdir(parents=True)
     reference = ReactorLabReference()
