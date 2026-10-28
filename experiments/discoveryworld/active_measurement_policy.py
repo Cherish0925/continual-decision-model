@@ -10,9 +10,9 @@ from copy import deepcopy
 import re
 
 from .calibration import CalibrationLog
-from .reference import INSTRUMENTS, observed_objects
+from .reference import INSTRUMENTS, current_frequency, observed_objects
 from .quantitative_policy import scalar_dialog_action
-from .scalar_probe import ScalarProbe
+from .scalar_probe import ScalarProbe, public_scalar_control
 
 
 class NativeExperimentOperator:
@@ -66,14 +66,26 @@ class NativeExperimentOperator:
         try:
             return next(self.program)
         except StopIteration as done:
-            result = done.value or {}
-            self.completed.append({"request": self.pending, "actions": self._actions,
-                                   "end_sequence": self.calibration.sequence,
-                                   "measurements": [r.to_dict() for r in
-                                                    self.calibration.measurements.records[self._first_record:]],
-                                   **result})
-            self.pending = self.program = None
+            self._complete(done.value or {})
             return None
+
+    def _complete(self, result):
+        self.completed.append({"request": self.pending, "actions": self._actions,
+                               "end_sequence": self.calibration.sequence,
+                               "measurements": [r.to_dict() for r in
+                                                self.calibration.measurements.records[self._first_record:]],
+                               **result})
+        self.pending = self.program = None
+
+    def finish_at_environment_end(self):
+        """Record the public result when the caller receives native termination."""
+        if self.pending is None:
+            return
+        dialog = self.calibration.current_dialog()
+        activated = bool(dialog is not None and dialog["activated"]
+                         and dialog["object_handle"] == self.pending.get("target_handle"))
+        self._complete({"success": activated, "ending": "environment_ended",
+                        "setting": deepcopy(dialog)})
 
     def observe(self, transition):
         self.calibration.append_transition(transition)
@@ -214,7 +226,13 @@ class NativeExperimentOperator:
             yield from self._approach(reactor)
             yield from self._action("TALK", reactor)
             dialog = self.calibration.current_dialog()
-            result = {"success": dialog is not None, "setting": deepcopy(dialog)}
+            ui = self.observation["ui"]["dialog_box"]
+            control = public_scalar_control(ui)
+            result = {"success": dialog is not None, "setting": deepcopy(dialog),
+                      "frequency_hz": current_frequency(ui),
+                      "control": None if control is None else {
+                          "lower_hz": float(control.lower_hz), "upper_hz": float(control.upper_hz),
+                          "minimum_step_hz": control.minimum_step_hz}}
             yield from self._exit_dialog()
             return result
         target = request["target_handle"]
