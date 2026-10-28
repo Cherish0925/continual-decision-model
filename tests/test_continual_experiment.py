@@ -129,6 +129,30 @@ def test_fixed_schedule_uses_all_learning_mechanisms():
     assert state["slow"].norm() > 0
 
 
+def test_activity_sampling_is_reproducible_and_keeps_external_actions_greedy():
+    model, obs = make_model().eval(), observation(96)
+    state, _ = remember(model, model.receive(model.initial(96, "cpu"), obs), obs)
+    global_rng = torch.random.get_rng_state().clone()
+    with torch.inference_mode():
+        first = model(**obs, state=state, activity_generator=torch.Generator().manual_seed(703))
+        # Activity sampling must not consume the environment's default torch RNG.
+        assert torch.equal(torch.random.get_rng_state(), global_rng)
+        torch.rand(200)
+        repeated = model(**obs, state=state, activity_generator=torch.Generator().manual_seed(703))
+        greedy = model(**obs, state=state)
+    for key, value in first["state"].items():
+        torch.testing.assert_close(value, repeated["state"][key], rtol=0, atol=0)
+    torch.testing.assert_close(first["logits"], repeated["logits"], rtol=0, atol=0)
+    counts = first["state"]["activity_counts"].sum(0)
+    assert counts[Activity.LEARN] > 0 and counts[Activity.CONSOLIDATE] > 0
+    assert first["state"]["fast"].norm() > 0 and first["state"]["slow"].norm() > 0
+    actions = first["logits"].argmax(-1)
+    torch.testing.assert_close(first["state"]["pending_x"], first["features"][torch.arange(96), actions])
+    # The initialized greedy scheduler still chooses ACT without internal work.
+    assert int(greedy["state"]["activity_counts"][:, Activity.ACT].sum()) == 96
+    assert int(greedy["state"]["activity_counts"][:, Activity.REFINE:].sum()) == 0
+
+
 def test_execution_feedback_does_not_change_inherited_event_semantics():
     model, obs = make_model(), observation()
     base_state, state = model.base.initial(2, "cpu"), model.initial(2, "cpu")

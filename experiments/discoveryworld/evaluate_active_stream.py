@@ -114,6 +114,9 @@ def run_stream(job):
     model.eval()
     if continual:
         model.retain_adaptation = not options.get("discard_adaptation", False)
+    activity_generator = None
+    if continual and options.get("activity_selection", "greedy") == "sample":
+        activity_generator = torch.Generator(device=device).manual_seed(stream["activity_seed"])
     if model.config.mode != "persistent":
         raise ValueError("A stream comparison requires a core that persists within each instance")
     mixture, _ = load_mixture_checkpoint(options["mixture_checkpoint"], device)
@@ -161,6 +164,8 @@ def run_stream(job):
                         "event_cost": "measurement=1,test=5",
                         "adaptation_feedback_cost": options.get("feedback_cost", "native") if continual else None,
                         "retain_adaptation": model.retain_adaptation if continual else None,
+                        "activity_selection": options.get("activity_selection", "greedy") if continual else None,
+                        "activity_seed": stream.get("activity_seed") if continual else None,
                         **({"prediction_target_order": ["test_success", "log1p_cost"]} if continual else {}),
                         "ledger": "fresh_for_each_instance",
                         "numerical_posterior": "recomputed_from_current_instance_public_measurements",
@@ -187,7 +192,7 @@ def run_stream(job):
                             break
                         obs, beliefs = observation(episode, event, mixture, step,
                                                   options["max_decisions"], device)
-                        extra = {"feedback_targets": feedback} if continual else {}
+                        extra = {"feedback_targets": feedback, "activity_generator": activity_generator} if continual else {}
                         previous_activity = state["activity_counts"].clone() if continual else None
                         result = model(**obs, state=state, refinements=options["refinements"], **extra)
                         state = result["state"]
@@ -287,14 +292,22 @@ def main():
                         help="Adapter target cost: actual native actions or the replay measurement=1/test=5 proxy; core events stay unchanged")
     parser.add_argument("--discard-adaptation", action="store_true",
                         help="Compute LEARN/CONSOLIDATE updates but discard their changes to fast/slow adapters")
+    parser.add_argument("--activity-selection", choices=("greedy", "sample"), default="greedy",
+                        help="Internal activity policy; external actions remain greedy")
+    parser.add_argument("--activity-seed", type=int,
+                        help="Independent activity RNG base seed; stream i uses seed+i and retains it across tasks")
     args = parser.parse_args()
     if args.discard_adaptation and not args.continual:
         parser.error("--discard-adaptation requires --continual")
+    if args.activity_selection == "sample" and (not args.continual or args.activity_seed is None):
+        parser.error("Activity sampling requires --continual and an explicit --activity-seed")
     if args.manifest:
         streams = json.loads(args.manifest.read_text())["streams"]
         args.manifest = str(args.manifest)
     else:
         streams = [{"name": "stream", "seeds": args.seeds}]
+    if args.activity_selection == "sample":
+        streams = [{**stream, "activity_seed": args.activity_seed + index} for index, stream in enumerate(streams)]
     names = [stream["name"] for stream in streams]
     if len(set(names)) != len(names) or any(Path(name).name != name for name in names):
         parser.error("Stream names must be unique directory names")

@@ -267,15 +267,25 @@ class ContinualExperimentPolicy(nn.Module):
         return self.receive(state, {"event": event, "evidence": evidence, "evidence_mask": evidence_mask})
 
     def forward(self, event, evidence, evidence_mask, candidates, action_mask, state, refinements=1,
-                feedback_targets=None):
-        """Greedy synchronous deployment for the existing native stream evaluator."""
+                feedback_targets=None, activity_generator=None):
+        """Synchronous deployment with greedy actions and optional activity sampling.
+
+        An explicit generator samples internal activities independently of the
+        environment RNG. The default retains greedy activity selection.
+        """
         observation = dict(event=event, evidence=evidence, evidence_mask=evidence_mask,
                            candidates=candidates, action_mask=action_mask)
         state = self.advance(event, evidence, evidence_mask, state, refinements, feedback_targets)
         finished = torch.zeros(len(event), dtype=torch.bool, device=event.device)
         for _ in range(self.continual_config.max_internal_steps + 1):
             out = self.readout(state, candidates, action_mask)
-            choices = out["activity_logits"].argmax(-1)
+            if activity_generator is None:
+                choices = out["activity_logits"].argmax(-1)
+            else:
+                choices = torch.full_like(state["internal_steps"], int(Activity.WAIT))
+                active = ~finished
+                probabilities = out["activity_logits"][active].softmax(-1)
+                choices[active] = torch.multinomial(probabilities, 1, generator=activity_generator).squeeze(-1)
             choices = torch.where(finished, int(Activity.WAIT), choices)
             previous = state
             state = self.internal(state, choices, observation)
