@@ -20,10 +20,33 @@ visual-encoder or language-model weights.
 
 | Download group | Contents |
 | --- | --- |
+| `cdm-active-inference.tar.zst` | Both final rehearsal policies and their numerical prior, with optimizer state omitted; a 253 MB download for native execution |
 | `cdm-active-models.tar.zst.part*` | Two persistent and two ledger trainings, first-parent rehearsal and ordinary continuations, plus their original core, numerical prior and selector dependencies |
 | `cdm-active-repeat-models.tar.zst` | Matched rehearsal and ordinary continuations from the independently trained second parent |
 | `cdm-active-records.tar.zst*` | Prepared measurement datasets, training configurations and curves, all native evaluations, shared random states, paired summaries and feasibility measurements |
 | `cdm-active-evidence-records.tar.zst.part*` | Original collected public measurement histories for re-extracting the expanded training data |
+
+To try either final policy, download only the compact inference archive. It
+restores the original checkpoint paths and preserves every model tensor. Python
+3.12, PyTorch and the pinned simulator are sufficient:
+
+```bash
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.8.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-active-inference.tar.zst' --dir artifacts/v0.8.0
+zstd -dc --long=30 artifacts/v0.8.0/cdm-active-inference.tar.zst | tar -x
+python -m experiments.discoveryworld.evaluate_active_native \
+  --strategy learned \
+  --checkpoint runs/discoveryworld/active_experiments/rehearsal/counterfactual_seed183/update1200.pt \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --seeds 3400 --initial-rng-root runs/first-active-rng \
+  --output runs/first-active-experiment \
+  --device cpu --workers 1 --max-actions 400 --max-decisions 160
+```
+
+This command uses a new native noise realization. Exact paired reproduction
+uses the recorded initial randomness and full comparison below. Continued
+training requires the model archives, which also contain optimizer state.
 
 The accompanying `*-files.txt` lists identify the contents. Archives restore
 relative paths below `runs/discoveryworld/`; extract into a fresh checkout.

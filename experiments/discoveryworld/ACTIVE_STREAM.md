@@ -66,6 +66,47 @@ of each segment, the switch to B, and the return to A. This permits comparisons
 of initial exploration, within-family reuse, interference and return. The
 structured public observation interface is the same in all four conditions.
 
+## Training through a task stream
+
+`train_active_lifetime.py` constructs A–B–A streams from recorded instrument
+returns. A relation is a choice of measured quantity; each fresh world fits
+its own affine coefficients through its original public calibrations.
+Precomputed world order and object permutations keep each paired comparison's
+latent sequence identical even when policies spend different numbers of actions
+on a task. No relation or segment marker enters the policy.
+
+The ordinary measurement ledger and numerical fit restart between tasks.
+The carry arm retains the GRU and workspace; the separately trained control
+resets those tensors at task boundaries. Both consume the last received outcome
+before leaving a task. Value targets bootstrap across task boundaries and stop
+at the end of the lifetime. Gradients pass across task boundaries within each
+32-decision unroll. Shared neural weights are trained offline and remain fixed
+in native evaluation; this experiment measures adaptation through continuing
+state.
+
+Each arm runs 1,200 updates with batch 128 and unroll 32. Two repetitions start
+from the corresponding final calibration-rehearsal models: training seed 191
+from rehearsal 183, and seed 192 from rehearsal 184. Within each repetition,
+both arms share initial weights, optimizer, task stream and training budget.
+The final update is selected in advance. The fixed native streams above are
+not used for training or checkpoint selection.
+
+```bash
+python -m experiments.discoveryworld.train_active_lifetime \
+  --data runs/discoveryworld/active_experiments/data_large \
+  --checkpoint runs/discoveryworld/active_experiments/rehearsal/counterfactual_seed183/update1200.pt \
+  --state-mode carry --seed 191 --batch 128 --unroll 32 --updates 1200 \
+  --eval-every 300 --bf16 --device cuda:0 \
+  --output runs/reproduced-lifetime-carry-191
+```
+
+Use `--state-mode task_reset` in a separate output directory for the matched
+control. For repetition 192, change the seed and use
+`runs/discoveryworld/active_experiments/rehearsal_repeat/counterfactual_seed184/update1200.pt`.
+The model archives, rather than the inference-only archive, provide the retained
+optimizer state. These trainings are in progress; the native comparison will
+use their fixed final checkpoints.
+
 ## Run
 
 From the repository root, select a fixed endpoint and state condition:

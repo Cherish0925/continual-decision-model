@@ -171,8 +171,8 @@ this overview have finished; planned capabilities are listed below.
 ## 8. Next steps
 
 The active-measurement and rehearsal studies now provide the starting policy.
-The next experiment keeps its GRU and workspace across fresh experimental
-instances. Each instance has its own measurements and two calibrations; a
+The [ongoing task-stream experiment](experiments/discoveryworld/ACTIVE_STREAM.md)
+keeps its GRU and workspace across fresh experimental instances. Each instance has its own measurements and two calibrations; a
 relation can persist, change without a label, and later return. The explicit
 measurement ledger and numerical fit restart at each instance. Training and
 paired native execution will compare retained state with a model trained to
