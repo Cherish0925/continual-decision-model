@@ -71,6 +71,13 @@ of each segment, the switch to B, and the return to A. This permits comparisons
 of initial exploration, within-family reuse, interference and return. The
 structured public observation interface is the same in all four conditions.
 
+Completion uses the simulator's `completedSuccessfully` flag, set when all
+four reactors are activated. The separate normalized progress score also
+awards instrument use and other intermediate steps, so a successful policy
+can finish below 1.0 after avoiding unnecessary measurements. Both fields
+are retained; completion and paid native actions are the primary outcomes.
+See the pinned [task scorer](https://github.com/allenai/discoveryworld/blob/fd591323920be0d3786ef350955de1945aa571e5/discoveryworld/TaskScorer.py).
+
 ### Explicit relation memory
 
 An additional fixed reference stores only the candidate relation used in the
