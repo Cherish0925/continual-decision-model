@@ -68,9 +68,9 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
             for path in files(root, runs):
-                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"epoch\d+\.pt", path.name))
+                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update)\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
-                record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf"}
+                record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf", ".npz"}
                 reference = path.relative_to(root / "runs/discoveryworld").as_posix() in REFERENCE
                 if not {"reference": reference, "models": checkpoint, "observations": image, "records": record}[kind]:
                     continue
