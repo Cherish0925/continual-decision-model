@@ -126,6 +126,15 @@ Reading sequences and instrument noise come from the recorded experiments;
 the target-setting relation is generated. The resulting policy is evaluated
 against the original simulator's settings and success criterion.
 
+![Alternative calibration relations fitted to the same public supports](figures/calibration_rehearsal.svg)
+
+The figure uses the first recorded training world. Density and temperature
+both fit its two public working settings, but generate different settings for
+the same target object. The [example data](figures/calibration_rehearsal.json)
+retain the recorded values and fitted coefficients; the
+[plotting script](plot_calibration_rehearsal.py) calls the training function
+directly. The original target outcome is not used to choose or fit the example.
+
 The experimental arm proposes this replacement on half of training-world
 resets; rejection reduces the effective fraction, which is recorded. Its
 control continues training on the original tasks. Both start from the same
