@@ -13,6 +13,7 @@ from contextlib import redirect_stdout
 import fcntl
 import gc
 import json
+import math
 import multiprocessing
 from pathlib import Path
 from time import perf_counter
@@ -53,10 +54,17 @@ def observation(episode, event, mixture, step, max_steps, device, *, close_compl
     return obs, beliefs
 
 
-def consume_final_observation(model, state, obs, refinements):
+def feedback_targets(decision, device, *, cost_mode="native"):
+    """Adaptation feedback is separate from the inherited core's event input."""
+    cost = decision["native_actions"] if cost_mode == "native" else (1 if decision["action_index"] < 20 else 5)
+    return torch.tensor([[float(decision["success"]), math.log1p(cost)]], device=device)
+
+
+def consume_final_observation(model, state, obs, refinements, *, feedback=None):
     """Consume an executed outcome once without choosing or executing an action."""
+    extra = {"feedback_targets": feedback} if feedback is not None else {}
     return model.advance(obs["event"], obs["evidence"], obs["evidence_mask"], state,
-                         refinements=refinements)
+                         refinements=refinements, **extra)
 
 
 def copy_state(state):
@@ -94,6 +102,8 @@ def run_stream(job):
     loader = load_continual_checkpoint if continual else load_active_checkpoint
     model, _ = loader(options["checkpoint"], device)
     model.eval()
+    if continual:
+        model.retain_adaptation = not options.get("discard_adaptation", False)
     if model.config.mode != "persistent":
         raise ValueError("A stream comparison requires a core that persists within each instance")
     mixture, _ = load_mixture_checkpoint(options["mixture_checkpoint"], device)
@@ -113,6 +123,7 @@ def run_stream(job):
         output.mkdir()
         episode_start = perf_counter()
         event = torch.zeros(1, 36, device=device)
+        feedback = None
         error, ending = None, "decision_budget"
         outcome_pending = False
         terminal_consumed = False
@@ -137,7 +148,9 @@ def run_stream(job):
                         "state_mode": options["state_mode"],
                         "carried_state": list(state) if options["state_mode"] == "carry" else [],
                         "continual_activities": continual,
-                        "feedback_cost": "native actions" if continual else "measurement=1,test=5",
+                        "event_cost": "measurement=1,test=5",
+                        "adaptation_feedback_cost": options.get("feedback_cost", "native") if continual else None,
+                        "retain_adaptation": model.retain_adaptation if continual else None,
                         "ledger": "fresh_for_each_instance",
                         "numerical_posterior": "recomputed_from_current_instance_public_measurements",
                         "initial_rng_snapshot": {"path": "initial_rng.json.gz", **rng},
@@ -163,9 +176,11 @@ def run_stream(job):
                             break
                         obs, beliefs = observation(episode, event, mixture, step,
                                                   options["max_decisions"], device)
-                        result = model(**obs, state=state, refinements=options["refinements"])
+                        extra = {"feedback_targets": feedback} if continual else {}
+                        result = model(**obs, state=state, refinements=options["refinements"], **extra)
                         state = result["state"]
                         outcome_pending = False
+                        feedback = None
                         action = int(result["logits"][0].argmax())
                         if not obs["action_mask"][0, action]:
                             ending = "no_available_action"
@@ -176,7 +191,7 @@ def run_stream(job):
                         event = _event_from_result(decision, episode, mixture, step=step + 1,
                                                    max_steps=options["max_decisions"], device=device)
                         if continual:
-                            event[:, 30] = decision["native_actions"] / 20.
+                            feedback = feedback_targets(decision, device, cost_mode=options.get("feedback_cost", "native"))
                         outcome_pending = True
                     else:
                         if env.ended:
@@ -187,7 +202,8 @@ def run_stream(job):
                         final_feedback_query = int(final_observation["event"][0, 32:36].argmax())
                         final_feedback_object = int(final_observation["event"][0, :4].argmax())
                         before_feedback = copy_state(state)
-                        state = consume_final_observation(model, state, final_observation, options["refinements"])
+                        state = consume_final_observation(model, state, final_observation, options["refinements"],
+                                                          feedback=feedback)
                         final_state_change = state_distance(copy_state(state), before_feedback)
                         terminal_consumed = True
                 except (ValueError, RuntimeError) as exc:
@@ -252,7 +268,13 @@ def main():
     parser.add_argument("--save-boundary-states", action="store_true")
     parser.add_argument("--continual", action="store_true",
                         help="Use the integrated activity policy and runtime adapter updates")
+    parser.add_argument("--feedback-cost", choices=("native", "replay"), default="native",
+                        help="Adapter target cost: actual native actions or the replay measurement=1/test=5 proxy; core events stay unchanged")
+    parser.add_argument("--discard-adaptation", action="store_true",
+                        help="Compute LEARN/CONSOLIDATE updates but discard their changes to fast/slow adapters")
     args = parser.parse_args()
+    if args.discard_adaptation and not args.continual:
+        parser.error("--discard-adaptation requires --continual")
     if args.manifest:
         streams = json.loads(args.manifest.read_text())["streams"]
         args.manifest = str(args.manifest)
