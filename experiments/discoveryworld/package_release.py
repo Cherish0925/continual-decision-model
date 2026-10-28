@@ -75,7 +75,8 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
                 image = path.suffix.lower() in IMAGES
                 record = path.suffix in TEXT or path.name.endswith(".json.gz") or path.suffix in {".svg", ".pdf", ".npz"}
                 reference = path.relative_to(root / "runs/discoveryworld").as_posix() in REFERENCE
-                if not {"reference": reference, "models": checkpoint, "observations": image, "records": record}[kind]:
+                if not {"reference": reference, "models": checkpoint, "inference": checkpoint,
+                        "observations": image, "records": record}[kind]:
                     continue
                 relative = path.relative_to(root).as_posix()
                 info = tar.gettarinfo(str(path), arcname=relative)
@@ -85,6 +86,8 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
                 if checkpoint:
                     # Change metadata paths only; tensor values and training results stay intact.
                     saved = portable(torch.load(path, map_location="cpu", weights_only=True), root)
+                    if kind == "inference":
+                        saved.pop("optimizer", None)
                     with tempfile.TemporaryFile() as stream:
                         torch.save(saved, stream)
                         info.size = stream.tell()
@@ -145,7 +148,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--kind", choices=("reference", "models", "records", "observations"), required=True)
+    parser.add_argument("--kind", choices=("reference", "models", "inference", "records", "observations"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--run", action="append", default=[], help="Run directory or file relative to runs/discoveryworld; repeat for selected release contents")
     parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
