@@ -58,11 +58,11 @@ improve transfer while retaining efficient acquisition.
 
 ## Result files
 
-Machine-readable records under `runs/discoveryworld/active_experiments/comparison/`
-include the [overview CSV](../../../runs/discoveryworld/active_experiments/comparison/overview.csv),
-[paired costs](../../../runs/discoveryworld/active_experiments/comparison/paired_costs.csv),
-and summaries for [seed 181](../../../runs/discoveryworld/active_experiments/comparison/seed181/summary.json)
-and [seed 182](../../../runs/discoveryworld/active_experiments/comparison/seed182/summary.json).
+The [overview CSV](active_overview.csv), [paired costs](active_paired_costs.csv),
+and individual results for [seed 181](active_native_seed181.csv) and
+[seed 182](active_native_seed182.csv) are available directly in this repository.
+The [release records](../RELEASE.md) restore
+`runs/discoveryworld/active_experiments/comparison/`.
 Each seed directory contains `instances.csv`, `summary.json`,
 `paired_instances.csv` and `paired_details.json`, preserving every failure and
 termination reason. All eight native runs finished without execution errors.

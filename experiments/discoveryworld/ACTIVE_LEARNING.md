@@ -96,3 +96,90 @@ trajectories are stored under `runs/discoveryworld/active_experiments/`. The
 recorded commands select the data directory, numerical prior, source core and
 training seed explicitly. Native evaluation reads the fixed instance list in
 [active_native_comparison.json](active_native_comparison.json).
+
+## Rehearsing alternative calibration relations
+
+Efficient acquisition on the original training relations does not establish
+that the policy will investigate a relation absent from those trajectories.
+The follow-up comparison therefore changes the training tasks while preserving
+their measured quantities, instrument-return sequences and two public working
+settings. A uniformly selected quantity defines an alternative affine relation
+through those two calibrations. Its predictions provide generated labels for
+the uncalibrated objects. Degenerate fits and settings outside the public
+0–10,000 Hz range are rejected. Generated labels remain environment-side until
+the corresponding simulated experiment succeeds.
+
+The experimental arm proposes this replacement on half of training-world
+resets; rejection reduces the effective fraction, which is recorded. Its
+control continues training on the original tasks. Both start from the same
+fixed persistent model and optimizer, use the same update budget, and receive
+200 updates of hindsight supervision followed by 1,000 actor–critic updates.
+Validation retains the original labels. A separate native confirmation cohort
+is fixed in [active_rehearsal_comparison.json](active_rehearsal_comparison.json).
+
+The generated tasks cover possible numerical relations, including ones without
+original native training trajectories. Consequently, this comparison measures
+transfer from hypothesis-generated practice to native execution; it does not
+call those relations unseen in every form of training. The hypothesis family
+and numerical tool are explicit parts of the method.
+
+Learning from model-generated experience has a foundation in
+[Dyna](https://doi.org/10.1145/122344.122377), while
+[Deep Adaptive Design](https://proceedings.mlr.press/v139/foster21a.html) learns
+sequential experimental policies from observation histories. This experiment
+uses observed calibrations to construct alternative scientific relations and
+tests whether practicing them changes the learned choice of measurements and
+setting experiments. Its contribution must be assessed through the matched
+native comparison.
+
+## Reproduce
+
+The [release instructions](RELEASE.md) provide the measured datasets, source
+models and final policies. Run from the repository root after extracting them.
+Two independent initializations use seeds 181 and 182:
+
+```bash
+python -m experiments.discoveryworld.train_active_campaign \
+  --mode persistent --device cuda:0 --seed 181 \
+  --output runs/reproduced-persistent-181
+python -m experiments.discoveryworld.train_active_campaign \
+  --mode ledger --device cuda:1 --seed 181 \
+  --output runs/reproduced-ledger-181
+```
+
+The first phase uses 451 worlds, batch 128, 400 warm-start updates and 800
+actor–critic updates. The second uses 1,663 worlds, batch 512 and 1,200
+actor–critic updates, retaining the optimizer. Both unroll eight decisions.
+During the first historical phase, a measurement cleared all failed setting
+attempts. The second corrects this: only a change to a hypothesis's own evidence
+reopens it. The campaign records and reproduces both phase settings.
+
+Rehearsal begins from a fixed final persistent policy:
+
+```bash
+python -m experiments.discoveryworld.train_active_core \
+  --data runs/discoveryworld/active_experiments/data_large \
+  --resume runs/discoveryworld/active_experiments/persistent_large_seed181/update1200.pt \
+  --output runs/reproduced-calibration-rehearsal \
+  --mode persistent --device cuda:0 --seed 183 \
+  --updates 1200 --warmup 200 --batch 512 --unroll 8 \
+  --eval-every 200 --max-steps 160 --counterfactual-fraction 0.5 --bf16
+```
+
+Use fraction `0` for the matched continuation. The independent repeat uses
+seed 184 and the final persistent model trained with seed 182. The fixed
+final checkpoint is evaluated; intermediate validation does not select it.
+
+```bash
+python -m experiments.discoveryworld.evaluate_active_native \
+  --strategy learned \
+  --checkpoint runs/discoveryworld/active_experiments/rehearsal/counterfactual_seed183/update1200.pt \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --manifest experiments/discoveryworld/active_rehearsal_comparison.json \
+  --initial-rng-root runs/discoveryworld/active_experiments/rehearsal_native/initial_rng \
+  --output runs/reproduced-native-rehearsal \
+  --device cpu --workers 8 --max-actions 400 --max-decisions 160
+```
+
+Switch to `--strategy full_posterior` for the full-measurement comparison.
+The same saved initial randomness, scalar tool and native action budget apply.
