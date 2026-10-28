@@ -11,8 +11,9 @@ An observation can become outdated while inference is still running. The researc
 The [integrated training path](experiments/continual_experiment/README.md) connects
 the scientific-task core to internal activity selection, experience retrieval,
 and fast/slow prediction updates. It includes a two-GPU comparison launcher and
-native evaluation support. Implementation checks are complete; the new training
-and native comparisons are pending.
+native evaluation support. Eight joint trainings are running on two H100s;
+their fixed final checkpoints will be compared on a new 184-instance task
+stream. Existing measured results are reported below.
 
 ## Current results
 

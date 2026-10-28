@@ -5,8 +5,9 @@ activities, experience retrieval and deployment-time prediction updates. The
 research question is whether choosing **how to compute and learn**, alongside
 **what to measure and do**, improves performance over a changing task stream.
 
-The implementation is runnable. Its new scientific-task performance has not yet
-been measured. Existing v0.9 results remain results of the original model.
+Eight joint trainings are running on two H100s, with two processes per GPU.
+Their final scientific-task performance has not yet been measured. Existing
+v0.9 results remain results of the original model.
 
 ## Model
 
@@ -54,6 +55,12 @@ explicit model-state reset. This provides two retention timescales. It is a
 prediction-adaptation mechanism, not yet general skill acquisition or a learned
 latent world simulator. Memory features are stored at action selection time;
 outer training uses truncated backpropagation through time.
+
+The activity and value heads read the current prediction error on received
+experience in addition to the continuing state and activity budget. A fast or
+slow update changes this error immediately. The scheduler can therefore learn
+whether another update is useful before receiving another external observation.
+The campaign keeps 128 received records in each stream.
 
 `ContinualSession.receive()` consumes ordered events exactly once.
 `tick()` returns an internal activity, a tool request with a request ID, or WAIT.
@@ -199,7 +206,8 @@ the parameter count or GPU utilization alone.
 ## Local implementation checks
 
 ```bash
-python -m pytest -q tests/test_continual_experiment.py
+python -m pytest -q tests/test_continual_experiment.py \
+  tests/test_continual_objective.py tests/test_continual_native.py
 ```
 
 The checks cover checkpoint conversion, unchanged initial action scores,
@@ -207,5 +215,5 @@ multimodal-token gradients, internal computation without duplicate observation
 updates, replay adaptation and outer gradients, asynchronous feedback, masked
 environment execution, and training across task boundaries in all four modes.
 Generated fixtures exercise the existing data format and environment classes;
-they are not new benchmark results. No H100 training or new native performance
-result is included in this change.
+they are not new benchmark results. H100 pilot runs exercised full and complete
+fixed-schedule training before launching the eight-run comparison.
