@@ -203,50 +203,44 @@ mismatch is resolved. See [RUNNING.md](RUNNING.md) for installation and the task
 README for collection, training and evaluation. All experiments described in
 this overview have finished; planned capabilities are listed below.
 
-## 8. Next steps
+## 8. Next research unit
 
-The active-measurement, rehearsal and task-stream studies have completed.
-The next experimental change should connect the device current setting,
-expected adjustment distance and actual returned action cost to the policy
-and its learning target. These public quantities exist in the executor but
-are omitted or replaced by constant costs in the current active interface.
-Native cost decomposition shows that candidate tests account for most added
-work relative to the parents in both repetitions. The policy needs usable cost
-information and training feedback from those consequences, followed by a fresh
-native comparison. This is a testable explanation of the current regression,
-not an established cause.
+The joint activity implementation puts computation, retrieval and parameter
+updates in one executable model. The next research question concerns the
+object of that learning. In the current scientific path, `visible_beliefs`
+refits nine affine hypotheses from the public ledger on every observation.
+The numerical predictions and their uncertainty go directly to the setting
+executor. LEARN and CONSOLIDATE update operation-success and log-cost forecasts;
+they do not update those physical predictions. Better forecast calibration can
+therefore coexist with unchanged experimental choices.
 
-The useful next comparison is native-feedback fine-tuning of this same core.
-Both arms should receive the same public device state and adjustment options;
-one should learn from observed operation counts, the other from per-action-class
-average costs matched in scale. Both should use public activation feedback,
-without the replay environment's hidden-distance shaping. Fixed costs roughly
-match the mean measurement/test ratio; what they omit is how cost changes with
-the current setting and the failed tests that led there. Public adjustment
-options determine the path to a proposed setting, but cannot reveal an
-unexecuted experiment's success or full search cost.
+The next model should maintain a shared experimental belief that is used for
+physical prediction, measurement choice and later learning. Retain the analytic
+fits and precise setting tools. Refit each instance's coefficients from its own
+measurements, while continuing state and online updates learn relationship
+priors and uncertainty from accumulated evidence. A prediction must precede
+the reading or publicly observed working setting used to train it. Failed
+experiments supply their actual feedback, without hidden target distances or
+generating-law labels. A useful update should change predictions for subsequent
+experiments and help choose what information to obtain next.
 
-Recent-relation reuse also needs to develop into recovery after interference.
-The current A–B–A comparison supplies a fixed reference: first-return costs show
-no clear improvement under the same-weight state intervention. A longer retention
-objective or retrievable experience should be evaluated on that specific
-failure, alongside the simple last-successful-relation reference.
+Train these updates and their scheduling through later prediction and task
+returns over changing, returning conditions. Compare with the existing strong
+automatic fitter, explicit relation memory, and the same belief model with
+fixed update timing. Keep the same available measurements and numerical tools.
+The question is whether learned adaptation improves physical calibration and
+experimental decisions, including after interference. Lower replay error or
+an update that leaves every relevant choice unchanged does not answer it.
+The [function-preserving retention candidate](DESIGN.md#candidate-function-preserving-transfer)
+addresses how a useful correction might persist; its benefit must be tested
+once the correction contributes to the experimental belief.
 
-This measures learning carried by state. Deployment-time parameter updates and
-idle-period consolidation require their own training and subsequent-task
-comparison. The successful process-lifetime objective supplies an existing
-implementation to connect once the scientific task stream is working.
-
-Adaptive computation remains another substantive part of the goal. Earlier
-fixed-depth comparisons found little decision value in additional refinements.
-A useful continuation must train an identifiable prediction or plan refinement,
-then learn when its subsequent payoff warrants its cost. The present
-one-refinement scientific policy is the reference, not an adaptive-compute result.
-
-Chemistry and nutrient tasks can broaden the same process beyond numerical
-calibration. The public chemistry executor now provides 15 successful reference
-trajectories and 262 recipe experiments, including unsuccessful trials; no
-learned chemistry policy is claimed. Nutrient interventions still need an interface;
-the continuing core, activity choices and future-task learning objective should
-remain shared. The instrument, thermal and vehicle studies continue to provide
-independently timed environments for response and online-learning comparisons.
+This same belief, activity and feedback contract should extend beyond the
+current affine calibration task. The chemistry executor already provides 15
+successful reference trajectories and 262 recipe experiments, including
+unsuccessful trials; a learned chemistry policy has not been established.
+Chemistry and nutrient interventions require predictions about interventions
+and relationships, rather than just a setting score. Instrument, thermal and
+vehicle lifetimes supply the complementary independently timed environments.
+Use them to train and compare response to changing observations, pending results
+and the future benefit of learning, while retaining one continuing core.
