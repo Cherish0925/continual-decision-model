@@ -1,0 +1,22 @@
+{
+  "scenario": "Reactor Lab",
+  "difficulty": "Normal",
+  "seeds": [
+    3200, 3201, 3202, 3203, 3204, 3205, 3206, 3207,
+    3208, 3209, 3210, 3211, 3212, 3213, 3214, 3215,
+    3216, 3217, 3218, 3219, 3220, 3221, 3222, 3223,
+    3224, 3225, 3226, 3227, 3228, 3229, 3230, 3231,
+    3232, 3233, 3234, 3235, 3236, 3237, 3238, 3239,
+    3240, 3241, 3242, 3243, 3244, 3245, 3246, 3247,
+    3248, 3249, 3250, 3251, 3252, 3253, 3254, 3255,
+    3256, 3257, 3258, 3259, 3260, 3261, 3262, 3263
+  ],
+  "native_action_budget": 400,
+  "macro_decision_budget": 160,
+  "radiation_samples_in_full_measurement_controls": 32,
+  "comparison": "Same public discovery, measurement and scalar execution tools; shared initial simulator randomness",
+  "split": "Seed remainder 4 modulo 5 is the held-out relation family; other instances use training relation families",
+  "development_instances": [2200, 2201, 2202, 2203, 2204, 2205, 2206, 2207],
+  "primary_outcomes": ["completed_successfully", "native_actions"],
+  "secondary_outcomes": ["progress", "measurement_requests", "test_requests", "seconds"]
+}

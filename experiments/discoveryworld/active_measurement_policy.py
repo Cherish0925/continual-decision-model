@@ -82,8 +82,9 @@ class NativeExperimentOperator:
         if self.pending is None:
             return
         dialog = self.calibration.current_dialog()
-        activated = bool(dialog is not None and dialog["activated"]
-                         and dialog["object_handle"] == self.pending.get("target_handle"))
+        target, reactor = self.pending.get("target_handle"), self.pending.get("reactor_handle")
+        binding = self.calibration._bindings(self.observation).get(target)
+        activated = binding == (reactor, True) if reactor is not None else False
         self._complete({"success": activated, "ending": "environment_ended",
                         "setting": deepcopy(dialog)})
 

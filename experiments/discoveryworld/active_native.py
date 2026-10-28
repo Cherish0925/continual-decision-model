@@ -32,6 +32,7 @@ class NativeActiveEpisode:
         self.query = torch.tensor([2], dtype=torch.long)
         self.failed = torch.zeros(1, 9, dtype=torch.bool)
         self.decisions = []
+        self.completed_targets = set()
         self._record_cursor = 0
         self.bootstrap_actions = 0
 
@@ -145,7 +146,9 @@ class NativeActiveEpisode:
                        "mean_hz": float(mean_hz), "std_hz": float(std_hz)}
         start = self.env.steps
         result = self.execute(request)
-        success = action_index >= 20 and self.known[0, query].item()
+        success = action_index >= 20 and bool(result["success"])
+        if success:
+            self.completed_targets.add(query)
         if action_index >= 20 and not success:
             self.failed[0, action_index - 20] = True
         elif action_index < 20:
@@ -165,8 +168,11 @@ class NativeActiveEpisode:
 
     def summary(self):
         return {"native_actions": self.env.steps, "bootstrap_actions": self.bootstrap_actions,
+                "completed_successfully": all(row["completed_successfully"] for row in self.env.metrics),
+                "progress": sum(row["progress"] for row in self.env.metrics) / len(self.env.metrics),
                 "measurement_requests": sum(row["action_index"] < 20 for row in self.decisions),
                 "test_requests": sum(row["action_index"] >= 20 for row in self.decisions),
                 "returned_sample_counts": self.counts[0].tolist(),
+                "activated_targets": len(self.completed_targets),
                 "target_working_settings": int(self.known[0, 2:].sum()),
                 "task_metrics": self.env.metrics, "decisions": self.decisions}
