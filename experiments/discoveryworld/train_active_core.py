@@ -158,7 +158,7 @@ def make_observation(values, counts, known_hz, known, query, failed, event, mixt
 class ActiveTableEnvironment:
     """Acquisition over literal native returns, with an explicit activation proxy."""
     def __init__(self, path, mixture, *, batch=64, max_steps=160, tolerance_hz=8., measurement_cost=.005,
-                 test_cost=.025, device="cpu", permute=True):
+                 test_cost=.025, device="cpu", permute=True, test_retry_rule="changed_evidence"):
         source = np.load(path)
         fields = ("sample_values", "sample_present", "sample_count", "working_frequency_hz", "initial_support_mask", "target_mask", "label_present")
         self.data = {k: torch.as_tensor(source[k], device=device) for k in fields}
@@ -166,6 +166,7 @@ class ActiveTableEnvironment:
         self.mixture, self.batch, self.max_steps = mixture, batch, max_steps
         self.tolerance, self.measurement_cost, self.test_cost = tolerance_hz, measurement_cost, test_cost
         self.device, self.permute = torch.device(device), permute
+        self.test_retry_rule = test_retry_rule
         self.reset()
 
     @torch.no_grad()
@@ -280,7 +281,10 @@ class ActiveTableEnvironment:
                                       torch.minimum(old[:, 2], returned[:, 2]), returned[:, 2]), old[:, 2])
             revised = present & ((previous == 0) | (new != old))
             relevant = self.known[selected, obj] | (obj == self.query[selected])
-            self.failed[selected] &= ~(revised & relevant[:, None])
+            if self.test_retry_rule == "any_measurement":
+                self.failed[selected] = False
+            else:
+                self.failed[selected] &= ~(revised & relevant[:, None])
             self.values[selected, obj] = new
             self.counts[selected, obj] += present.long()
             self.group_counts[selected, obj, group] += 1
@@ -364,6 +368,8 @@ def main():
     parser.add_argument("--refinements", type=int, default=1)
     parser.add_argument("--eval-every", type=int, default=100)
     parser.add_argument("--tolerance-hz", type=float, default=8.)
+    parser.add_argument("--test-retry-rule", choices=("changed_evidence", "any_measurement"), default="changed_evidence",
+                        help="The historical any_measurement rule is retained only for exact phase-one repetitions.")
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--head-lr", type=float, default=3e-4)
     parser.add_argument("--bf16", action="store_true")
@@ -376,11 +382,11 @@ def main():
     mixture, _ = load_mixture_checkpoint(args.mixture_checkpoint, args.device)
     mixture.requires_grad_(False)
     env = ActiveTableEnvironment(args.data / "train.npz", mixture, batch=args.batch, max_steps=args.max_steps,
-                                 tolerance_hz=args.tolerance_hz, device=args.device)
+                                 tolerance_hz=args.tolerance_hz, device=args.device, test_retry_rule=args.test_retry_rule)
     validation_size = len(np.load(args.data / "validation.npz")["x"])
     validation = ActiveTableEnvironment(args.data / "validation.npz", mixture, batch=validation_size,
                                         max_steps=args.max_steps, tolerance_hz=args.tolerance_hz,
-                                        device=args.device, permute=False)
+                                        device=args.device, permute=False, test_retry_rule=args.test_retry_rule)
     if args.resume:
         model, saved = load_active_checkpoint(args.resume, args.device)
         if model.config.mode != args.mode:
@@ -402,7 +408,6 @@ def main():
                     trainable_core_parameters=sum(p.numel() for name, p in parameters if name.startswith("core.")),
                     scope="native-recorded measurement replay; activation tolerance proxy, not native task completion",
                     radiation_summary="running minimum of individually acquired recorded returns",
-                    test_retry_rule="only after the tested coordinate's received evidence changes",
                     checkpoint_selection="final update; intermediate validation is recorded")
     (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
     state = model.initial(env.batch, env.device)
