@@ -1,7 +1,8 @@
 """Package scientific-task runs without regenerable features or pretrained weights.
 
 Run from the repository root. Original experiment files are never modified.
-The archives restore project-relative paths under runs/discoveryworld/.
+The archives restore project-relative paths. The default selection root is
+runs/discoveryworld/; --base supports other experiment directories.
 """
 from __future__ import annotations
 
@@ -30,8 +31,8 @@ IMAGES = {".png", ".jpg", ".jpeg"}
 SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
 
 
-def files(root, runs=()):
-    base = root / "runs/discoveryworld"
+def files(root, runs=(), base="runs/discoveryworld"):
+    base = root / base
     for selected in ([base / run for run in runs] if runs else [base]):
         if selected.is_file() and not selected.is_symlink():
             yield selected
@@ -59,7 +60,7 @@ def portable(value, root):
     return value
 
 
-def package(root, output, kind, runs=(), name="cdm-scientific"):
+def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld"):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
@@ -70,12 +71,13 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
     with archive.open("wb") as target:
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
-            for path in files(root, runs):
+            for path in files(root, runs, base):
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update)\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
                 compressed_text = path.name.endswith((".json.gz", ".jsonl.gz"))
                 record = path.suffix in TEXT or compressed_text or path.suffix in {".svg", ".pdf", ".npz"}
-                reference = path.relative_to(root / "runs/discoveryworld").as_posix() in REFERENCE
+                reference = path.relative_to(root).as_posix() in {
+                    f"runs/discoveryworld/{item}" for item in REFERENCE}
                 if not {"reference": reference, "models": checkpoint, "inference": checkpoint,
                         "observations": image, "records": record}[kind]:
                     continue
@@ -156,7 +158,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kind", choices=("reference", "models", "inference", "records", "observations"), required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--run", action="append", default=[], help="Run directory or file relative to runs/discoveryworld; repeat for selected release contents")
+    parser.add_argument("--base", type=Path, default=Path("runs/discoveryworld"), help="Project-relative selection root")
+    parser.add_argument("--run", action="append", default=[], help="Run directory or file relative to --base; repeat for selected release contents")
     parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
     args = parser.parse_args()
-    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name)
+    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base)
