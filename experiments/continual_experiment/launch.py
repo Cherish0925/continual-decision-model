@@ -9,6 +9,7 @@ from pathlib import Path
 from queue import Empty, Queue
 import subprocess
 import sys
+from threading import Lock
 from time import monotonic
 
 
@@ -57,6 +58,7 @@ def main():
         return
 
     pending = Queue()
+    finished, completion_lock = [], Lock()
     for job in jobs:
         pending.put(job)
 
@@ -73,6 +75,11 @@ def main():
                                         stdout=log, stderr=subprocess.STDOUT, check=False)
             row = {"name": job["name"], "gpu": gpu, "slot": slot,
                    "returncode": result.returncode, "elapsed_seconds": monotonic() - started}
+            with completion_lock:
+                finished.append(row)
+                temporary = args.output / "finished.json.tmp"
+                temporary.write_text(json.dumps(finished, indent=2) + "\n")
+                temporary.replace(args.output / "finished.json")
             print(json.dumps(row), flush=True)
             results.append(row)
         return results
