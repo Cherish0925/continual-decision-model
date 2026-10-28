@@ -122,13 +122,25 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", type=Path, default=Path.cwd())
     parser.add_argument("--manifest", type=Path, default=Path("experiments/discoveryworld/results/prediction_data.json"))
+    parser.add_argument("--extra-train", type=Path, action="append", default=[],
+                        help="Additional native training collection, relative to project; may be repeated")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=12)
     args = parser.parse_args()
     if args.output.exists():
         parser.error("Choose a new output directory")
     manifest = json.loads((args.project / args.manifest).read_text())
+    for collection in args.extra_train:
+        for source in sorted((args.project / collection).glob("seed*/trajectory.jsonl")):
+            run = json.loads((source.parent / "run.json").read_text())
+            if run.get("split") != "train":
+                raise ValueError(f"Additional collection must identify training data: {source}")
+            manifest["train"].append({"source": str(source.relative_to(args.project)),
+                                      "identity": [run["scenario"], run["difficulty"], run["seed"]]})
     identities = [{tuple(row["identity"]) for row in manifest[split]} for split in ("train", "validation")]
+    for split, keys in zip(("train", "validation"), identities):
+        if len(keys) != len(manifest[split]):
+            raise ValueError(f"Repeated native instance identity in {split}")
     if identities[0] & identities[1]:
         raise ValueError("Training and validation must use different native instances")
     args.output.mkdir(parents=True)
@@ -136,7 +148,8 @@ def main():
     with ProcessPoolExecutor(args.workers) as pool:
         rows = list(pool.map(extract, jobs))
     (args.output / "worlds.json").write_text(json.dumps(rows, indent=2) + "\n")
-    summary = {"source_manifest": str(args.manifest), "quantities": FEATURE_QUANTITIES,
+    summary = {"source_manifest": str(args.manifest), "additional_train_collections": [str(p) for p in args.extra_train],
+               "quantities": FEATURE_QUANTITIES,
                "instrument_names": INSTRUMENT_NAMES, "instrument_groups": INSTRUMENT_GROUPS,
                "value_definition": "first actual instrument return; repeated returns remain separate events",
                "label_definition": "first public setting observed while the device was activated",
