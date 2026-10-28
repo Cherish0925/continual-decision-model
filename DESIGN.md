@@ -153,6 +153,66 @@ Training across lifetimes optimizes the shared representation and the learning p
 
 Retrieving an old experience is preferred to blindly overwriting current adapters with an old snapshot. Newer learning must remain available when a previous condition returns.
 
+### Candidate: function-preserving transfer
+
+This candidate is not implemented and is excluded from the current eight-run
+[joint-activity comparison](experiments/continual_experiment/README.md).
+In [the current model](cdm/continual_experiment.py), prediction is
+\(\hat y(x)=p_\theta(x)+x(F+S)\), with fast and slow adapter matrices \(F,S\).
+LEARN and CONSOLIDATE use the same replay residual and update either matrix
+with a different learned step size. Both gradients vanish at zero residual.
+Fast weights decay by \(\rho=0.99\) on each received event; slow weights do not.
+
+An alternative CONSOLIDATE would redistribute an already learned correction:
+
+\[
+S' = S+\alpha F,\qquad F'=(1-\alpha)F,\qquad 0\leq\alpha\leq1.
+\]
+
+The sum is unchanged, preserving all current predictions and their contribution
+to action scores at fixed input and shared state. With fixed shared parameters,
+no further learning, and the same subsequent input sequence, after \(k\) received
+events the prediction difference from leaving the weights unchanged is
+
+\[
+\Delta\hat y_k(x)=\alpha(1-\rho^k)xF.
+\]
+
+Thus transfer changes retention even when replay already fits. It adds no
+representational capacity: writing the same proportions into the two stores
+at acquisition could produce the same state. Its purpose is to let later
+evidence determine persistence. The retention curve for a transferred increment,
+\(\alpha+(1-\alpha)\rho^k\), generally differs from a single exponential decay.
+
+A scalar example separates retention from indiscriminate preservation. Let
+\(p=0,x=1,F=1,S=0\), with the current target equal to 1. For an illustrative
+decay \(\rho=1/2\), one later event yields prediction 0.5 without transfer and
+1 after full transfer. Squared error is 0.25 versus 0 if the target stays 1,
+but 0.25 versus 1 if it changes to 0. Current zero-residual gradient updates
+cannot distinguish these outcomes; future usefulness determines the choice.
+
+The activity and value heads currently see total replay error, which cannot
+distinguish \((F=u,S=0)\) from \((F=0,S=u)\) when other state is identical.
+A compact additional input is per-output **slow-only replay error**:
+
+\[
+E_{\mathrm{slow}}=\frac1N\sum_{i=1}^{N}
+\left[p_\theta(x_i)+x_iS-y_i\right]^{\odot2}.
+\]
+
+Together with total error, it exposes dependence on temporary corrections
+using received outcomes alone. It does not establish that those corrections
+will remain useful. The learning objective must credit later prediction and
+task returns against current computation cost and interference after changes.
+Since immediate predictions are preserved, training needs delayed outcomes
+within its differentiation horizon or a value estimate that carries their
+credit across truncation; lower current replay error cannot train this choice.
+Task gains also require the retained predictions to improve action selection.
+
+Related foundations are [differentiable plasticity (Miconi et al., 2018)](https://proceedings.mlr.press/v80/miconi18a.html)
+and [interacting memory timescales (Benna and Fusi, 2016)](https://www.nature.com/articles/nn.4401).
+They motivate the candidate; they do not establish its effectiveness or novelty.
+
 ## 8. Training and GPU execution
 
 [TRAINING.md](TRAINING.md) specifies one integrated progression: load reusable core/perception/semantic weights, train their new connections on trajectories, and adapt action/prediction heads to the task; jointly train action and activity over persistent lifetimes; differentiate through selected local learning steps; consolidate on mixed old and recent experience.
