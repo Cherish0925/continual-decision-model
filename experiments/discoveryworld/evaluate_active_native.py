@@ -126,6 +126,7 @@ def run(job):
                     "plan_checkpoint": options.get("plan_checkpoint"),
                     "mixture_checkpoint": options["mixture_checkpoint"],
                     "max_decisions": options["max_decisions"],
+                    "failed_test_retention": "until_its_own_observed_support_or_query_changes",
                     "reset_state_each_decision": options["reset_state"]}
         error, ending = None, "decision_budget"
         with TrajectoryWriter(output, metadata) as writer:

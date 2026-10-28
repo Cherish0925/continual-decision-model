@@ -13,6 +13,7 @@ import torch
 
 from .active_measurement_policy import NativeExperimentOperator
 from .calibration import FEATURE_QUANTITIES
+from .train_active_core import changed_hypotheses
 
 
 class NativeActiveEpisode:
@@ -133,6 +134,7 @@ class NativeActiveEpisode:
         """Twenty object/instrument requests then nine current-target tests."""
         action_index = int(action_index)
         query = int(self.query[0])
+        previous_values, previous_counts = self.values.clone(), self.counts.clone()
         if action_index < 20:
             obj, group = divmod(action_index, 5)
             request = {"kind": "measure", "group_index": group,
@@ -152,7 +154,8 @@ class NativeActiveEpisode:
         if action_index >= 20 and not success:
             self.failed[0, action_index - 20] = True
         elif action_index < 20:
-            self.failed.zero_()
+            self.failed &= ~changed_hypotheses(previous_values, previous_counts, self.values, self.counts,
+                                               self.known, self.query)
         if success and query == 2:
             self.query[0] = 3
             self.failed.zero_()
