@@ -41,12 +41,24 @@ def activity_distribution(model, out, state, mode, fixed_refinements):
     return torch.distributions.Categorical(logits=logits.float())
 
 
+def activity_returns(rewards, lifetime_ends, external_actions, bootstrap, gamma):
+    """Discount environmental progress; charge internal computation explicitly."""
+    target, returns = bootstrap, []
+    for reward, end, external in zip(reversed(rewards), reversed(lifetime_ends),
+                                     reversed(external_actions)):
+        discount = torch.where(external, gamma, 1.)
+        target = reward + discount * target * ~end
+        returns.append(target)
+    return torch.stack(returns[::-1])
+
+
 def train_window(model, env, state, *, unroll, mode="full", fixed_refinements=1,
                  compute_cost=.001, gamma=.99):
     log_probs, values, rewards, ends, entropies, auxiliary = [], [], [], [], [], []
+    external_actions = []
     counts = torch.zeros(len(Activity), dtype=torch.long, device=state["h"].device)
+    obs = env.observation()
     for _ in range(unroll):
-        obs = env.observation()
         out = model.readout(state, obs["candidates"], obs["action_mask"])
         activity_dist = activity_distribution(model, out, state, mode, fixed_refinements)
         activity = activity_dist.sample()
@@ -59,10 +71,17 @@ def train_window(model, env, state, *, unroll, mode="full", fixed_refinements=1,
         actions = action_dist.sample()
         state = model.internal(state, activity, obs)
         state = model.begin_action(state, out["features"], actions, external)
-        reward, task_done, lifetime_done = step_selected(env, actions, external)
-        returned = env.observation()
+        if external.any():
+            reward, task_done, lifetime_done = step_selected(env, actions, external)
+            returned = env.observation()
+        else:
+            reward = torch.zeros(len(actions), device=actions.device)
+            task_done = lifetime_done = torch.zeros_like(external)
+            returned = obs
         event = returned["event"]
-        targets = torch.stack((event[:, 29], (event[:, 30] * 20).clamp_min(0).log1p()), -1)
+        targets = returned.get("feedback_targets")
+        if targets is None:
+            targets = torch.stack((event[:, 29], (event[:, 30] * 20).clamp_min(0).log1p()), -1)
         chosen_prediction = out["predictions"][torch.arange(len(actions), device=actions.device), actions]
         auxiliary.append((F.smooth_l1_loss(chosen_prediction, targets, reduction="none").mean(-1)
                           * external).sum() / external.sum().clamp_min(1))
@@ -70,32 +89,40 @@ def train_window(model, env, state, *, unroll, mode="full", fixed_refinements=1,
         # Includes terminal feedback, before a task's public ledger is cleared.
         state = model.receive(state, returned, external)
         state = model.reset_rows(state, task_done if mode == "task_reset" else lifetime_done)
-        env.next_tasks(task_done)
-        state = model.receive(state, env.observation(), task_done)
+        obs = returned
+        if task_done.any():
+            env.next_tasks(task_done)
+            obs = env.observation()
+            state = model.receive(state, obs, task_done)
         internal = (activity > Activity.ACT) & (activity < Activity.WAIT)
         rewards.append(reward - compute_cost * internal.float())
         log_probs.append(activity_dist.log_prob(activity) + action_dist.log_prob(actions) * external)
         entropies.append(activity_dist.entropy() + action_dist.entropy() * external)
         values.append(out["value"])
         ends.append(lifetime_done)
+        external_actions.append(external)
     with torch.no_grad():
-        obs = env.observation()
         target = model.readout(state, obs["candidates"], obs["action_mask"])["value"]
-    returns = []
-    for reward, end in zip(reversed(rewards), reversed(ends)):
-        target = reward + gamma * target * ~end
-        returns.append(target)
-    returns = torch.stack(returns[::-1])
+    returns = activity_returns(rewards, ends, external_actions, target, gamma)
     value = torch.stack(values)
     policy_loss = -(torch.stack(log_probs) * (returns - value).detach()).mean()
     value_loss = F.smooth_l1_loss(value, returns)
     prediction_loss = torch.stack(auxiliary).mean()
     entropy = torch.stack(entropies).mean()
     loss = policy_loss + .5 * value_loss + .1 * prediction_loss - .01 * entropy
+    activity_counts = counts.tolist()
     return loss, state, {"policy_loss": float(policy_loss.detach()), "value_loss": float(value_loss.detach()),
                          "prediction_loss": float(prediction_loss.detach()), "entropy": float(entropy.detach()),
                          "mean_tick_reward": float(torch.stack(rewards).mean()),
-                         "activity_counts_this_update": counts.tolist()}
+                         "activity_counts_this_update": activity_counts,
+                         "external_actions_this_update": activity_counts[Activity.ACT],
+                         "internal_activities_this_update": sum(activity_counts[Activity.REFINE:Activity.WAIT]),
+                         "refine_steps_this_update": activity_counts[Activity.REFINE],
+                         "learn_updates_this_update": activity_counts[Activity.LEARN],
+                         "consolidation_updates_this_update": activity_counts[Activity.CONSOLIDATE],
+                         "fast_norm": float(state["fast"].detach().norm(dim=(-2, -1)).mean()),
+                         "slow_norm": float(state["slow"].detach().norm(dim=(-2, -1)).mean()),
+                         "memory_records_mean": float(state["memory_valid"].sum(-1).float().mean())}
 
 
 def main():
@@ -111,15 +138,19 @@ def main():
     p.add_argument("--unroll", type=int, default=32)
     p.add_argument("--max-steps", type=int, default=160)
     p.add_argument("--max-internal-steps", type=int, default=4)
-    p.add_argument("--mode", choices=("full", "fixed", "no_adaptation", "task_reset"), default="full")
+    p.add_argument("--memory-size", type=int, default=128)
+    p.add_argument("--mode", choices=("full", "fixed_schedule", "no_adaptation", "task_reset", "fixed"), default="full")
     p.add_argument("--fixed-refinements", type=int, default=1)
     p.add_argument("--compute-cost", type=float, default=.001)
+    p.add_argument("--gamma", type=float, default=.99)
     p.add_argument("--core-lr", type=float, default=3e-5)
     p.add_argument("--new-lr", type=float, default=3e-4)
     p.add_argument("--save-every", type=int, default=100)
     args = p.parse_args()
-    if min(args.batch, args.updates, args.unroll, args.max_steps, args.save_every) <= 0:
-        p.error("Batch, updates, unroll, max-steps and save-every must be positive")
+    if min(args.batch, args.updates, args.unroll, args.max_steps, args.save_every, args.memory_size) <= 0:
+        p.error("Batch, updates, unroll, max-steps, memory-size and save-every must be positive")
+    if not 0 <= args.gamma <= 1 or args.compute_cost < 0:
+        p.error("gamma must be in [0, 1] and compute-cost must be nonnegative")
     if not 0 <= args.fixed_refinements <= args.max_internal_steps:
         p.error("fixed-refinements must fit within max-internal-steps")
     args.output.mkdir(parents=True, exist_ok=False)
@@ -131,14 +162,16 @@ def main():
     plan = TaskStreamPlan(pool, streams=args.batch, lifetimes=(args.updates * args.unroll + 19) // 20 + 2,
                           seed=args.seed, device=args.device)
     env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=args.max_steps)
+    activity_mode = args.mode if args.mode in {"fixed", "fixed_schedule", "no_adaptation"} else "learned"
     model, _ = load_continual_checkpoint(args.checkpoint, args.device,
-                    ContinualExperimentConfig(max_internal_steps=args.max_internal_steps,
-                        activity_mode=args.mode if args.mode in {"fixed", "no_adaptation"} else "learned",
+                    ContinualExperimentConfig(max_internal_steps=args.max_internal_steps, memory_size=args.memory_size,
+                        activity_mode=activity_mode,
                         fixed_refinements=args.fixed_refinements))
     if model.continual_config.max_internal_steps != args.max_internal_steps:
         p.error("max-internal-steps must match a resumed continual checkpoint")
-    expected_mode = args.mode if args.mode in {"fixed", "no_adaptation"} else "learned"
-    if model.continual_config.activity_mode != expected_mode:
+    if model.continual_config.memory_size != args.memory_size:
+        p.error("memory-size must match a resumed continual checkpoint")
+    if model.continual_config.activity_mode != activity_mode:
         p.error("Training mode must match the loaded continual checkpoint")
     parameters = [(name, x) for name, x in model.named_parameters() if x.requires_grad]
     optimizer = torch.optim.AdamW([
@@ -150,23 +183,31 @@ def main():
                     online_update="per-stream fast and slow prediction adapters; shared weights fixed at deployment",
                     modalities="structured observations only in this dataset",
                     return_boundary="lifetime; includes later tasks and internal activity costs",
+                    discount="gamma on external ACT only; internal activities have discount 1 and explicit compute cost",
                     initialization="model weights loaded; optimizer starts fresh",
                     checkpoint_selection="fixed final update; no test-set selection")
     (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
     state = model.receive(model.initial(args.batch, args.device), env.observation())
     started = time.monotonic()
+    world_interactions = 0
     with (args.output / "training.jsonl").open("w") as log, (args.output / "tasks.jsonl").open("w") as tasks:
         for update in range(1, args.updates + 1):
+            update_started = time.monotonic()
             model.train()
             loss, state, row = train_window(model, env, detach_state(state), unroll=args.unroll,
                                            mode=args.mode, fixed_refinements=args.fixed_refinements,
-                                           compute_cost=args.compute_cost)
+                                           compute_cost=args.compute_cost, gamma=args.gamma)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             norm = torch.nn.utils.clip_grad_norm_([x for _, x in parameters], 1.)
             optimizer.step()
+            world_interactions += row["external_actions_this_update"]
+            update_seconds = time.monotonic() - update_started
             row.update(update=update, loss=float(loss.detach()), gradient_norm=float(norm),
-                       seconds=time.monotonic() - started)
+                       seconds=time.monotonic() - started, update_seconds=update_seconds,
+                       ticks_per_second=args.batch * args.unroll / update_seconds,
+                       world_interactions_per_second=row["external_actions_this_update"] / update_seconds,
+                       cumulative_world_interactions=world_interactions)
             log.write(json.dumps(row) + "\n"); log.flush()
             for completed in env.task_rows:
                 tasks.write(json.dumps(completed) + "\n")
