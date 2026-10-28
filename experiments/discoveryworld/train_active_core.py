@@ -100,6 +100,35 @@ def changed_hypotheses(previous_values, previous_counts, values, counts, known, 
 
 
 @torch.no_grad()
+def counterfactual_calibration(full_values, full_present, settings, supports, targets, quantity):
+    """Fit two observed supports and generate environment-only query settings.
+
+    The returned validity flag concerns physical control range and available
+    measurements. No observed native query outcome is used to choose a fit.
+    """
+    n, device = len(full_values), full_values.device
+    rows = torch.arange(n, device=device)
+    x = full_values.gather(2, quantity[:, None, None].expand(-1, 4, 1))[..., 0].double()
+    present = full_present.gather(2, quantity[:, None, None].expand(-1, 4, 1))[..., 0]
+    support_indices = supports.long().argsort(-1, descending=True)[:, :2]
+    x0, x1 = (x[rows, support_indices[:, index]] for index in range(2))
+    y0, y1 = (settings[rows, support_indices[:, index]].double() for index in range(2))
+    delta = x1 - x0
+    scale = torch.maximum(torch.maximum(x0.abs(), x1.abs()), torch.ones_like(x0))
+    finite = ((torch.isfinite(x) & present) | ~(supports | targets)).all(-1)
+    nondegenerate = (supports.sum(-1) == 2) & (delta.abs() > 1e-6 * scale)
+    slope = (y1 - y0) / torch.where(nondegenerate, delta, torch.ones_like(delta))
+    intercept = y0 - slope * x0
+    generated = slope[:, None] * x + intercept[:, None]
+    valid_range = ((torch.isfinite(generated) & (generated >= 0) & (generated <= 10000)) | ~targets).all(-1)
+    accepted = finite & nondegenerate & valid_range & targets.any(-1)
+    labels = torch.where(targets, generated.to(settings.dtype), settings)
+    return labels, accepted, {"missing": ~finite, "degenerate": finite & ~nondegenerate,
+                              "range": finite & nondegenerate & ~valid_range,
+                              "slope": slope, "intercept": intercept}
+
+
+@torch.no_grad()
 def make_observation(values, counts, known_hz, known, query, failed, event, mixture,
                      step, max_steps, acquire_mask=None):
     n, device = len(values), values.device
@@ -150,7 +179,7 @@ def make_observation(values, counts, known_hz, known, query, failed, event, mixt
         candidates[:, k, 28] = failed[:, q]
     candidates[:, :, 29] = _vector(step, n, device, torch.float32)[:, None] / max_steps
     mask = torch.cat((available.reshape(n, 20), beliefs["eligible"] & ~failed), -1)
-    return {"event": event.float(), "evidence": evidence.float(),
+    return {"event": event.float().clone(), "evidence": evidence.float(),
             "evidence_mask": torch.ones(n, 36, dtype=torch.bool, device=device),
             "candidates": candidates, "action_mask": mask}
 
@@ -158,7 +187,8 @@ def make_observation(values, counts, known_hz, known, query, failed, event, mixt
 class ActiveTableEnvironment:
     """Acquisition over literal native returns, with an explicit activation proxy."""
     def __init__(self, path, mixture, *, batch=64, max_steps=160, tolerance_hz=8., measurement_cost=.005,
-                 test_cost=.025, device="cpu", permute=True, test_retry_rule="changed_evidence"):
+                 test_cost=.025, device="cpu", permute=True, test_retry_rule="changed_evidence",
+                 counterfactual_fraction=0.):
         source = np.load(path)
         fields = ("sample_values", "sample_present", "sample_count", "working_frequency_hz", "initial_support_mask", "target_mask", "label_present")
         self.data = {k: torch.as_tensor(source[k], device=device) for k in fields}
@@ -167,14 +197,19 @@ class ActiveTableEnvironment:
         self.tolerance, self.measurement_cost, self.test_cost = tolerance_hz, measurement_cost, test_cost
         self.device, self.permute = torch.device(device), permute
         self.test_retry_rule = test_retry_rule
+        self.counterfactual_fraction = counterfactual_fraction
+        self.counterfactual_counts = {key: torch.zeros(9, dtype=torch.long, device=device)
+                                      for key in ("proposed", "accepted", "missing", "degenerate", "range")}
+        self.sampled_worlds = torch.zeros((), dtype=torch.long, device=device)
         self.reset()
 
     @torch.no_grad()
     def reset(self, indices=None):
         b, device = self.batch, self.device
         self.indices = torch.randint(self.size, (b,), device=device) if indices is None else indices.to(device)
-        self.permutation = torch.rand(b, 4, device=device).argsort(-1) if self.permute else torch.arange(4, device=device)[None].expand(b, -1)
+        self.permutation = torch.rand(b, 4, device=device).argsort(-1) if self.permute else torch.arange(4, device=device)[None].expand(b, -1).clone()
         self._load_data()
+        self._counterfactual_targets()
         self.values = torch.zeros(b, 4, 9, device=device)
         self.counts = torch.zeros(b, 4, 9, device=device, dtype=torch.long)
         self.group_counts = torch.zeros(b, 4, 5, device=device, dtype=torch.long)
@@ -209,6 +244,32 @@ class ActiveTableEnvironment:
         radiation = torch.where(self.sample_present[:, :, 2, :, 2], self.samples[:, :, 2, :, 2], torch.inf).min(-1).values
         self.full_values = self.full_values.sum(2)
         self.full_values[:, :, 2] = radiation
+        self.full_present = self.sample_present.any(3).any(2)
+
+    @torch.no_grad()
+    def _counterfactual_targets(self):
+        self.sampled_worlds.add_(self.batch)
+        self.counterfactual_quantity = torch.full((self.batch,), -1, dtype=torch.long, device=self.device)
+        if self.counterfactual_fraction == 0:
+            return
+        selected = torch.rand(self.batch, device=self.device) < self.counterfactual_fraction
+        quantity = torch.randint(9, (self.batch,), device=self.device)
+        generated, valid, checks = counterfactual_calibration(
+            self.full_values, self.full_present, self.targets, self.initial_support, self.target_mask, quantity)
+        accepted = selected & valid
+        self.targets = torch.where(accepted[:, None], generated, self.targets)
+        self.counterfactual_quantity[accepted] = quantity[accepted]
+        self.counterfactual_counts["proposed"].add_(torch.bincount(quantity[selected], minlength=9))
+        self.counterfactual_counts["accepted"].add_(torch.bincount(quantity[accepted], minlength=9))
+        for key in ("missing", "degenerate", "range"):
+            self.counterfactual_counts[key].add_(torch.bincount(quantity[selected & checks[key]], minlength=9))
+
+    def counterfactual_summary(self):
+        counts = {key: value.tolist() for key, value in self.counterfactual_counts.items()}
+        total = int(self.sampled_worlds)
+        return {"sampled_worlds": total, "proposal_fraction": self.counterfactual_fraction,
+                "accepted_worlds": sum(counts["accepted"]),
+                "effective_fraction": sum(counts["accepted"]) / max(total, 1), "by_quantity": counts}
 
     @torch.no_grad()
     def reset_rows(self, reset):
@@ -218,7 +279,7 @@ class ActiveTableEnvironment:
         fresh.__dict__ = {**self.__dict__, "batch": int(reset.sum())}
         fresh.reset()
         for name in ("indices", "permutation", "samples", "sample_present", "sample_count", "targets", "initial_support", "target_mask",
-                     "full_values", "values", "counts", "group_counts", "known", "known_hz", "query", "failed", "event",
+                     "full_values", "full_present", "counterfactual_quantity", "values", "counts", "group_counts", "known", "known_hz", "query", "failed", "event",
                      "steps", "alive", "successes", "acquisitions", "tests", "best_quality", "best_error"):
             getattr(self, name)[reset] = getattr(fresh, name)
 
@@ -370,10 +431,14 @@ def main():
     parser.add_argument("--tolerance-hz", type=float, default=8.)
     parser.add_argument("--test-retry-rule", choices=("changed_evidence", "any_measurement"), default="changed_evidence",
                         help="The historical any_measurement rule is retained only for exact phase-one repetitions.")
+    parser.add_argument("--counterfactual-fraction", type=float, default=0.,
+                        help="Training-world probability of proposing a two-support affine counterfactual task.")
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--head-lr", type=float, default=3e-4)
     parser.add_argument("--bf16", action="store_true")
     args = parser.parse_args()
+    if not 0 <= args.counterfactual_fraction <= 1:
+        parser.error("--counterfactual-fraction must be between zero and one")
     if args.output.exists():
         parser.error("Choose a fresh output directory")
     args.output.mkdir(parents=True)
@@ -382,7 +447,8 @@ def main():
     mixture, _ = load_mixture_checkpoint(args.mixture_checkpoint, args.device)
     mixture.requires_grad_(False)
     env = ActiveTableEnvironment(args.data / "train.npz", mixture, batch=args.batch, max_steps=args.max_steps,
-                                 tolerance_hz=args.tolerance_hz, device=args.device, test_retry_rule=args.test_retry_rule)
+                                 tolerance_hz=args.tolerance_hz, device=args.device, test_retry_rule=args.test_retry_rule,
+                                 counterfactual_fraction=args.counterfactual_fraction)
     validation_size = len(np.load(args.data / "validation.npz")["x"])
     validation = ActiveTableEnvironment(args.data / "validation.npz", mixture, batch=validation_size,
                                         max_steps=args.max_steps, tolerance_hz=args.tolerance_hz,
@@ -408,6 +474,7 @@ def main():
                     trainable_core_parameters=sum(p.numel() for name, p in parameters if name.startswith("core.")),
                     scope="native-recorded measurement replay; activation tolerance proxy, not native task completion",
                     radiation_summary="running minimum of individually acquired recorded returns",
+                    counterfactual_design="uniform quantity proposal; two original supports; generated query labels only; public0–10000Hz range; rejected fits retain native labels; validation unchanged",
                     checkpoint_selection="final update; intermediate validation is recorded")
     (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
     state = model.initial(env.batch, env.device)
@@ -468,6 +535,8 @@ def main():
             result = evaluate(model, validation, refinements=args.refinements)
             row = {"update": update + 1, "validation": result, "elapsed_seconds": time.monotonic() - started}
             print(json.dumps(row), flush=True); history.append(row)
+            settings["counterfactual_counts"] = env.counterfactual_summary()
+            (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
             saved = {**model.configuration(), "model": model.state_dict(), "optimizer": optimizer.state_dict(), "training": settings, "update": update + 1,
                      "validation": result}
             torch.save(saved, args.output / "last.pt")
