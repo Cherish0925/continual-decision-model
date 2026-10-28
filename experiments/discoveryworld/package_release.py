@@ -66,7 +66,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
     archive = output / f"{name}-{kind}.tar.zst"
     for previous_part in output.glob(archive.name + ".part*"):
         previous_part.unlink()
-    inventory, images = [], {}
+    inventory, repeated_files = [], {}
     with archive.open("wb") as target:
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
@@ -84,6 +84,20 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
                 info.uid = info.gid = 0
                 info.uname = info.gname = ""
                 info.mode = 0o644
+                # Paired evaluations copy the same simulator randomness into
+                # every arm. Preserve those paths without storing the bytes
+                # again; tar restores the links as ordinary readable files.
+                if image or compressed_text:
+                    candidates = repeated_files.setdefault((path.suffix, info.size), [])
+                    previous = next((p for p in candidates if filecmp.cmp(p, path, shallow=False)), None)
+                    if previous is not None:
+                        info.type = tarfile.LNKTYPE
+                        info.linkname = previous.relative_to(root).as_posix()
+                        info.size = 0
+                        tar.addfile(info)
+                        inventory.append(relative)
+                        continue
+                    candidates.append(path)
                 if checkpoint:
                     # Change metadata paths only; tensor values and training results stay intact.
                     saved = portable(torch.load(path, map_location="cpu", weights_only=True), root)
@@ -95,17 +109,8 @@ def package(root, output, kind, runs=(), name="cdm-scientific"):
                         stream.seek(0)
                         tar.addfile(info, stream)
                 elif image:
-                    key = (path.name, info.size)
-                    previous = images.get(key)
-                    if previous is not None and filecmp.cmp(previous, path, shallow=False):
-                        info.type = tarfile.LNKTYPE
-                        info.linkname = previous.relative_to(root).as_posix()
-                        info.size = 0
-                        tar.addfile(info)
-                    else:
-                        images[key] = path
-                        with path.open("rb") as stream:
-                            tar.addfile(info, stream)
+                    with path.open("rb") as stream:
+                        tar.addfile(info, stream)
                 else:
                     data = path.read_bytes()
                     compressed = compressed_text

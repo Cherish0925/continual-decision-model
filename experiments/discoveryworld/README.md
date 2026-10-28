@@ -1,14 +1,17 @@
 # CDM on digital experiments
 
-The next campaign trains a model to choose experiments, continue useful inference as observations arrive, and retain what it learns. It extends the existing GRU/Transformer core and its deployed-update training. The main architecture remains in [DESIGN.md](../../DESIGN.md).
+This study trains a model to choose experiments and retain useful experience across interactions. It extends the existing GRU/Transformer core; the broader goal includes continuing inference and learning during operation. The main architecture remains in [DESIGN.md](../../DESIGN.md).
 
 Measured policy results, workspace interventions and paired learning comparisons are in [RESULTS.md](RESULTS.md).
 
 The [active-measurement method](ACTIVE_LEARNING.md) trains the continuing core
 jointly with its experimental decisions; calibration rehearsal improves native
 coverage across two matched training repetitions. The [task-stream study](ACTIVE_STREAM.md)
-now trains and evaluates state carried through fresh instances, changes and
-returning relations. Its training and final native comparisons are in progress.
+trains and evaluates state carried through fresh instances, changes and
+returning relations. All four trainings and ten native evaluations are complete.
+The [results](results/active_stream.md) show reduced repeated work when the
+current relation continues, without a consistent overall gain over the frozen
+parents or faster recovery when an earlier relation returns.
 
 `collect_chemistry.py` supplies a second native scientific interface. A policy
 reads public component names, prior experiments and current rust condition,

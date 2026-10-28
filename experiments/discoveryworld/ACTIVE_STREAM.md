@@ -157,8 +157,9 @@ Use `--state-mode task_reset` in a separate output directory for the matched
 control. For repetition 192, change the seed and use
 `runs/discoveryworld/active_experiments/rehearsal_repeat/counterfactual_seed184/update1200.pt`.
 The model archives, rather than the inference-only archive, provide the retained
-optimizer state. These trainings are in progress; the native comparison will
-use their fixed final checkpoints.
+optimizer state. All four trainings and ten native evaluations are complete.
+The [results](results/active_stream.md) use the fixed final checkpoints and
+separate current-relation reuse from recovery after a relation returns.
 
 ### Observation-construction throughput
 

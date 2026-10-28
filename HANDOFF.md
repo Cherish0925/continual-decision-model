@@ -26,6 +26,14 @@ training. Both complete exactly the same instances as full measurement, with
 from generated practice within an explicit hypothesis family. The detailed
 results retain exploration costs and every failure.
 
+The completed [task-stream study](experiments/discoveryworld/results/active_stream.md)
+then trains the same core across fresh calibrations and changing relations.
+Carrying state reduces native actions by 32.9% and 31.7% relative to resetting
+identical weights, with 179/184 and 176/184 completions. The effect is recent
+relation reuse. The first return to an earlier relation shows no clear efficiency
+gain, and the new trainings do not consistently outperform their frozen
+parents. All four trainings and ten native evaluations are complete.
+
 Earlier scientific studies, including successful task execution, prediction
 training, unsuccessful computation allocation and learned complete-experiment
 selection, remain in [RESULTS.md](experiments/discoveryworld/RESULTS.md). The
@@ -145,7 +153,7 @@ They are errors of method, not of compute. Two H100s ran 35 training runs in 66 
 
 **Specified, not implemented**
 
-Asynchronous semantic execution and a learned semantic-call policy; long-term episode retrieval; consolidation; teacher distillation from Qwen3.6-35B-A3B. The native decoder constrains syntax and public argument domains while the frozen model chooses the action; it supplies no scientific solution. Neither that baseline nor the new binding reader connects semantic reasoning to CDM through joint training. The scientific-task path includes deployed A/B updates and a causal future-query training objective. Its numerical prediction-to-action connection currently uses an explicit scalar controller; the action head has not learned this control. A learned computation schedule and cross-task retention also remain unimplemented. Shared-parameter actor–critic updates are distinct from those capabilities.
+Asynchronous semantic execution and a learned semantic-call policy; long-term episode retrieval; consolidation; teacher distillation from Qwen3.6-35B-A3B. The native decoder constrains syntax and public argument domains while the frozen model chooses the action; it supplies no scientific solution. Neither that baseline nor the new binding reader connects semantic reasoning to CDM through joint training. The scientific-task path includes deployed A/B updates and a causal future-query training objective. Its numerical prediction-to-action connection currently uses an explicit scalar controller; the action head has not learned this control. A learned computation schedule and long-term retrieval remain to be connected. Cross-instance state reuse is now trained and measured in the task-stream study above. Shared-parameter actor–critic updates are distinct from those capabilities.
 
 The first application is a **digital experimental operator**, with [DiscoveryWorld](https://github.com/allenai/discoveryworld) selected as the external task suite ([DESIGN.md §9](DESIGN.md)). Reactor Lab is the first trained task. Handwritten reference completion establishes a usable task/data path; learned policies are evaluated separately for actual completion.
 
@@ -170,14 +178,32 @@ this overview have finished; planned capabilities are listed below.
 
 ## 8. Next steps
 
-The active-measurement and rehearsal studies now provide the starting policy.
-The [ongoing task-stream experiment](experiments/discoveryworld/ACTIVE_STREAM.md)
-keeps its GRU and workspace across fresh experimental instances. Each instance has its own measurements and two calibrations; a
-relation can persist, change without a label, and later return. The explicit
-measurement ledger and numerical fit restart at each instance. Training and
-paired native execution will compare retained state with a model trained to
-reset at those same boundaries. The question is whether previous experiments
-reduce the observations needed in later ones while preserving completion.
+The active-measurement, rehearsal and task-stream studies have completed.
+The next experimental change should connect the device current setting,
+expected adjustment distance and actual returned action cost to the policy
+and its learning target. These public quantities exist in the executor but
+are omitted or replaced by constant costs in the current active interface.
+Native cost decomposition shows that candidate tests account for most added
+work relative to the parents in both repetitions. The policy needs usable cost
+information and training feedback from those consequences, followed by a fresh
+native comparison. This is a testable explanation of the current regression,
+not an established cause.
+
+The useful next comparison is native-feedback fine-tuning of this same core.
+Both arms should receive the same public device state and adjustment options;
+one should learn from observed operation counts, the other from per-action-class
+average costs matched in scale. Both should use public activation feedback,
+without the replay environment's hidden-distance shaping. Fixed costs roughly
+match the mean measurement/test ratio; what they omit is how cost changes with
+the current setting and the failed tests that led there. Public adjustment
+options determine the path to a proposed setting, but cannot reveal an
+unexecuted experiment's success or full search cost.
+
+Recent-relation reuse also needs to develop into recovery after interference.
+The current A–B–A comparison supplies a fixed reference: first-return costs show
+no clear improvement under the same-weight state intervention. A longer retention
+objective or retrievable experience should be evaluated on that specific
+failure, alongside the simple last-successful-relation reference.
 
 This measures learning carried by state. Deployment-time parameter updates and
 idle-period consolidation require their own training and subsequent-task
@@ -191,7 +217,9 @@ then learn when its subsequent payoff warrants its cost. The present
 one-refinement scientific policy is the reference, not an adaptive-compute result.
 
 Chemistry and nutrient tasks can broaden the same process beyond numerical
-calibration. Their observed quantities and interventions need task interfaces;
+calibration. The public chemistry executor now provides 15 successful reference
+trajectories and 262 recipe experiments, including unsuccessful trials; no
+learned chemistry policy is claimed. Nutrient interventions still need an interface;
 the continuing core, activity choices and future-task learning objective should
 remain shared. The instrument, thermal and vehicle studies continue to provide
 independently timed environments for response and online-learning comparisons.

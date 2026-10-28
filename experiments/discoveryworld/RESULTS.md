@@ -4,6 +4,23 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Experience across experimental instances — 28 October
+
+Four completed trainings extend the active policy across A–B–A streams with
+fresh objects and calibrations. On the same 184 native instances, retaining
+trained state completes 179 and 176 tasks, against 177 and 174 when the same
+weights reset at instance boundaries. Mean native actions fall from 206.88
+to 138.79 and from 207.34 to 141.52. All conditions share the public numerical
+tools and simulator randomness.
+
+The savings concentrate in subsequent instances of an unchanged relation.
+Returning to an earlier relation has no clear first-instance efficiency gain.
+The frozen parents complete 175 and 177 instances with fewer average actions;
+the new training therefore does not consistently improve on the starting
+capability. The [complete results](results/active_stream.md) include separately
+reset-trained models, explicit relation-memory references, stream-level
+uncertainty and a decomposition of actual execution costs.
+
 ## Active measurement and calibration rehearsal — 28 October
 
 The new policy learns what to measure before collecting a complete experimental

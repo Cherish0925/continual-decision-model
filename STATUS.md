@@ -11,6 +11,20 @@ Published planner numbers come from release [v0.2.0](https://github.com/Cherish0
 
 The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Recall of situations met before, revision of inference in progress, and proactive work are not yet achieved. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
+## 28 October experience across experimental instances
+
+The [completed task-stream study](experiments/discoveryworld/results/active_stream.md)
+trains the continuing core across fresh calibrations and changing relations.
+Two repetitions complete 179/184 and 176/184 native instances. Carrying state
+reduces actions by 32.9% and 31.7% relative to resetting the same weights,
+with two additional completions in each repetition. The benefit is strongest
+when the same relation continues. First-return performance does not establish
+rapid recovery of an earlier relation, and neither training gives a consistent
+overall advantage over the frozen parents or explicit relation memory.
+Native traces locate most of the extra cost in candidate tests and device
+adjustment. Four trainings and all ten native comparisons are complete;
+deployment parameters remain fixed in this study.
+
 ## 28 October active measurement and calibration rehearsal
 
 The [active policy](experiments/discoveryworld/ACTIVE_LEARNING.md) jointly trains

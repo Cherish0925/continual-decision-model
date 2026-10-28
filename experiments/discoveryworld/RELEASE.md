@@ -1,6 +1,52 @@
 # Scientific-task models and experiments
 
-[v0.8.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.8.0) · [Results](RESULTS.md) · [Training commands](ACTIVE_LEARNING.md)
+[v0.9.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.9.0) · [Results](RESULTS.md) · [Training commands](ACTIVE_STREAM.md)
+
+## Experience across experimental instances: v0.9.0
+
+[Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.9.0)
+· [Results](results/active_stream.md) · [Method](ACTIVE_STREAM.md)
+
+Four trainings compare continuing state with task-boundary resets, from two
+independent parents. Native comparisons use 184 instances in 20 changing-relation
+streams. Retaining state reduces actions relative to resetting the same weights
+in both repetitions. The release also preserves the absence of a consistent
+overall gain over the frozen parents and the explicit relation-memory reference.
+
+| Archive | Contents |
+|---|---|
+| `cdm-task-stream-inference.tar.zst` | Four final policies and their numerical prior, without optimizer state; about 449 MB |
+| `cdm-task-stream-models.tar.zst` | The same four final policies with optimizer state for further training |
+| `cdm-task-stream-records.tar.zst` | Training configurations, curves and complete task histories; all ten native comparisons, initial RNG states, paired summaries and action-cost decomposition |
+| `cdm-chemistry-records.tar.zst` | Public reference recipe experiments for the new chemistry interface, including unsuccessful trials and early interface failures; not a trained-policy result |
+
+Each archive includes a separate file list and restores paths relative to this
+repository. The scientific policy uses structured observations; this execution
+does not require downloading a visual encoder or language model.
+
+```bash
+gh release download v0.9.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-task-stream-inference.tar.zst' \
+  --pattern 'cdm-task-stream-records.tar.zst' --dir artifacts/v0.9.0
+for group in inference records; do
+  zstd -dc --long=30 artifacts/v0.9.0/cdm-task-stream-${group}.tar.zst | tar -x
+done
+python -m experiments.discoveryworld.evaluate_active_stream \
+  --manifest experiments/discoveryworld/active_lifetime_comparison.json \
+  --checkpoint runs/discoveryworld/active_lifetime/carry_seed191/update1200.pt \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --state-mode carry \
+  --initial-rng-root runs/discoveryworld/active_experiments/lifetime_native/initial_rng \
+  --output runs/reproduced-task-stream-191 --workers 4 --threads 2
+```
+
+Use `--state-mode reset` with the same checkpoint and a new output directory for
+the task-boundary intervention. The separately trained control is
+`active_lifetime/task_reset_seed191/update1200.pt`; repetition 192 uses the
+corresponding `seed192` paths. Frozen parent comparisons use the two final
+calibration-rehearsal models in v0.8.0. Reproducing the training from those
+parents requires their optimizer states from the v0.8.0 model archives, the
+prepared measurement data, and the commands in [ACTIVE_STREAM.md](ACTIVE_STREAM.md).
 
 ## Active experimental learning: v0.8.0
 
