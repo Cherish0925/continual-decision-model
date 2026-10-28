@@ -32,8 +32,16 @@ from .train_active_core import make_observation, visible_beliefs
 NATIVE_RELATIONS = ("density", "temperature", "quantum_gap", "radiation", "spectrum_channel_5")
 
 
-def observation(episode, event, mixture, step, max_steps, device):
+def observation(episode, event, mixture, step, max_steps, device, *, close_completed_task=False):
     tensors = episode.tensors(device)
+    if close_completed_task and bool(tensors["known"].all()) and len(episode.completed_targets) == 2:
+        # The table environment's empty remaining-target set uses query zero.
+        # This convention is confined to the last state update. Public records
+        # and the event's actually tested object/hypothesis remain unchanged.
+        tensors["query"] = torch.zeros_like(tensors["query"])
+        event = event.clone()
+        event[:, 32:36] = 0
+        event[:, 32] = 1
     obs = make_observation(tensors["values"], tensors["counts"], tensors["known_hz"],
                            tensors["known"], tensors["query"], tensors["failed"],
                            event, mixture, step, max_steps)
@@ -105,6 +113,8 @@ def run_stream(job):
         outcome_pending = False
         terminal_consumed = False
         final_state_change = None
+        final_feedback_query = None
+        final_feedback_object = None
         bootstrap_record = None
         step = 0
         with (output / "native.log").open("w") as log, redirect_stdout(log), torch.inference_mode():
@@ -165,7 +175,9 @@ def run_stream(job):
                             ending = "native_termination" if all(m["completed"] for m in env.metrics) else "native_action_budget"
                     if outcome_pending:
                         final_observation, _ = observation(episode, event, mixture, len(episode.decisions),
-                                                           options["max_decisions"], device)
+                                                           options["max_decisions"], device, close_completed_task=True)
+                        final_feedback_query = int(final_observation["event"][0, 32:36].argmax())
+                        final_feedback_object = int(final_observation["event"][0, :4].argmax())
                         before_feedback = copy_state(state)
                         state = consume_final_observation(model, state, final_observation, options["refinements"])
                         final_state_change = state_distance(copy_state(state), before_feedback)
@@ -182,6 +194,8 @@ def run_stream(job):
                    "boundary": {"initial_state_distance": state_distance(entry_state, initial),
                                 "previous_final_state_distance": None if previous is None else state_distance(entry_state, previous),
                                 "final_outcome_consumed": terminal_consumed,
+                                "final_feedback_query": final_feedback_query,
+                                "final_feedback_object": final_feedback_object,
                                 "final_outcome_state_change": final_state_change}, **episode.summary()}
             (output / "summary.json").write_text(json.dumps(row, indent=2) + "\n")
         previous = final_state

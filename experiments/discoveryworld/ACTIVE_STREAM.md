@@ -22,7 +22,12 @@ copied into the next instance's numerical tools.
 The final executed action can end an instance before the next policy decision.
 Its returned observation is therefore consumed once through `model.advance`
 before moving to the next instance. This updates the continuing state without
-selecting an action or advancing the simulator. At the new instance, the event
+selecting an action or advancing the simulator. Once both targets are activated
+and all four working settings have been publicly received, this final update
+uses the training environment's closed-task query indicator, zero. The event
+still identifies the actual last tested object and hypothesis; the native
+ledger is unchanged. Failed or unfinished instances retain their actual query.
+At the new instance, the event
 starts at zero with only the ordinary current-query indicator set. The model
 receives no relation, switch, return, seed or lifetime-position marker.
 
@@ -136,7 +141,7 @@ was executed on the development sequence
 
 | State across instances | Tasks completed | Total native actions |
 |---|---:|---:|
-| Carried | 6/6 | 396 |
+| Carried | 6/6 | 416 |
 | Reset | 6/6 | 357 |
 
 All twelve instances began with zero measurement samples and only the two
@@ -144,6 +149,9 @@ public support settings. Saved entry states exactly matched either the
 previous exit state or the model's initial state, as specified. Every terminal
 feedback observation changed the continuing state. The first instance had
 identical actions; each later instance differed from its first decision.
+The final state update used the closed-task query indicator while preserving
+the actual last tested object; an unfinished-instance check retained its
+original query and event.
 This verifies the native state interface. These weights had not been trained
 across task boundaries, so this check is not a test of lifetime-training gains.
 The records are under
