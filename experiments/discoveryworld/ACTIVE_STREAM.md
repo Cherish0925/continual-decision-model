@@ -193,6 +193,16 @@ Separate output directories preserve each condition. Streams run in parallel;
 instances within a stream execute in order. `--save-boundary-states` optionally
 stores the actual entry and exit tensors for a small implementation check.
 
+`summarize_active_stream.py` reports paired differences by complete stream.
+`summarize_native_costs.py` accepts the same `--run ARM=DIRECTORY`,
+`--repetition` and `--output` arguments and reads each executed decision. It
+writes per-instance costs and grouped CSV/JSON tables, separating public setup,
+measurement execution and candidate testing. Navigation, isolation and device
+adjustments remain charged to the request that caused them. For every instance,
+the three components must sum exactly to its recorded native action count.
+Repeated use of a shared reference is retained separately by repetition and
+does not create additional independent samples.
+
 ## Native interface check
 
 Before running the fixed comparison, the frozen calibration-rehearsal model
