@@ -4,6 +4,34 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Active measurement and calibration rehearsal — 28 October
+
+The new policy learns what to measure before collecting a complete experimental
+record. Training updates 26.65 million parameters, including the GRU and
+Transformer workspace. Across two independent initializations, both persistent
+models complete all 52 new instances from the training relation families, using
+100.15 and 90.69 native actions, against 242.13 for full measurement.
+[The paired study](results/active_experiments.md) includes independently trained
+ledger controls, state-reset interventions and the variability on a relation
+absent from the original native training records.
+
+The follow-up practices alternative affine relations consistent with two public
+calibrations, preserving the actual instrument measurements. On a separate
+64-instance confirmation, continuations from two independently trained parents
+each complete 62 tasks, versus 54 and 60 for matched ordinary training. Both
+rehearsal models and full measurement complete the same 62 instances. Mean
+native actions are 115.31 and 111.70 for rehearsal, versus 245.94 for full
+measurement. Additional
+coverage comes from the relation without original native training examples,
+which is now practiced through generated hypotheses.
+[The rehearsal comparison](results/calibration_rehearsal.md) reports the actual
+intervention, controls, instance-level results and exploration costs.
+
+The [method and commands](ACTIVE_LEARNING.md) distinguish recorded instrument
+replay, generated calibration tasks and actual native execution. All final
+scores above come from the simulator's official completion flag. The numerical
+hypothesis family and scalar setting tool remain explicit components.
+
 ## Learning complete experimental choices — 28 October
 
 The next study changes the decision being learned. A choice now selects and

@@ -10,44 +10,49 @@ An observation can become outdated while inference is still running. The researc
 
 ## Current results
 
-The [scientific-task release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.7.0)
-contains trained policies, experimental records and simulator observations.
-[Download and reproduce](experiments/discoveryworld/RELEASE.md) ·
-[Full results](experiments/discoveryworld/RESULTS.md) ·
-[Training and evaluation](experiments/discoveryworld/README.md).
+The current scientific-task study trains the continuing core to choose what to
+measure and when to test a setting. It then uses alternative calibration
+relations to broaden the experiments the model is prepared to try.
 
-| Study | Measured result | What it establishes |
+[Results](experiments/discoveryworld/RESULTS.md) ·
+[Method and reproduction](experiments/discoveryworld/ACTIVE_LEARNING.md) ·
+[Models and experiment records](experiments/discoveryworld/RELEASE.md)
+
+| Study | Result | Interpretation |
 | --- | --- | --- |
-| Learning complete experimental choices | On 24 new instances: predictive parent **14/24**, posterior-ordered experiments **16/24**, learned numerical choices **17/24 and 18/24** across two training seeds | Learning complete outcomes improves experimental choices. Adding neural-state input gives 17/24 and 16/24, with no consistent advantage. |
-| Transfer to the original action reader | On a separate 24-instance cohort: original reader **19/24**, posterior-ordered experiments **21/24**, both fixed learned selectors **23/24**; mean actions fall from 267.88 to 249.46 | The selector transfers without retraining and improves on both controls. Three completions are gained and one lost against posterior order; both training seeds produce the same actions on this cohort. |
-| Autonomous Reactor Lab experiments | Two trained action readers complete **14/16 and 13/16** tasks from reset across two eight-instance cohorts | A continuing policy can collect its own evidence and use numerical tools to complete experiments. Its recurrence and perception are frozen in this comparison. |
-| Evidence and persistent-state controls | Matched readers without explicit evidence complete **0/8** on the first cohort; clearing the reference policy's workspace also gives **0/8** | Experimental facts and persistent state contribute to the trained policy. A received-facts reader without derived predictions completes 11/16. |
-| Joint state and computation training | On a separate eight-instance cohort: reference **3/8**, fixed-compute joint training **4/8**, adaptive joint training **2/8** | Training the GRU, workspace and action head is implemented. The allocator always selects one refinement; these results do not establish an improvement from adaptive computation. |
-| Action-consequence prediction | On 24 fresh instances: reference **18/24**, joint prediction **16/24**, the same model without extra workspace cycles **9/24** | Additional computation affects this trained policy; removing forecast feedback retains 16/24. |
-| Learning from alternative actions | On another 24 instances: reference **17/24**; predictive parent, matched replay and paired-consequence learning each **16/24** | Return predictions improve, but task completion does not. The 48 training action pairs produce no completion/progress differences. |
+| Active measurement, two training seeds | Both persistent models complete **52/52** new instances from the training relation families, using **100.15 and 90.69** native actions on average; full measurement needs **242.13** | The trained policy learns to acquire useful evidence before collecting every measurement. |
+| Continuing-state comparison | Across all 64 instances, persistent models complete **53/64 and 60/64**; separately trained ledger controls complete **51/64** each | Continuing state affects experimental decisions. Resetting the same trained weights gives 51/64 and 54/64. Transfer to the reserved relation varies across training seeds. |
+| Alternative calibration practice, two independent parents | On a separate 64-instance cohort, both rehearsal models complete **62/64**, versus **54/64 and 60/64** for matched extra training | Both match full measurement's exact completed instances, with **53.1% and 54.6% fewer native actions**. Both complete all 12 instances of the relation without original native training examples. |
 | Learning during process control | Retained online updates give error **0.153 ± 0.003**, versus **0.307** when discarded at matched compute, over three training seeds | Training through the updates used during deployment makes online learning useful in the controlled process tasks. |
 
-The scientific-task policy uses nine explicit affine hypotheses and a numerical
-setting/probe tool. The reported cohorts remain separate in the result tables.
-Efficient experiment selection, useful additional reasoning and learning retained
-across scientific tasks are the next research questions. Completed unsuccessful
-comparisons are included with their conditions and traces.
+The scientific experiments use nine explicit affine hypotheses and a numerical
+setting tool. Rehearsal holds recorded measurements and public calibrations
+fixed, generating alternative target relations for training. The relation
+without native training examples is therefore practiced through generated
+hypotheses. All policies run from task reset and pay for navigation, measurement
+and adjustment. The matched controls, failures and instance-level data are
+retained in the [results](experiments/discoveryworld/RESULTS.md).
 
-The [prediction and action-consequence studies](experiments/discoveryworld/PREDICTION.md)
-have completed four matched training runs, 216 from-reset native evaluations,
-96 alternative-action continuations and six computation interventions.
-[Results](experiments/discoveryworld/RESULTS.md) connect the measurements to the
-remaining question: how to make internal prediction and computation improve
-the choice of an experiment.
+Earlier scientific studies established autonomous execution and learned
+selection between complete setting experiments. They also found that additional
+forecasting or computation did not reliably improve decisions. The
+[full record](experiments/discoveryworld/RESULTS.md) preserves those findings.
+Adaptive computation and learning retained across scientific tasks remain the
+next capabilities to connect to this active experimental policy.
 
 ## Model
 
-The trained scientific-task policy combines **frozen SigLIP image/text features,
-a persistent GRU/Transformer state, an action reader and exact experimental
-records with a numerical tool**. Its decision network is about **0.053B**
-parameters; the frozen perception model adds about **0.375B**. The successful
-reader comparison trains 442,753 parameters. The later joint-training comparison
-also updates recurrence, workspace and projections.
+The active-experiment policy reads structured public measurements and operation
+feedback. Training updates **26.65 million parameters**, including **23.11 million**
+in the inherited GRU and Transformer workspace. State continues across
+measurements and the two experimental targets. The frozen visual encoders are
+not used in this particular comparison.
+
+The earlier multimodal policy combines frozen SigLIP image/text features with
+a persistent state, an action reader and exact experimental records. Its decision
+network has about **0.053B** parameters; frozen perception adds about **0.375B**.
+The successful early-reader comparison trained only 442,753 parameters; later
+studies jointly trained the recurrent core and its task interfaces.
 
 [DESIGN.md](DESIGN.md) specifies the broader model, including activity selection,
 episodic retrieval and continued learning. The on-demand Qwen3.5-2B semantic
@@ -76,7 +81,7 @@ The existing trained studies use these implementations:
 | [Continual agent](experiments/continual_agent/RESULTS.md) | One running process over a stream of changing sites: partial view, asynchronous surveys, requests with idle periods; PPO-trained choice of refinements, surveys and moves; learning from unused compute | Three PPO seeds per planner: the learned activity head beats the best hand-written schedule on two of three planners (+0.048, +0.014) and ties on the third, with 42–51% fewer refinements and more surveys. Learning paid from unused compute raises the running agent's reward on larger mazes with a full view (+0.026, six paired runs); with a partial view it has not improved reward |
 | [Lifetime](experiments/lifetime/RESULTS.md) | One 35.9 M-parameter model over instrument, thermal and vehicle lifetimes with unannounced, returning condition changes. First round: eight settings, five seeds of 2·10⁷ interactions each. Second round: the model trained through its deployed learning steps, workspace across events and copies of processes, three seeds; held-out dynamics; three families; control against an independent clock with power | First round: prediction supervision lowers tracking error from 0.146 to 0.109 without the policy reading a prediction; refinement and online learning add nothing, and the instance's updates slightly hurt. Second round: trained through the learning steps it actually takes, the model's own updates halve its error against discarding them at matched compute (0.153 against 0.307), on held-out dynamics and against a real clock. Unrolling the workspace and an adapter bank did not help; activity-value guidance was not effectively tested; retention of returning conditions and proactive work are not yet achieved ([phase review](research/PHASE_REVIEW.md)) |
 
-[STATUS.md](STATUS.md) maps the full objective to code, measured results, and remaining work. Scientific-task artifacts are in [v0.5.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.5.0). Earlier checkpoints and evaluations are in [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0), [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1) and, for the continual core, [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0) (first round) and [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0) (second round).
+[STATUS.md](STATUS.md) maps the full objective to code, measured results, and remaining work. Active-learning models and experiment records are in [v0.8.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.8.0). Earlier checkpoints and evaluations are in [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0), [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1) and, for the continual core, [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0) (first round) and [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0) (second round).
 
 The neural pilot trains action prediction with a fixed memory-write schedule. The changing-maze planners and the continual agent run on GPUs; their training, evaluation and analysis commands are in the [maze](experiments/dynamic_maze/README.md#run) and [agent](experiments/continual_agent/README.md#run) READMEs.
 

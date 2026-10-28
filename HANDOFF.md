@@ -1,108 +1,37 @@
 # Research progress
 
-Updated 28 October 2026 after native
-scientific-task training and evaluation. Linked documents contain the detailed
-protocols and results. The scientific-task code and results are integrated into
-`main`; [release downloads](experiments/discoveryworld/RELEASE.md) supply the run artifacts.
+Updated 28 October 2026. The current study trains the continuing core to select
+measurements and setting experiments from incomplete evidence. Its
+[method](experiments/discoveryworld/ACTIVE_LEARNING.md),
+[paired results](experiments/discoveryworld/results/active_experiments.md), and
+[calibration-rehearsal comparison](experiments/discoveryworld/results/calibration_rehearsal.md)
+provide the working entry. Code and compact result tables are in the repository;
+[release downloads](experiments/discoveryworld/RELEASE.md) provide weights,
+measured datasets and complete native trajectories.
 
-**Current study — complete experimental choices.** The new collection executes
-302 complete experimental plans from 40 matched histories; every history has
-successful and unsuccessful alternatives. Four 317,314-parameter heads learn
-success and cost with or without the persistent neural state. On 24 fresh
-from-reset instances, the predictive parent completes 14/24, posterior-ordered
-experiments 16/24, numerical selectors 17/24 and 18/24, and state-conditioned
-selectors 17/24 and 16/24. The numerical selectors use 269.04 and 265.17 actions
-on average, against the parent's 288.92. The added neural-state input provides
-no consistent benefit. On another 24 instances, both fixed numerical heads
-transfer to the original reader and complete 23/24, against 19/24 for that
-reader and 21/24 for posterior-ordered plans. Mean actions fall from 267.88 to
-249.46. The two transferred heads produce identical action sequences on these
-24 cases. All four trainings and 264 from-reset evaluations have finished.
-[Results and native records](experiments/discoveryworld/RESULTS.md#learning-complete-experimental-choices--28-october)
-and the [protocol](experiments/discoveryworld/PREDICTION.md#learning-choices-between-complete-experiments)
-describe this study. Outputs are in `runs/discoveryworld/experimental_plans/`.
+The active policy updates 26.65 million parameters, including the inherited GRU
+and Transformer workspace. Two training seeds both complete all 52 new instances
+from the original training relation families, using 100.15 and 90.69 actions on
+average against 242.13 for full measurement. Independently trained ledger
+controls and state-reset interventions distinguish continuing computation from
+explicit measurement records. Transfer to the relation absent from original
+native training varies between seeds.
 
-**Earlier study — action consequences.** Two matched joint trainings
-use 141 training trajectories (32,578 actions) and 24 validation trajectories
-(5,000 actions), with a 53,970,907-parameter decision network. On 24 paired native
-instances, the original reader completes 18/24 and both prediction-training
-arms complete 16/24. Removing extra workspace cycles from the feedback model
-reduces completion to 9/24; removing forecast scoring and feedback retains 16/24
-and identical action sequences in 21/24 cases. Extra computation affects the
-trained model, but reading the forecasts has not improved task completion.
-[Results](experiments/discoveryworld/RESULTS.md#action-consequence-prediction--27-october)
-include all five methods and the six selected same-prefix computation branches.
+Calibration rehearsal expands that training experience: measured quantities and
+public support settings remain fixed while alternative affine hypotheses supply
+generated task outcomes. Two matched continuations from independently trained parents both reach
+62/64 native completions, against 54/64 and 60/64 for ordinary continued
+training. Both complete exactly the same instances as full measurement, with
+53.1% and 54.6% fewer actions. This is transfer
+from generated practice within an explicit hypothesis family. The detailed
+results retain exploration costs and every failure.
 
-**Completed follow-up — learning alternative actions.** Forty-eight ambiguous
-training states supply 96 paired native continuations. No pair changes final
-completion or progress; 34 differ by one action. Two matched updates learn from
-these consequences or replay alone. On 24 fresh instances the reference
-completes 17/24, and the predictive parent, replay and paired updates complete
-the same 16/24. Return prediction improves without improving task completion.
-The
-[protocol](experiments/discoveryworld/PREDICTION.md#learning-from-alternative-actions)
-and [results](experiments/discoveryworld/RESULTS.md#learning-from-paired-action-consequences--27-october)
-describe the full comparison. Outputs are under
-`runs/discoveryworld/action_consequences/` and
-`runs/discoveryworld/consequence_learning/`. The next learning data need
-alternatives that change the experiment or evidence acquired; low action-score
-margins alone did not select such alternatives here.
-
-**Latest continuation — joint training.** Observation reads now use the
-in-memory PNG implementation from PR #3; the measured read time is 78.78 ms
-versus 216.97 ms for the native API. A new sequence trainer updates the GRU,
-Transformer workspace, projections and action reader together, and optionally
-learns 0/1/2/4 internal refinements. Two three-epoch trainings have finished.
-On eight new paired native instances the original reader completes 3/8,
-fixed-compute joint training 4/8, and multi-depth joint training 2/8. The latter
-always selects one refinement; forcing one with the same weights reproduces
-its trajectories. These results do not establish adaptive-computation gains.
-The original successful reader remains the reference. Full conditions and
-per-instance data are at the top of [task results](experiments/discoveryworld/RESULTS.md).
-The actual-return comparison has also finished: 32 continuations from eight
-training prefixes change only the first decision's refinement count. All
-prefixes match, and all four depths produce identical executed action
-sequences within each group. Those states supply no task-return preference
-for additional computation. Local plans and outputs are under
-`runs/discoveryworld/joint_compute/compute_branches/`; the committed CSV is
-linked from the task results. Those joint-computation runs have finished.
-
-**The task policy now completes experiments from reset.** Across two cohorts of sixteen Reactor
-Lab Normal instances, two independently trained action readers complete **14/16
-and 13/16** tasks. On the first eight-instance cohort, they complete 8/8 and 7/8. Each chooses its own measurements and calibrations and uses the
-same learned numerical prior and explicit scalar/probe tool. Matched readers
-with the explicit experimental-evidence input zeroed complete **0/8**. Clearing
-the trained policy's workspace while preserving recurrent state and measurement
-records also yields **0/8**. A reader of received facts without derived numerical
-predictions completes **11/16** across both cohorts: access to experimental facts is effective, while
-the extra decision value of exposing posterior predictions remains unresolved.
-
-Only the 442,753-parameter action reader is trained in this comparison; source
-perception, recurrence and the numerical prior stay frozen. Both evaluation cohorts
-include a held-out relation family within Reactor Lab, not new scientific
-domains. The model uses nine explicit affine hypotheses and an explicit scalar
-primitive. These are autonomous whole-task results under that defined method,
-not purely neural equation discovery or cross-task skill retention.
-
-The [task results](experiments/discoveryworld/RESULTS.md) retain per-instance native
-evaluations and the earlier failed routes. Supplied-prefix takeovers previously
-completed 14/16 in each of two training seeds; the new from-reset study closes
-the evidence-acquisition gap in that comparison. Successful trajectories still
-contain about thirty repeated measurements of some objects. The first actual-return
-update reduces second-cohort completion from 6/8 to 5/8; a training-state
-KL step-length rule restores 6/8 without saving actions. That round has not
-improved the method. A separate conditional-mixture
-controller comparison repairs one failure but introduces another; on a fresh
-cohort it completes 7/8 against the original tool’s 8/8. It has not replaced the
-reference. A second actual-return round
-uses eight fresh training instances and the learned value estimator; it remains
-at 6/8 with the original mean action count. Paired native continuations then
-show that earlier departure saves 29 and 24 actions in two successful training
-instances; two other pairs remain failed. Learning from the two informative
-pairs reduces development completion to 5/8, versus 6/8 for matched extra
-reference replay. All runs have finished. The results, losses and actual
-trajectories are retained under `runs/discoveryworld/belief_actions/` and in
-the linked result tables. The release guide maps these records to downloadable archives.
+Earlier scientific studies, including successful task execution, prediction
+training, unsuccessful computation allocation and learned complete-experiment
+selection, remain in [RESULTS.md](experiments/discoveryworld/RESULTS.md). The
+separate process-lifetime studies below establish useful online parameter
+learning. Connecting that capability and adaptive computation to this active
+scientific policy remains the next research step.
 
 ## 1. The question
 
@@ -239,37 +168,30 @@ mismatch is resolved. See [RUNNING.md](RUNNING.md) for installation and the task
 README for collection, training and evaluation. All experiments described in
 this overview have finished; planned capabilities are listed below.
 
-## 8. Next steps, in order
+## 8. Next steps
 
-Joint prediction and isolated action comparisons did not improve completion.
-Learning complete experimental outcomes now improves decisions relative to the
-predictive parent and posterior-ordered plans. The numerical-only head is at
-least as effective as adding the continuing neural state in this comparison.
-The next question is how the model acquires the evidence needed for these
-choices, and where additional internal computation can improve them. Current
-plans begin after all nine quantities are measured; they do not choose which
-measurement to acquire. The numerical tool remains part of execution.
+The active-measurement and rehearsal studies now provide the starting policy.
+The next experiment keeps its GRU and workspace across fresh experimental
+instances. Each instance has its own measurements and two calibrations; a
+relation can persist, change without a label, and later return. The explicit
+measurement ledger and numerical fit restart at each instance. Training and
+paired native execution will compare retained state with a model trained to
+reset at those same boundaries. The question is whether previous experiments
+reduce the observations needed in later ones while preserving completion.
 
-1. **Learn the trade-off between more evidence and acting now.** Extend the
-   complete-choice training to partial measurement histories. Compare acquiring
-   a discriminating measurement, checking another calibration object, and
-   executing a setting now. Follow each through the subsequent experimental
-   choice so its learning target includes the value of the acquired evidence.
-   Include both useful and unnecessary measurements. Preserve the strongest
-   existing reader and selector as references.
+This measures learning carried by state. Deployment-time parameter updates and
+idle-period consolidation require their own training and subsequent-task
+comparison. The successful process-lifetime objective supplies an existing
+implementation to connect once the scientific task stream is working.
 
-2. **Make uncertainty useful to action and computation.** The current
-   received-facts control already completes eleven of sixteen tasks. Construct
-   ambiguous and variable-noise decisions where acquiring a discriminating
-   observation can change a useful intervention. Train and measure when more
-   measurement or internal computation pays; a prediction feature alone is not
-   evidence of experiment design.
-3. **Train learning across task return.** Preserve experience across condition
-   changes and A→B→A returns, then measure saved interactions and recovered
-   performance. The current scientific-task comparisons reset each instance.
-4. **Extend the same learned process to other scientific tasks.** Chemistry and
-   nutrients require their own observed quantities and interventions, while
-   keeping the continuing core and action/compute interfaces shared. Compare
-   against recurrent and pretrained-agent baselines with the same observations.
+Adaptive computation remains another substantive part of the goal. Earlier
+fixed-depth comparisons found little decision value in additional refinements.
+A useful continuation must train an identifiable prediction or plan refinement,
+then learn when its subsequent payoff warrants its cost. The present
+one-refinement scientific policy is the reference, not an adaptive-compute result.
 
-Keep the instrument/thermal/vehicle families as the controlled setting for mechanism analysis. They answer questions about timing and adaptation that a visual suite does not.
+Chemistry and nutrient tasks can broaden the same process beyond numerical
+calibration. Their observed quantities and interventions need task interfaces;
+the continuing core, activity choices and future-task learning objective should
+remain shared. The instrument, thermal and vehicle studies continue to provide
+independently timed environments for response and online-learning comparisons.

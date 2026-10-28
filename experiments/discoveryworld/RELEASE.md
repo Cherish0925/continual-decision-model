@@ -1,6 +1,63 @@
 # Scientific-task models and experiments
 
-[v0.7.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.7.0) · [Results](RESULTS.md) · [Training commands](README.md)
+[v0.8.0 downloads](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.8.0) · [Results](RESULTS.md) · [Training commands](ACTIVE_LEARNING.md)
+
+## Active experimental learning: v0.8.0
+
+The persistent core now learns measurement and setting decisions jointly from
+incomplete evidence. Calibration rehearsal generates alternative training tasks
+from measured quantities and two public calibrations. Two independently trained
+parents, each with matched ordinary and rehearsal continuations, provide the
+comparison. Both rehearsal policies complete 62/64 fresh native instances,
+matching full measurement with 53.1% and 54.6% fewer native actions. Ordinary
+continuations complete 54/64 and 60/64. The [full comparison](results/calibration_rehearsal.md)
+reports the additional exploration costs and state-reset interventions.
+
+The active policy trains 26.65 million parameters, including the inherited GRU
+and Transformer workspace. This comparison uses structured public observations,
+nine explicit numerical hypotheses and a scalar setting tool. It does not require
+visual-encoder or language-model weights.
+
+| Download group | Contents |
+| --- | --- |
+| `cdm-active-models.tar.zst.part*` | Two persistent and two ledger trainings, first-parent rehearsal and ordinary continuations, plus their original core, numerical prior and selector dependencies |
+| `cdm-active-repeat-models.tar.zst` | Matched rehearsal and ordinary continuations from the independently trained second parent |
+| `cdm-active-records.tar.zst*` | Prepared measurement datasets, training configurations and curves, all native evaluations, shared random states, paired summaries and feasibility measurements |
+| `cdm-active-evidence-records.tar.zst.part*` | Original collected public measurement histories for re-extracting the expanded training data |
+
+The accompanying `*-files.txt` lists identify the contents. Archives restore
+relative paths below `runs/discoveryworld/`; extract into a fresh checkout.
+The prepared data and model packages suffice for training and native evaluation.
+The larger evidence archive is optional for those uses. The original source
+histories preceding this collection remain in v0.5.0 and v0.6.0.
+
+```bash
+git clone --branch v0.8.0 https://github.com/Cherish0925/continual-decision-model.git
+cd continual-decision-model
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.8.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-active-models.tar.zst*' \
+  --pattern 'cdm-active-repeat-models.tar.zst' \
+  --pattern 'cdm-active-records.tar.zst*' --dir artifacts/v0.8.0
+for group in models repeat-models records; do
+  cat artifacts/v0.8.0/cdm-active-${group}.tar.zst* | zstd -dc --long=30 | tar -x
+done
+python -m experiments.discoveryworld.evaluate_active_native \
+  --strategy learned \
+  --checkpoint runs/discoveryworld/active_experiments/rehearsal/counterfactual_seed183/update1200.pt \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --manifest experiments/discoveryworld/active_rehearsal_comparison.json \
+  --initial-rng-root runs/discoveryworld/active_experiments/rehearsal_native/initial_rng \
+  --output runs/reproduced-native-rehearsal \
+  --device cpu --workers 8 --max-actions 400 --max-decisions 160
+```
+
+For the independent repeat, use
+`runs/discoveryworld/active_experiments/rehearsal_repeat/counterfactual_seed184/update1200.pt`.
+The [method](ACTIVE_LEARNING.md#reproduce) gives both training phases, the matched
+continuations and the full-measurement control. CPU workers run native evaluation;
+GPU batching accelerates core training. Release tables report actual native
+completion, separately from the training replay's activation proxy.
 
 ## Complete experimental choices: v0.7.0
 

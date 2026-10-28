@@ -167,7 +167,8 @@ python -m experiments.discoveryworld.train_active_core \
 ```
 
 Use fraction `0` for the matched continuation. The independent repeat uses
-seed 184 and the final persistent model trained with seed 182. The fixed
+seed 184 and
+`runs/discoveryworld/active_experiments/persistent_seed182/phase2/update1200.pt`. The fixed
 final checkpoint is evaluated; intermediate validation does not select it.
 
 ```bash

@@ -33,6 +33,9 @@ SECRET = re.compile(rb"(?:ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|----
 def files(root, runs=()):
     base = root / "runs/discoveryworld"
     for selected in ([base / run for run in runs] if runs else [base]):
+        if selected.is_file() and not selected.is_symlink():
+            yield selected
+            continue
         if not selected.is_dir():
             raise FileNotFoundError(selected)
         for directory, names, filenames in os.walk(selected):
@@ -144,7 +147,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kind", choices=("reference", "models", "records", "observations"), required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--run", action="append", default=[], help="Run directory relative to runs/discoveryworld; repeat for a delta release")
+    parser.add_argument("--run", action="append", default=[], help="Run directory or file relative to runs/discoveryworld; repeat for selected release contents")
     parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
     args = parser.parse_args()
     package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name)

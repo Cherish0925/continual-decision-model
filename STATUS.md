@@ -4,12 +4,31 @@ Implementation updated **28 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier
 supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in
-[v0.5.0–v0.7.0](experiments/discoveryworld/RELEASE.md).
+[v0.5.0–v0.8.0](experiments/discoveryworld/RELEASE.md).
 Published planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1); the first continual-core campaign from [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0), and 35 second-round checkpoints with evaluations from [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
 The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Recall of situations met before, revision of inference in progress, and proactive work are not yet achieved. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+
+## 28 October active measurement and calibration rehearsal
+
+The [active policy](experiments/discoveryworld/ACTIVE_LEARNING.md) jointly trains
+26.65 million parameters to choose measurements before a complete record exists.
+Both independent persistent-core trainings complete 52/52 new instances from
+training relation families with fewer actions than full measurement. Paired
+state interventions and separately trained ledger controls are reported in the
+[full comparison](experiments/discoveryworld/results/active_experiments.md).
+
+[Calibration rehearsal](experiments/discoveryworld/results/calibration_rehearsal.md)
+then practices alternative numerical relations while keeping the recorded
+measurements and two public calibrations fixed. Two independent-parent continuations
+both complete 62/64 instances, against 54/64 and 60/64 for matched ordinary
+training. They match the full-measurement control's completed instances with
+53.1% and 54.6% fewer actions. Generated tasks supply the otherwise
+missing relationship practice. This study uses structured observations and a
+fixed numerical tool; it does not update the visual backbone or implement
+parameter learning across deployed scientific tasks.
 
 ## 28 October experimental choices
 
