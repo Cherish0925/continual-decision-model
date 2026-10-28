@@ -92,6 +92,13 @@ def test_event(query, hypothesis, success, step, max_steps, device, cost=5.):
     return event
 
 
+def changed_hypotheses(previous_values, previous_counts, values, counts, known, query):
+    """A failed setting becomes eligible only when its own evidence changes."""
+    changed = (counts > 0) & ((previous_counts == 0) | (values != previous_values))
+    relevant = known | (torch.arange(values.shape[1], device=values.device)[None] == query[:, None])
+    return (changed & relevant[..., None]).any(1)
+
+
 @torch.no_grad()
 def make_observation(values, counts, known_hz, known, query, failed, event, mixture,
                      step, max_steps, acquire_mask=None):
@@ -271,10 +278,12 @@ class ActiveTableEnvironment:
             new = (old * previous + returned * present) / (previous + present).clamp_min(1)
             new[:, 2] = torch.where(present[:, 2], torch.where(previous[:, 2] > 0,
                                       torch.minimum(old[:, 2], returned[:, 2]), returned[:, 2]), old[:, 2])
+            revised = present & ((previous == 0) | (new != old))
+            relevant = self.known[selected, obj] | (obj == self.query[selected])
+            self.failed[selected] &= ~(revised & relevant[:, None])
             self.values[selected, obj] = new
             self.counts[selected, obj] += present.long()
             self.group_counts[selected, obj, group] += 1
-            self.failed[selected] = False
             self.event[selected] = measurement_event(obj, group, returned, present, self.query[selected],
                                                      self.steps[selected], self.max_steps, self.mixture)
             reward[selected] -= self.measurement_cost
@@ -393,6 +402,7 @@ def main():
                     trainable_core_parameters=sum(p.numel() for name, p in parameters if name.startswith("core.")),
                     scope="native-recorded measurement replay; activation tolerance proxy, not native task completion",
                     radiation_summary="running minimum of individually acquired recorded returns",
+                    test_retry_rule="only after the tested coordinate's received evidence changes",
                     checkpoint_selection="final update; intermediate validation is recorded")
     (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
     state = model.initial(env.batch, env.device)
