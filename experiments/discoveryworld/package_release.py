@@ -50,6 +50,9 @@ def files(root, runs=(), base="runs/discoveryworld"):
 
 def portable(value, root):
     if isinstance(value, str):
+        # Task worktrees share the same project-relative runs directory.
+        value = re.sub(re.escape(str(root)) + r"/\.worktrees/[^/]+/", "", value)
+        value = value.replace(str(root) + "/.venv/bin/python", "python")
         return value.replace(str(root) + "/", "").replace(str(root), ".")
     if isinstance(value, dict):
         return {k: portable(v, root) for k, v in value.items()}
