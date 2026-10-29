@@ -10,6 +10,8 @@ import subprocess
 import sys
 import time
 
+import torch
+
 from .verify_feedback_start import arguments_from_settings
 
 
@@ -117,6 +119,9 @@ def main():
     if args.plan_only:
         print(json.dumps({key: plan[key] for key in ('total_new_external_requests', 'total_native_executions')}))
         return
+    cuda_available, device_count = torch.cuda.is_available(), torch.cuda.device_count()
+    if not cuda_available or device_count < 2:
+        raise RuntimeError('Run this two-GPU queue where both CUDA devices are visible before waiting for dependencies')
     verified = read_json(args.output / 'initial_equivalence.json', [])
     if {row['seed'] for row in verified} != {231, 232} or not all(
         row['shared_weights_exact'] and row['same_observation_outputs_exact'] and
@@ -127,6 +132,7 @@ def main():
     done = {row['name'] for row in completed if row['exit_code'] == 0}
     jobs = [job for job in plan['trainings'] if job['name'] not in done]
     (args.output / 'queue.json').write_text(json.dumps(dict(pid=os.getpid(), started=time.time(),
+                                                        cuda_available=cuda_available, device_count=device_count,
                                                         phase='waiting_or_training'), indent=2) + '\n')
 
     def run_training(job):
