@@ -18,6 +18,12 @@ same trained memory yields one more completion in each repetition, and rapid
 recovery of a returning relationship remains unresolved. The results separate
 the value of the complete training method from the effect of retaining memory.
 
+The ongoing [continual physical-learning study](experiments/continual_physics/README.md)
+connects those predictions to a persistent neural state and learned choices of
+computation and online learning. Eight matched trainings are running, followed
+by native execution and a fixed-computation recurrent reference. Its final
+performance is still being measured.
+
 ## Current results
 
 The scientific-task studies train the continuing core to choose what to measure

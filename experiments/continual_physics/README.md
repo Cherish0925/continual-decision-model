@@ -106,6 +106,20 @@ also discards that correction in the full trained weights. A fixed activity
 schedule tests learned allocation against performing the available activities
 in a predetermined order.
 
+Two additional trainings compare a recurrent policy with shared physical tools.
+They use the same parent weights, observations, task streams, objective and
+204,800-request budget. The model updates its GRU and workspace once per received
+observation, retains their state across tasks, and waits while results are
+pending. Neural parameter updates are disabled at deployment; the common
+Bayesian calibration and setting proposal remain available. This tests the
+additional value of learned internal activity and neural online correction
+against a simpler trained policy. It is a recurrent meta-learning comparator,
+not a reproduction of a particular published RL² implementation.
+
+`launch_reference.py` queues these additional trainings after the three learned
+activity conditions finish on each device. They remain separate from the
+original eight-training comparison.
+
 The complete comparison can be launched with:
 
 ```bash
