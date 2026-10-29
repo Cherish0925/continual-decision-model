@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import redirect_stdout
 import fcntl
@@ -97,6 +98,8 @@ def run_stream(job):
     device = torch.device(options["device"])
     model, _ = load_continual_physics_checkpoint(options["checkpoint"], device)
     model.eval()
+    if options.get("condition_failure_weights", False):
+        model.physics_config = replace(model.physics_config, condition_failure_weights=True)
     if options.get("disable_recurrent_feedback", False):
         if model.recurrent_feedback is None:
             raise ValueError("The feedback-disabled comparison requires a trained connection")
@@ -181,6 +184,7 @@ def run_stream(job):
                             name: prediction[f"physical_{name}"][0].tolist()
                             for name in ("means", "std", "weights")}
                         decision["physical_settings"] = prediction["physical_settings"][0].tolist()
+                        decision["physical_decision_weights"] = prediction["physical_decision_weights"][0].tolist()
                         decision["bayes_physical_prediction"] = {
                             name: session.observation[f"physical_{name}"][0].tolist()
                             for name in ("means", "std", "weights")}
@@ -264,6 +268,7 @@ def main():
     parser.add_argument("--discard-physical-updates", action="store_true")
     parser.add_argument("--discard-physical-memory", action="store_true")
     parser.add_argument("--disable-recurrent-feedback", action="store_true")
+    parser.add_argument("--condition-failure-weights", action="store_true")
     parser.add_argument("--feedback-delay-ticks", type=int, default=0)
     parser.add_argument("--tolerance-hz", type=float, default=2.)
     parser.add_argument("--max-actions", type=int, default=400)

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from dataclasses import replace
 import json
 from pathlib import Path
 import time
@@ -225,6 +226,8 @@ def training_parser():
     p.add_argument("--mode", choices=("full", "discard_physical", "task_reset", "fixed_schedule", "recurrent_reference"), default="full")
     p.add_argument("--recurrent-feedback", choices=("workspace", "evidence", "both"),
                    help="Candidate GRU context input; omitted keeps the parent architecture")
+    p.add_argument("--condition-failure-weights", action="store_true",
+                   help="Condition decision relation weights on all observed failed-setting intervals")
     p.add_argument("--updates", type=int, default=200)
     p.add_argument("--batch", type=int, default=32)
     p.add_argument("--external-per-stream", type=int, default=32)
@@ -277,6 +280,8 @@ def initialize_experiment(args):
         model.load_state_dict(initial["model"], strict=True)
     if args.recurrent_feedback is not None:
         configure_recurrent_feedback(model, RecurrentFeedbackConfig(args.recurrent_feedback))
+    if args.condition_failure_weights:
+        model.physics_config = replace(model.physics_config, condition_failure_weights=True)
     model.retain_adaptation = not recurrent
     model.retain_physical_adaptation = args.mode not in {"discard_physical", "recurrent_reference"}
     return model, pool, plan, environment, delayed

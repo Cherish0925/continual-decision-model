@@ -23,6 +23,7 @@ from .core import CoreConfig, ContinualCore
 from .censored_observation import censored_gaussian_observation, _complement, _log_interval_mass
 from .experimental_belief import ExperimentalBelief, load_experimental_belief_checkpoint
 from .recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
+from .decision_belief import failure_conditioned_weights
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,7 @@ class ContinualPhysicsConfig:
     gradient_norm: float = 10.
     max_exclusions: int = 512
     test_tolerance_hz: float = 2.
+    condition_failure_weights: bool = False
 
 
 def propose_physical_settings(means, std, exclusions, mask, *, tolerance=2., current=None,
@@ -248,6 +250,12 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
             raise ValueError("Each physical relation needs its corresponding candidate action")
         means, std, _ = self._correction(x, state["physical_means"], state["physical_std"],
                                          state["physical_eligible"], state["physics_fast"], state["physics_slow"])
+        decision_weights = state["physical_weights"]
+        if p.condition_failure_weights:
+            conditioned = failure_conditioned_weights(
+                means, std, decision_weights, state["physical_exclusions"],
+                state["physical_exclusion_mask"])
+            decision_weights = conditioned["weights"]
         proposal = propose_physical_settings(means, std, state["physical_exclusions"],
             state["physical_exclusion_mask"], tolerance=p.test_tolerance_hz,
             current=state["physical_current_hz"], minimum_step=state["physical_minimum_step_hz"],
@@ -262,7 +270,7 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
         corrected[:, sl, p.std_column] = torch.where(eligible,
             (std / self.belief.y_scale).to(candidates), candidates[:, sl, p.std_column])
         corrected[:, sl, p.weight_column] = torch.where(eligible,
-            state["physical_weights"].to(candidates), candidates[:, sl, p.weight_column])
+            decision_weights.to(candidates), candidates[:, sl, p.weight_column])
         execution_mask = action_mask.clone()
         execution_mask[:, sl] &= proposal["valid"]
         out = super().readout(state, corrected, execution_mask)
@@ -271,6 +279,7 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
         out["value"] = out["value"] + self.physical_value(activity_features).squeeze(-1)
         return {**out, "physical_means": means, "physical_std": std,
                 "physical_weights": state["physical_weights"], "physical_eligible": eligible,
+                "physical_decision_weights": decision_weights,
                 "physical_settings": settings, "physical_proposal_valid": proposal["valid"],
                 "physical_features": x, "physical_base_means": state["physical_means"],
                 "physical_base_std": state["physical_std"], "physical_candidates": corrected}
