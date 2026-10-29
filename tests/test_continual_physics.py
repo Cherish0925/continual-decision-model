@@ -122,3 +122,39 @@ def test_empty_measurement_partial_delivery_and_reset():
     assert not reset['pending'].any()
     assert reset['memory_valid'][0].any()
     assert not reset['memory_valid'][1].any()
+
+
+def test_public_failures_change_settings_without_removing_relation():
+    from cdm.continual_physics import propose_physical_settings
+    # A failed setting excludes Y in [-2, 2]. Symmetry leaves conditional mean
+    # at zero, but zero cannot succeed again. Propose a surviving success window.
+    mean, std = torch.tensor([[0.]], dtype=torch.float64), torch.tensor([[3.]], dtype=torch.float64)
+    proposal = propose_physical_settings(mean, std, torch.tensor([[[-2., 2.]]]), torch.tensor([[True]]))
+    assert proposal['valid'].item()
+    assert proposal['settings'].abs().item() == 4.
+    # The setting itself need not be outside excluded target intervals. Here a
+    # setting of -.5 covers all remaining high-probability targets in (0, 1).
+    proposal = propose_physical_settings(torch.tensor([[-.5]]), torch.tensor([[.7]]),
+        torch.tensor([[[-4., 0.], [1., 5.]]]), torch.tensor([[True, True]]))
+    torch.testing.assert_close(proposal['settings'], torch.tensor([[-.5]], dtype=torch.float64))
+    # Real control steps and origin are supplied by the caller, not assumed.
+    grid = propose_physical_settings(mean, std, torch.tensor([[[-2., 2.]]]), torch.tensor([[True]]),
+                                     current=torch.tensor([.3]), minimum_step=torch.tensor([1.5]),
+                                     lower=torch.tensor([-20.]), upper=torch.tensor([20.]))
+    grid_index = (grid['settings'] - .3) / 1.5
+    torch.testing.assert_close(grid_index, grid_index.round())
+    model, obs = example()
+    obs.update(physical_exclusions=torch.tensor([[[98., 102.]], [[98., 102.]]]),
+               physical_exclusion_mask=torch.ones(2, 1, dtype=torch.bool))
+    state = model.receive(model.initial(2, 'cpu'), obs)
+    out = model.readout(state, obs['candidates'], obs['action_mask'])
+    torch.testing.assert_close(out['physical_means'], obs['physical_means'])
+    assert (out['physical_settings'][:, 0] != 100).all()
+    assert out['physical_proposal_valid'].all()
+    assert torch.isfinite(out['logits'][:, 20]).all()
+    # Changing the query replaces its exclusion history but retains learning.
+    obs['physical_exclusions'] = torch.empty(2, 0, 2)
+    obs['physical_exclusion_mask'] = torch.empty(2, 0, dtype=torch.bool)
+    cleared = model.receive(state, obs)
+    assert not cleared['physical_exclusion_mask'].any()
+    assert cleared['h'].shape == state['h'].shape

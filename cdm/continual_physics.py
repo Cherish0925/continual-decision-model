@@ -20,7 +20,7 @@ from .continual_experiment import (Activity, ContinualExperimentConfig,
                                   ContinualExperimentPolicy, load_continual_checkpoint,
                                   select_rows)
 from .core import CoreConfig, ContinualCore
-from .censored_observation import censored_gaussian_observation
+from .censored_observation import censored_gaussian_observation, _complement, _log_interval_mass
 from .experimental_belief import ExperimentalBelief, load_experimental_belief_checkpoint
 
 
@@ -35,6 +35,54 @@ class ContinualPhysicsConfig:
     max_mean_shift: float = 16.
     max_log_scale: float = 3.
     gradient_norm: float = 10.
+    max_exclusions: int = 128
+    test_tolerance_hz: float = 2.
+
+
+def propose_physical_settings(means, std, exclusions, mask, *, tolerance=2., current=None,
+                              minimum_step=None, lower=None, upper=None):
+    """Choose a setting with greatest remaining success mass for each relation.
+
+    Failed settings exclude intervals of the unknown target, not intervals of
+    allowable control settings. For each surviving target segment, optimize the
+    setting's success window, then compare its probability with other segments.
+    A setting may be inside an excluded target interval if its window still
+    reaches possible targets. Optional control grids use the CURRENT public
+    setting as their origin. The default control is continuous, with no assumed
+    one-Hz resolution. Gaussian means remain unchanged by this action proposal.
+    """
+    low, high, present = _complement(exclusions.double(), mask.bool())
+    batch = len(means)
+    def vector(value, default):
+        return (means.new_full((batch,), default) if value is None else
+                torch.as_tensor(value, dtype=means.dtype, device=means.device).expand(batch))
+    tolerance = vector(tolerance, 2.)
+    current, step = vector(current, 0.), vector(minimum_step, 0.)
+    lower, upper = vector(lower, -torch.inf), vector(upper, torch.inf)
+    # For a short segment a range of centers covers its entire mass; for a
+    # long segment the best full-width window is closest to the Gaussian mode.
+    left, right = low + tolerance[:, None], high - tolerance[:, None]
+    center_low, center_high = torch.minimum(left, right), torch.maximum(left, right)
+    centers = means[..., None].clamp(min=center_low[:, None], max=center_high[:, None])
+    centers = centers.clamp(min=lower[:, None, None], max=upper[:, None, None])
+    safe_step = step.clamp_min(1e-12)
+    grid = (centers - current[:, None, None]) / safe_step[:, None, None]
+    floor = current[:, None, None] + grid.floor() * safe_step[:, None, None]
+    ceil = current[:, None, None] + grid.ceil() * safe_step[:, None, None]
+    candidates = torch.stack((floor, ceil), -1)
+    candidates = torch.where((step > 0)[:, None, None, None], candidates, centers[..., None])
+    valid = present[:, None, :, None] & (candidates >= lower[:, None, None, None]) & (candidates <= upper[:, None, None, None])
+    lo = torch.maximum(candidates - tolerance[:, None, None, None], low[:, None, :, None])
+    hi = torch.minimum(candidates + tolerance[:, None, None, None], high[:, None, :, None])
+    valid = valid & (lo < hi)
+    # Invalid padded candidates use a harmless interval before CDF arithmetic.
+    a = (torch.where(valid, lo, means[..., None, None] - std[..., None, None]) - means[..., None, None]) / std[..., None, None]
+    b = (torch.where(valid, hi, means[..., None, None] + std[..., None, None]) - means[..., None, None]) / std[..., None, None]
+    mass = _log_interval_mass(a, b).masked_fill(~valid, -torch.inf)
+    best = mass.flatten(2).argmax(-1)
+    setting = candidates.flatten(2).gather(-1, best[..., None]).squeeze(-1)
+    log_mass = mass.flatten(2).gather(-1, best[..., None]).squeeze(-1)
+    return {"settings": setting, "log_success_mass": log_mass, "valid": torch.isfinite(log_mass)}
 
 
 class ContinualPhysicsPolicy(ContinualExperimentPolicy):
@@ -84,7 +132,13 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
                      physics_pending_std=torch.ones(batch, q, dtype=torch.float64, device=device),
                      physics_pending_weights=torch.full((batch, q), 1 / q, dtype=torch.float64, device=device),
                      physics_pending_eligible=zeros(q, dtype=torch.bool),
-                     physics_pending=zeros(dtype=torch.bool))
+                     physics_pending=zeros(dtype=torch.bool),
+                     physical_exclusions=zeros(p.max_exclusions, 2, dtype=torch.float64),
+                     physical_exclusion_mask=zeros(p.max_exclusions, dtype=torch.bool),
+                     physical_current_hz=zeros(dtype=torch.float64),
+                     physical_minimum_step_hz=zeros(dtype=torch.float64),
+                     physical_lower_hz=torch.full((batch,), -torch.inf, dtype=torch.float64, device=device),
+                     physical_upper_hz=torch.full((batch,), torch.inf, dtype=torch.float64, device=device))
         state.update({"belief_" + k: v for k, v in self.belief.initial(batch, device).items()})
         return state
 
@@ -106,6 +160,26 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
                 return {k: v.index_copy(0, rows, revised[k]) for k, v in state.items()}
         revised = super().receive(state, observation)
         for key in ("physical_means", "physical_std", "physical_weights", "physical_eligible"):
+            if key in observation:
+                revised[key] = observation[key].to(state[key])
+        # These are the complete received exclusions for the CURRENT target,
+        # replacing the previous query's history rather than accumulating twice.
+        if "physical_exclusions" in observation:
+            intervals = observation["physical_exclusions"].double()
+            mask = observation["physical_exclusion_mask"].bool()
+            lo, hi, _ = _complement(intervals, mask)
+            union = torch.stack((hi[:, :-1], lo[:, 1:]), -1)
+            valid = union[..., 0] < union[..., 1]
+            count = valid.sum(-1).max().item()
+            if count > self.physics_config.max_exclusions:
+                raise ValueError("Increase max_exclusions to retain the current public failure union")
+            union, valid = union[:, :count], valid[:, :count]
+            padding = self.physics_config.max_exclusions - count
+            revised["physical_exclusions"] = F.pad(union, (0, 0, 0, padding)).to(state["physical_exclusions"])
+            revised["physical_exclusion_mask"] = F.pad(valid, (0, padding))
+        elif "task_boundary" in observation:
+            revised["physical_exclusion_mask"] = state["physical_exclusion_mask"] & ~observation["task_boundary"].bool()[:, None]
+        for key in ("physical_current_hz", "physical_minimum_step_hz", "physical_lower_hz", "physical_upper_hz"):
             if key in observation:
                 revised[key] = observation[key].to(state[key])
         revised["physics_fast"] = state["physics_fast"] * self.continual_config.fast_decay
@@ -136,22 +210,30 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
             raise ValueError("Each physical relation needs its corresponding candidate action")
         means, std, _ = self._correction(x, state["physical_means"], state["physical_std"],
                                          state["physical_eligible"], state["physics_fast"], state["physics_slow"])
+        proposal = propose_physical_settings(means, std, state["physical_exclusions"],
+            state["physical_exclusion_mask"], tolerance=p.test_tolerance_hz,
+            current=state["physical_current_hz"], minimum_step=state["physical_minimum_step_hz"],
+            lower=state["physical_lower_hz"], upper=state["physical_upper_hz"])
+        settings = proposal["settings"]
         corrected = candidates.clone()
         # Preserve the original encoding for ineligible actions. At initialization
         # these replacements equal the existing physical candidate representation.
         eligible = state["physical_eligible"]
         corrected[:, sl, p.mean_column] = torch.where(eligible,
-            ((means - self.belief.y_mean) / self.belief.y_scale).to(candidates), candidates[:, sl, p.mean_column])
+            ((settings - self.belief.y_mean) / self.belief.y_scale).to(candidates), candidates[:, sl, p.mean_column])
         corrected[:, sl, p.std_column] = torch.where(eligible,
             (std / self.belief.y_scale).to(candidates), candidates[:, sl, p.std_column])
         corrected[:, sl, p.weight_column] = torch.where(eligible,
             state["physical_weights"].to(candidates), candidates[:, sl, p.weight_column])
-        out = super().readout(state, corrected, action_mask)
+        execution_mask = action_mask.clone()
+        execution_mask[:, sl] &= proposal["valid"]
+        out = super().readout(state, corrected, execution_mask)
         activity_features = self._activity_features(state)
         out["activity_logits"] = out["activity_logits"] + self.physical_activity(activity_features)
         out["value"] = out["value"] + self.physical_value(activity_features).squeeze(-1)
         return {**out, "physical_means": means, "physical_std": std,
                 "physical_weights": state["physical_weights"], "physical_eligible": eligible,
+                "physical_settings": settings, "physical_proposal_valid": proposal["valid"],
                 "physical_features": x, "physical_base_means": state["physical_means"],
                 "physical_base_std": state["physical_std"], "physical_candidates": corrected}
 
@@ -345,4 +427,6 @@ def load_continual_physics_checkpoint(path, device="cpu", belief_checkpoint=None
     model = ContinualPhysicsPolicy(base, belief, ContinualExperimentConfig(**saved["continual_config"]),
                                    ContinualPhysicsConfig(**saved["physics_config"]))
     model.load_state_dict(saved["model"], strict=True)
+    if saved.get("training", {}).get("mode") == "discard_physical":
+        model.retain_physical_adaptation = False
     return model.to(device), saved
