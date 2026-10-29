@@ -15,8 +15,22 @@ fixed activity schedule. Each trains on 204,800 external requests with
 32-request gradient windows. The original simulator supplies exact training
 transitions; only public measurements and actual setting feedback enter the
 policy. Twelve native conditions are queued on a new 120-instance cohort.
-The new model's performance is not yet known. Code, commands, comparison
-conditions and the measured integration results are in the study directory.
+The first completed conditions fall below their frozen parents. Full seed 231
+completes 94/120 at 159.29 native actions, compared with its parent's 117/120 at
+106.68. Its same-weight discarded-update control also completes 94/120. The
+remaining fixed conditions continue; no intermediate checkpoint replaces their
+predeclared endpoints.
+
+Two concrete problems now guide the next training. Training counts each scalar
+test as one request, while actual navigation, device adjustment and probing can
+consume tens of native actions. Separately, failed setting intervals affect
+proposals and online losses without updating the decision's relation-confidence
+feature. Correcting the latter improves one fixed model on a new independent
+cohort from 83/120 at 185.29 actions to 105/120 at 135.64; the strong parent still
+reaches 119/120 at 106.93. The [complete record](experiments/continual_physics/README.md)
+includes the matched intervention and every instance. The unstarted recurrent-
+feedback candidate queue was deferred until execution-aware training and its
+matching reference are ready. The original trainings and evaluations continue.
 
 Two additional fixed-computation recurrent policies use the same physical tools,
 parent weights and external training budget. They retain neural state across
@@ -31,6 +45,23 @@ complete 117 and 119 with 106.68 and 102.84 actions. This reference uses the sam
 public measurement returns and numerical execution tools, with its own
 uncertainty model and measurement-planning rule. It provides a strong comparison
 for the joint models currently training.
+
+## Learning from chemical experiments
+
+The [second scientific task](experiments/continual_chemistry/README.md) reuses the
+same recurrent architecture with a candidate-conditioned response model. It
+learns from actual mixtures, partial cleaning, unsuccessful experiments and
+their native operation costs. A new collection contains 320 tasks and 10,610
+returned experiments; no hidden solution supplies a training response.
+
+After complete response-interface training with the inherited core frozen,
+the model completes all 30 development instances at 78.3 mean native actions,
+against 193.9 for the matched primitive-recipe enumeration reference. The
+18 untrained ingredient–ratio combinations also all complete, at 93.17 versus
+212 actions. These are development results. Shared-core joint training, a
+second initialization and a frozen 60-instance confirmation are in progress;
+they distinguish learned experimental relationships from the contribution of
+persistent neural computation.
 
 ## Physical prediction and experimental decisions
 

@@ -20,9 +20,12 @@ the value of the complete training method from the effect of retaining memory.
 
 The ongoing [continual physical-learning study](experiments/continual_physics/README.md)
 connects those predictions to a persistent neural state and learned choices of
-computation and online learning. Eight matched trainings are running, followed
-by native execution and a fixed-computation recurrent reference. Its final
-performance is still being measured.
+computation and online learning. Its first completed native comparisons fall
+below the preceding models. They reveal mismatched training/execution costs
+and a failure-feedback gap in decision confidence. Correcting the latter
+raises one fixed model from 83/120 to 105/120 on new instances; its strong
+parent still reaches 119/120. The remaining matched comparisons continue,
+alongside a revised execution model for the next training.
 
 Two completed comparisons inform this study. An independent
 [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
@@ -34,11 +37,11 @@ These comparisons guide the ongoing model study and its next state-update experi
 
 A second native task, [Combinatorial Chemistry](experiments/continual_chemistry/README.md),
 now uses the same recurrent core with chemical observations and experimental
-feedback. Its first 150-execution comparison does not improve on recipe
-enumeration. The results identify inadequate conditional outcome learning and
-cost calibration; the next training study uses a wider range of actual
-experimental histories. This is a separate task adaptation, not yet a jointly
-trained model across both scientific tasks.
+feedback. After expanding actual experiment histories and learning conditional
+responses, its fixed-core model completes 30/30 development tasks with **78.3**
+mean actions, against **193.9** for matched recipe enumeration. Shared-core
+joint training and independent confirmation are in progress. This is a separate
+task adaptation, not yet one jointly trained model across both scientific tasks.
 
 ## Current results
 
