@@ -28,7 +28,10 @@ from .delayed import DelayedExperiments, ExactPhysicalTasks
 def observe(model, environment, state, boundary=None, delayed=None):
     obs, belief, posterior = physical_observation(environment.table, model.belief,
                                                  model.belief_memory(state))
-    obs.update(physical_means=belief["means"], physical_std=belief["std"],
+    bounds = belief["means"].new_zeros(belief["means"].shape[0])
+    obs.update(physical_lower_hz=bounds, physical_upper_hz=bounds + 10000.,
+               physical_minimum_step_hz=bounds,
+               physical_means=belief["means"], physical_std=belief["std"],
                physical_weights=belief["weights"], physical_eligible=belief["eligible"])
     if boundary is not None:
         obs["task_boundary"] = boundary
