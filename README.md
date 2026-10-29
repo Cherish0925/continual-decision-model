@@ -24,6 +24,14 @@ computation and online learning. Eight matched trainings are running, followed
 by native execution and a fixed-computation recurrent reference. Its final
 performance is still being measured.
 
+Two completed comparisons inform this study. An independent
+[Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
+with relationship memory completes **118/120** new instances with **98.41** mean
+native actions. Separately, [state interventions](experiments/continual_experiment/results/neural_state_controls.md)
+on the earlier joint model locate its cross-task benefits and return costs in
+GRU history; carrying its workspace does not change the measured task outcomes.
+These comparisons guide the ongoing model study and its next state-update experiment.
+
 ## Current results
 
 The scientific-task studies train the continuing core to choose what to measure

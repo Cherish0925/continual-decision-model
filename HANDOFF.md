@@ -23,6 +23,15 @@ parent weights and external training budget. They retain neural state across
 tasks and keep neural parameters fixed during deployment. Their training and
 native evaluation queues are separate from the primary eight trainings.
 
+An independent [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
+has completed both new cohorts. On the 120 confirmation instances, its
+relationship-memory version completes 118 tasks with 98.41 mean native actions;
+its task-reset version completes 117 with 133.34. The frozen neural parents
+complete 117 and 119 with 106.68 and 102.84 actions. This reference uses the same
+public measurement returns and numerical execution tools, with its own
+uncertainty model and measurement-planning rule. It provides a strong comparison
+for the joint models currently training.
+
 ## Physical prediction and experimental decisions
 
 Updated 29 October 2026. The [physical-learning study](experiments/physical_belief/README.md)
@@ -84,10 +93,18 @@ native executions, carrying only the GRU and workspace states reproduces both
 first-return penalties exactly. Carrying replay and online adapters while
 resetting those states produces zero first-return difference from a full reset.
 The same neural states substantially reduce actions during consecutive tasks
-with an unchanged relationship. These results identify a task-transition effect;
-they do not yet separate the contents of recurrent state from workspace state.
+with an unchanged relationship. These results identify a task-transition effect.
 This version recomputes its physical posterior from each task's fresh ledger,
 so inherited physical covariance cannot explain the measured return penalty.
+
+A further [736 native executions](experiments/continual_experiment/results/neural_state_controls.md)
+separate GRU history from workspace carry. Carrying only the GRU reproduces
+every measured per-instance outcome of carrying both states; carrying only the
+workspace matches a full reset. The effect is therefore localized to recurrent
+history on these tasks. Its contents and the way they influence later decisions
+remain to be explained. The next candidate lets the recurrent update read
+current evidence and the preceding workspace result, preserving the parent
+policy at initialization. It is a training proposal, with no performance claim.
 
 The study fixes final checkpoints after 1,200 updates, with 128 parallel streams
 and 32 model ticks per update. Both training repetitions start from the same
