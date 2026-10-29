@@ -22,6 +22,7 @@ class RecurrentFeedback(nn.Module):
         if config.source not in {"workspace", "evidence", "both"}:
             raise ValueError("Feedback source must be workspace, evidence, or both")
         self.config = config
+        self.enabled = True  # Execution-only intervention; learned weights remain intact.
         self.workspace = nn.Parameter(torch.zeros(width, width)) if config.source != "evidence" else None
         self.evidence = nn.Parameter(torch.zeros(width, width)) if config.source != "workspace" else None
 
@@ -36,7 +37,9 @@ class RecurrentFeedback(nn.Module):
             summary = (tokens * weights[..., None]).sum(1) / weights.sum(1, keepdim=True).clamp_min(1)
             summary = F.layer_norm(summary.float(), (summary.shape[-1],)).to(summary)
             result = result + F.linear(summary, self.evidence)
-        return result
+        # The execution control computes the same projections before discarding
+        # them, so removing feedback is not also a compute-saving intervention.
+        return result if self.enabled else torch.zeros_like(result)
 
     def configuration(self):
         return asdict(self.config)

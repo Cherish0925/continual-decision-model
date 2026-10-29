@@ -195,6 +195,7 @@ The existing training entry accepts the candidate directly:
 python -m experiments.continual_physics.train \
   --data runs/discoveryworld/active_experiments/data_large \
   --checkpoint runs/physical_belief/joint_20261029/carry_seed221/policy.pt \
+  --initial-state runs/continual_physics/joint_20261029/full_seed231/initial.pt \
   --belief-checkpoint runs/physical_belief/joint_20261029/carry_seed221/belief.pt \
   --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
   --environment-truth runs/continual_physics/environment_train/environment.npz \
@@ -210,4 +211,38 @@ new-parameter learning rate, and its source and weights are saved in the model
 checkpoint. CPU checks establish initialization equivalence, future-state
 gradients, masked observation behavior, checkpoint restoration and two short
 cross-task training windows. They do not establish task-performance gains;
-the candidate has not entered the running comparison or a new large training.
+the candidate has not entered the original running comparison.
+
+The follow-up fixes four trainings: workspace-only and evidence-only for each
+original full-model repetition, 231 and 232. Each retains its original parent,
+seed, objective, task schedule and 204,800-request budget; the four candidates
+total 819,200 new requests. All 135 shared state tensors are restored from the
+original full condition's update-zero checkpoint. Each candidate adds one
+1,048,576-parameter zero projection. The two original full models supply the
+no-connection comparison without retraining. CPU initialization checks also
+compare every receive and readout in an initial 1,024-request window for each
+repetition, with exact equality.
+
+[Development](feedback_development.json) reserves 30 new instances and
+[confirmation](feedback_confirmation.json) reserves 120. These do not overlap
+the training worlds or the previous confirmation cohort. Both candidates are
+also executed with the learned connection computed and then discarded; all
+other weights stay fixed. Ten conditions across the two sets produce 1,500
+native executions. Every final checkpoint is evaluated without selection by
+development outcomes. Results separate same-relation continuation, first
+switch and first return, including completion, actual action cost and elapsed
+inference/feedback time.
+
+```bash
+python -m experiments.continual_physics.verify_feedback_start \
+  --primary runs/continual_physics/joint_20261029 \
+  --output runs/continual_physics/recurrent_feedback_20261030/initial_equivalence.json
+python -m experiments.continual_physics.feedback_campaign \
+  --output runs/continual_physics/recurrent_feedback_20261030
+```
+
+The queue starts the two candidates on a GPU only after that GPU's original
+four conditions and recurrent reference have exited successfully at the full
+budget. A failed dependency ends the affected candidate job. The queue then
+runs the fixed native comparisons on CPU and writes phase summaries, paired
+whole-stream intervals and per-instance outcomes in its output directory.

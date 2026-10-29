@@ -97,6 +97,10 @@ def run_stream(job):
     device = torch.device(options["device"])
     model, _ = load_continual_physics_checkpoint(options["checkpoint"], device)
     model.eval()
+    if options.get("disable_recurrent_feedback", False):
+        if model.recurrent_feedback is None:
+            raise ValueError("The feedback-disabled comparison requires a trained connection")
+        model.recurrent_feedback.enabled = False
     if options["discard_physical_updates"]:
         model.retain_physical_adaptation = False
     session = ContinualPhysicsSession(model, device)
@@ -129,6 +133,8 @@ def run_stream(job):
                         "checkpoint": options["checkpoint"],
                         "policy_inputs": "public_structured_measurements_and_actual_setting_feedback",
                         "state_mode": options["state_mode"],
+                        "recurrent_feedback": (None if model.recurrent_feedback is None else
+                            {**model.recurrent_feedback.configuration(), "enabled": model.recurrent_feedback.enabled}),
                         "retain_physical_updates": model.retain_physical_adaptation,
                         "retain_physical_memory": not options["discard_physical_memory"],
                         "feedback_delay_ticks": options["feedback_delay_ticks"],
@@ -257,6 +263,7 @@ def main():
     parser.add_argument("--state-mode", choices=("carry", "reset"), default="carry")
     parser.add_argument("--discard-physical-updates", action="store_true")
     parser.add_argument("--discard-physical-memory", action="store_true")
+    parser.add_argument("--disable-recurrent-feedback", action="store_true")
     parser.add_argument("--feedback-delay-ticks", type=int, default=0)
     parser.add_argument("--tolerance-hz", type=float, default=2.)
     parser.add_argument("--max-actions", type=int, default=400)

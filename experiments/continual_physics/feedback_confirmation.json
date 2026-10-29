@@ -1,0 +1,332 @@
+{
+  "purpose": "Fixed new-instance recurrent-feedback comparison; all final checkpoints evaluated without selection.",
+  "setting": "Native DiscoveryWorld Reactor Lab Normal; new worlds, existing relation families.",
+  "generation": "base=72000; stream i adds 100*i; family pairs all ordered a,b in 0..4 with a!=b; task offsets 0,5,10,15,20,25 with A,A,B,B,A,A family residues.",
+  "instance_count": 120,
+  "native_action_budget": 400,
+  "macro_decision_budget": 160,
+  "selection": "fixed final update; development outcomes do not select model, epoch, or hyperparameters",
+  "actor_inputs": "public observations only; no seed, relation family, phase, or schedule",
+  "streams": [
+    {
+      "name": "feedback_confirmation_00",
+      "seeds": [
+        72000,
+        72005,
+        72011,
+        72016,
+        72020,
+        72025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_01",
+      "seeds": [
+        72100,
+        72105,
+        72112,
+        72117,
+        72120,
+        72125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_02",
+      "seeds": [
+        72200,
+        72205,
+        72213,
+        72218,
+        72220,
+        72225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_03",
+      "seeds": [
+        72300,
+        72305,
+        72314,
+        72319,
+        72320,
+        72325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_04",
+      "seeds": [
+        72401,
+        72406,
+        72410,
+        72415,
+        72421,
+        72426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_05",
+      "seeds": [
+        72501,
+        72506,
+        72512,
+        72517,
+        72521,
+        72526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_06",
+      "seeds": [
+        72601,
+        72606,
+        72613,
+        72618,
+        72621,
+        72626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_07",
+      "seeds": [
+        72701,
+        72706,
+        72714,
+        72719,
+        72721,
+        72726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_08",
+      "seeds": [
+        72802,
+        72807,
+        72810,
+        72815,
+        72822,
+        72827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_09",
+      "seeds": [
+        72902,
+        72907,
+        72911,
+        72916,
+        72922,
+        72927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_10",
+      "seeds": [
+        73002,
+        73007,
+        73013,
+        73018,
+        73022,
+        73027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_11",
+      "seeds": [
+        73102,
+        73107,
+        73114,
+        73119,
+        73122,
+        73127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_12",
+      "seeds": [
+        73203,
+        73208,
+        73210,
+        73215,
+        73223,
+        73228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_13",
+      "seeds": [
+        73303,
+        73308,
+        73311,
+        73316,
+        73323,
+        73328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_14",
+      "seeds": [
+        73403,
+        73408,
+        73412,
+        73417,
+        73423,
+        73428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_15",
+      "seeds": [
+        73503,
+        73508,
+        73514,
+        73519,
+        73523,
+        73528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_16",
+      "seeds": [
+        73604,
+        73609,
+        73610,
+        73615,
+        73624,
+        73629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_17",
+      "seeds": [
+        73704,
+        73709,
+        73711,
+        73716,
+        73724,
+        73729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_18",
+      "seeds": [
+        73804,
+        73809,
+        73812,
+        73817,
+        73824,
+        73829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_confirmation_19",
+      "seeds": [
+        73904,
+        73909,
+        73913,
+        73918,
+        73924,
+        73929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}

@@ -209,10 +209,12 @@ def train_window(model, delayed, state, *, external_per_stream, mode="full",
     return loss, state, reference_state, statistics
 
 
-def main():
+def training_parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data", type=Path, required=True)
     p.add_argument("--checkpoint", type=Path, required=True)
+    p.add_argument("--initial-state", type=Path,
+                   help="Exact update-zero weights for a matched continuation; optimizer is new")
     p.add_argument("--belief-checkpoint", type=Path)
     p.add_argument("--mixture-checkpoint", type=Path, required=True)
     p.add_argument("--environment-truth", type=Path)
@@ -244,10 +246,11 @@ def main():
     p.add_argument("--new-lr", type=float, default=1e-4)
     p.add_argument("--belief-lr", type=float, default=1e-4)
     p.add_argument("--save-every", type=int, default=50)
-    args = p.parse_args()
-    if args.environment_truth is None and not args.allow_proxy:
-        p.error("Use --environment-truth for real activation training; --allow-proxy is for labelled pilots only")
-    args.output.mkdir(parents=True, exist_ok=False)
+    return p
+
+
+def initialize_experiment(args):
+    """Shared initialization for training and matched-candidate verification."""
     torch.set_num_threads(4)
     torch.manual_seed(args.seed)
     mixture, _ = load_mixture_checkpoint(args.mixture_checkpoint, args.device)
@@ -267,10 +270,26 @@ def main():
         config=ContinualExperimentConfig(memory_size=args.memory_size,
             max_internal_steps=args.max_internal_steps, activity_mode=activity_mode,
             fixed_refinements=0 if recurrent else 1))
+    if args.initial_state is not None:
+        initial = torch.load(args.initial_state, map_location=args.device, weights_only=True)
+        if initial.get("update") != 0:
+            raise ValueError("Matched initial weights must be an update-zero checkpoint")
+        model.load_state_dict(initial["model"], strict=True)
     if args.recurrent_feedback is not None:
         configure_recurrent_feedback(model, RecurrentFeedbackConfig(args.recurrent_feedback))
     model.retain_adaptation = not recurrent
     model.retain_physical_adaptation = args.mode not in {"discard_physical", "recurrent_reference"}
+    return model, pool, plan, environment, delayed
+
+
+def main():
+    p = training_parser()
+    args = p.parse_args()
+    if args.environment_truth is None and not args.allow_proxy:
+        p.error("Use --environment-truth for real activation training; --allow-proxy is for labelled pilots only")
+    args.output.mkdir(parents=True, exist_ok=False)
+    model, pool, plan, environment, delayed = initialize_experiment(args)
+    recurrent = args.mode == "recurrent_reference"
     reference = deepcopy(model.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
     parameters = [(n, x) for n, x in model.named_parameters() if x.requires_grad]

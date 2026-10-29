@@ -1,0 +1,92 @@
+{
+  "purpose": "Fixed new-instance recurrent-feedback comparison; all final checkpoints evaluated without selection.",
+  "setting": "Native DiscoveryWorld Reactor Lab Normal; new worlds, existing relation families.",
+  "generation": "base=70000; stream i adds 100*i; family pairs a,(a+2)%5 for a=0..4; task offsets 0,5,10,15,20,25 with A,A,B,B,A,A family residues.",
+  "instance_count": 30,
+  "native_action_budget": 400,
+  "macro_decision_budget": 160,
+  "selection": "fixed final update; development outcomes do not select model, epoch, or hyperparameters",
+  "actor_inputs": "public observations only; no seed, relation family, phase, or schedule",
+  "streams": [
+    {
+      "name": "feedback_development_00",
+      "seeds": [
+        70000,
+        70005,
+        70012,
+        70017,
+        70020,
+        70025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_development_01",
+      "seeds": [
+        70101,
+        70106,
+        70113,
+        70118,
+        70121,
+        70126
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_development_02",
+      "seeds": [
+        70202,
+        70207,
+        70214,
+        70219,
+        70222,
+        70227
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_development_03",
+      "seeds": [
+        70303,
+        70308,
+        70310,
+        70315,
+        70323,
+        70328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "feedback_development_04",
+      "seeds": [
+        70404,
+        70409,
+        70411,
+        70416,
+        70424,
+        70429
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}
