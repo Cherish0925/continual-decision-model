@@ -18,13 +18,14 @@ def recipes(component_count,max_parts=6):
     return list(integer_recipes(component_count,max_parts))+[(0,)*component_count]
 
 
-def observe(state,*,max_parts=6,max_actions=1000,elapsed_actions=0,device='cpu'):
+def observe(state,*,max_parts=6,max_actions=1000,elapsed_actions=0,device='cpu',candidate_recipes=None):
     """Encode only the current public state and already returned experiments.
 
     A zero-count candidate means using the cleaned key to leave. It is available
     only after rust is visibly absent; all nonempty recipes are then disabled.
     """
-    n=len(state['components']);choices=recipes(n,max_parts);history=state['history'];rust=int(state['rust_level'])
+    n=len(state['components']);choices=recipes(n,max_parts) if candidate_recipes is None else list(candidate_recipes)
+    history=state['history'];rust=int(state['rust_level'])
     event=torch.zeros(1,EVENT_DIM,device=device);event[0,8:8+n]=1
     event[0,20]=len(history)/(len(history)+10);event[0,22]=rust==0
     event[0,23]=elapsed_actions/max_actions;event[0,35]=1

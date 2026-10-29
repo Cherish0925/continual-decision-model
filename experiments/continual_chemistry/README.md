@@ -346,3 +346,30 @@ result; no native confirmation or endpoint selection followed from it.
 `prediction_reaction.py` compares these input paths on identical public prefixes,
 including improvement calibration and ranking. The new mixed-order collection
 is needed to examine history-conditioned learning over the full proposal family.
+
+The subsequent collection supplies 10,610 real returns from 320 training
+instances, with randomized/active experiment order and the complete primitive
+proposal family. A fixed twelve-epoch batched warmup covers 127,320 labels in
+63.2 CPU seconds, including 25.1 seconds to cache frozen-core prefix features.
+The cache agrees with the received-event runtime within 1.91e-6 on ten checked
+queries. Core weights are frozen during this stage; history encoders, response
+readout and cost interfaces learn jointly.
+
+On the same old 30 development histories, episode-mean NLL is now 0.3384 versus
+0.4685 for the new training-frequency reference. Removing direct history gives
+0.4384, removing the response readout's core input gives 0.3559, and reversing
+mixture/return correspondence while preserving both marginals gives 0.9677.
+For the 18 untrained-recipe instances, the corresponding values are 0.4018,
+0.4882, 0.4213, 0.4213 and 0.4696. The stronger correspondence effect on the
+12 seen-recipe instances is retained separately in
+[the warmup results](results/reaction_warmup.json). Overall improvement-event
+average precision is 0.716 versus 0.502 for the frequency reference; its Brier
+score is 0.0565 versus 0.0717. Predicted native cost MAE is 0.135 operations.
+These measurements support history-conditioned response prediction on recorded
+prefixes. They are not native task-completion or jointly trained core results.
+
+`warmup_reaction.py` performs complete uniformly shuffled transition epochs.
+`joint_reaction.py` then updates the inherited core and the response together,
+with batched sequence windows and full current-weight public-prefix replay.
+Both stages save their fixed endpoint and training quantities. The new 60-case
+confirmation cohort is not used to set either endpoint.
