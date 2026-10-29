@@ -35,7 +35,7 @@ class ContinualPhysicsConfig:
     max_mean_shift: float = 16.
     max_log_scale: float = 3.
     gradient_norm: float = 10.
-    max_exclusions: int = 128
+    max_exclusions: int = 512
     test_tolerance_hz: float = 2.
 
 
@@ -51,7 +51,10 @@ def propose_physical_settings(means, std, exclusions, mask, *, tolerance=2., cur
     setting as their origin. The default control is continuous, with no assumed
     one-Hz resolution. Gaussian means remain unchanged by this action proposal.
     """
-    low, high, present = _complement(exclusions.double(), mask.bool())
+    # State keeps a fixed capacity; probability work uses only present columns.
+    used = int(torch.where(mask, torch.arange(mask.shape[1], device=mask.device)[None] + 1, 0).max().item()) if mask.numel() else 0
+    exclusions, mask = exclusions[:, :used].double(), mask[:, :used].bool()
+    low, high, present = _complement(exclusions, mask)
     batch = len(means)
     def vector(value, default):
         return (means.new_full((batch,), default) if value is None else
@@ -59,6 +62,40 @@ def propose_physical_settings(means, std, exclusions, mask, *, tolerance=2., cur
     tolerance = vector(tolerance, 2.)
     current, step = vector(current, 0.), vector(minimum_step, 0.)
     lower, upper = vector(lower, -torch.inf), vector(upper, torch.inf)
+    # Standard failed tests have width 2*tolerance, so a success window cannot
+    # cross an excluded gap and the per-segment optimization below is exact.
+    # Narrower exclusions can arise with different test tolerances. In that case
+    # sum the mass across ALL surviving segments for each possible optimum.
+    narrower = mask & ((exclusions[..., 1] - exclusions[..., 0]) < 2 * tolerance[:, None])
+    if bool(narrower.any()):
+        boundary = exclusions.flatten(1)
+        endpoints = torch.cat((boundary - tolerance[:, None], boundary + tolerance[:, None]), -1)
+        centers = torch.cat((means[..., None], endpoints[:, None].expand(-1, means.shape[1], -1),
+                             lower[:, None, None].expand(-1, means.shape[1], 1),
+                             upper[:, None, None].expand(-1, means.shape[1], 1)), -1)
+        centers = centers.clamp(min=lower[:, None, None], max=upper[:, None, None])
+        safe_step = step.clamp_min(1e-12)
+        grid = (centers - current[:, None, None]) / safe_step[:, None, None]
+        floors = current[:, None, None] + grid.floor() * safe_step[:, None, None]
+        ceils = current[:, None, None] + grid.ceil() * safe_step[:, None, None]
+        candidates = torch.where((step > 0)[:, None, None, None], torch.stack((floors, ceils), -1), centers[..., None]).flatten(2)
+        best_mass = means.new_full(means.shape, -torch.inf)
+        best_setting = means.clone()
+        for start in range(0, candidates.shape[-1], 64):
+            trial = candidates[..., start:start + 64]
+            valid_trial = torch.isfinite(trial) & (trial >= lower[:, None, None]) & (trial <= upper[:, None, None])
+            lo = torch.maximum(trial[..., None] - tolerance[:, None, None, None], low[:, None, None])
+            hi = torch.minimum(trial[..., None] + tolerance[:, None, None, None], high[:, None, None])
+            valid = valid_trial[..., None] & present[:, None, None] & (lo < hi)
+            a = (torch.where(valid, lo, means[..., None, None] - std[..., None, None]) - means[..., None, None]) / std[..., None, None]
+            b = (torch.where(valid, hi, means[..., None, None] + std[..., None, None]) - means[..., None, None]) / std[..., None, None]
+            mass = _log_interval_mass(a, b).masked_fill(~valid, -torch.inf).logsumexp(-1)
+            choice = mass.argmax(-1)
+            chunk_mass = mass.gather(-1, choice[..., None]).squeeze(-1)
+            chunk_setting = trial.gather(-1, choice[..., None]).squeeze(-1)
+            better = chunk_mass > best_mass
+            best_mass, best_setting = torch.maximum(best_mass, chunk_mass), torch.where(better, chunk_setting, best_setting)
+        return {"settings": best_setting, "log_success_mass": best_mass, "valid": torch.isfinite(best_mass)}
     # For a short segment a range of centers covers its entire mass; for a
     # long segment the best full-width window is closest to the Gaussian mode.
     left, right = low + tolerance[:, None], high - tolerance[:, None]

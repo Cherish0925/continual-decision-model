@@ -158,3 +158,14 @@ def test_public_failures_change_settings_without_removing_relation():
     cleared = model.receive(state, obs)
     assert not cleared['physical_exclusion_mask'].any()
     assert cleared['h'].shape == state['h'].shape
+
+
+def test_setting_probability_sums_multiple_surviving_segments():
+    from cdm.continual_physics import propose_physical_settings
+    # A narrower public exclusion allows one test window to cover both tails.
+    result = propose_physical_settings(torch.tensor([[0.]], dtype=torch.float64),
+        torch.tensor([[1.]], dtype=torch.float64), torch.tensor([[[-.2, .2]]]), torch.tensor([[True]]), tolerance=2.)
+    assert result['settings'].item() == 0.
+    normal = torch.distributions.Normal(0., 1.)
+    expected = normal.cdf(torch.tensor(2.)) - normal.cdf(torch.tensor(-2.)) - normal.cdf(torch.tensor(.2)) + normal.cdf(torch.tensor(-.2))
+    torch.testing.assert_close(result['log_success_mass'].exp().float().squeeze(), expected)
