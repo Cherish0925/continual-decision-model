@@ -253,6 +253,18 @@
         "execution_seconds": 819.2581954170018,
         "feedback_seconds": 177.92652069963515
       }
+    },
+    "recurrent_reference_seed231": {
+      "instances": 120,
+      "completed": 92,
+      "mean_actions": 166.06666666666666,
+      "mean_episode_seconds": 7.3987916172326855
+    },
+    "recurrent_reference_seed232": {
+      "instances": 120,
+      "completed": 84,
+      "mean_actions": 176.55,
+      "mean_episode_seconds": 7.723492003884166
     }
   },
   "comparisons": {
@@ -1372,6 +1384,334 @@
           ],
           "bootstrap_unit": "whole_six_instance_stream"
         }
+      }
+    },
+    "full_seed231:recurrent_reference_seed231": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -6.775,
+        "mean_action_difference_95ci": [
+          -22.176041666666666,
+          7.884999999999976
+        ],
+        "completion_fraction_difference": 0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.041666666666666664,
+          0.08333333333333333
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 2.05,
+        "mean_action_difference_95ci": [
+          -55.5025,
+          61.05124999999998
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.2
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -35.25,
+        "mean_action_difference_95ci": [
+          -74.05125,
+          -5.05
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 1.25,
+        "mean_action_difference_95ci": [
+          -42.8,
+          42.5
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 21.6,
+        "mean_action_difference_95ci": [
+          -6.25,
+          64.4
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "parent_seed221:recurrent_reference_seed231": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -59.391666666666666,
+        "mean_action_difference_95ci": [
+          -85.759375,
+          -34.94937500000001
+        ],
+        "completion_fraction_difference": 0.20833333333333334,
+        "completion_fraction_difference_95ci": [
+          0.125,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -100.05,
+        "mean_action_difference_95ci": [
+          -154.85875,
+          -47.9
+        ],
+        "completion_fraction_difference": 0.35,
+        "completion_fraction_difference_95ci": [
+          0.15,
+          0.55
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -123.1,
+        "mean_action_difference_95ci": [
+          -177.7,
+          -71.3
+        ],
+        "completion_fraction_difference": 0.35,
+        "completion_fraction_difference_95ci": [
+          0.15,
+          0.55
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -61.75,
+        "mean_action_difference_95ci": [
+          -128.80125,
+          -1.2975000000000365
+        ],
+        "completion_fraction_difference": 0.2,
+        "completion_fraction_difference_95ci": [
+          0.05,
+          0.4
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -6.9,
+        "mean_action_difference_95ci": [
+          -78.15125,
+          58.05
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          -0.1,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "full_seed232:recurrent_reference_seed232": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 38.875,
+        "mean_action_difference_95ci": [
+          7.790833333333334,
+          78.65104166666666
+        ],
+        "completion_fraction_difference": -0.10833333333333334,
+        "completion_fraction_difference_95ci": [
+          -0.225,
+          -0.016666666666666666
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 37.9,
+        "mean_action_difference_95ci": [
+          4.2,
+          85.95
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 19.65,
+        "mean_action_difference_95ci": [
+          -37.2,
+          77.80124999999998
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.1
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 29.15,
+        "mean_action_difference_95ci": [
+          1.9,
+          70.15
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 44.8,
+        "mean_action_difference_95ci": [
+          6.448750000000001,
+          94.95124999999999
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "parent_seed222:recurrent_reference_seed232": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -73.70833333333333,
+        "mean_action_difference_95ci": [
+          -112.15833333333333,
+          -39.54770833333336
+        ],
+        "completion_fraction_difference": 0.2916666666666667,
+        "completion_fraction_difference_95ci": [
+          0.175,
+          0.4166666666666667
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -62.1,
+        "mean_action_difference_95ci": [
+          -120.95,
+          -11.85
+        ],
+        "completion_fraction_difference": 0.25,
+        "completion_fraction_difference_95ci": [
+          0.05,
+          0.45
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -140.05,
+        "mean_action_difference_95ci": [
+          -202.85375,
+          -80.14750000000004
+        ],
+        "completion_fraction_difference": 0.45,
+        "completion_fraction_difference_95ci": [
+          0.25,
+          0.65
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -77.95,
+        "mean_action_difference_95ci": [
+          -139.40125,
+          -16.5
+        ],
+        "completion_fraction_difference": 0.3,
+        "completion_fraction_difference_95ci": [
+          0.1,
+          0.5
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -53.85,
+        "mean_action_difference_95ci": [
+          -115.65,
+          0.9
+        ],
+        "completion_fraction_difference": 0.25,
+        "completion_fraction_difference_95ci": [
+          0.1,
+          0.45
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
       }
     }
   },
@@ -3339,11 +3679,11 @@
   ],
   "campaign_complete": true,
   "additional_references": {
-    "status": "training",
+    "status": "complete",
     "conditions": [
       "recurrent_reference_seed231",
       "recurrent_reference_seed232"
     ],
-    "scope": "Additional comparison, separate from the twelve primary conditions"
+    "scope": "Additional fixed recurrent comparison; original twelve primary conditions unchanged"
   }
 }

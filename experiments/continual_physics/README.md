@@ -159,8 +159,12 @@ paths makes these questions testable; their answers come from the matched
 training and native execution results.
 
 The eight fixed-budget trainings and all **1,440 primary native executions**
-are complete. Each column below uses the same 120 instances and parent within
+are complete. Two additional recurrent references also completed their fixed
+trainings and 240 native executions. Each column below uses the same 120 instances and parent within
 that training repetition; these instances differ from the preceding study.
+These are the original seed-231/232 trainings. The subsequent seed-241/242
+execution-aware trainings and their independent confirmation are a separate
+study; none of their outcomes is included in this table.
 
 | Policy | Repetition 231: completed / mean actions | Repetition 232: completed / mean actions |
 | --- | ---: | ---: |
@@ -170,6 +174,7 @@ that training repetition; these instances differ from the preceding study.
 | Trained with task-boundary state reset | 96 / 157.26 | 81 / 191.04 |
 | Trained with a fixed internal schedule | 88 / 179.88 | 84 / 177.26 |
 | Full weights, physical online corrections discarded at execution | 94 / 156.98 | 73 / 210.14 |
+| Additional recurrent reference with shared physical tools | 92 / 166.07 | 84 / 176.55 |
 
 Neither full model improves on its strong parent. Against the same weights with
 physical corrections discarded, retaining corrections adds 2.31 and 5.28
@@ -179,15 +184,19 @@ by two instances in the second. The learned activity schedule outperforms the
 fixed schedule in one repetition and underperforms it in the other. These
 results establish that the implemented online and activity mechanisms run and
 change behavior, but not that their original training improves native tasks.
+The full model's difference from the recurrent reference is −6.78 operations
+in the first repetition, with a 95% stream interval [−22.18, 7.88], and +38.88
+in the second, with interval [7.79, 78.65]. The simpler reference also remains
+well below the frozen parents, consistent with a shared training/deployment
+problem rather than a benefit established by adding internal activities.
 
 The [complete primary results](results/native_confirmation.json) include
 20-stream paired intervals, first/second return-instance comparisons, actual
 activity counts, physical prediction corrections and timing. The
 [compact table](results/native_confirmation.csv) and
-[1,440 per-instance records](results/native_instances.csv) preserve all
-conditions. Separately trained recurrent references are still running; their
-results will be added as additional comparisons without changing the frozen
-primary outcomes. The separate initial-checkpoint comparison is post hoc and
+[1,680 per-instance records](results/native_instances.csv) preserve all
+primary conditions and the separately declared recurrent references. The
+separate initial-checkpoint comparison is post hoc and
 will distinguish continued training from the combined new-runtime/new-module
 initialization, rather than attributing that combined change solely to runtime.
 
