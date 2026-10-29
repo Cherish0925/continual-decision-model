@@ -1,0 +1,327 @@
+{
+  "purpose": "Independent fixed same-weight failure-conditioned decision confirmation after a separate 30-instance development check",
+  "setting": "Native Reactor Lab Normal; new instances of familiar five relation families, all 20 ordered A/B pairs",
+  "overlap_check": "No seed overlaps with existing experiment JSON seed/seeds fields at creation",
+  "streams": [
+    {
+      "name": "failure_confirmation_00",
+      "seeds": [
+        90000,
+        90005,
+        90011,
+        90016,
+        90020,
+        90025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_01",
+      "seeds": [
+        90100,
+        90105,
+        90112,
+        90117,
+        90120,
+        90125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_02",
+      "seeds": [
+        90200,
+        90205,
+        90213,
+        90218,
+        90220,
+        90225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_03",
+      "seeds": [
+        90300,
+        90305,
+        90314,
+        90319,
+        90320,
+        90325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_04",
+      "seeds": [
+        90401,
+        90406,
+        90410,
+        90415,
+        90421,
+        90426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_05",
+      "seeds": [
+        90501,
+        90506,
+        90512,
+        90517,
+        90521,
+        90526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_06",
+      "seeds": [
+        90601,
+        90606,
+        90613,
+        90618,
+        90621,
+        90626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_07",
+      "seeds": [
+        90701,
+        90706,
+        90714,
+        90719,
+        90721,
+        90726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_08",
+      "seeds": [
+        90802,
+        90807,
+        90810,
+        90815,
+        90822,
+        90827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_09",
+      "seeds": [
+        90902,
+        90907,
+        90911,
+        90916,
+        90922,
+        90927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_10",
+      "seeds": [
+        91002,
+        91007,
+        91013,
+        91018,
+        91022,
+        91027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_11",
+      "seeds": [
+        91102,
+        91107,
+        91114,
+        91119,
+        91122,
+        91127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_12",
+      "seeds": [
+        91203,
+        91208,
+        91210,
+        91215,
+        91223,
+        91228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_13",
+      "seeds": [
+        91303,
+        91308,
+        91311,
+        91316,
+        91323,
+        91328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_14",
+      "seeds": [
+        91403,
+        91408,
+        91412,
+        91417,
+        91423,
+        91428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_15",
+      "seeds": [
+        91503,
+        91508,
+        91514,
+        91519,
+        91523,
+        91528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_16",
+      "seeds": [
+        91604,
+        91609,
+        91610,
+        91615,
+        91624,
+        91629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_17",
+      "seeds": [
+        91704,
+        91709,
+        91711,
+        91716,
+        91724,
+        91729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_18",
+      "seeds": [
+        91804,
+        91809,
+        91812,
+        91817,
+        91824,
+        91829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "failure_confirmation_19",
+      "seeds": [
+        91904,
+        91909,
+        91913,
+        91918,
+        91924,
+        91929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}
