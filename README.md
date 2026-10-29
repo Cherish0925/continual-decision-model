@@ -25,8 +25,8 @@ conditions are complete; the full models fall below the preceding models.
 They reveal mismatched training/execution costs
 and a failure-feedback gap in decision confidence. Correcting the latter
 raises one fixed model from 83/120 to 105/120 on new instances; its strong
-parent still reaches 119/120. Two additional recurrent references continue.
-The next training uses a [native execution model](experiments/continual_physics/EXECUTION.md)
+parent still reaches 119/120. Both additional recurrent references are complete
+and also fall below their parents. Four new trainings use a [native execution model](experiments/continual_physics/EXECUTION.md)
 that reproduces device adjustment, feedback and actual operation costs.
 
 Two completed comparisons inform this study. An independent

@@ -42,10 +42,14 @@ has a fixed 200-window endpoint; model performance is still pending.
 [Execution details](experiments/continual_physics/EXECUTION.md) record the first
 failed attempts, corrected commands and the exact four checkpoint locations.
 
-Two additional fixed-computation recurrent policies use the same physical tools,
+Two additional fixed-computation recurrent policies used the same physical tools,
 parent weights and external training budget. They retain neural state across
 tasks and keep neural parameters fixed during deployment. Their training and
-native evaluation queues are separate from the primary eight trainings.
+native evaluation queues are separate from the primary eight trainings. Both
+are complete: 92/120 at 166.07 actions and 84/120 at 176.55. The first full
+model has no clear advantage over its recurrent reference; the second full
+model is worse. These are the original scalar-training repetitions 231/232,
+distinct from the four execution-aware trainings 241/242 now running.
 
 An independent [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
 has completed both new cohorts. On the 120 confirmation instances, its
