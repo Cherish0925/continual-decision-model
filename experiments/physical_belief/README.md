@@ -211,8 +211,10 @@ entropy and a small action-distribution anchor to the frozen parent. Future
 working settings are supervised loss targets, never inputs to the policy.
 An unmeasured candidate relation remains in that predictive likelihood: masking
 it would incorrectly force the measured alternatives to explain an outcome
-they may not determine. Prediction tokens connect this loss to measurement
-choice, while executed settings connect prediction to task returns.
+they may not determine. The physical likelihood directly trains the 73 belief parameters; policy,
+value, entropy and action-anchor losses train the neural core. Policy gradients
+can also pass through the physical tokens into the belief. Executed settings
+connect prediction to task returns.
 
 Final checkpoints are fixed at update 400. The [confirmation protocol](native_confirmation.json)
 contains 120 new native instances in 20 ordered A→B→A streams. Both frozen
@@ -287,7 +289,10 @@ to use it.
 The [public-ledger reconstruction](results/native_memory_cases.csv) follows all
 six instances whose completion changes under the memory intervention. Across
 51 setting attempts, reconstructed physical means agree exactly with the saved
-predictions. The three first-return losses already assign 0.98–1.00 probability
+predictions. A positive temperature-task case shows a direct physical effect:
+with the same ledger, memory moves the second target prediction from about
+2,691.10 to 2,738.24 Hz, and both retained-memory models complete the instance.
+The three first-return losses already assign 0.98–1.00 probability
 to the correct radiation relation. In one case, closely spaced support readings
 around 43.96 and 44.60 are extrapolated to a target reading of 23.30; changes of
 0.02–0.04 in later support readings shift the proposed frequency by tens of Hz.
