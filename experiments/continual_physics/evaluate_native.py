@@ -15,18 +15,37 @@ import torch
 
 from experiments.discoveryworld.active_native import NativeActiveEpisode
 from experiments.discoveryworld.adapter import TrajectoryWriter
-from experiments.discoveryworld.evaluate_active_native import _event_from_result, _public_test_mask
+from experiments.discoveryworld.evaluate_active_native import _event_from_result
 from experiments.discoveryworld.evaluate_active_stream import (
     NATIVE_RELATIONS, copy_state, feedback_targets, public_object_order,
-    schedule_position, state_distance,
+    schedule_position,
 )
 from experiments.discoveryworld.structured_observation import StructuredDiscoveryWorldEnv
 from experiments.discoveryworld.train_active_core import make_observation
 from experiments.physical_belief.observations import add_physical_context
-from .runtime import ContinualPhysicsSession, physical_feedback
+from .runtime import ContinualPhysicsSession, physical_feedback, setting_outcomes
 
 
-def native_observation(model, state, episode, event, step, max_steps, device, *, terminal=False):
+def state_distance(left, right):
+    """Record tensor changes, including an explicitly resized evidence history."""
+    result = {}
+    for key, value in left.items():
+        previous = right[key]
+        if value.shape == previous.shape:
+            same = value == previous
+            difference = torch.where(same, 0., value.float()-previous.float())
+            finite = difference.isfinite()
+            result[key] = (float(difference.norm()) if finite.all() else
+                           {"finite_difference_norm": float(difference[finite].norm()),
+                            "changed_nonfinite_entries": int((~finite).sum())})
+        else:
+            result[key] = {"before_shape": list(previous.shape), "after_shape": list(value.shape),
+                           "before_norm": float(previous.float().norm()), "after_norm": float(value.float().norm())}
+    return result
+
+
+def native_observation(model, state, episode, event, step, max_steps, device, *, terminal=False,
+                       task_boundary=False, tolerance_hz=2.):
     tensors = episode.tensors(device)
     if terminal and bool(tensors["known"].all()) and len(episode.completed_targets) == 2:
         tensors["query"] = torch.zeros_like(tensors["query"])
@@ -37,14 +56,23 @@ def native_observation(model, state, episode, event, step, max_steps, device, *,
         tensors["values"], tensors["seen"], tensors["known_hz"], tensors["known"],
         tensors["query"], model.belief_memory(state))
     obs = make_observation(tensors["values"], tensors["counts"], tensors["known_hz"],
-                           tensors["known"], tensors["query"], tensors["failed"], event,
+                           tensors["known"], tensors["query"], torch.zeros_like(tensors["failed"]), event,
                            model.belief, step, max_steps, beliefs_override=beliefs)
-    obs["action_mask"][:, 20:] &= _public_test_mask(episode, beliefs)[None]
     obs = add_physical_context(obs, beliefs, model.belief)
     obs.update({f"physical_{name}": beliefs[name] for name in ("means", "std", "weights", "eligible")})
     control = episode.controls[int(episode.query[0])]
     obs["physical_lower_hz"] = torch.tensor([control["lower_hz"]], device=device)
     obs["physical_upper_hz"] = torch.tensor([control["upper_hz"]], device=device)
+    obs["physical_current_hz"] = tensors["current_hz"][:, int(episode.query[0])]
+    obs["physical_minimum_step_hz"] = torch.tensor([control["minimum_step_hz"]], device=device)
+    obs["task_boundary"] = torch.tensor([task_boundary], device=device)
+    failed = sorted({value for decision in episode.decisions
+                     if decision["query_index"] == int(tensors["query"][0])
+                     for value, activated in setting_outcomes(decision) if not activated})
+    obs["physical_exclusions"] = torch.tensor(
+        [[[value-tolerance_hz, value+tolerance_hz] for value in failed]],
+        device=device, dtype=torch.float64).reshape(1, -1, 2)
+    obs["physical_exclusion_mask"] = torch.ones(1, len(failed), device=device, dtype=torch.bool)
     return obs, posterior
 
 
@@ -67,7 +95,7 @@ def run_stream(job):
     options, stream = job
     torch.set_num_threads(options["threads"])
     device = torch.device(options["device"])
-    model, record = load_continual_physics_checkpoint(options["checkpoint"], device)
+    model, _ = load_continual_physics_checkpoint(options["checkpoint"], device)
     model.eval()
     if options["discard_physical_updates"]:
         model.retain_physical_adaptation = False
@@ -113,13 +141,15 @@ def run_stream(job):
                 episode = NativeActiveEpisode(env, writer)
                 try:
                     episode.bootstrap()
+                    bootstrap_seconds = perf_counter()-start
                     bootstrap = {"known_support_hz": episode.known_hz[0, :2].tolist(),
                                  "public_object_order": public_object_order(episode),
                                  "measurement_samples": int(episode.counts.sum())}
                     event = torch.zeros(1, 36, device=device)
                     event[0, 32 + int(episode.query[0])] = 1
                     obs, posterior = native_observation(model, session.state, episode, event, 0,
-                                                        options["max_decisions"], device)
+                                                        options["max_decisions"], device, task_boundary=True,
+                                                        tolerance_hz=options["tolerance_hz"])
                     session.receive(session.last_event + 1, obs)
                     for step in range(options["max_decisions"]):
                         if env.ended:
@@ -134,7 +164,7 @@ def run_stream(job):
                         action, prediction = request["action"], request["prediction"]
                         if not session.observation["action_mask"][0, action]:
                             raise RuntimeError("Selected action is unavailable in the delivered observation")
-                        mean = float(prediction["physical_means"][0, action - 20]) if action >= 20 else None
+                        mean = float(prediction["physical_settings"][0, action - 20]) if action >= 20 else None
                         spread = float(prediction["physical_std"][0, action - 20]) if action >= 20 else None
                         execution_start = perf_counter()
                         decision = episode.apply(action, mean_hz=mean, std_hz=spread)
@@ -144,6 +174,7 @@ def run_stream(job):
                         decision["physical_prediction"] = {
                             name: prediction[f"physical_{name}"][0].tolist()
                             for name in ("means", "std", "weights")}
+                        decision["physical_settings"] = prediction["physical_settings"][0].tolist()
                         decision["bayes_physical_prediction"] = {
                             name: session.observation[f"physical_{name}"][0].tolist()
                             for name in ("means", "std", "weights")}
@@ -151,7 +182,8 @@ def run_stream(job):
                         event = _event_from_result(decision, episode, model.belief, step=step+1,
                                                    max_steps=options["max_decisions"], device=device)
                         obs, posterior = native_observation(model, session.state, episode, event, step+1,
-                                                            options["max_decisions"], device, terminal=env.ended)
+                                                            options["max_decisions"], device, terminal=env.ended,
+                                                            tolerance_hz=options["tolerance_hz"])
                         returned = physical_feedback(decision, device, tolerance_hz=options["tolerance_hz"])
                         decision["physical_feedback"] = {name: value[0].tolist() for name, value in returned.items()}
                         session.queue_result(session.last_event + 1, request["request_id"], obs,
@@ -174,6 +206,11 @@ def run_stream(job):
                 except (ValueError, RuntimeError) as exc:
                     error, ending = f"{type(exc).__name__}: {exc}", "execution_error"
             final = copy_state(session.state)
+            tested = [decision for decision in episode.decisions if decision["action_index"] >= 20
+                      and "physical_prediction" in decision]
+            corrections = [abs(decision["physical_prediction"]["means"][decision["action_index"]-20]
+                               - decision["bayes_physical_prediction"]["means"][decision["action_index"]-20])
+                           for decision in tested]
             row = {"stream": stream["name"], "episode_index": index, "seed": seed,
                    "relation": NATIVE_RELATIONS[seed % 5], **schedule_position(stream, index),
                    "ending": ending, "error": error, "seconds": perf_counter()-start,
@@ -183,6 +220,14 @@ def run_stream(job):
                    "runtime": {"delivered_results": session.delivered_results-start_deliveries,
                                "pending_internal_ticks": session.pending_ticks-start_ticks,
                                "pending_request_at_end": session.pending_request},
+                   "timing": {"initialization_and_bootstrap_seconds": bootstrap_seconds if bootstrap else None,
+                              **{name: sum(decision.get(source, 0.) for decision in episode.decisions)
+                                 for name, source in (("inference_seconds", "decision_seconds"),
+                                                      ("execution_seconds", "execution_seconds"),
+                                                      ("feedback_seconds", "feedback_seconds"))}},
+                   "physical_learning": {"setting_decisions": len(tested),
+                                         "sum_absolute_mean_correction_hz": sum(corrections),
+                                         "max_absolute_mean_correction_hz": max(corrections, default=0.)},
                    "internal_activity_counts": (final["activity_counts"]-entry_state["activity_counts"])[0].tolist()}
             (output / "summary.json").write_text(json.dumps(row, indent=2)+"\n")
         rows.append({key: value for key, value in row.items() if key != "decisions"})

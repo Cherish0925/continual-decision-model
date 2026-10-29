@@ -40,8 +40,11 @@ class ContinualPhysicsSession(ContinualSession):
         if feedback is not None:
             if self.pending_request is None or request_id != self.pending_request:
                 raise ValueError("Feedback must identify the pending request")
+            supplied = physical_feedback
+            if supplied is not None and not supplied["mask"].any():
+                supplied = None
             self.state = self.model.feedback(self.state, feedback,
-                                             physical_feedback=physical_feedback)
+                                             physical_feedback=supplied)
             self.pending_request = None
             self.delivered_results += 1
         elif request_id is not None or physical_feedback is not None:
@@ -56,10 +59,14 @@ class ContinualPhysicsSession(ContinualSession):
         out = self.model.readout(self.state, self.observation["candidates"],
                                  self.observation["action_mask"])
         if "physical_lower_hz" in self.observation:
-            allowed = ((out["physical_means"] >= self.observation["physical_lower_hz"][:, None])
-                       & (out["physical_means"] <= self.observation["physical_upper_hz"][:, None]))
+            allowed = ((out["physical_settings"] >= self.observation["physical_lower_hz"][:, None])
+                       & (out["physical_settings"] <= self.observation["physical_upper_hz"][:, None]))
             out["logits"] = torch.cat((out["logits"][:, :20],
                                         out["logits"][:, 20:].masked_fill(~allowed, -torch.inf)), -1)
+            available = out["logits"].isfinite().any(-1)
+            out["activity_logits"][:, Activity.ACT] = out["activity_logits"][:, Activity.ACT].masked_fill(~available, -torch.inf)
+            out["activity_logits"][:, Activity.WAIT] = torch.where(
+                ~available, 0., out["activity_logits"][:, Activity.WAIT])
         selected = out["activity_logits"].argmax(-1)
         self.state = self.model.internal(self.state, selected, self.observation)
         activity = Activity(int(selected[0]))
@@ -103,13 +110,8 @@ class ContinualPhysicsSession(ContinualSession):
         return {"delivered": True}
 
 
-def physical_feedback(decision, device, *, tolerance_hz=2.):
-    """Intervals from actual returned settings, never the requested setpoint.
-
-    ``tolerance_hz`` is the native task's activation rule, separate from the
-    available dial step. Failed and successful settings share that same rule.
-    Measurement actions return no setting interval.
-    """
+def setting_outcomes(decision):
+    """Distinct public outcomes for the requested object and device."""
     attempts = []
     if decision["action_index"] >= 20:
         result = decision["result"]
@@ -119,10 +121,20 @@ def physical_feedback(decision, device, *, tolerance_hz=2.):
         if (setting is not None and setting.get("object_handle") == request.get("target_handle")
                 and setting.get("reactor_handle") == request.get("reactor_handle")):
             attempts.append(setting)
-    received = list(dict.fromkeys((float(row["frequency_hz"]), row["activated"])
+    return list(dict.fromkeys((float(row["frequency_hz"]), row["activated"])
                                  for row in attempts
                                  if row.get("activated") in (True, False)
                                  and row.get("frequency_hz") is not None))
+
+
+def physical_feedback(decision, device, *, tolerance_hz=2.):
+    """Intervals from actual returned settings, never the requested setpoint.
+
+    ``tolerance_hz`` is the native task's activation rule, separate from the
+    available dial step. Failed and successful settings share that same rule.
+    Measurement actions return no setting interval.
+    """
+    received = setting_outcomes(decision)
     intervals = torch.tensor([[[value - tolerance_hz, value + tolerance_hz]
                                for value, _ in received]], device=device,
                               dtype=torch.float64).reshape(1, -1, 2)
