@@ -51,6 +51,14 @@ model has no clear advantage over its recurrent reference; the second full
 model is worse. These are the original scalar-training repetitions 231/232,
 distinct from the four execution-aware trainings 241/242 now running.
 
+The separate initial-checkpoint comparison also finished. Before continuation,
+the new runtime/module combinations complete only 63/120 and 74/120. Training
+then raises the first to 94/120 and leaves the second at 71/120. The initial
+combination already changes the parent's behavior substantially; the final
+parent gap cannot be attributed wholly to continued training. These post-hoc
+results are [reported separately](experiments/continual_physics/results/initial_native.json)
+from the fourteen fixed conditions.
+
 An independent [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
 has completed both new cohorts. On the 120 confirmation instances, its
 relationship-memory version completes 118 tasks with 98.41 mean native actions;
@@ -102,6 +110,18 @@ policy. [The complete comparison](experiments/continual_chemistry/results/planni
 retains both objectives and actual computation time. Imagined observations
 change only copied state, leaving actual experience untouched. A stable benefit
 from extra computation remains to be established.
+
+## One core across both scientific tasks
+
+The [shared-core entry](experiments/continual_experiment/README.md#a-single-core-for-physical-and-chemical-experiments)
+now attaches both task interfaces to one 1,024-wide recurrent/Transformer core
+with eight workspace slots and one continuing h/z state. The released physical
+parent and chemical warmup have exactly the same core weights, so initialization
+preserves both interfaces' original outputs. One update using an actual physical
+measurement and a recorded chemical experiment sends gradients from both tasks
+into that same core. Checkpoint reconstruction preserves every task head and
+stores the core once. This establishes the joint training entry; long task-stream
+training and common activity selection remain to be completed.
 
 ## Physical prediction and experimental decisions
 

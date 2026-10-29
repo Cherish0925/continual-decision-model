@@ -28,6 +28,9 @@ raises one fixed model from 83/120 to 105/120 on new instances; its strong
 parent still reaches 119/120. Both additional recurrent references are complete
 and also fall below their parents. Four new trainings use a [native execution model](experiments/continual_physics/EXECUTION.md)
 that reproduces device adjustment, feedback and actual operation costs.
+The initial-checkpoint comparison shows that substantial regression precedes
+continued training, so the original and revised execution paths are compared
+explicitly.
 
 Two completed comparisons inform this study. An independent
 [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
@@ -97,6 +100,12 @@ decisions are now studied through the [physical-belief comparison](experiments/p
 Useful autonomous computation and reliable recovery after interference remain open.
 
 ## Model
+
+A [shared-core implementation](experiments/continual_experiment/README.md#a-single-core-for-physical-and-chemical-experiments)
+now connects the physical and chemical interfaces to one set of core weights
+and one continuing state. A real two-task gradient update and checkpoint
+reconstruction have been verified. The published task-performance results
+still come from the separately trained policies.
 
 The active-experiment policy reads structured public measurements and operation
 feedback. Training updates **26.65 million parameters**, including **23.11 million**
