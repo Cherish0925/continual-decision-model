@@ -59,6 +59,15 @@ parent gap cannot be attributed wholly to continued training. These post-hoc
 results are [reported separately](experiments/continual_physics/results/initial_native.json)
 from the fourteen fixed conditions.
 
+Six [matched public prefixes](experiments/continual_physics/INITIALIZATION.md)
+now identify two local causes: tied initial activity scores force extra workspace
+refinement while results are pending, and cleared failure flags/masks change the
+action contract learned by the parent. A separately selectable inherited-interface
+candidate preserves the parent's logits and masks on all 27 replayed decisions,
+while keeping task-boundary state reset separate. It changes the available retry
+actions as well as initialization, and has no new task-performance result. The
+four already running trainings retain their frozen source and protocol.
+
 An independent [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
 has completed both new cohorts. On the 120 confirmation instances, its
 relationship-memory version completes 118 tasks with 98.41 mean native actions;

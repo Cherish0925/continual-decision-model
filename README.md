@@ -28,7 +28,8 @@ raises one fixed model from 83/120 to 105/120 on new instances; its strong
 parent still reaches 119/120. Both additional recurrent references are complete
 and also fall below their parents. Four new trainings use a [native execution model](experiments/continual_physics/EXECUTION.md)
 that reproduces device adjustment, feedback and actual operation costs.
-The initial-checkpoint comparison shows that substantial regression precedes
+The [initial-checkpoint and matched-prefix comparisons](experiments/continual_physics/INITIALIZATION.md)
+show that substantial regression precedes
 continued training, so the original and revised execution paths are compared
 explicitly.
 
