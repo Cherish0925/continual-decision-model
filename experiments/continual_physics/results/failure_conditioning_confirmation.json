@@ -1,0 +1,347 @@
+{
+  "protocol": {
+    "manifest": "experiments/continual_physics/failure_confirmation.json",
+    "instances_per_condition": 120,
+    "native_executions": 360,
+    "jobs": [
+      {
+        "name": "parent_seed222",
+        "command": [
+          "python",
+          "-m",
+          "experiments.physical_belief.evaluate_native",
+          "--checkpoint",
+          "runs/physical_belief/joint_repeat_20261029/carry_seed222/policy.pt",
+          "--belief-checkpoint",
+          "runs/physical_belief/joint_repeat_20261029/carry_seed222/belief.pt",
+          "--belief-mode",
+          "carry",
+          "--state-mode",
+          "reset",
+          "--mixture-checkpoint",
+          "runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt",
+          "--manifest",
+          "experiments/continual_physics/failure_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/failure_conditioning_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/failure_conditioning_confirmation/parent_seed222"
+        ]
+      },
+      {
+        "name": "task_reset_seed232",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/joint_20261029/task_reset_seed232/last.pt",
+          "--state-mode",
+          "reset",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/failure_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/failure_conditioning_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/failure_conditioning_confirmation/task_reset_seed232"
+        ]
+      },
+      {
+        "name": "task_reset_seed232_conditioned",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/joint_20261029/task_reset_seed232/last.pt",
+          "--state-mode",
+          "reset",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/failure_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/failure_conditioning_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--condition-failure-weights",
+          "--output",
+          "runs/continual_physics/failure_conditioning_confirmation/task_reset_seed232_conditioned"
+        ]
+      }
+    ],
+    "selection": "Fixed parent222 and final200 reset232; same weights for the conditioned intervention; no confirmation selection",
+    "intervention": "Candidate relation-confidence features condition original Gaussian mixture on complete current-target failed-interval union",
+    "unchanged": "Model parameters, physical prior saved for learning, tools, control, local probes, observations and primitive budget",
+    "feedback_delay_ticks": 2,
+    "timing_scope": "Neural policies have matched two-tick delivery; the static parent has no internal delay loop; all native action costs are counted",
+    "bootstrap_unit": "whole A2B2A2 six-instance stream",
+    "source_revision": "35b311d"
+  },
+  "conditions": {
+    "parent_seed222": {
+      "instances": 120,
+      "completed": 119,
+      "mean_actions": 106.93333333333334,
+      "mean_episode_seconds": 5.881122455761457,
+      "execution_errors": 0
+    },
+    "task_reset_seed232": {
+      "instances": 120,
+      "completed": 83,
+      "mean_actions": 185.29166666666666,
+      "mean_episode_seconds": 9.690309471699099,
+      "execution_errors": 0
+    },
+    "task_reset_seed232_conditioned": {
+      "instances": 120,
+      "completed": 105,
+      "mean_actions": 135.64166666666668,
+      "mean_episode_seconds": 7.619869557395577,
+      "execution_errors": 0
+    }
+  },
+  "comparisons": {
+    "conditioned:task_reset_seed232": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -49.65,
+        "mean_action_difference_95ci": [
+          -73.99208333333333,
+          -27.808125000000004
+        ],
+        "completion_fraction_difference": 0.18333333333333332,
+        "completion_fraction_difference_95ci": [
+          0.1,
+          0.275
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -43.1,
+        "mean_action_difference_95ci": [
+          -86.45125,
+          -7.55
+        ],
+        "completion_fraction_difference": 0.2,
+        "completion_fraction_difference_95ci": [
+          0.05,
+          0.4
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -37.3,
+        "mean_action_difference_95ci": [
+          -73.35,
+          -8.55
+        ],
+        "completion_fraction_difference": 0.15,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -28.6,
+        "mean_action_difference_95ci": [
+          -61.45,
+          0.0
+        ],
+        "completion_fraction_difference": 0.15,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -72.1,
+        "mean_action_difference_95ci": [
+          -120.65125,
+          -28.05
+        ],
+        "completion_fraction_difference": 0.2,
+        "completion_fraction_difference_95ci": [
+          0.05,
+          0.4
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": -2.0704399143035213,
+          "difference_95ci_seconds": [
+            -3.142535121613958,
+            -1.098326701449308
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": -0.0029452267568558454,
+          "difference_95ci_seconds": [
+            -0.0075828668366496755,
+            0.0009973054425790905
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": -2.0568469973125807,
+          "difference_95ci_seconds": [
+            -3.0632673454630033,
+            -1.1383444163319654
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": -0.09936694252925614,
+          "difference_95ci_seconds": [
+            -0.1589585589726145,
+            -0.0449776544068785
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "conditioned:parent_seed222": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 28.708333333333332,
+        "mean_action_difference_95ci": [
+          5.3,
+          52.44458333333329
+        ],
+        "completion_fraction_difference": -0.11666666666666667,
+        "completion_fraction_difference_95ci": [
+          -0.175,
+          -0.058333333333333334
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 58.4,
+        "mean_action_difference_95ci": [
+          15.7,
+          105.6
+        ],
+        "completion_fraction_difference": -0.2,
+        "completion_fraction_difference_95ci": [
+          -0.4,
+          -0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 40.75,
+        "mean_action_difference_95ci": [
+          -5.201249999999999,
+          91.75249999999997
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 69.95,
+        "mean_action_difference_95ci": [
+          4.498750000000001,
+          135.8
+        ],
+        "completion_fraction_difference": -0.25,
+        "completion_fraction_difference_95ci": [
+          -0.5,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 14.85,
+        "mean_action_difference_95ci": [
+          -5.35,
+          37.25249999999996
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 1.73874710163412,
+          "difference_95ci_seconds": [
+            0.7524869229625135,
+            2.7444827807931382
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": null,
+        "execution_seconds": null,
+        "feedback_seconds": null
+      }
+    }
+  }
+}

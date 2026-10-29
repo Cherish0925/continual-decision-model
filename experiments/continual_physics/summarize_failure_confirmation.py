@@ -1,6 +1,6 @@
 """Whole-stream paired results for the fixed failure-conditioning intervention."""
 from __future__ import annotations
-import csv,json
+import copy,csv,json
 from pathlib import Path
 from experiments.physical_belief.summarize_native import load_rows
 from .summarize_native import comparison,paired_seconds
@@ -27,7 +27,11 @@ def main():
             ('episode_seconds','inference_seconds','execution_seconds','feedback_seconds')}
     destination=Path('experiments/continual_physics/results');destination.mkdir(exist_ok=True)
     (ROOT/'comparisons.json').write_text(json.dumps(result,indent=2)+'\n')
-    (destination/'failure_conditioning_confirmation.json').write_text(json.dumps(result,indent=2)+'\n')
+    public=copy.deepcopy(result)
+    for job in public['protocol']['jobs']:
+        job['command'][0]='python'
+    public['protocol']['source_revision']='35b311d'
+    (destination/'failure_conditioning_confirmation.json').write_text(json.dumps(public,indent=2)+'\n')
     keys=['stream','episode_index','seed','segment_role','position_in_segment','completed_successfully','native_actions','measurement_requests','test_requests','seconds']
     with (destination/'failure_conditioning_instances.csv').open('w') as file:
         writer=csv.DictWriter(file,fieldnames=['condition',*keys]);writer.writeheader()
