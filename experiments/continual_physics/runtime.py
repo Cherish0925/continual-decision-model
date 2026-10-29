@@ -56,6 +56,13 @@ class ContinualPhysicsSession(ContinualSession):
     def tick(self):
         if self.observation is None:
             return {"activity": "WAIT"}
+        if (self.pending_request is not None
+                and int(self.state["internal_steps"][0]) >= self.model.continual_config.max_internal_steps):
+            # With a pending tool and no internal budget, WAIT is the sole legal
+            # activity. Do not recompute every physical/action prediction for it.
+            selected = torch.full_like(self.state["internal_steps"], int(Activity.WAIT))
+            self.state = self.model.internal(self.state, selected, self.observation)
+            return {"activity": "WAIT"}
         out = self.model.readout(self.state, self.observation["candidates"],
                                  self.observation["action_mask"])
         if "physical_lower_hz" in self.observation:
