@@ -22,6 +22,12 @@ def main():
     p.add_argument('--sequence-length',type=int,default=8);p.add_argument('--device',default='cpu');p.add_argument('--threads',type=int,default=1)
     p.add_argument('--lr',type=float,default=3e-5);p.add_argument('--seed',type=int,default=730)
     args=p.parse_args();torch.set_num_threads(args.threads);torch.manual_seed(args.seed)
+    source_record=torch.load(args.checkpoint,map_location='cpu',weights_only=True)
+    source_path=Path(args.checkpoint)
+    source_identity={'checkpoint':str(source_path) if not source_path.is_absolute() else source_path.name,
+                     'kind':source_record.get('kind'),
+                     'training_seed':source_record.get('training',{}).get('seed')}
+    del source_record
     model=model_from_core_checkpoint(args.checkpoint,device=args.device,initialization_seed=args.seed)
     model.train();optimizer=torch.optim.AdamW([x for x in model.parameters() if x.requires_grad],lr=args.lr)
     manifest=json.loads((args.data_root/'manifest.json').read_text())
@@ -63,7 +69,7 @@ def main():
              'seconds':perf_counter()-started};rows.append(row)
         with (args.output/'training.jsonl').open('a') as file:file.write(json.dumps(row)+'\n')
     torch.save({'kind':'chemistry_continual_v1',**model.configuration(),'model':model.state_dict(),
-                'training':{'source_core':'physical-belief parent 221','objective':'conditional rust class and received progress/cost',
+                'training':{'source_core':source_identity,'objective':'conditional rust class and received progress/cost',
                   'updates':args.updates,'sequence_length':args.sequence_length,'seed':args.seed,
                   'training_episode_directories':[r['directory'] for r in training],
                   'is_task_performance_result':False}},args.output/'last.pt')
