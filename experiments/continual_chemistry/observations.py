@@ -82,6 +82,9 @@ def feedback(record,device='cpu'):
 def load_chemistry_policy(path,*,device='cpu'):
     """Load a trained chemical checkpoint or initialize its heads from a core."""
     saved=torch.load(path,map_location='cpu',weights_only=True)
+    if saved.get('kind')=='chemistry_reaction_v1':
+        from .reaction import load_reaction_checkpoint
+        return load_reaction_checkpoint(path,device)
     if saved.get('kind')=='chemistry_continual_v1':
         model,record=load_continual_checkpoint(path,device)
         return model,record

@@ -290,3 +290,59 @@ start and finish at rust level one. Such a trial establishes that the mixture
 did not fully clean this key; it does not establish an intrinsic reaction
 endpoint of one. The [data manifest](results/exploration_data.json) preserves
 all episodes, costs, transition counts and split coverage.
+
+## Learning responses from experimental history
+
+`ReactionExperimentPolicy` retains the continuing GRU, Transformer workspace,
+feedback store and public observation interface. Each candidate now queries the
+complete returned experiment history through a shared composition encoder.
+Its input describes ingredient proportions; total material quantity remains in
+the separate cost interface. Jointly permuting ingredient names leaves this
+direct relation representation unchanged. This is a representation property,
+not a claim that the inherited recurrent core is already permutation invariant.
+Training consistently renames ingredients throughout an observed prefix.
+
+The visible rust state only decreases. Let R be a recipe's attainable rust
+endpoint and r the current rust; the observed return is Y=min(r,R). An improving
+return identifies R=Y. An unchanged return only identifies R>=r. The model
+predicts a distribution over R, sums its censored tail to obtain P(Y=r), and
+optimizes the ordinary log likelihood of the actual return. It receives no
+hidden recipe, reaction formula or counterfactual response label. Separate
+attention pools for exact improvements and censored returns keep rare useful
+evidence available without class weighting or distorted output probabilities.
+The queried history summary interacts with the same continuing h/z features
+that are updated after each received experiment.
+
+The initial visible probabilities equal the train-only component-count/current-
+rust frequency reference. Progress and log-cost outputs start at their training
+means; the regression loss uses training standard deviations while keeping
+runtime feedback in its original units. The inherited core uses learning rate
+3e-5 and the new interfaces use 1e-3. Training computes losses only for the
+actually observed query and reconstructs its complete earlier prefix. Native
+execution uses primitive integer proportions and the observed-response
+probabilities divided by predicted native cost. `--primitive-candidates` applies
+the same candidate family to the enumeration reference and earlier models.
+
+```bash
+python -m experiments.continual_chemistry.train_reaction \
+  --data-root runs/continual_physics/chemistry_exploration \
+  --output runs/continual_physics/chemistry_reaction/trained \
+  --updates 500 --device cpu
+python -m experiments.continual_chemistry.prediction_reaction \
+  --checkpoint runs/continual_physics/chemistry_reaction/trained/last.pt \
+  --output runs/continual_physics/chemistry_reaction/trained/prediction.json
+```
+
+A 220-update CPU development pilot on the *previous* 110 training trajectories
+took 87.7 seconds. On their 30 recorded development histories, episode-mean
+rust NLL was 0.4653, versus 0.4543 for the valid-class frequency reference.
+Removing direct history gave 0.4643, reversing mixture/response correspondence
+gave 0.4653, and suppressing the response head's continuing-state input gave
+0.4485. Cost MAE was 1.41 native operations. Thus numerical cost prediction and
+the joint gradient path are working, but this pilot does not establish useful
+relationship inference or a benefit from the continuing state. The pilot
+preceded ingredient-renaming augmentation. It is preserved as a development
+result; no native confirmation or endpoint selection followed from it.
+`prediction_reaction.py` compares these input paths on identical public prefixes,
+including improvement calibration and ranking. The new mixed-order collection
+is needed to examine history-conditioned learning over the full proposal family.

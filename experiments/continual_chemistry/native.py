@@ -28,7 +28,8 @@ def run(options):
     model=state=None;trained_heads=False
     if args.policy!='reference':
         model,record=load_chemistry_policy(args.checkpoint);model.eval();state=model.initial(1,'cpu')
-        trained_heads=record.get('kind')=='chemistry_continual_v1' and record.get('training',{}).get('updates',0)>0
+        trained_heads=record.get('kind') in {'chemistry_continual_v1','chemistry_reaction_v1'} and record.get('training',{}).get('updates',0)>0
+    primitive_candidates=getattr(args,'primitive_candidates',False) or bool(model and hasattr(model,'response'))
     initial_h=None if state is None else state['h'].clone()
     initial_z=None if state is None else state['z'].clone()
     started=perf_counter();error=None;ending='experiment_budget';inference_seconds=execution_seconds=0.
@@ -42,6 +43,7 @@ def run(options):
             rng=env.restore_initial_rng(snapshot) if snapshot.exists() else env.save_initial_rng(snapshot)
         (args.output/'initial_rng.json.gz').write_bytes(snapshot.read_bytes())
         metadata={**env.configuration,'policy':args.policy,'has_trained_chemistry_heads':trained_heads,
+            'primitive_candidates':primitive_candidates,
             'input':'visible components, current rust and returned experimental history',
             'initial_rng':rng,'repeated_recipe_rule':'exclude an identical returned recipe with rust endpoint >= current rust',
             'selection':'predicted one-step rust reduction per predicted native action' if model else 'ascending bounded integer recipes'}
@@ -50,6 +52,9 @@ def run(options):
             try:
                 start=perf_counter();public=executor.prepare();execution_seconds+=perf_counter()-start
                 obs,choices=observe(public,max_actions=args.max_actions,elapsed_actions=env.steps)
+                if primitive_candidates:
+                    from .reaction import primitive_observation_mask
+                    obs=primitive_observation_mask(obs)
                 if model:
                     start=perf_counter();state=model.receive(state,obs);inference_seconds+=perf_counter()-start
                 for index in range(args.max_experiments+1):
@@ -79,6 +84,7 @@ def run(options):
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
                         start=perf_counter();state=model.feedback(state,feedback(result))
                     public=executor.state();obs,choices=observe(public,max_actions=args.max_actions,elapsed_actions=env.steps)
+                    if primitive_candidates:obs=primitive_observation_mask(obs)
                     if model:
                         state=model.receive(state,obs);inference_seconds+=perf_counter()-start
                         result['core_state_change']={'h':float((state['h']-before_h).norm()),'z':float((state['z']-before_z).norm())}
@@ -110,6 +116,7 @@ def main():
     p.add_argument('--output',type=Path,required=True);p.add_argument('--max-actions',type=int,default=1000)
     p.add_argument('--max-experiments',type=int,default=209);p.add_argument('--threads',type=int,default=1)
     p.add_argument('--initial-rng-root',default='runs/continual_physics/chemistry_initial_rng')
+    p.add_argument('--primitive-candidates',action='store_true',help='Use the same unique proportions for reference and learned policies')
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))
     if summary['error']:raise SystemExit(1)
 
