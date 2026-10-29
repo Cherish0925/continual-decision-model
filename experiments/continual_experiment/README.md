@@ -362,3 +362,43 @@ environment execution, and training across task boundaries in all four modes.
 Generated fixtures exercise the existing data format and environment classes;
 they are not new benchmark results. H100 pilot runs exercised full and complete
 fixed-schedule training before launching the eight-run comparison.
+
+## A single core for physical and chemical experiments
+
+`cdm/shared_core.py` attaches the existing task interfaces to one actual
+`ContinualCore`. The verified starting pair is the physical update-zero model
+and chemistry warmup753: all 72 core tensors match the inherited seed221 model
+exactly. The core has width 1,024 and eight workspace slots. Each interface keeps
+its own observation encoder, outcome head, cost predictor and numeric learning
+state; frequency corrections are not applied to chemical-response features.
+
+The flat continuing state contains one h/z pair and task-prefixed side states.
+Switching interfaces carries h/z forward and leaves the other task's numeric
+memories intact. Optimizer groups deduplicate parameter objects. The checkpoint
+stores the core once, plus every non-core task tensor and its configuration;
+`shared_tasks.py` reconstructs the same shared object on load. Activity heads
+remain task-specific in this entry point. Long multi-task activity training has
+not yet been performed.
+
+`verify_shared_tasks.py` executes one real measurement in a physical training
+world and loads one recorded chemical training return. It checks unchanged
+initial outputs, backpropagates both returned-outcome losses into the same core,
+takes one joint optimizer step and checks checkpoint reconstruction. The physical
+loss fits the actual returned progress and native operation cost; the chemical
+loss fits the censored rust return and train-scaled operation cost. This check
+does not use hidden reaction formulas or resonance targets as model inputs.
+
+The completed CPU check preserved both initial output vectors exactly. Separate
+core-gradient norms were 0.04316 and 0.08382; the joint step changed GRU weights.
+All 162 trainable parameter objects occurred once in the optimizer; the saved
+file retained 63 physical and 74 chemical head tensors alongside the single
+72-tensor core. Reloaded predictions matched exactly in the same evaluation
+mode. [The integration result](results/shared_core.json) is an implementation
+result, not evidence of improved task performance.
+
+```bash
+PYTHONHASHSEED=0 python -m experiments.continual_experiment.verify_shared_tasks \
+  --physics runs/continual_physics/execution_pilot/first/initial.pt \
+  --chemistry runs/continual_physics/chemistry_reaction/warmup753/warmup.pt \
+  --output runs/continual_physics/shared_core_check
+```
