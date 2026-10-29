@@ -373,3 +373,25 @@ prefixes. They are not native task-completion or jointly trained core results.
 with batched sequence windows and full current-weight public-prefix replay.
 Both stages save their fixed endpoint and training quantities. The new 60-case
 confirmation cohort is not used to set either endpoint.
+
+Both fixed joint runs completed two full epochs (21,220 received-return labels,
+370 optimizer updates) after their twelve-epoch warmups. They independently
+initialize the task interfaces over the same inherited core. On old development
+prefixes, joint episode NLL is 0.3973 and 0.2907; removing direct history gives
+0.4574 and 0.3824. Removing core input at response readout gives 0.4136 and 0.2634,
+so the direction of the core contribution is not consistent across the two
+initializations. These readout interventions keep the actual received history
+and underlying continuing state updates unchanged.
+
+For the first run, swapping its joint response module onto the warmup encoder
+gives NLL 0.3963; retaining the warmup response with the joint encoder gives
+0.3403, close to the warmup's 0.3384. The changed prediction therefore follows
+the response parameters more closely than the encoder parameters in this
+same-prefix substitution. This is not a separately trained causal ablation.
+Joint training also introduced ingredient-renaming augmentation, so the stage
+difference cannot be attributed solely to unfreezing the core. The native
+withheld groups denote groups not used in original sampling; the augmentation
+can produce their ingredient-renamed counterparts. No unseen reaction mechanism
+is claimed. [Joint records](results/reaction_joint.json) preserve both runs and
+the parameter substitutions. Neither final endpoint was chosen from these
+development scores.

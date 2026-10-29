@@ -1,0 +1,145 @@
+{
+  "scope": "fixed two-epoch joint training; old development prediction records",
+  "runs": {
+    "753": {
+      "seed": 753,
+      "joint_updates": 370,
+      "joint_epochs": 2,
+      "supervised_returns": 21220,
+      "seconds": 549.9087621923536,
+      "conditions": {
+        "full": {
+          "transitions": 616,
+          "rust_nll": 0.22945804391116775,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.09258545003579882,
+          "improvement_brier": 0.05890547103559583,
+          "improvement_average_precision": 0.6857759504243871,
+          "cost_mae": 0.13424739555277151,
+          "episode_mean_nll": 0.39725010806026595
+        },
+        "direct_history_off": {
+          "transitions": 616,
+          "rust_nll": 0.2936398280518396,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.12448353510857983,
+          "improvement_brier": 0.07241184737442502,
+          "improvement_average_precision": 0.6064609633705474,
+          "cost_mae": 0.13424739555277151,
+          "episode_mean_nll": 0.45742527372193753
+        },
+        "response_core_off": {
+          "transitions": 616,
+          "rust_nll": 0.23878261953699645,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.09265028985888947,
+          "improvement_brier": 0.060840302047149894,
+          "improvement_average_precision": 0.6865124916507027,
+          "cost_mae": 0.13424739555277151,
+          "episode_mean_nll": 0.41355088426326847
+        },
+        "history_pairing_reversed": {
+          "transitions": 616,
+          "rust_nll": 0.698975960372353,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.08849312432876595,
+          "improvement_brier": 0.07129261547617437,
+          "improvement_average_precision": 0.5933342251850012,
+          "cost_mae": 0.13424739555277151,
+          "episode_mean_nll": 0.966463505588985
+        },
+        "frequency_prior": {
+          "transitions": 616,
+          "rust_nll": 0.29727361573801414,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.11104964637862784,
+          "improvement_brier": 0.07166332571861173,
+          "improvement_average_precision": 0.5015599520236416,
+          "cost_mae": 0.13424739555277151,
+          "episode_mean_nll": 0.46846417980472416
+        }
+      }
+    },
+    "754": {
+      "seed": 754,
+      "joint_updates": 370,
+      "joint_epochs": 2,
+      "supervised_returns": 21220,
+      "seconds": 526.1402691248804,
+      "conditions": {
+        "full": {
+          "transitions": 616,
+          "rust_nll": 0.1961304199970297,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.12125123770521404,
+          "improvement_brier": 0.05480830389464158,
+          "improvement_average_precision": 0.7147036243574204,
+          "cost_mae": 0.11661945509726458,
+          "episode_mean_nll": 0.29072002715145406
+        },
+        "direct_history_off": {
+          "transitions": 616,
+          "rust_nll": 0.28540886362845247,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.17600549111961442,
+          "improvement_brier": 0.07060451000806665,
+          "improvement_average_precision": 0.6432073053416437,
+          "cost_mae": 0.11661945509726458,
+          "episode_mean_nll": 0.38236273397667325
+        },
+        "response_core_off": {
+          "transitions": 616,
+          "rust_nll": 0.18565047371587504,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.11572379079116375,
+          "improvement_brier": 0.05154674885922211,
+          "improvement_average_precision": 0.7428448715481145,
+          "cost_mae": 0.11661945509726458,
+          "episode_mean_nll": 0.2633508322999067
+        },
+        "history_pairing_reversed": {
+          "transitions": 616,
+          "rust_nll": 0.7524894657363366,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.08803002084336911,
+          "improvement_brier": 0.06451561228907672,
+          "improvement_average_precision": 0.6176609537660063,
+          "cost_mae": 0.11661945509726458,
+          "episode_mean_nll": 0.9112954202852255
+        },
+        "frequency_prior": {
+          "transitions": 616,
+          "rust_nll": 0.29727361573801414,
+          "improvement_frequency": 0.11525974025974026,
+          "improvement_probability": 0.11104964637862784,
+          "improvement_brier": 0.07166332571861173,
+          "improvement_average_precision": 0.5015599520236416,
+          "cost_mae": 0.11661945509726458,
+          "episode_mean_nll": 0.46846417980472416
+        }
+      }
+    }
+  },
+  "parameter_substitutions_seed753": {
+    "scope": "same old development prefixes; parameter substitution, not trained ablation or confirmation tuning",
+    "warmup": "warmup.pt",
+    "joint": "joint.pt",
+    "episode_mean_nll": {
+      "joint_response_warm_encoder": {
+        "all": 0.396345648742038,
+        "untrained_recipe": 0.47693104596517727,
+        "seen_recipe_new_instance": 0.275467552907329
+      },
+      "warm_response_joint_encoder": {
+        "all": 0.3403028858016482,
+        "untrained_recipe": 0.40594654838029803,
+        "seen_recipe_new_instance": 0.24183739193367337
+      },
+      "joint_with_warm_core": {
+        "all": 0.39624362206676966,
+        "untrained_recipe": 0.4798461467915662,
+        "seen_recipe_new_instance": 0.2708398349795748
+      }
+    }
+  }
+}
