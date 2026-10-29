@@ -100,7 +100,8 @@ def summarize(root,plan):
             'error':summary['error'],'seconds':summary['seconds']})
     manifest={'scenario':'Combinatorial Chemistry','policy':'mixed_random_and_predictive_uncertainty',
         'recipe_label_scope':'split and post-execution analysis only; never model input',
-        'confirmation_recipe_groups':plan['confirmation_recipe_groups'],'episodes':episodes,
+        'confirmation_recipe_groups':plan['confirmation_recipe_groups'],
+        'structural_coverage':plan.get('structural_coverage'),'episodes':episodes,
         'summary':{'episodes':len(episodes),'transitions':sum(row['transitions'] for row in episodes),
              'native_actions':sum(row['native_actions'] for row in episodes),
              'sum_episode_seconds':sum(row['seconds'] for row in episodes),

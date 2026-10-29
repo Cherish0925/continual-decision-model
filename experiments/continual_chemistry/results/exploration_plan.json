@@ -3008,5 +3008,58 @@
     }
   ],
   "training_count": 320,
-  "confirmation_count": 60
+  "confirmation_count": 60,
+  "structural_coverage": {
+    "training": {
+      "instances": 320,
+      "distinct_named_compositions": 33,
+      "distinct_proportion_structures": 5,
+      "structure_instance_counts": {
+        "1:1": 36,
+        "1:1:1": 101,
+        "1:1:2": 75,
+        "1:2": 80,
+        "1:3": 28
+      },
+      "structures_absent_from_training": []
+    },
+    "development": {
+      "instances": 30,
+      "distinct_named_compositions": 14,
+      "distinct_proportion_structures": 5,
+      "structure_instance_counts": {
+        "1:1": 10,
+        "1:1:1": 6,
+        "1:1:2": 5,
+        "1:2": 2,
+        "1:3": 7
+      },
+      "structures_absent_from_training": []
+    },
+    "confirmation_untrained_recipe": {
+      "instances": 30,
+      "distinct_named_compositions": 6,
+      "distinct_proportion_structures": 3,
+      "structure_instance_counts": {
+        "1:1:2": 10,
+        "1:2": 5,
+        "1:3": 15
+      },
+      "structures_absent_from_training": []
+    },
+    "confirmation_seen_recipe": {
+      "instances": 30,
+      "distinct_named_compositions": 16,
+      "distinct_proportion_structures": 5,
+      "structure_instance_counts": {
+        "1:1": 2,
+        "1:1:1": 9,
+        "1:1:2": 6,
+        "1:2": 11,
+        "1:3": 2
+      },
+      "structures_absent_from_training": []
+    },
+    "meaning": "Untrained named ingredient-ratio combinations; component-permutation-equivalent proportion structures may be present in training. The chemical response mechanism is unchanged."
+  }
 }

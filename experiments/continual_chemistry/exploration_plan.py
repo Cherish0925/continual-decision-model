@@ -6,6 +6,7 @@ The native sampler receives only difficulty, seed and its own behavior seed.
 """
 from __future__ import annotations
 import argparse,json,math,multiprocessing,os
+from collections import Counter
 from contextlib import redirect_stdout
 from concurrent.futures import ProcessPoolExecutor
 from functools import reduce
@@ -18,6 +19,25 @@ def canonical(counts):
     divisor=reduce(math.gcd,counts.values())
     return '|'.join(f'{name}:{counts[name]//divisor}' for name in sorted(counts))
 
+
+
+def proportion_structure(group):
+    return ':'.join(str(value) for value in sorted(int(item.rsplit(':',1)[1]) for item in group.split('|')))
+
+
+def structural_coverage(training,development,confirmation):
+    splits={'training':training,'development':development,
+            'confirmation_untrained_recipe':[row for row in confirmation if row['regime']=='untrained_recipe'],
+            'confirmation_seen_recipe':[row for row in confirmation if row['regime']=='seen_recipe_new_instance']}
+    result={}
+    trained={proportion_structure(row['recipe_group']) for row in training}
+    for name,rows in splits.items():
+        structures=Counter(proportion_structure(row['recipe_group']) for row in rows)
+        result[name]={'instances':len(rows),'distinct_named_compositions':len({row['recipe_group'] for row in rows}),
+            'distinct_proportion_structures':len(structures),'structure_instance_counts':dict(sorted(structures.items())),
+            'structures_absent_from_training':sorted(set(structures)-trained)}
+    result['meaning']='Untrained named ingredient-ratio combinations; component-permutation-equivalent proportion structures may be present in training. The chemical response mechanism is unchanged.'
+    return result
 
 def identify(job):
     difficulty,seed,root=job
@@ -67,7 +87,8 @@ def main():
           'development_recipe_groups':sorted(development),'confirmation_recipe_groups':sorted(reserved),
           'split_labels':'generator identity only; never input, training labels, or behavior',
           'training_episodes':training,'confirmation_episodes':confirmation,
-          'training_count':len(training),'confirmation_count':len(confirmation)}
+          'training_count':len(training),'confirmation_count':len(confirmation),
+          'structural_coverage':structural_coverage(training,[row for row in old['episodes'] if row['split']=='validation'],confirmation)}
     (args.output/'plan.json').write_text(json.dumps(plan,indent=2)+'\n')
     print(json.dumps({key:plan[key] for key in ('training_count','confirmation_count','confirmation_recipe_groups')}),flush=True)
 

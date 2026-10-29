@@ -271,3 +271,11 @@ The first command creates worlds for grouping without performing experiments.
 The second records every executed operation and completed experimental return,
 including budget-limited runs. The resulting manifest reports total collection
 cost, recipe-size coverage and the complete distribution of rust transitions.
+
+The split also records composition structure after removing substance names.
+Training contains 33 named compositions spanning five sorted positive ratio
+structures. The 30 unseen-composition confirmation instances contain six named
+compositions and three structures, all three present in training. Thus this is
+held-out ingredient–ratio combination transfer, not an unseen ratio structure
+or a new reaction law. This clarification does not change any frozen seed or
+recipe group.
