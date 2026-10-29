@@ -55,7 +55,7 @@ def test_replay_executes_supplied_pre_action_prediction(tmp_path):
     unchanged = ActiveTableEnvironment(path, mixture(), batch=1, permute=False)
     updated = ActiveTableEnvironment(path, mixture(), batch=1, permute=False)
     unchanged.step(torch.tensor([20]))
-    updated.step(torch.tensor([20]), beliefs={"means": torch.full((1, 9), 3000.)})
+    updated.step(torch.tensor([20]), beliefs={"means": torch.full((1, 9), 3000., dtype=torch.float64)})
     assert unchanged.successes.item() == 0
     assert updated.successes.item() == 1
     assert updated.known_hz[0, 2].item() == 3000.

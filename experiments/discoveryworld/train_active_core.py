@@ -363,7 +363,7 @@ class ActiveTableEnvironment:
                                      self.known, self.query, self.mixture)
                       if beliefs is None else beliefs)
             target = self.targets[selected, self.query[selected]]
-            error = (belief["means"][selected, hypothesis] - target).abs()
+            error = (belief["means"][selected, hypothesis].to(target) - target).abs()
             quality = torch.exp(-error / self.tolerance)
             previous_quality = self.best_quality[selected, self.query[selected]]
             reward[selected] += .2 * (quality - previous_quality).clamp_min(0) - self.test_cost
