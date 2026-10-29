@@ -16,15 +16,19 @@ def main():
     p.add_argument("--updates", type=int, default=400)
     p.add_argument("--batch", type=int, default=128)
     p.add_argument("--unroll", type=int, default=16)
+    p.add_argument("--seeds", type=int, nargs="+", choices=(221, 222), default=(221, 222))
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     jobs = []
     for device, seed, parent, physical in ((0, 221, 183, 211), (1, 222, 184, 212)):
+        if seed not in args.seeds:
+            continue
+        parent_dir = "rehearsal" if parent == 183 else "rehearsal_repeat"
         for mode in ("ordinary", "reset", "carry"):
             name = f"{mode}_seed{seed}"
             command = [sys.executable, "-m", "experiments.physical_belief.train_policy",
                 "--data", "runs/discoveryworld/active_experiments/data_large",
-                "--checkpoint", f"runs/discoveryworld/active_experiments/rehearsal/counterfactual_seed{parent}/update1200.pt",
+                "--checkpoint", f"runs/discoveryworld/active_experiments/{parent_dir}/counterfactual_seed{parent}/update1200.pt",
                 "--belief-checkpoint", f"runs/physical_belief/pretrain{physical}/last.pt",
                 "--mixture-checkpoint", "runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt",
                 "--output", str(args.output / name), "--mode", mode,
