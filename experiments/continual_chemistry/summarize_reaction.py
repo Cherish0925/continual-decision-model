@@ -9,10 +9,17 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--name',required=True)
+    p.add_argument('--phase',choices=['warmup','joint'],default='warmup')
+    p.add_argument('--reference-root',type=Path,help='Reuse completed matched reference, initial and warmup records')
     args=p.parse_args()
     data=json.loads((args.root/'summary.json').read_text())
+    if args.reference_root:
+        controls=json.loads((args.reference_root/'summary.json').read_text())
+        for key in ('conditions','episodes'):
+            data[key].extend({**r,'condition':'warmup' if r['condition']=='trained' else r['condition']} for r in controls[key])
+        data['protocol']['reused_controls']=str(args.reference_root/'summary.json')
     comparisons={}
-    for control in ('reference','initial'):
+    for control in ('reference','initial','warmup'):
         for regime in ('all','untrained_recipe','seen_recipe_new_instance'):
             rows=[r for r in data['episodes'] if regime=='all' or r['evaluation_regime']==regime]
             left=[r for r in rows if r['condition']=='trained'];right=[r for r in rows if r['condition']==control]
@@ -21,12 +28,14 @@ def main():
         'scope':{'environment':'Native Combinatorial Chemistry with public observations and actual instrument operations',
             'regimes':'Unseen named ingredient-ratio combinations versus seen-combination new instances; same chemical response mechanism',
             'selection':'Fixed complete-epoch endpoint; no native-evaluation checkpoint selection',
-            'warmup':'Reaction and cost heads trained with the shared recurrent core frozen',
+            'training':('Reaction and cost heads trained with the shared recurrent core frozen' if args.phase=='warmup'
+                        else 'Fixed two complete joint epochs updating the shared recurrent core and chemical readouts'),
             'policy':'Predicted observable rust reduction per predicted operation; current-task returned history',
             'not_evaluated':'Autonomous internal-compute allocation or cross-task neural online learning'}}
     output=Path('experiments/continual_chemistry/results');output.mkdir(exist_ok=True)
     (output/f'{args.name}.json').write_text(json.dumps(compact,indent=2)+'\n')
-    (output/f'{args.name}.csv').write_text((args.root/'summary.csv').read_text())
+    with (output/f'{args.name}.csv').open('w') as file:
+        writer=csv.DictWriter(file,fieldnames=list(data['conditions'][0]));writer.writeheader();writer.writerows(data['conditions'])
     keys=['condition','difficulty','seed','evaluation_regime','recipe_group','completed_successfully','native_actions',
           'experiments','returned_rust','partial_improvements','inference_seconds','execution_seconds','seconds','ending','error']
     with (output/f'{args.name}_instances.csv').open('w') as file:
