@@ -160,3 +160,46 @@ def condition_gaussian_mixture(prediction: dict, intervals: Tensor, mask: Tensor
             "mixture_mean": mean, "mixture_std": variance.sqrt(),
             "log_survival": result["log_survival"], "log_event_probability": normalizer,
             "possible": result["possible"]}
+
+
+def _segment_log_mass_in_units(means, std, low, high, present):
+    low = torch.where(present, low, -1.)
+    high = torch.where(present, high, 1.)
+    finite_low, finite_high = torch.isfinite(low), torch.isfinite(high)
+    a = (torch.where(finite_low, low, 0.)[:, None] - means[..., None]) / std[..., None]
+    b = (torch.where(finite_high, high, 0.)[:, None] - means[..., None]) / std[..., None]
+    a = torch.where(finite_low[:, None], a, low[:, None])
+    b = torch.where(finite_high[:, None], b, high[:, None])
+    return _log_interval_mass(a, b).masked_fill(~present[:, None], -torch.inf).logsumexp(-1)
+
+
+def interval_log_probability(prediction: dict, interval: Tensor,
+                             exclusions: Tensor | None = None, mask: Tensor | None = None):
+    """Exact mixture log P(Y in interval | Y outside excluded union), [B].
+
+    ``prediction`` is the ORIGINAL Gaussian mixture before these exclusions,
+    and ``interval`` is [B,2], for example a later public successful setting's
+    tolerance interval. This integrates the actual truncated mixture, rather
+    than fitting a Gaussian to its moments. A disjoint event has probability
+    zero. A completely excluded real line makes the conditional probability
+    undefined and returns NaN.
+    """
+    means, std = prediction["means"].double(), prediction["std"].double()
+    interval = torch.as_tensor(interval, dtype=means.dtype, device=means.device)
+    if interval.shape != (means.shape[0], 2):
+        raise ValueError("Expected one physical interval [batch, 2]")
+    if exclusions is None:
+        exclusions = means.new_empty(means.shape[0], 0, 2)
+    else:
+        exclusions = exclusions.to(device=means.device, dtype=means.dtype)
+    mask = torch.ones(exclusions.shape[:2], dtype=torch.bool, device=means.device) if mask is None else mask.to(device=means.device, dtype=torch.bool)
+    low, high, present = _complement(exclusions, mask)
+    denominator = _segment_log_mass_in_units(means, std, low, high, present)
+    intersection_low = torch.maximum(low, interval[:, :1])
+    intersection_high = torch.minimum(high, interval[:, 1:])
+    intersection_present = present & (intersection_low < intersection_high)
+    numerator = _segment_log_mass_in_units(means, std, intersection_low, intersection_high, intersection_present)
+    log_weights = prediction["weights"].double().log()
+    log_numerator = (log_weights + numerator).logsumexp(-1)
+    log_denominator = (log_weights + denominator).logsumexp(-1)
+    return (log_numerator - log_denominator).clamp_max(0.)

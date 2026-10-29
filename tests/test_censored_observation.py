@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from scipy.stats import norm, truncnorm
 
-from cdm.censored_observation import censored_gaussian_observation, condition_gaussian_mixture
+from cdm.censored_observation import (censored_gaussian_observation, condition_gaussian_mixture,
+                                      interval_log_probability)
 
 
 def test_empty_and_masked_exclusions_preserve_prediction():
@@ -91,3 +92,20 @@ def test_impossible_observation_is_explicitly_undefined():
     assert (~result["possible"]).all()
     assert torch.isneginf(result["log_survival"]).all()
     assert torch.isnan(result["mean"]).all() and torch.isnan(result["variance"]).all()
+
+
+def test_later_success_probability_uses_exact_intersection_with_exclusions():
+    prediction = {"means": torch.tensor([[0., 2.]], dtype=torch.float64),
+                  "std": torch.tensor([[1., .5]], dtype=torch.float64),
+                  "weights": torch.tensor([[.4, .6]], dtype=torch.float64)}
+    exclude = torch.tensor([[[-1., .5], [0., 1.]]], dtype=torch.float64)
+    success = torch.tensor([[.5, 2.5]], dtype=torch.float64)
+    actual = interval_log_probability(prediction, success, exclude).exp().item()
+    means, scales, weights = [prediction[k].numpy()[0] for k in ("means", "std", "weights")]
+    # The exclusion union is [-1,1], so the surviving success interval is [1,2.5].
+    numerator = (weights * (norm.cdf(2.5, means, scales) - norm.cdf(1., means, scales))).sum()
+    denominator = (weights * (norm.cdf(-1., means, scales) + norm.sf(1., means, scales))).sum()
+    np.testing.assert_allclose(actual, numerator / denominator, rtol=1e-12)
+    assert torch.isneginf(interval_log_probability(prediction, torch.tensor([[-.5, .5]]), exclude)).all()
+    torch.testing.assert_close(interval_log_probability(prediction, torch.tensor([[-torch.inf, torch.inf]]), exclude),
+                               torch.zeros(1, dtype=torch.float64), atol=1e-14, rtol=0)
