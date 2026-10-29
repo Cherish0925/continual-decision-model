@@ -12,7 +12,11 @@ from pathlib import Path
 
 
 def records(path):
-    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
+    text = path.read_text() if path.exists() else ""
+    # A running writer may still be appending its final line.
+    if text and not text.endswith("\n"):
+        text = text.rpartition("\n")[0]
+    return [json.loads(line) for line in text.splitlines() if line.strip()]
 
 
 def summarize(directory):
@@ -31,7 +35,7 @@ def summarize(directory):
         planned_external_requests=config["updates"] * config["batch"] * config["external_per_stream"],
         returned_requests=completed.get("returned_requests"),
         seconds=completed.get("seconds", rows[-1]["seconds"] if rows else 0.),
-        gradients_finite=all(math.isfinite(row["gradient_norm"]) for row in rows),
+        gradients_finite=all(math.isfinite(row["gradient_norm"]) for row in rows) if rows else None,
         peak_allocated_gib=max((row.get("peak_allocated_gib", 0.) for row in rows), default=0.),
         physical_learn_computations=sum(row["physical_learn_computations"] for row in rows),
         physical_consolidation_computations=sum(row["physical_consolidation_computations"] for row in rows),
