@@ -91,7 +91,9 @@ def train(args):
                          checkpoint_selection="last fixed-budget update",
                          observation="recorded readings; public settings revealed after prediction",
                          generated_tasks="affine alternative through original two support settings",
-                         memory_gradient="through all episodes in each sampled task stream")
+                         memory_gradient=("through remembered posteriors across sampled episodes"
+                                          if args.mode in ("retain", "last_context")
+                                          else "within each episode; memory not used by later tasks"))
     (args.output / "config.json").write_text(json.dumps(configuration, indent=2) + "\n")
     save_experimental_belief_checkpoint(model, args.output / "initial.pt", training=configuration)
     start = perf_counter()
