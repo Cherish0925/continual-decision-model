@@ -1,0 +1,21 @@
+{
+  "scope": "Development intervention on identical fixed task-reset weights; no new training",
+  "instances": 30,
+  "streams": 5,
+  "independent_confirmation": false,
+  "conditions": {
+    "reset232_original": {
+      "completed": 17,
+      "mean_native_actions": 220.3,
+      "mean_seconds": 11.106461818143725
+    },
+    "reset232_conditioned": {
+      "completed": 25,
+      "mean_native_actions": 159.86666666666667,
+      "mean_seconds": 8.870755876352389
+    }
+  },
+  "mean_action_difference": -60.43333333333333,
+  "gained_completions": 8,
+  "lost_completions": 0
+}
