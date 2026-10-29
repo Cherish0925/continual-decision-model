@@ -20,12 +20,14 @@ the value of the complete training method from the effect of retaining memory.
 
 The ongoing [continual physical-learning study](experiments/continual_physics/README.md)
 connects those predictions to a persistent neural state and learned choices of
-computation and online learning. Its first completed native comparisons fall
-below the preceding models. They reveal mismatched training/execution costs
+computation and online learning. All eight trainings and twelve primary native
+conditions are complete; the full models fall below the preceding models.
+They reveal mismatched training/execution costs
 and a failure-feedback gap in decision confidence. Correcting the latter
 raises one fixed model from 83/120 to 105/120 on new instances; its strong
-parent still reaches 119/120. The remaining matched comparisons continue,
-alongside a revised execution model for the next training.
+parent still reaches 119/120. Two additional recurrent references continue.
+The next training uses a [native execution model](experiments/continual_physics/EXECUTION.md)
+that reproduces device adjustment, feedback and actual operation costs.
 
 Two completed comparisons inform this study. An independent
 [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
@@ -36,12 +38,16 @@ GRU history; carrying its workspace does not change the measured task outcomes.
 These comparisons guide the ongoing model study and its next state-update experiment.
 
 A second native task, [Combinatorial Chemistry](experiments/continual_chemistry/README.md),
-now uses the same recurrent core with chemical observations and experimental
-feedback. After expanding actual experiment histories and learning conditional
-responses, its fixed-core model completes 30/30 development tasks with **78.3**
-mean actions, against **193.9** for matched recipe enumeration. Shared-core
-joint training and independent confirmation are in progress. This is a separate
-task adaptation, not yet one jointly trained model across both scientific tasks.
+uses the recurrent architecture with a learned model of experimental outcomes.
+On **60 new native instances**, all six conditions complete every task. Two
+jointly trained models use **143.35 and 278.37** mean actions, against **367.38**
+for the matched recipe-enumeration reference. Removing direct experimental
+history from the first model raises its cost to **343.75** actions. This supports
+learning useful relationships from earlier experiments. The two training runs
+differ substantially, and the additional benefit of the recurrent-state readout
+remains uncertain. [Complete comparisons](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
+include both runs, interventions and recipe-group uncertainty. Chemistry and
+physical control currently use separately trained task adaptations.
 
 ## Current results
 

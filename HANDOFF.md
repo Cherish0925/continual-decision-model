@@ -9,17 +9,17 @@ the settings actually executed; neural state, physical memory and learned
 corrections continue across task changes. Received outcomes enter the model
 after an explicit delivery delay.
 
-All eight fixed-budget trainings have started: two parent repetitions of the
+All eight fixed-budget trainings have completed: two parent repetitions of the
 full model, discarded physical online corrections, task-reset state and a
 fixed activity schedule. Each trains on 204,800 external requests with
 32-request gradient windows. The original simulator supplies exact training
 transitions; only public measurements and actual setting feedback enter the
-policy. Twelve native conditions are queued on a new 120-instance cohort.
-The first completed conditions fall below their frozen parents. Full seed 231
+policy. Twelve native conditions have completed on a new 120-instance cohort.
+Both full models fall below their frozen parents. Full seed 231
 completes 94/120 at 159.29 native actions, compared with its parent's 117/120 at
-106.68. Its same-weight discarded-update control also completes 94/120. The
-remaining fixed conditions continue; no intermediate checkpoint replaces their
-predeclared endpoints.
+106.68. Its same-weight discarded-update control also completes 94/120. Full
+seed 232 completes 71/120 at 215.43 actions, against 119/120 at 102.84 for its
+parent. No intermediate checkpoint replaces the predeclared endpoints.
 
 Two concrete problems now guide the next training. Training counts each scalar
 test as one request, while actual navigation, device adjustment and probing can
@@ -29,8 +29,15 @@ feature. Correcting the latter improves one fixed model on a new independent
 cohort from 83/120 at 185.29 actions to 105/120 at 135.64; the strong parent still
 reaches 119/120 at 106.93. The [complete record](experiments/continual_physics/README.md)
 includes the matched intervention and every instance. The unstarted recurrent-
-feedback candidate queue was deferred until execution-aware training and its
-matching reference are ready. The original trainings and evaluations continue.
+feedback candidate queue was deferred while execution-aware training and its
+matching reference were prepared. The new execution path reproduces all 243
+recorded requests in twelve native episodes, including intermediate settings,
+activation and operation costs. It trains with a 400-operation task budget and
+charges the actual operations in each experimental request. Formal training
+exposed a boundary case where consistent threshold observations identify an
+exact frequency; the interval likelihood is being extended before those runs
+can be treated as valid. [Execution details](experiments/continual_physics/EXECUTION.md)
+separate implementation checks from model results.
 
 Two additional fixed-computation recurrent policies use the same physical tools,
 parent weights and external training budget. They retain neural state across
@@ -54,14 +61,24 @@ learns from actual mixtures, partial cleaning, unsuccessful experiments and
 their native operation costs. A new collection contains 320 tasks and 10,610
 returned experiments; no hidden solution supplies a training response.
 
-After complete response-interface training with the inherited core frozen,
-the model completes all 30 development instances at 78.3 mean native actions,
-against 193.9 for the matched primitive-recipe enumeration reference. The
-18 untrained ingredient–ratio combinations also all complete, at 93.17 versus
-212 actions. These are development results. Shared-core joint training, a
-second initialization and a frozen 60-instance confirmation are in progress;
-they distinguish learned experimental relationships from the contribution of
-persistent neural computation.
+The frozen 60-instance confirmation is complete: 360 native executions across
+six conditions, each completing 60/60 with no interface errors. Mean native
+actions are 367.38 for primitive-recipe enumeration, 162.10 after response
+training with the core frozen, and 143.35 / 278.37 for the two joint trainings.
+Removing direct experiment history from the first joint model raises cost to
+343.75; removing its recurrent-state input to the response head gives 178.95.
+The direct-history effect is supported by recipe-group intervals. The additional
+core-readout effect and the second training's improvement over enumeration have
+intervals that include zero. Both training repetitions are retained.
+
+The confirmation comprises 22 named recipe groups. Thirty instances use six
+ingredient–ratio groups absent from original native sampling, but their ratio
+structures occur in training and ingredient-renaming augmentation can generate
+isomorphic combinations. This measures composition reuse within the chemical
+task, not discovery of unseen chemical laws. The [full table and interventions](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
+define these conditions. A two-experiment planning comparison is now being
+implemented using the fixed learned response model; it will test whether extra
+computation improves actual experiment choice.
 
 ## Physical prediction and experimental decisions
 
