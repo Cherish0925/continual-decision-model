@@ -56,6 +56,44 @@ def test_parent_predictions_actions_and_checkpoint_are_preserved(tmp_path):
         torch.testing.assert_close(value, restored.state_dict()[key])
 
 
+def test_recurrent_reference_waits_for_feedback_without_neural_updates(tmp_path):
+    from dataclasses import replace
+
+    model, obs = example()
+    model.continual_config = replace(model.continual_config, activity_mode="fixed",
+                                    max_internal_steps=0, fixed_refinements=0)
+    model.retain_adaptation = False
+    model.retain_physical_adaptation = False
+    state = model.receive(model.initial(2, "cpu"), obs)
+    out = model.readout(state, obs["candidates"], obs["action_mask"])
+    assert out["activity_logits"].argmax(-1).tolist() == [int(Activity.ACT)] * 2
+    state = model.begin_action(state, out["features"], torch.tensor([20, 20]), physical=out)
+    pending = model.readout(state, obs["candidates"], obs["action_mask"])
+    assert pending["activity_logits"].argmax(-1).tolist() == [int(Activity.WAIT)] * 2
+    waited = model.internal(state, torch.full((2,), int(Activity.WAIT)), obs)
+    assert torch.equal(waited["h"], state["h"])
+    assert torch.equal(waited["z"], state["z"])
+    assert waited["observation_count"].tolist() == [1, 1]
+    feedback = dict(intervals=torch.tensor([[[116., 120.]], [[116., 120.]]]),
+                    mask=torch.ones(2, 1, dtype=torch.bool), success=torch.ones(2, 1, dtype=torch.bool))
+    received = model.feedback(waited, torch.ones(2, 2), physical_feedback=feedback)
+    for activity in (Activity.LEARN, Activity.CONSOLIDATE):
+        # Flags also protect deployment if an external caller overrides activity.
+        revised = model.internal(received, torch.full((2,), int(activity)), obs)
+        for key in ("fast", "slow", "physics_fast", "physics_slow"):
+            assert torch.equal(revised[key], received[key])
+    state = model.receive(received, obs)
+    assert state["observation_count"].tolist() == [2, 2]
+    assert model.readout(state, obs["candidates"], obs["action_mask"])["activity_logits"].argmax(-1).tolist() == [0, 0]
+    path = tmp_path / "reference.pt"
+    torch.save({**model.configuration(), "model": model.state_dict()}, path)
+    restored, _ = load_continual_physics_checkpoint(path)
+    assert restored.continual_config.activity_mode == "fixed"
+    assert restored.continual_config.fixed_refinements == 0
+    assert not restored.retain_adaptation
+    assert not restored.retain_physical_adaptation
+
+
 def test_success_updates_executed_physics_and_outer_gradients():
     model, obs = example()
     state, _ = returned(model, obs)

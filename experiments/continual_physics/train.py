@@ -219,7 +219,7 @@ def main():
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--device", default="cuda:0")
     p.add_argument("--seed", type=int, default=231)
-    p.add_argument("--mode", choices=("full", "discard_physical", "task_reset", "fixed_schedule"), default="full")
+    p.add_argument("--mode", choices=("full", "discard_physical", "task_reset", "fixed_schedule", "recurrent_reference"), default="full")
     p.add_argument("--updates", type=int, default=200)
     p.add_argument("--batch", type=int, default=32)
     p.add_argument("--external-per-stream", type=int, default=32)
@@ -255,12 +255,17 @@ def main():
         seed=args.seed, device=args.device, native_fraction=args.native_fraction)
     environment = ExactPhysicalTasks(pool, plan, mixture, truth_path=args.environment_truth, max_steps=args.max_steps)
     delayed = DelayedExperiments(environment, seed=args.seed, max_delay=args.max_delay)
-    activity_mode = "fixed_schedule" if args.mode == "fixed_schedule" else "learned"
+    recurrent = args.mode == "recurrent_reference"
+    activity_mode = "fixed" if recurrent else ("fixed_schedule" if args.mode == "fixed_schedule" else "learned")
+    if recurrent:
+        args.max_internal_steps = 0
     model, _ = load_continual_physics_checkpoint(args.checkpoint, args.device,
         belief_checkpoint=args.belief_checkpoint,
         config=ContinualExperimentConfig(memory_size=args.memory_size,
-            max_internal_steps=args.max_internal_steps, activity_mode=activity_mode))
-    model.retain_physical_adaptation = args.mode != "discard_physical"
+            max_internal_steps=args.max_internal_steps, activity_mode=activity_mode,
+            fixed_refinements=0 if recurrent else 1))
+    model.retain_adaptation = not recurrent
+    model.retain_physical_adaptation = args.mode not in {"discard_physical", "recurrent_reference"}
     reference = deepcopy(model.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
     parameters = [(n, x) for n, x in model.named_parameters() if x.requires_grad]
@@ -272,13 +277,18 @@ def main():
         parameters = [(n, x) for n, x in parameters if n not in names]
     optimizer = torch.optim.AdamW(groups, weight_decay=.001)
     settings = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
-    settings.update(task_source=pool.description(), schedule=plan.description(),
+    settings.update(method="recurrent policy with shared physical tools" if recurrent else args.mode,
+        retain_adaptation=model.retain_adaptation,
+        retain_physical_adaptation=model.retain_physical_adaptation,
+        task_source=pool.description(), schedule=plan.description(),
         activation="strict absolute error below 2 Hz against private environment resonance" if args.environment_truth else "proxy: strict error below 2 Hz against recorded working setting",
         feedback="actual executed frequency and binary activation; never hidden resonance or target distance",
         delay="1 to max_delay ticks, indexed independently by stream and external-request number",
         budget="equal external requests per stream and optimizer update; internal ticks recorded separately",
-        state="neural state, physical posterior memory and online adapters persist through A-B-A",
-        physical_online_learning="interval likelihood on received activation and non-activation feedback",
+        state=("neural state and shared physical posterior memory persist through A-B-A; neural adapters disabled"
+               if recurrent else "neural state, physical posterior memory and online adapters persist through A-B-A"),
+        physical_online_learning=("disabled" if recurrent else
+            "interval likelihood on received activation and non-activation feedback"),
         cost_target="log1p(1) for one executed request; queue delay is a separate latency cost",
         execution="single scalar setting per request; native operator may run multiple local probes",
         selection="fixed final update")

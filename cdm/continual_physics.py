@@ -414,7 +414,9 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
 
     def configuration(self):
         return {**super().configuration(), "kind": "continual_physics_v1",
-                "physics_config": asdict(self.physics_config), "belief_config": self.belief.configuration()}
+                "physics_config": asdict(self.physics_config), "belief_config": self.belief.configuration(),
+                "retain_adaptation": self.retain_adaptation,
+                "retain_physical_adaptation": self.retain_physical_adaptation}
 
     def forward(self, event, evidence, evidence_mask, candidates, action_mask, state,
                 refinements=1, feedback_targets=None, activity_generator=None,
@@ -464,6 +466,8 @@ def load_continual_physics_checkpoint(path, device="cpu", belief_checkpoint=None
     model = ContinualPhysicsPolicy(base, belief, ContinualExperimentConfig(**saved["continual_config"]),
                                    ContinualPhysicsConfig(**saved["physics_config"]))
     model.load_state_dict(saved["model"], strict=True)
-    if saved.get("training", {}).get("mode") == "discard_physical":
-        model.retain_physical_adaptation = False
+    mode = saved.get("training", {}).get("mode")
+    model.retain_adaptation = saved.get("retain_adaptation", mode != "recurrent_reference")
+    model.retain_physical_adaptation = saved.get("retain_physical_adaptation",
+        mode not in {"discard_physical", "recurrent_reference"})
     return model.to(device), saved
