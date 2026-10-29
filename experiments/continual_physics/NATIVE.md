@@ -52,6 +52,13 @@ the same relation can propose a new setting after further evidence or learning.
 Prediction corrections, proposed settings and actual returned settings are
 recorded separately.
 
+The training environment returns one setting outcome for each test request.
+The native operator may additionally perform its existing local scalar probes
+within that request. Native learning receives every returned setting outcome,
+and all probing actions count toward the 400-action budget. This execution-tool
+difference is recorded; training requests and native actions are not treated
+as interchangeable units.
+
 ## Delayed feedback
 
 The runtime may hold a completed tool result for a configured number of
