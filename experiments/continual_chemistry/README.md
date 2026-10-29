@@ -279,3 +279,14 @@ compositions and three structures, all three present in training. Thus this is
 held-out ingredient–ratio combination transfer, not an unseen ratio structure
 or a new reaction law. This clarification does not change any frozen seed or
 recipe group.
+
+The first mixed batch is complete: 320 episodes produced 10,610 returned
+experiments at a total cost of 154,240 native operations. The behavior completed
+270 tasks; 50 exhausted their budgets, and none had an execution error. These
+are data-collection outcomes, not the performance of a newly trained model.
+Five/six-part compositions account for 2,660/2,383 observations. There are 461
+partial-cleaning improvements. Most feedback is still censored: 9,574 trials
+start and finish at rust level one. Such a trial establishes that the mixture
+did not fully clean this key; it does not establish an intrinsic reaction
+endpoint of one. The [data manifest](results/exploration_data.json) preserves
+all episodes, costs, transition counts and split coverage.
