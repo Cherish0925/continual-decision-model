@@ -49,6 +49,11 @@ def make_jobs(root, training_roots, workers):
                     append(f'carry_seed{seed}_memory_{intervention}', str(trained / 'policy.pt'),
                            belief=str(trained / 'belief.pt'), belief_mode=intervention,
                            ready=trained / 'finished.json')
+    for job in jobs:
+        manifest_index = max(index for index, value in enumerate(job["command"]) if value == "--manifest")
+        job["manifest"] = job["command"][manifest_index + 1]
+        cohort = json.loads(Path(job["manifest"]).read_text())
+        job["expected_instances"] = sum(len(stream["seeds"]) for stream in cohort["streams"])
     return jobs
 
 
@@ -63,7 +68,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     jobs = make_jobs(args.output, {221: args.training_root221, 222: args.training_root222}, args.workers)
     plan = {'jobs': jobs, 'selection': 'All six fixed-final-budget trainings, independent of development score',
-            'native_instances': 120, 'cohort': '20 ordered A-B-A streams, two fresh tasks per segment',
+            'native_instances_per_confirmation': 120, 'total_native_executions': sum(job['expected_instances'] for job in jobs), 'cohort': '20 ordered A-B-A streams, two fresh tasks per segment',
             'matched_rng': str(args.output / 'initial_rng'), 'threads_per_worker': 1,
             'maximum_workers': args.parallel * args.workers,
             'same_weight_interventions': ['carry', 'reset physical memory at task boundaries',
