@@ -19,7 +19,7 @@ import tarfile
 import tempfile
 
 
-CHECKPOINTS = {"last.pt", "best.pt", "initial.pt", "critic.pt"}
+CHECKPOINTS = {"last.pt", "best.pt", "initial.pt", "critic.pt", "policy.pt", "belief.pt"}
 REFERENCE = {
     "measurement_memory/action_run/last.pt",
     "calibration/mixture/shared_seed31/last.pt",
