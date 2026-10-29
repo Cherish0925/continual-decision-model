@@ -15,10 +15,11 @@ evaluation of unseen scientific laws. Schedule labels are for analysis and
 never enter the model.
 
 Compare both frozen v0.11 parent models and two independent trainings of each
-new condition: full model, no online correction, task-boundary reset, and fixed
+new condition: full model, no physical online correction, task-boundary reset, and fixed
 internal activity schedule. The full checkpoints also run with their computed
-online corrections discarded. This last intervention preserves the trained
-weights and the calculation of updates. All conditions share initial native
+physical online corrections discarded. This last intervention preserves the
+trained weights, calculation of updates, numerical posterior memory and cost
+adapter. All conditions share initial native
 RNG snapshots, 400 actual environment actions and at most 160 external
 decisions per instance. Internal activity does not consume or replace the
 external-decision allowance; its count, latency and cost are reported separately.
@@ -35,8 +36,9 @@ Every tool request has an identity. Its returned record contains the received
 instrument readings, actual device settings and activation feedback. Only
 these returned observations update the model. Unknown target frequencies and
 the simulator's relation-family label are unavailable to it. Each successful
-or unsuccessful setting is associated with the object tested and the public
-control resolution; an unsuccessful setting is not an exact target label.
+or unsuccessful setting is associated with the object tested and the native
+activation tolerance (2 Hz), independently of the dial resolution; an
+unsuccessful setting is not an exact target label.
 
 Current-task measurement records, cross-task physical memory, persistent
 neural state and online parameter corrections remain distinct model state.
