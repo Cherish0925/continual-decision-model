@@ -138,19 +138,29 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output',type=Path,default=Path('runs/continual_physics/chemistry_bayesian/development'))
     p.add_argument('--workers',type=int,default=8);p.add_argument('--check-data',action='store_true')
+    p.add_argument('--cohort',choices=['development','confirmation'],default='development')
     args=p.parse_args()
     if args.check_data:
         print(json.dumps(verify_records(Path('runs/continual_physics/chemistry_exploration')),indent=2));return
     if os.environ.get('PYTHONHASHSEED')!='0':raise ValueError('Use PYTHONHASHSEED=0')
-    manifest=json.loads(Path('runs/continual_physics/chemistry_data/manifest.json').read_text())
-    rows=[r for r in manifest['episodes'] if r['split']=='validation'];args.output.mkdir(parents=True,exist_ok=True)
+    if args.cohort=='development':
+        manifest=json.loads(Path('runs/continual_physics/chemistry_data/manifest.json').read_text())
+        rows=[r for r in manifest['episodes'] if r['split']=='validation']
+        rng_root='runs/continual_physics/chemistry_reaction/warmup753/native_development/initial_rng'
+    else:
+        manifest=json.loads(Path('runs/continual_physics/chemistry_exploration/plan.json').read_text())
+        rows=[{**r,'evaluation_regime':r['regime']} for r in manifest['confirmation_episodes']]
+        rng_root='runs/continual_physics/chemistry_reaction/native_confirmation/initial_rng'
+    args.output.mkdir(parents=True,exist_ok=True)
     plan={'episodes':rows,'conditions':['one_step','two_step'],'max_native_operations':1000,'max_experiments':209,
           'hypotheses':'all 55/161 primitive integer proportions through six parts; uniform prior',
           'response':'cosine >= .99/.66/.33 implies intrinsic endpoint 0/1/2, otherwise 3; observed min(before, endpoint)',
           'selection':'one- or two-experiment completion probability divided by expected actual operations, including door exit',
           'cost':'6 + total parts + active components + 2 if previous experiment; four exit actions',
-          'scope':'Known public reaction-family reference, not matched-prior learning; old 30 development only',
-          'initial_rng':'runs/continual_physics/chemistry_reaction/warmup753/native_development/initial_rng'}
+          'scope':'Known public reaction-family reference, not matched-prior learning',
+          'cohort':args.cohort,'selection':'Fixed one/two-step methods, no parameter or endpoint selection on confirmation',
+          'comparison_timing':'Additional references declared after the primary learned-model comparison' if args.cohort=='confirmation' else 'Development comparison',
+          'initial_rng':rng_root}
     (args.output/'protocol.json').write_text(json.dumps(plan,indent=2)+'\n')
     jobs=[(mode,row,str(args.output),plan['initial_rng']) for mode in plan['conditions'] for row in rows]
     results=[]
