@@ -48,6 +48,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", action="append", required=True, help="condition=directory")
     parser.add_argument("--reference", required=True)
+    parser.add_argument("--pair", action="append", default=[], help="Additional matched comparison left:right")
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -86,6 +87,19 @@ def main():
                               ("stream", "seed", "episode_index", "segment_role", "position_in_segment",
                                "completed_successfully", "native_actions", "measurement_requests",
                                "test_requests", "ending")}})
+    results["specified_pairs"] = {}
+    for specification in args.pair:
+        left_name, right_name = specification.split(":", 1)
+        left, right = conditions[left_name], conditions[right_name]
+        comparison = {"left": left_name, "right": right_name, "difference": "left minus right",
+                      "all": paired(left, right)}
+        for segment in ("initial", "switch", "return"):
+            choose = lambda xs: [r for r in xs if r.get("segment_role") == segment
+                                and r.get("position_in_segment") == 0]
+            subset, counterpart = choose(left), choose(right)
+            if subset:
+                comparison[f"first_{segment}"] = paired(subset, counterpart)
+        results["specified_pairs"][specification] = comparison
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "summary.json").write_text(json.dumps(results, indent=2) + "\n")
     with (args.output / "instances.csv").open("w") as handle:
