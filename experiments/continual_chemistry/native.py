@@ -48,9 +48,11 @@ def run(options):
             'primitive_candidates':primitive_candidates,
             'direct_history':None if model is None else getattr(model,'direct_history',None),
             'response_reads_core':None if model is None else getattr(model,'core_response',None),
+            'planning_mode':getattr(args,'planning_mode','progress'),
+            'planning_topk':getattr(args,'planning_topk',6),
             'input':'visible components, current rust and returned experimental history',
             'initial_rng':rng,'repeated_recipe_rule':'exclude an identical returned recipe with rust endpoint >= current rust',
-            'selection':'predicted one-step rust reduction per predicted native action' if model else 'ascending bounded integer recipes'}
+            'selection':('predicted '+getattr(args,'planning_mode','progress')+' per predicted native experiment action') if model else 'ascending bounded integer recipes'}
         with TrajectoryWriter(args.output,metadata) as writer, (args.output/'experiments.jsonl').open('w') as experiments:
             executor=BoundedChemistryExperiments(env,writer)
             try:
@@ -68,8 +70,14 @@ def run(options):
                     start=perf_counter()
                     if not bool(obs['action_mask'].any()):ending='no_untried_recipe';break
                     out=None if model is None else model.readout(state,obs['candidates'],obs['action_mask'])
+                    planning=None
                     if public['rust_level']==0:selected=len(choices)-1
                     elif model is None:selected=int(obs['action_mask'][0].nonzero()[0])
+                    elif getattr(args,'planning_mode','progress')!='progress':
+                        from .foresight import choose_experiment,ForesightConfig
+                        selected,planning=choose_experiment(model,state,public,obs,choices,out,
+                            elapsed_actions=env.steps,max_actions=args.max_actions,mode=args.planning_mode,
+                            config=ForesightConfig(topk=getattr(args,'planning_topk',6)))
                     else:selected=int(outcome_action_scores(out,obs)[0].argmax())
                     if model:
                         action=torch.tensor([selected]);state=model.begin_action(state,out['features'],action)
@@ -83,6 +91,7 @@ def run(options):
                         else:result=executor.experiment(choices[selected])
                     finally:execution_seconds+=perf_counter()-start
                     if model:
+                        if planning is not None:result['planning']=planning
                         result['model_outcome_logits']=out['outcomes'][0,selected].tolist()
                         result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
@@ -107,6 +116,7 @@ def run(options):
             'final_h_change':None if state is None else float((state['h']-initial_h).norm()),
             'final_z_change':None if state is None else float((state['z']-initial_z).norm()),
             'inference_seconds':inference_seconds,'execution_seconds':execution_seconds,
+            'planning_mode':getattr(args,'planning_mode','progress'),
             'ending':ending,'error':error,'seconds':perf_counter()-started}
         (args.output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     return summary
@@ -123,6 +133,8 @@ def main():
     p.add_argument('--primitive-candidates',action='store_true',help='Use the same unique proportions for reference and learned policies')
     p.add_argument('--disable-direct-history',action='store_true')
     p.add_argument('--disable-response-core',action='store_true')
+    p.add_argument('--planning-mode',choices=['progress','completion','two_step'],default='progress')
+    p.add_argument('--planning-topk',type=int,default=6)
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))
     if summary['error']:raise SystemExit(1)
 
