@@ -309,6 +309,7 @@ def initialize_experiment(args):
         model.physics_config = replace(model.physics_config, condition_failure_weights=True)
     model.retain_adaptation = not recurrent
     model.retain_physical_adaptation = args.mode not in {"discard_physical", "recurrent_reference"}
+    environment.table.retain_failed_relations = model.physics_config.inherit_parent_interface
     return model, pool, plan, environment, delayed
 
 

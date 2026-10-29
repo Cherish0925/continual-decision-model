@@ -40,6 +40,7 @@ class ContinualPhysicsConfig:
     max_exclusions: int = 512
     test_tolerance_hz: float = 2.
     condition_failure_weights: bool = False
+    inherit_parent_interface: bool = False
 
 
 def propose_physical_settings(means, std, exclusions, mask, *, tolerance=2., current=None,
@@ -146,6 +147,13 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
         self.physical_value = nn.Linear(4, 1, bias=False)
         nn.init.zeros_(self.physical_activity.weight)
         nn.init.zeros_(self.physical_value.weight)
+        if physics_config.inherit_parent_interface:
+            # A pending tool must not turn zero-score activity ties into two
+            # unsolicited REFINE steps. This applies only to this new candidate.
+            with torch.no_grad():
+                self.activity[-1].bias[Activity.WAIT] = 1.
+            self.physical_action_residual = nn.Linear(3, 1, bias=False)
+            nn.init.zeros_(self.physical_action_residual.weight)
 
     def initial(self, batch, device):
         state = super().initial(batch, device)
@@ -256,24 +264,40 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
                 means, std, decision_weights, state["physical_exclusions"],
                 state["physical_exclusion_mask"])
             decision_weights = conditioned["weights"]
-        proposal = propose_physical_settings(means, std, state["physical_exclusions"],
-            state["physical_exclusion_mask"], tolerance=p.test_tolerance_hz,
-            current=state["physical_current_hz"], minimum_step=state["physical_minimum_step_hz"],
-            lower=state["physical_lower_hz"], upper=state["physical_upper_hz"])
+        if p.inherit_parent_interface:
+            # The parent's numerical executor already handles its control grid.
+            # Keep the action's existing meaning: test this relation's mean.
+            proposal = {"settings": means, "valid": torch.isfinite(means)
+                & (means >= state["physical_lower_hz"][:, None])
+                & (means <= state["physical_upper_hz"][:, None])}
+        else:
+            proposal = propose_physical_settings(means, std, state["physical_exclusions"],
+                state["physical_exclusion_mask"], tolerance=p.test_tolerance_hz,
+                current=state["physical_current_hz"], minimum_step=state["physical_minimum_step_hz"],
+                lower=state["physical_lower_hz"], upper=state["physical_upper_hz"])
         settings = proposal["settings"]
         corrected = candidates.clone()
-        # Preserve the original encoding for ineligible actions. At initialization
-        # these replacements equal the existing physical candidate representation.
+        # The proposal mode replaces predicted-mean semantics with a proposed
+        # executable setting, even when the learned correction starts at zero.
+        # The inherited interface preserves old fields and adds a zero residual.
         eligible = state["physical_eligible"]
-        corrected[:, sl, p.mean_column] = torch.where(eligible,
-            ((settings - self.belief.y_mean) / self.belief.y_scale).to(candidates), candidates[:, sl, p.mean_column])
-        corrected[:, sl, p.std_column] = torch.where(eligible,
-            (std / self.belief.y_scale).to(candidates), candidates[:, sl, p.std_column])
-        corrected[:, sl, p.weight_column] = torch.where(eligible,
-            decision_weights.to(candidates), candidates[:, sl, p.weight_column])
+        if not p.inherit_parent_interface:
+            corrected[:, sl, p.mean_column] = torch.where(eligible,
+                ((settings - self.belief.y_mean) / self.belief.y_scale).to(candidates), candidates[:, sl, p.mean_column])
+            corrected[:, sl, p.std_column] = torch.where(eligible,
+                (std / self.belief.y_scale).to(candidates), candidates[:, sl, p.std_column])
+            corrected[:, sl, p.weight_column] = torch.where(eligible,
+                decision_weights.to(candidates), candidates[:, sl, p.weight_column])
         execution_mask = action_mask.clone()
         execution_mask[:, sl] &= proposal["valid"]
         out = super().readout(state, corrected, execution_mask)
+        if p.inherit_parent_interface:
+            changed_physics = torch.stack((
+                (means - state["physical_means"]) / self.belief.y_scale,
+                (std - state["physical_std"]) / self.belief.y_scale,
+                decision_weights - state["physical_weights"]), -1).to(candidates)
+            extra = self.physical_action_residual(changed_physics).squeeze(-1) * eligible
+            out["logits"] = out["logits"] + F.pad(extra, (p.test_action_start, 0))
         activity_features = self._activity_features(state)
         out["activity_logits"] = out["activity_logits"] + self.physical_activity(activity_features)
         out["value"] = out["value"] + self.physical_value(activity_features).squeeze(-1)
@@ -482,6 +506,9 @@ def load_continual_physics_checkpoint(path, device="cpu", belief_checkpoint=None
             configure_recurrent_feedback(model, parent.recurrent_feedback.config)
         # Keep any already-trained activity/cost learning modules from the parent.
         model.load_state_dict(parent.state_dict(), strict=False)
+        if model.physics_config.inherit_parent_interface and "continual_config" not in saved:
+            with torch.no_grad():
+                model.activity[-1].bias[Activity.WAIT] = 1.
         return model, saved
     c = saved["belief_config"]
     belief = ExperimentalBelief(c["normalization"], memory_slots=c["memory_slots"], noise_floor_hz=c["noise_floor_hz"])

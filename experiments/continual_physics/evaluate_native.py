@@ -16,7 +16,7 @@ import torch
 
 from experiments.discoveryworld.active_native import NativeActiveEpisode
 from experiments.discoveryworld.adapter import TrajectoryWriter
-from experiments.discoveryworld.evaluate_active_native import _event_from_result
+from experiments.discoveryworld.evaluate_active_native import _event_from_result, _public_test_mask
 from experiments.discoveryworld.evaluate_active_stream import (
     NATIVE_RELATIONS, copy_state, feedback_targets, public_object_order,
     schedule_position,
@@ -56,9 +56,13 @@ def native_observation(model, state, episode, event, step, max_steps, device, *,
     beliefs, posterior = model.belief.observe_predict(
         tensors["values"], tensors["seen"], tensors["known_hz"], tensors["known"],
         tensors["query"], model.belief_memory(state))
+    inherited = model.physics_config.inherit_parent_interface
+    failed = tensors["failed"] if inherited else torch.zeros_like(tensors["failed"])
     obs = make_observation(tensors["values"], tensors["counts"], tensors["known_hz"],
-                           tensors["known"], tensors["query"], torch.zeros_like(tensors["failed"]), event,
+                           tensors["known"], tensors["query"], failed, event,
                            model.belief, step, max_steps, beliefs_override=beliefs)
+    if inherited:
+        obs["action_mask"][:, 20:] &= _public_test_mask(episode, beliefs)[None]
     obs = add_physical_context(obs, beliefs, model.belief)
     obs.update({f"physical_{name}": beliefs[name] for name in ("means", "std", "weights", "eligible")})
     control = episode.controls[int(episode.query[0])]

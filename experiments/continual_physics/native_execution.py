@@ -173,6 +173,10 @@ class NativeToolExecution:
             new = (old * previous + returned * present) / (previous + present).clamp_min(1)
             new[:, 2] = torch.where(present[:, 2], torch.where(previous[:, 2] > 0,
                 torch.minimum(old[:, 2], returned[:, 2]), returned[:, 2]), old[:, 2])
+            if getattr(table, "retain_failed_relations", False):
+                revised = present & ((previous == 0) | (new != old))
+                relevant = table.known[measured, o] | (o == table.query[measured])
+                table.failed[measured] &= ~(revised & relevant[:, None])
             table.values[measured, o] = new
             table.counts[measured, o] += present.long()
             table.group_counts[measured, o, g] += 1
@@ -181,6 +185,9 @@ class NativeToolExecution:
             table.acquisitions[measured] += 1
         selected = test.nonzero().flatten()
         if len(selected):
+            if getattr(table, "retain_failed_relations", False):
+                rejected = selected[~success[selected]]
+                table.failed[rejected, action[rejected] - 20] = True
             table.event[selected] = test_event(target_query[selected], action[selected] - 20, success[selected],
                 table.steps[selected], table.max_steps, device, cost=cost[selected])
             table.tests[selected] += 1
@@ -190,6 +197,8 @@ class NativeToolExecution:
         table.successes[completed] += 1
         remaining = table.target_mask & ~table.known
         table.query[completed] = remaining.float().argmax(-1)[completed]
+        if getattr(table, "retain_failed_relations", False):
+            table.failed[completed] = False
         table.event[completed, 32:36] = 0
         table.event[completed, 32 + table.query[completed]] = 1
         reward = success.float() - cost * self.action_cost

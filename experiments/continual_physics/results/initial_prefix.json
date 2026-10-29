@@ -1,0 +1,3422 @@
+{
+  "scope": "Received public common prefixes; no new environment execution or training",
+  "results": [
+    {
+      "parent": "runs/physical_belief/joint_20261029/carry_seed221/policy.pt",
+      "initial": "runs/continual_physics/joint_20261029/full_seed231/initial.pt",
+      "base_tensors_equal": true,
+      "normalization_difference": {
+        "x_mean": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "x_scale": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "y_mean": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "y_scale": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        }
+      },
+      "episodes": [
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed221/confirmation_00/episode000_seed42000/summary.json",
+          "seed": 42000,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 0,
+              "parent_action": 0,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.981337308883667,
+                  3.876049041748047,
+                  3.5228872299194336,
+                  3.391509532928467
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.981337308883667,
+                  3.876049041748047,
+                  3.5228872299194336,
+                  3.391509532928467
+                ]
+              },
+              "inherited_candidate": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.981337308883667,
+                  3.876049041748047,
+                  3.5228872299194336,
+                  3.391509532928467
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 5,
+              "parent_action": 5,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  5,
+                  10,
+                  15,
+                  3
+                ],
+                "top_logits": [
+                  6.749536514282227,
+                  6.66543436050415,
+                  4.971786975860596,
+                  3.9430062770843506
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 4.935556411743164,
+                "parent_logits": {
+                  "maximum": 0.13782167434692383,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.13782167434692383,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  5,
+                  10,
+                  15,
+                  3
+                ],
+                "top_logits": [
+                  6.61214017868042,
+                  6.527612686157227,
+                  4.858978271484375,
+                  3.941512107849121
+                ]
+              },
+              "inherited_candidate": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  5,
+                  10,
+                  15,
+                  3
+                ],
+                "top_logits": [
+                  6.749536514282227,
+                  6.66543436050415,
+                  4.971786975860596,
+                  3.9430062770843506
+                ]
+              }
+            },
+            {
+              "step": 2,
+              "recorded_action": 10,
+              "parent_action": 10,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  10,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.116597652435303,
+                  5.3863677978515625,
+                  4.31773567199707,
+                  4.229360103607178
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 1.6442298889160156,
+                "parent_logits": {
+                  "maximum": 0.02653360366821289,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.02653360366821289,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  10,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.126387596130371,
+                  5.40625524520874,
+                  4.30954647064209,
+                  4.222900390625
+                ]
+              },
+              "inherited_candidate": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  10,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.116597652435303,
+                  5.3863677978515625,
+                  4.31773567199707,
+                  4.229360103607178
+                ]
+              }
+            },
+            {
+              "step": 3,
+              "recorded_action": 20,
+              "parent_action": 20,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 1.9073486328125e-05,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.00012236833572387695,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  20,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.717639923095703,
+                  5.9204816818237305,
+                  4.64827823638916,
+                  4.575055122375488
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.5229242444038391,
+                "parent_logits": {
+                  "maximum": 0.013775348663330078,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.013794898986816406,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.00012236833572387695,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  20,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.703864097595215,
+                  5.914400100708008,
+                  4.647477626800537,
+                  4.574821472167969
+                ]
+              },
+              "inherited_candidate": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  20,
+                  15,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  7.717658996582031,
+                  5.9204816818237305,
+                  4.64827823638916,
+                  4.575055122375488
+                ]
+              }
+            },
+            {
+              "step": 4,
+              "recorded_action": 15,
+              "parent_action": 15,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 15,
+                "restore_failed_action": 15,
+                "inherited_input_action": 15,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  15,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  9.704902648925781,
+                  6.2539472579956055,
+                  6.022454738616943,
+                  5.794317722320557
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 15,
+                "restore_failed_action": 15,
+                "inherited_input_action": 15,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.5768048167228699,
+                "parent_logits": {
+                  "maximum": 0.009077072143554688,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.009077072143554688,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  15,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  9.695825576782227,
+                  6.258290767669678,
+                  6.0179548263549805,
+                  5.798372745513916
+                ]
+              },
+              "inherited_candidate": {
+                "action": 15,
+                "restore_failed_action": 15,
+                "inherited_input_action": 15,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  15,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  9.704902648925781,
+                  6.2539472579956055,
+                  6.022454738616943,
+                  5.794317722320557
+                ]
+              }
+            },
+            {
+              "step": 5,
+              "recorded_action": 20,
+              "parent_action": 20,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 4.00543212890625e-05,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 9.083747863769531e-05,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  20,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  12.749085426330566,
+                  5.728213787078857,
+                  5.711575031280518,
+                  5.621811866760254
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 1.87236487865448,
+                "parent_logits": {
+                  "maximum": 0.030451297760009766,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.030451297760009766,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 9.083747863769531e-05,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  20,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  12.776225090026855,
+                  5.749432563781738,
+                  5.736510753631592,
+                  5.652263164520264
+                ]
+              },
+              "inherited_candidate": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  20,
+                  18,
+                  19,
+                  17
+                ],
+                "top_logits": [
+                  12.749125480651855,
+                  5.728213787078857,
+                  5.711575031280518,
+                  5.621811866760254
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed221/confirmation_08/episode000_seed42802/summary.json",
+          "seed": 42802,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 1,
+              "parent_action": 1,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  2
+                ],
+                "top_logits": [
+                  2.122954845428467,
+                  1.9882410764694214,
+                  1.5994086265563965,
+                  1.4146606922149658
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  2
+                ],
+                "top_logits": [
+                  2.122954845428467,
+                  1.9882410764694214,
+                  1.5994086265563965,
+                  1.4146606922149658
+                ]
+              },
+              "inherited_candidate": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  2
+                ],
+                "top_logits": [
+                  2.122954845428467,
+                  1.9882410764694214,
+                  1.5994086265563965,
+                  1.4146606922149658
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 2,
+              "parent_action": 2,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  2,
+                  7,
+                  6,
+                  12
+                ],
+                "top_logits": [
+                  1.4381083250045776,
+                  1.4101048707962036,
+                  1.2943403720855713,
+                  1.262202501296997
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 13.632050514221191,
+                "parent_logits": {
+                  "maximum": 0.1588304042816162,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.1588304042816162,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  2,
+                  7,
+                  6,
+                  12
+                ],
+                "top_logits": [
+                  1.2792779207229614,
+                  1.2538129091262817,
+                  1.141309142112732,
+                  1.136672854423523
+                ]
+              },
+              "inherited_candidate": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  2,
+                  7,
+                  6,
+                  12
+                ],
+                "top_logits": [
+                  1.4381083250045776,
+                  1.4101048707962036,
+                  1.2943403720855713,
+                  1.262202501296997
+                ]
+              }
+            },
+            {
+              "step": 2,
+              "recorded_action": 6,
+              "parent_action": 6,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  6,
+                  0,
+                  5,
+                  11
+                ],
+                "top_logits": [
+                  2.0160109996795654,
+                  1.89339017868042,
+                  1.881363034248352,
+                  1.7607477903366089
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 4.947422027587891,
+                "parent_logits": {
+                  "maximum": 0.10397422313690186,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.10397422313690186,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  6,
+                  0,
+                  5,
+                  11
+                ],
+                "top_logits": [
+                  2.0817055702209473,
+                  1.9439349174499512,
+                  1.927714467048645,
+                  1.8199976682662964
+                ]
+              },
+              "inherited_candidate": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  6,
+                  0,
+                  5,
+                  11
+                ],
+                "top_logits": [
+                  2.0160109996795654,
+                  1.89339017868042,
+                  1.881363034248352,
+                  1.7607477903366089
+                ]
+              }
+            },
+            {
+              "step": 3,
+              "recorded_action": 0,
+              "parent_action": 0,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  0,
+                  5,
+                  11,
+                  9
+                ],
+                "top_logits": [
+                  1.892199158668518,
+                  1.841599941253662,
+                  1.7172276973724365,
+                  1.6349856853485107
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 1.1686043739318848,
+                "parent_logits": {
+                  "maximum": 0.009681940078735352,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.009681940078735352,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  11,
+                  9
+                ],
+                "top_logits": [
+                  1.9011814594268799,
+                  1.8491525650024414,
+                  1.7184752225875854,
+                  1.6434226036071777
+                ]
+              },
+              "inherited_candidate": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  11,
+                  9
+                ],
+                "top_logits": [
+                  1.892199158668518,
+                  1.841599941253662,
+                  1.7172276973724365,
+                  1.6349856853485107
+                ]
+              }
+            },
+            {
+              "step": 4,
+              "recorded_action": 5,
+              "parent_action": 5,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  5,
+                  10,
+                  9,
+                  4
+                ],
+                "top_logits": [
+                  2.6101016998291016,
+                  2.362471580505371,
+                  1.57841157913208,
+                  1.5311232805252075
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.4300258457660675,
+                "parent_logits": {
+                  "maximum": 0.01577770709991455,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.01577770709991455,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  5,
+                  10,
+                  9,
+                  4
+                ],
+                "top_logits": [
+                  2.609929084777832,
+                  2.3626279830932617,
+                  1.5692170858383179,
+                  1.5221667289733887
+                ]
+              },
+              "inherited_candidate": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  5,
+                  10,
+                  9,
+                  4
+                ],
+                "top_logits": [
+                  2.6101016998291016,
+                  2.362471580505371,
+                  1.57841157913208,
+                  1.5311232805252075
+                ]
+              }
+            },
+            {
+              "step": 5,
+              "recorded_action": 10,
+              "parent_action": 10,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  10,
+                  9,
+                  4,
+                  3
+                ],
+                "top_logits": [
+                  1.7910891771316528,
+                  1.668176293373108,
+                  1.6093387603759766,
+                  1.6083290576934814
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 3.022209405899048,
+                "parent_logits": {
+                  "maximum": 0.059563398361206055,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.059563398361206055,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  10,
+                  9,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  1.775100588798523,
+                  1.6227163076400757,
+                  1.586829423904419,
+                  1.5825390815734863
+                ]
+              },
+              "inherited_candidate": {
+                "action": 10,
+                "restore_failed_action": 10,
+                "inherited_input_action": 10,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  10,
+                  9,
+                  4,
+                  3
+                ],
+                "top_logits": [
+                  1.7910891771316528,
+                  1.668176293373108,
+                  1.6093387603759766,
+                  1.6083290576934814
+                ]
+              }
+            },
+            {
+              "step": 6,
+              "recorded_action": 20,
+              "parent_action": 20,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.00010585784912109375,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0002334117889404297,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  20,
+                  3,
+                  8,
+                  9
+                ],
+                "top_logits": [
+                  3.065326452255249,
+                  1.807204246520996,
+                  1.8071106672286987,
+                  1.677164077758789
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 1.5927273035049438,
+                "parent_logits": {
+                  "maximum": 0.04048597812652588,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.04048597812652588,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0002334117889404297,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  20,
+                  3,
+                  8,
+                  9
+                ],
+                "top_logits": [
+                  3.067779302597046,
+                  1.8298367261886597,
+                  1.8280686140060425,
+                  1.7027393579483032
+                ]
+              },
+              "inherited_candidate": {
+                "action": 20,
+                "restore_failed_action": 20,
+                "inherited_input_action": 20,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  20,
+                  3,
+                  8,
+                  9
+                ],
+                "top_logits": [
+                  3.065220594406128,
+                  1.807204246520996,
+                  1.8071106672286987,
+                  1.677164077758789
+                ]
+              }
+            },
+            {
+              "step": 7,
+              "recorded_action": 9,
+              "parent_action": 9,
+              "failed_relations": [
+                0
+              ],
+              "wrapped_wait": {
+                "action": 20,
+                "restore_failed_action": 9,
+                "inherited_input_action": 9,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 1
+                },
+                "candidate_change": {
+                  "maximum": 0.004094123840332031,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 1,
+                "activities": [],
+                "top_actions": [
+                  20,
+                  9,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  2.916719436645508,
+                  2.061624765396118,
+                  2.0604026317596436,
+                  2.0411195755004883
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 20,
+                "restore_failed_action": 3,
+                "inherited_input_action": 3,
+                "parent_state_h": 0.0,
+                "parent_state_z": 1.1151360273361206,
+                "parent_logits": {
+                  "maximum": 0.014720186591148376,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.014720186591148376,
+                  "mask_disagreement": 1
+                },
+                "candidate_change": {
+                  "maximum": 0.004094123840332031,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 1,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  20,
+                  3,
+                  9,
+                  8
+                ],
+                "top_logits": [
+                  2.941417932510376,
+                  2.059844970703125,
+                  2.0554232597351074,
+                  2.0404112339019775
+                ]
+              },
+              "inherited_candidate": {
+                "action": 9,
+                "restore_failed_action": 9,
+                "inherited_input_action": 9,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  9,
+                  3,
+                  8,
+                  4
+                ],
+                "top_logits": [
+                  2.061624765396118,
+                  2.0604026317596436,
+                  2.0411195755004883,
+                  2.002948522567749
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed221/confirmation_13/episode000_seed43303/summary.json",
+          "seed": 43303,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 2,
+              "parent_action": 2,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  2,
+                  7,
+                  1,
+                  12
+                ],
+                "top_logits": [
+                  2.1373634338378906,
+                  2.060211181640625,
+                  1.9979476928710938,
+                  1.9500585794448853
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  2,
+                  7,
+                  1,
+                  12
+                ],
+                "top_logits": [
+                  2.1373634338378906,
+                  2.060211181640625,
+                  1.9979476928710938,
+                  1.9500585794448853
+                ]
+              },
+              "inherited_candidate": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  2,
+                  7,
+                  1,
+                  12
+                ],
+                "top_logits": [
+                  2.1373634338378906,
+                  2.060211181640625,
+                  1.9979476928710938,
+                  1.9500585794448853
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 1,
+              "parent_action": 1,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  7
+                ],
+                "top_logits": [
+                  2.6376147270202637,
+                  2.5804011821746826,
+                  2.383913993835449,
+                  1.8396879434585571
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 20.851848602294922,
+                "parent_logits": {
+                  "maximum": 0.7012038230895996,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.7012038230895996,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  9
+                ],
+                "top_logits": [
+                  3.3388185501098633,
+                  3.250786542892456,
+                  3.0400290489196777,
+                  1.7105666399002075
+                ]
+              },
+              "inherited_candidate": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  7
+                ],
+                "top_logits": [
+                  2.6376147270202637,
+                  2.5804011821746826,
+                  2.383913993835449,
+                  1.8396879434585571
+                ]
+              }
+            },
+            {
+              "step": 2,
+              "recorded_action": 7,
+              "parent_action": 7,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 7,
+                "restore_failed_action": 7,
+                "inherited_input_action": 7,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  7,
+                  12,
+                  2,
+                  0
+                ],
+                "top_logits": [
+                  4.471879482269287,
+                  4.416640758514404,
+                  4.4011454582214355,
+                  4.063825607299805
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 7,
+                "restore_failed_action": 7,
+                "inherited_input_action": 7,
+                "parent_state_h": 0.0,
+                "parent_state_z": 6.953036308288574,
+                "parent_logits": {
+                  "maximum": 0.0989527702331543,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0989527702331543,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  7,
+                  12,
+                  2,
+                  0
+                ],
+                "top_logits": [
+                  4.5622382164001465,
+                  4.515593528747559,
+                  4.498749256134033,
+                  4.114546775817871
+                ]
+              },
+              "inherited_candidate": {
+                "action": 7,
+                "restore_failed_action": 7,
+                "inherited_input_action": 7,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  7,
+                  12,
+                  2,
+                  0
+                ],
+                "top_logits": [
+                  4.471879482269287,
+                  4.416640758514404,
+                  4.4011454582214355,
+                  4.063825607299805
+                ]
+              }
+            },
+            {
+              "step": 3,
+              "recorded_action": 12,
+              "parent_action": 12,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 12,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  12,
+                  0,
+                  5,
+                  2
+                ],
+                "top_logits": [
+                  4.851674556732178,
+                  4.84765625,
+                  4.792445659637451,
+                  4.7762861251831055
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 7.782962322235107,
+                "parent_logits": {
+                  "maximum": 0.14048290252685547,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.14048290252685547,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  12,
+                  10
+                ],
+                "top_logits": [
+                  4.986323356628418,
+                  4.931798934936523,
+                  4.807327747344971,
+                  4.791203498840332
+                ]
+              },
+              "inherited_candidate": {
+                "action": 12,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  12,
+                  0,
+                  5,
+                  2
+                ],
+                "top_logits": [
+                  4.851674556732178,
+                  4.84765625,
+                  4.792445659637451,
+                  4.7762861251831055
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "candidate_roundtrip_equal": true,
+      "candidate_inherits_interface": true,
+      "candidate_pending_wait_bias": 1.0
+    },
+    {
+      "parent": "runs/physical_belief/joint_repeat_20261029/carry_seed222/policy.pt",
+      "initial": "runs/continual_physics/joint_20261029/full_seed232/initial.pt",
+      "base_tensors_equal": true,
+      "normalization_difference": {
+        "x_mean": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "x_scale": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "y_mean": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        },
+        "y_scale": {
+          "maximum": 0.0,
+          "mask_disagreement": 0
+        }
+      },
+      "episodes": [
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed222/confirmation_13/episode000_seed43303/summary.json",
+          "seed": 43303,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 1,
+              "parent_action": 1,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  3.640665054321289,
+                  3.4857943058013916,
+                  3.1716549396514893,
+                  2.9041554927825928
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  3.640665054321289,
+                  3.4857943058013916,
+                  3.1716549396514893,
+                  2.9041554927825928
+                ]
+              },
+              "inherited_candidate": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  3.640665054321289,
+                  3.4857943058013916,
+                  3.1716549396514893,
+                  2.9041554927825928
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 2,
+              "parent_action": 2,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  2,
+                  12,
+                  7,
+                  13
+                ],
+                "top_logits": [
+                  3.4605324268341064,
+                  3.4473536014556885,
+                  3.3354785442352295,
+                  2.464149236679077
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 12,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 17.6538028717041,
+                "parent_logits": {
+                  "maximum": 0.18682193756103516,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.18682193756103516,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  12,
+                  2,
+                  7,
+                  13
+                ],
+                "top_logits": [
+                  3.4750075340270996,
+                  3.4573018550872803,
+                  3.3300797939300537,
+                  2.6509711742401123
+                ]
+              },
+              "inherited_candidate": {
+                "action": 2,
+                "restore_failed_action": 2,
+                "inherited_input_action": 2,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  2,
+                  12,
+                  7,
+                  13
+                ],
+                "top_logits": [
+                  3.4605324268341064,
+                  3.4473536014556885,
+                  3.3354785442352295,
+                  2.464149236679077
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed222/confirmation_18/episode000_seed43804/summary.json",
+          "seed": 43804,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 0,
+              "parent_action": 0,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.4526209831237793,
+                  3.267068386077881,
+                  3.186998128890991,
+                  3.01910138130188
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.4526209831237793,
+                  3.267068386077881,
+                  3.186998128890991,
+                  3.01910138130188
+                ]
+              },
+              "inherited_candidate": {
+                "action": 0,
+                "restore_failed_action": 0,
+                "inherited_input_action": 0,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  0,
+                  5,
+                  10,
+                  3
+                ],
+                "top_logits": [
+                  3.4526209831237793,
+                  3.267068386077881,
+                  3.186998128890991,
+                  3.01910138130188
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 5,
+              "parent_action": 5,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  5,
+                  10,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  3.997507095336914,
+                  3.9293291568756104,
+                  3.919339895248413,
+                  3.788663864135742
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 3,
+                "restore_failed_action": 3,
+                "inherited_input_action": 3,
+                "parent_state_h": 0.0,
+                "parent_state_z": 9.30445384979248,
+                "parent_logits": {
+                  "maximum": 0.17127490043640137,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.17127490043640137,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  3,
+                  5,
+                  10,
+                  8
+                ],
+                "top_logits": [
+                  4.031456470489502,
+                  3.9639546871185303,
+                  3.909702777862549,
+                  3.903440237045288
+                ]
+              },
+              "inherited_candidate": {
+                "action": 5,
+                "restore_failed_action": 5,
+                "inherited_input_action": 5,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  5,
+                  10,
+                  3,
+                  8
+                ],
+                "top_logits": [
+                  3.997507095336914,
+                  3.9293291568756104,
+                  3.919339895248413,
+                  3.788663864135742
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "source": "runs/continual_physics/native_confirmation/parent_seed222/confirmation_16/episode000_seed43604/summary.json",
+          "seed": 43604,
+          "trace": [
+            {
+              "step": 0,
+              "recorded_action": 1,
+              "parent_action": 1,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  4.1599555015563965,
+                  4.029086589813232,
+                  3.6521689891815186,
+                  3.282184600830078
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  4.1599555015563965,
+                  4.029086589813232,
+                  3.6521689891815186,
+                  3.282184600830078
+                ]
+              },
+              "inherited_candidate": {
+                "action": 1,
+                "restore_failed_action": 1,
+                "inherited_input_action": 1,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  1,
+                  6,
+                  11,
+                  4
+                ],
+                "top_logits": [
+                  4.1599555015563965,
+                  4.029086589813232,
+                  3.6521689891815186,
+                  3.282184600830078
+                ]
+              }
+            },
+            {
+              "step": 1,
+              "recorded_action": 6,
+              "parent_action": 6,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  6,
+                  11,
+                  14,
+                  4
+                ],
+                "top_logits": [
+                  4.73443078994751,
+                  4.493709564208984,
+                  2.758690595626831,
+                  2.633188009262085
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 16.17645835876465,
+                "parent_logits": {
+                  "maximum": 0.5311983823776245,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.5311983823776245,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  6,
+                  11,
+                  14,
+                  4
+                ],
+                "top_logits": [
+                  4.559361457824707,
+                  4.269104480743408,
+                  2.893894910812378,
+                  2.782015562057495
+                ]
+              },
+              "inherited_candidate": {
+                "action": 6,
+                "restore_failed_action": 6,
+                "inherited_input_action": 6,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  6,
+                  11,
+                  14,
+                  4
+                ],
+                "top_logits": [
+                  4.73443078994751,
+                  4.493709564208984,
+                  2.758690595626831,
+                  2.633188009262085
+                ]
+              }
+            },
+            {
+              "step": 2,
+              "recorded_action": 11,
+              "parent_action": 11,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 11,
+                "restore_failed_action": 11,
+                "inherited_input_action": 11,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  11,
+                  14,
+                  4,
+                  9
+                ],
+                "top_logits": [
+                  4.391107559204102,
+                  2.9074881076812744,
+                  2.693063259124756,
+                  2.671005964279175
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 11,
+                "restore_failed_action": 11,
+                "inherited_input_action": 11,
+                "parent_state_h": 0.0,
+                "parent_state_z": 3.932096242904663,
+                "parent_logits": {
+                  "maximum": 0.16803514957427979,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.16803514957427979,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  11,
+                  14,
+                  12,
+                  2
+                ],
+                "top_logits": [
+                  4.346316337585449,
+                  2.937274217605591,
+                  2.779653310775757,
+                  2.7538955211639404
+                ]
+              },
+              "inherited_candidate": {
+                "action": 11,
+                "restore_failed_action": 11,
+                "inherited_input_action": 11,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  11,
+                  14,
+                  4,
+                  9
+                ],
+                "top_logits": [
+                  4.391107559204102,
+                  2.9074881076812744,
+                  2.693063259124756,
+                  2.671005964279175
+                ]
+              }
+            },
+            {
+              "step": 3,
+              "recorded_action": 21,
+              "parent_action": 21,
+              "failed_relations": [],
+              "wrapped_wait": {
+                "action": 21,
+                "restore_failed_action": 21,
+                "inherited_input_action": 21,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.000179290771484375,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0003170967102050781,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [],
+                "top_actions": [
+                  21,
+                  12,
+                  2,
+                  14
+                ],
+                "top_logits": [
+                  5.2036662101745605,
+                  3.3665316104888916,
+                  3.26198673248291,
+                  3.1982717514038086
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 21,
+                "restore_failed_action": 21,
+                "inherited_input_action": 21,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.8493233323097229,
+                "parent_logits": {
+                  "maximum": 0.03719437122344971,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.03719437122344971,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0003170967102050781,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  21,
+                  12,
+                  2,
+                  14
+                ],
+                "top_logits": [
+                  5.197999477386475,
+                  3.3887758255004883,
+                  3.2857370376586914,
+                  3.198251962661743
+                ]
+              },
+              "inherited_candidate": {
+                "action": 21,
+                "restore_failed_action": 21,
+                "inherited_input_action": 21,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  21,
+                  12,
+                  2,
+                  14
+                ],
+                "top_logits": [
+                  5.203486919403076,
+                  3.3665316104888916,
+                  3.26198673248291,
+                  3.1982717514038086
+                ]
+              }
+            },
+            {
+              "step": 4,
+              "recorded_action": 12,
+              "parent_action": 12,
+              "failed_relations": [
+                1
+              ],
+              "wrapped_wait": {
+                "action": 21,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 1
+                },
+                "candidate_change": {
+                  "maximum": 0.0054738521575927734,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 1,
+                "activities": [],
+                "top_actions": [
+                  21,
+                  12,
+                  2,
+                  7
+                ],
+                "top_logits": [
+                  4.9768218994140625,
+                  4.264209747314453,
+                  4.126918792724609,
+                  4.005160331726074
+                ]
+              },
+              "wrapped_delay2": {
+                "action": 21,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.5560632944107056,
+                "parent_logits": {
+                  "maximum": 0.009021997451782227,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.009021997451782227,
+                  "mask_disagreement": 1
+                },
+                "candidate_change": {
+                  "maximum": 0.0054738521575927734,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 1,
+                "activities": [
+                  "REFINE",
+                  "REFINE"
+                ],
+                "top_actions": [
+                  21,
+                  12,
+                  2,
+                  7
+                ],
+                "top_logits": [
+                  4.981469631195068,
+                  4.2718400955200195,
+                  4.133870601654053,
+                  4.01214075088501
+                ]
+              },
+              "inherited_candidate": {
+                "action": 12,
+                "restore_failed_action": 12,
+                "inherited_input_action": 12,
+                "parent_state_h": 0.0,
+                "parent_state_z": 0.0,
+                "parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "actual_parent_logits": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "candidate_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "evidence_change": {
+                  "maximum": 0.0,
+                  "mask_disagreement": 0
+                },
+                "action_mask_difference": 0,
+                "activities": [
+                  "WAIT",
+                  "WAIT"
+                ],
+                "top_actions": [
+                  12,
+                  2,
+                  7,
+                  14
+                ],
+                "top_logits": [
+                  4.264209747314453,
+                  4.126918792724609,
+                  4.005160331726074,
+                  3.743924379348755
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "candidate_roundtrip_equal": true,
+      "candidate_inherits_interface": true,
+      "candidate_pending_wait_bias": 1.0
+    }
+  ]
+}

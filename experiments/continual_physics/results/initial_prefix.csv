@@ -1,0 +1,7 @@
+initialization,world,decision,parent,wrapped,wait_only,wait_and_failed_contract,candidate,candidate_max_logit_difference,failed_before
+231,42000,5,20,20,20,20,20,0.0,
+231,42802,7,9,20,20,9,9,0.0,0
+231,43303,3,12,0,12,12,12,0.0,
+232,43303,1,2,12,2,2,2,0.0,
+232,43804,1,5,3,5,5,5,0.0,
+232,43604,4,12,21,21,12,12,0.0,1

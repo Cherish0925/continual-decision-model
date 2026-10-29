@@ -91,6 +91,8 @@ def execute_request(table, action, predictions):
         # Frequency feedback, not permanent relation rejection, governs retry.
         # Online learning may produce a different useful setting for this same
         # relation. The proposal layer uses the public interval history.
+        if getattr(table, "retain_failed_relations", False):
+            table.failed[selected[~success[selected]], hypothesis[~success[selected]]] = True
         table.event[selected] = test_event(table.query[selected], hypothesis, success[selected],
             table.steps[selected], table.max_steps, table.device)
         completed = selected[success[selected]]
