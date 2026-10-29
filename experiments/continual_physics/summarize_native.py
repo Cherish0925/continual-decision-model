@@ -19,7 +19,27 @@ def subset(rows, phase):
 
 def comparison(left, right):
     return {"all": paired(left, right), **{f"first_{phase}": paired(subset(left, phase), subset(right, phase))
-                                           for phase in ("initial", "switch", "return")}}
+                                           for phase in ("initial", "switch", "return")},
+            "second_return": paired([r for r in left if r.get("segment_role") == "return" and r.get("position_in_segment") == 1],
+                                    [r for r in right if r.get("segment_role") == "return" and r.get("position_in_segment") == 1])}
+
+
+def paired_seconds(left, right, key):
+    def value(row):
+        return row.get("seconds") if key == "episode_seconds" else row.get("timing", {}).get(key)
+    if any(value(row) is None for row in [*left, *right]):
+        return None
+    other = {(r["stream"], r["episode_index"]): r for r in right}
+    groups = {}
+    for row in left:
+        groups.setdefault(row["stream"], []).append(value(row)-value(other[row["stream"], row["episode_index"]]))
+    totals = np.array([sum(groups[name]) for name in sorted(groups)])
+    counts = np.array([len(groups[name]) for name in sorted(groups)])
+    sample = np.random.default_rng(231).integers(len(groups), size=(10000, len(groups)))
+    estimates = totals[sample].sum(1)/counts[sample].sum(1)
+    return {"mean_difference_seconds": float(totals.sum()/counts.sum()),
+            "difference_95ci_seconds": np.quantile(estimates, [.025, .975]).tolist(),
+            "bootstrap_unit": "whole_six_instance_stream"}
 
 
 def trajectory(path, row):
@@ -31,11 +51,16 @@ def signatures(decisions):
     for decision in decisions:
         actions.append((decision["action_index"], decision["query_index"]))
         result = decision["result"]
+        if decision["action_index"] < 20:
+            continue
         attempts = result.get("attempts", [])
         setting = result.get("setting")
-        if setting is not None:
+        request = result.get("request", {})
+        if (setting is not None and setting.get("object_handle") == request.get("target_handle")
+                and setting.get("reactor_handle") == request.get("reactor_handle")):
             attempts = [*attempts, setting]
-        settings.append(tuple((row.get("frequency_hz"), row.get("activated")) for row in attempts))
+        settings.extend((decision["query_index"], row.get("frequency_hz"), row.get("activated"))
+                        for row in attempts)
     return actions, settings
 
 
@@ -86,7 +111,10 @@ def main():
         controls = [f"parent_seed{parent}", f"discard_physical_seed{seed}", f"task_reset_seed{seed}",
                     f"fixed_schedule_seed{seed}", f"full_seed{seed}_discard_physical"]
         for control in controls:
-            result["comparisons"][f"{full}:{control}"] = comparison(conditions[full], conditions[control])
+            compared = comparison(conditions[full], conditions[control])
+            compared["timing"] = {key: paired_seconds(conditions[full], conditions[control], key)
+                                  for key in ("episode_seconds", "inference_seconds", "execution_seconds", "feedback_seconds")}
+            result["comparisons"][f"{full}:{control}"] = compared
         discarded = controls[-1]
         index = {(r["stream"], r["episode_index"]): r for r in conditions[discarded]}
         differences = []
@@ -99,7 +127,10 @@ def main():
                                 "actual_setting_sequence_changed": settings != other_settings,
                                 "completion_difference": int(row["completed_successfully"])-int(other["completed_successfully"]),
                                 "native_action_difference": row["native_actions"]-other["native_actions"]})
-        result["same_weight_trajectories"][str(seed)] = differences
+        result["same_weight_trajectories"][str(seed)] = {
+            "changed_action_sequences": sum(row["action_sequence_changed"] for row in differences),
+            "changed_actual_setting_sequences": sum(row["actual_setting_sequence_changed"] for row in differences),
+            "instances": differences}
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output/"summary.json").write_text(json.dumps(result, indent=2)+"\n")
     fields = list(dict.fromkeys(key for row in rows for key in row))
