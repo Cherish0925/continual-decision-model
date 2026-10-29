@@ -14,22 +14,23 @@ from cdm.continual_experiment import Activity
 from experiments.discoveryworld.adapter import TrajectoryWriter
 from experiments.discoveryworld.collect_chemistry import ChemistryExperiments
 from experiments.discoveryworld.structured_observation import StructuredDiscoveryWorldEnv
-from .observations import observe,feedback,model_from_core_checkpoint
+from .observations import observe,feedback,load_chemistry_policy
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--checkpoint',default='runs/physical_belief/joint_20261029/carry_seed221/policy.pt')
     p.add_argument('--seed',type=int,required=True);p.add_argument('--difficulty',choices=('Normal','Challenge'),default='Normal')
-    p.add_argument('--policy',choices=('reference','untrained_model'),default='reference')
+    p.add_argument('--policy',choices=('reference','untrained_model','model'),default='reference')
     p.add_argument('--output',type=Path,required=True);p.add_argument('--max-actions',type=int,default=1000)
     p.add_argument('--max-experiments',type=int,default=60);p.add_argument('--threads',type=int,default=1)
     args=p.parse_args();torch.set_num_threads(args.threads);args.output.mkdir(parents=True)
-    model=model_from_core_checkpoint(args.checkpoint);model.eval();state=model.initial(1,'cpu')
+    model,record=load_chemistry_policy(args.checkpoint);model.eval();state=model.initial(1,'cpu')
+    trained_heads=record.get('kind')=='chemistry_continual_v1'
     initial_h=state['h'].clone();initial_z=state['z'].clone();started=perf_counter();error=None
     with (args.output/'native.log').open('w') as log,redirect_stdout(log),torch.no_grad():
         env=StructuredDiscoveryWorldEnv(args.output,args.max_actions);env.reset('Combinatorial Chemistry',args.difficulty,args.seed)
-        with TrajectoryWriter(args.output,{**env.configuration,'policy':args.policy,'is_trained_chemistry_policy':False,
+        with TrajectoryWriter(args.output,{**env.configuration,'policy':args.policy,'has_trained_chemistry_heads':trained_heads,'is_task_performance_comparison':False,
                     'input':'visible components, current rust and returned experimental history',
                     'core_source':'shared GRU and Transformer workspace; new chemistry input/output heads'}) as writer, \
              (args.output/'experiments.jsonl').open('w') as experiments:
@@ -63,7 +64,7 @@ def main():
             except (ValueError,RuntimeError) as exc:
                 import traceback;traceback.print_exc();error=f'{type(exc).__name__}: {exc}'
         summary={'scenario':'Combinatorial Chemistry','difficulty':args.difficulty,'seed':args.seed,
-            'policy':args.policy,'is_trained_chemistry_policy':False,'native_actions':env.steps,'experiments':len(executor.history),
+            'policy':args.policy,'has_trained_chemistry_heads':trained_heads,'is_task_performance_comparison':False,'native_actions':env.steps,'experiments':len(executor.history),
             'returned_rust':executor.state()['rust_level'],'completed_successfully':all(r['completed_successfully'] for r in env.metrics),
             'feedback_events':int(state['memory_cursor'][0]),'observations':int(state['observation_count'][0]),
             'final_h_change':float((state['h']-initial_h).norm()),'final_z_change':float((state['z']-initial_z).norm()),

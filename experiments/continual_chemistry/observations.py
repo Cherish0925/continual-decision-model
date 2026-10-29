@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from torch import nn
 from cdm.active_experiment import ActiveExperimentConfig,ActiveExperimentPolicy,load_active_checkpoint
-from cdm.continual_experiment import ContinualExperimentConfig,ContinualExperimentPolicy
+from cdm.continual_experiment import ContinualExperimentConfig,ContinualExperimentPolicy,load_continual_checkpoint
 from experiments.discoveryworld.collect_chemistry import integer_recipes
 
 MAX_COMPONENTS=8
@@ -72,3 +72,12 @@ def feedback(record,device='cpu'):
     """Returned physical progress and actual operation cost, not task scores."""
     return torch.tensor([[(record['rust_before']-record['rust_after'])/3,
                           math.log1p(record['native_actions'])]],device=device)
+
+
+def load_chemistry_policy(path,*,device='cpu'):
+    """Load a trained chemical checkpoint or initialize its heads from a core."""
+    saved=torch.load(path,map_location='cpu',weights_only=True)
+    if saved.get('kind')=='chemistry_continual_v1':
+        model,record=load_continual_checkpoint(path,device)
+        return model,record
+    return model_from_core_checkpoint(path,device=device),{'kind':'untrained_chemistry_heads'}

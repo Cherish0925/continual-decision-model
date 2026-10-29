@@ -440,6 +440,24 @@
       "final_z_change": 91.63960266113281,
       "error": null,
       "seconds": 12.460956942290068
+    },
+    {
+      "scenario": "Combinatorial Chemistry",
+      "difficulty": "Normal",
+      "seed": 7402,
+      "policy": "model",
+      "has_trained_chemistry_heads": true,
+      "is_task_performance_comparison": false,
+      "native_actions": 64,
+      "experiments": 4,
+      "returned_rust": 2,
+      "completed_successfully": false,
+      "feedback_events": 4,
+      "observations": 5,
+      "final_h_change": 4.651373386383057,
+      "final_z_change": 90.3167495727539,
+      "error": null,
+      "seconds": 3.2267417199909687
     }
   ],
   "training_path": {

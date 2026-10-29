@@ -67,7 +67,9 @@ Each returned experiment changes the shared persistent state and enters the
 feedback store exactly once. The reference runs include one additional door
 execution after the last chemical experiment. Two short CPU optimizer updates
 on four-transition training prefixes produce nonzero gradients in the GRU,
-Transformer workspace and rust outcome head. This verifies the complete
+Transformer workspace and rust outcome head. The saved checkpoint was then
+loaded through the same native evaluator and executed four new chemical
+experiments with once-only feedback. This verifies the complete
 training path; it is not a task-performance or transfer claim.
 
 The exact records are in [results/entry.json](results/entry.json). Full native
@@ -84,6 +86,10 @@ python -m experiments.continual_chemistry.train \
   --updates 100 --sequence-length 8 --device cuda \
   --output runs/continual_physics/chemistry_training
 ```
+
+To execute a saved chemical model, pass its `last.pt` to `native --checkpoint`
+and select `--policy model`. The same evaluator accepts the original reactor
+core checkpoint, in which case chemical heads are newly initialized.
 
 The CUDA command is the training entry, not a claim that such training has
 already run. This integration does not change the frozen reactor confirmation
