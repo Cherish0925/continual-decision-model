@@ -91,14 +91,14 @@ def evaluate(args):
     args.output.mkdir(parents=True, exist_ok=True)
     summary = {"protocol": "offline all-selected-readings prediction; target labels revealed after scoring",
                "distinct_source_worlds": worlds.size, "streams_per_kind": args.streams,
-               "sampling": "worlds may recur; stream count is not independent-instance count",
+               "sampling": "no source world repeats within a stream; worlds recur across streams, so stream count is not independent-instance count",
                "wide": "generated affine alternatives, episodewise scale 0.35..2.0 and offset -1000..1000 Hz; prediction stress test",
                "training": saved.get("training"), "groups": []}
     all_rows, started = [], perf_counter()
     for kind in args.kinds:
         generator = torch.Generator(device=args.device).manual_seed(args.seed)
         stream = worlds.sample_stream(args.streams, generator=generator, segment_length=args.segment_length,
-                                      generated_fraction=1., kind=kind)
+                                      generated_fraction=1., kind=kind, unique_worlds=True)
         methods = [(mode, model, mode) for mode in args.modes]
         if initial is not None: methods.append(("initial_retain", initial, "retain"))
         for name, current, mode in methods:

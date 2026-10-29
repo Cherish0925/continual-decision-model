@@ -70,7 +70,7 @@ class RecordedWorlds:
         return result
 
     def sample_stream(self, batch, *, generator, segment_length=3, generated_fraction=.5,
-                      kind="mixed", wide_scale=(.35, 2.0)):
+                      kind="mixed", wide_scale=(.35, 2.0), unique_worlds=False):
         """Sample A→B→A; each episode has a newly calibrated physical instance.
 
         `rehearsal` keeps measured quantities and support settings, replacing
@@ -94,6 +94,17 @@ class RecordedWorlds:
         quantities = torch.stack([a] * segment_length + [b] * segment_length + [a] * segment_length, 1)
         generated_mask = generated[:, None].expand(-1, length)
         indices = self._indices(quantities.flatten(), generated_mask.flatten(), generator).reshape(batch, length)
+        if unique_worlds:
+            # Evaluation of returning knowledge uses new physical instances,
+            # never an exact earlier world from the same stream.
+            for position in range(1, length):
+                for _ in range(100):
+                    repeated = (indices[:, position, None] == indices[:, :position]).any(-1)
+                    if not bool(repeated.any()): break
+                    indices[repeated, position] = self._indices(quantities[repeated, position],
+                                                              generated[repeated], generator)
+                else:
+                    raise ValueError("Too few distinct source worlds for this task stream")
         values, seen = self.values[indices], self.seen[indices]
         settings = self.settings[indices]
         alt = self.generated_settings[indices].gather(-1, quantities[:, :, None, None].expand(-1, -1, self.objects, 1))[..., 0]
