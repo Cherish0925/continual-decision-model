@@ -35,7 +35,7 @@ from .train_active_core import make_observation, visible_beliefs
 NATIVE_RELATIONS = ("density", "temperature", "quantum_gap", "radiation", "spectrum_channel_5")
 
 
-def observation(episode, event, mixture, step, max_steps, device, *, close_completed_task=False, belief_source=None):
+def observation(episode, event, mixture, step, max_steps, device, *, close_completed_task=False, belief_source=None, physical_context=False):
     tensors = episode.tensors(device)
     if close_completed_task and bool(tensors["known"].all()) and len(episode.completed_targets) == 2:
         # The table environment's empty remaining-target set uses query zero.
@@ -53,6 +53,9 @@ def observation(episode, event, mixture, step, max_steps, device, *, close_compl
                            tensors["known"], tensors["query"], tensors["failed"],
                            event, mixture, step, max_steps, **override)
     obs["action_mask"][:, 20:] &= _public_test_mask(episode, beliefs)[None]
+    if physical_context:
+        from experiments.physical_belief.observations import add_physical_context
+        obs = add_physical_context(obs, beliefs, mixture)
     return obs, beliefs
 
 
@@ -112,8 +115,9 @@ def run_stream(job):
     device = torch.device(options["device"])
     continual = options.get("continual", False)
     loader = load_continual_checkpoint if continual else load_active_checkpoint
-    model, _ = loader(options["checkpoint"], device)
+    model, model_record = loader(options["checkpoint"], device)
     model.eval()
+    physical_context = model_record.get("training", {}).get("physical_context_tokens", False)
     if continual:
         model.retain_adaptation = not options.get("discard_adaptation", False)
     activity_generator = None
@@ -171,6 +175,7 @@ def run_stream(job):
                         "state_mode": options["state_mode"],
                         "carried_state": list(state) if options["state_mode"] == "carry" else [],
                         "continual_activities": continual,
+                        "physical_context_tokens": physical_context,
                         "event_cost": "measurement=1,test=5",
                         "adaptation_feedback_cost": options.get("feedback_cost", "native") if continual else None,
                         "retain_adaptation": model.retain_adaptation if continual else None,
@@ -205,7 +210,8 @@ def run_stream(job):
                             ending = "native_termination" if all(m["completed"] for m in env.metrics) else "native_action_budget"
                             break
                         obs, beliefs = observation(episode, event, mixture, step,
-                                                  options["max_decisions"], device, belief_source=belief_source)
+                                                  options["max_decisions"], device, belief_source=belief_source,
+                                                  physical_context=physical_context)
                         extra = {"feedback_targets": feedback, "activity_generator": activity_generator} if continual else {}
                         previous_activity = state["activity_counts"].clone() if continual else None
                         result = model(**obs, state=state, refinements=options["refinements"], **extra)
@@ -222,7 +228,7 @@ def run_stream(job):
                         belief_prediction = None
                         if belief_source is not None:
                             belief_prediction = {key: beliefs[key][0].tolist()
-                                                 for key in ("means", "std", "weights", "support_counts", "eligible")}
+                                                 for key in ("means", "std", "weights", "support_counts", "eligible", "context_weights")}
                         decision = episode.apply(action, mean_hz=mean, std_hz=spread)
                         if belief_source is not None:
                             decision["physical_prediction"] = belief_prediction
@@ -239,7 +245,7 @@ def run_stream(job):
                     if outcome_pending:
                         final_observation, _ = observation(episode, event, mixture, len(episode.decisions),
                                                            options["max_decisions"], device, close_completed_task=True,
-                                                           belief_source=belief_source)
+                                                           belief_source=belief_source, physical_context=physical_context)
                         final_feedback_query = int(final_observation["event"][0, 32:36].argmax())
                         final_feedback_object = int(final_observation["event"][0, :4].argmax())
                         before_feedback = copy_state(state)
