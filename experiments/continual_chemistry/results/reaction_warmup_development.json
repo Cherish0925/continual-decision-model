@@ -1,0 +1,783 @@
+{
+  "protocol": {
+    "manifest": "runs/continual_physics/chemistry_data/manifest.json",
+    "cohort": "development",
+    "episodes": [
+      {
+        "directory": "challenge/seed7815",
+        "difficulty": "Challenge",
+        "seed": 7815,
+        "recipe_group": "Substance A:1|Substance D:1",
+        "public_sequence_group": 9,
+        "nonterminating_experiments": 7,
+        "partial_improvements": 1,
+        "transitions": 8,
+        "native_actions": 94,
+        "seconds": 2.7700569126755,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "challenge/seed7822",
+        "difficulty": "Challenge",
+        "seed": 7822,
+        "recipe_group": "Substance C:3|Substance D:1",
+        "public_sequence_group": 13,
+        "nonterminating_experiments": 65,
+        "partial_improvements": 1,
+        "transitions": 66,
+        "native_actions": 882,
+        "seconds": 26.255870720371604,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "challenge/seed7824",
+        "difficulty": "Challenge",
+        "seed": 7824,
+        "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+        "public_sequence_group": 5,
+        "nonterminating_experiments": 28,
+        "partial_improvements": 2,
+        "transitions": 29,
+        "native_actions": 360,
+        "seconds": 10.848011799156666,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "challenge/seed7827",
+        "difficulty": "Challenge",
+        "seed": 7827,
+        "recipe_group": "Substance A:3|Substance C:1",
+        "public_sequence_group": 16,
+        "nonterminating_experiments": 36,
+        "partial_improvements": 1,
+        "transitions": 37,
+        "native_actions": 464,
+        "seconds": 13.289782881736755,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "challenge/seed7832",
+        "difficulty": "Challenge",
+        "seed": 7832,
+        "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+        "public_sequence_group": 18,
+        "nonterminating_experiments": 62,
+        "partial_improvements": 2,
+        "transitions": 63,
+        "native_actions": 841,
+        "seconds": 25.518147276714444,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "challenge/seed7833",
+        "difficulty": "Challenge",
+        "seed": 7833,
+        "recipe_group": "Substance B:2|Substance C:1|Substance D:1",
+        "public_sequence_group": 19,
+        "nonterminating_experiments": 58,
+        "partial_improvements": 1,
+        "transitions": 59,
+        "native_actions": 783,
+        "seconds": 22.653315898030996,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7609",
+        "difficulty": "Normal",
+        "seed": 7609,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+        "public_sequence_group": 26,
+        "nonterminating_experiments": 13,
+        "partial_improvements": 2,
+        "transitions": 14,
+        "native_actions": 170,
+        "seconds": 5.319959869608283,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7610",
+        "difficulty": "Normal",
+        "seed": 7610,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 2.2690203357487917,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7611",
+        "difficulty": "Normal",
+        "seed": 7611,
+        "recipe_group": "Substance A:1|Substance B:3",
+        "public_sequence_group": 31,
+        "nonterminating_experiments": 25,
+        "partial_improvements": 1,
+        "transitions": 26,
+        "native_actions": 331,
+        "seconds": 9.348976291716099,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7617",
+        "difficulty": "Normal",
+        "seed": 7617,
+        "recipe_group": "Substance A:1|Substance C:2",
+        "public_sequence_group": 33,
+        "nonterminating_experiments": 14,
+        "partial_improvements": 2,
+        "transitions": 15,
+        "native_actions": 183,
+        "seconds": 5.451706409454346,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7626",
+        "difficulty": "Normal",
+        "seed": 7626,
+        "recipe_group": "Substance A:3|Substance C:1",
+        "public_sequence_group": 37,
+        "nonterminating_experiments": 21,
+        "partial_improvements": 1,
+        "transitions": 22,
+        "native_actions": 274,
+        "seconds": 7.618777258321643,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7631",
+        "difficulty": "Normal",
+        "seed": 7631,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+        "public_sequence_group": 26,
+        "nonterminating_experiments": 13,
+        "partial_improvements": 2,
+        "transitions": 14,
+        "native_actions": 170,
+        "seconds": 4.730848707258701,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7634",
+        "difficulty": "Normal",
+        "seed": 7634,
+        "recipe_group": "Substance A:3|Substance C:1",
+        "public_sequence_group": 37,
+        "nonterminating_experiments": 21,
+        "partial_improvements": 1,
+        "transitions": 22,
+        "native_actions": 274,
+        "seconds": 7.7653511967509985,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7636",
+        "difficulty": "Normal",
+        "seed": 7636,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.7125539518892765,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7641",
+        "difficulty": "Normal",
+        "seed": 7641,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.76701426692307,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7647",
+        "difficulty": "Normal",
+        "seed": 7647,
+        "recipe_group": "Substance B:2|Substance C:1",
+        "public_sequence_group": 24,
+        "nonterminating_experiments": 16,
+        "partial_improvements": 1,
+        "transitions": 17,
+        "native_actions": 208,
+        "seconds": 5.849966229870915,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7648",
+        "difficulty": "Normal",
+        "seed": 7648,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.7369992099702358,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7652",
+        "difficulty": "Normal",
+        "seed": 7652,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.7807030286639929,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7653",
+        "difficulty": "Normal",
+        "seed": 7653,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+        "public_sequence_group": 26,
+        "nonterminating_experiments": 13,
+        "partial_improvements": 2,
+        "transitions": 14,
+        "native_actions": 170,
+        "seconds": 4.67844351939857,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7655",
+        "difficulty": "Normal",
+        "seed": 7655,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.8229382410645485,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7657",
+        "difficulty": "Normal",
+        "seed": 7657,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+        "public_sequence_group": 23,
+        "nonterminating_experiments": 27,
+        "partial_improvements": 2,
+        "transitions": 28,
+        "native_actions": 361,
+        "seconds": 10.014488719403744,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7659",
+        "difficulty": "Normal",
+        "seed": 7659,
+        "recipe_group": "Substance B:1|Substance C:1",
+        "public_sequence_group": 25,
+        "nonterminating_experiments": 7,
+        "partial_improvements": 1,
+        "transitions": 8,
+        "native_actions": 94,
+        "seconds": 2.719368228688836,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7663",
+        "difficulty": "Normal",
+        "seed": 7663,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.7516348212957382,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7665",
+        "difficulty": "Normal",
+        "seed": 7665,
+        "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+        "public_sequence_group": 35,
+        "nonterminating_experiments": 26,
+        "partial_improvements": 2,
+        "transitions": 27,
+        "native_actions": 346,
+        "seconds": 9.798827920109034,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7666",
+        "difficulty": "Normal",
+        "seed": 7666,
+        "recipe_group": "Substance A:1|Substance B:3",
+        "public_sequence_group": 31,
+        "nonterminating_experiments": 25,
+        "partial_improvements": 1,
+        "transitions": 26,
+        "native_actions": 331,
+        "seconds": 9.302696067839861,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7674",
+        "difficulty": "Normal",
+        "seed": 7674,
+        "recipe_group": "Substance A:1|Substance B:3",
+        "public_sequence_group": 31,
+        "nonterminating_experiments": 25,
+        "partial_improvements": 1,
+        "transitions": 26,
+        "native_actions": 331,
+        "seconds": 9.543189369142056,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7675",
+        "difficulty": "Normal",
+        "seed": 7675,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+        "public_sequence_group": 26,
+        "nonterminating_experiments": 13,
+        "partial_improvements": 2,
+        "transitions": 14,
+        "native_actions": 170,
+        "seconds": 4.8968905713409185,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7685",
+        "difficulty": "Normal",
+        "seed": 7685,
+        "recipe_group": "Substance A:1|Substance B:1",
+        "public_sequence_group": 30,
+        "nonterminating_experiments": 4,
+        "partial_improvements": 1,
+        "transitions": 5,
+        "native_actions": 59,
+        "seconds": 1.810944376513362,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "untrained_recipe"
+      },
+      {
+        "directory": "normal/seed7688",
+        "difficulty": "Normal",
+        "seed": 7688,
+        "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+        "public_sequence_group": 26,
+        "nonterminating_experiments": 13,
+        "partial_improvements": 2,
+        "transitions": 14,
+        "native_actions": 170,
+        "seconds": 5.000088473781943,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      },
+      {
+        "directory": "normal/seed7696",
+        "difficulty": "Normal",
+        "seed": 7696,
+        "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+        "public_sequence_group": 35,
+        "nonterminating_experiments": 26,
+        "partial_improvements": 2,
+        "transitions": 27,
+        "native_actions": 346,
+        "seconds": 10.182955402880907,
+        "error": null,
+        "task_completed": true,
+        "split": "validation",
+        "evaluation_regime": "seen_recipe_new_instance"
+      }
+    ],
+    "conditions": {
+      "reference": null,
+      "initial": "runs/continual_physics/chemistry_reaction/warmup753/initial.pt",
+      "trained": "runs/continual_physics/chemistry_reaction/warmup753/warmup.pt"
+    },
+    "max_native_actions": 1000,
+    "max_experiments": 209,
+    "primitive_candidates": true,
+    "selection": "preselected fixed checkpoints; no native-result checkpoint selection",
+    "scoring": "predicted observable rust reduction per predicted native operation; same public tools and starting RNG"
+  },
+  "conditions": [
+    {
+      "condition": "reference",
+      "regime": "all",
+      "instances": 30,
+      "completed": 30,
+      "mean_native_actions": 193.9,
+      "mean_experiments": 14.933333333333334,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.000643268662194411,
+      "mean_execution_seconds": 6.72596797576795,
+      "mean_seconds": 8.122006361186504,
+      "execution_errors": 0
+    },
+    {
+      "condition": "reference",
+      "regime": "untrained_recipe",
+      "instances": 18,
+      "completed": 18,
+      "mean_native_actions": 212.0,
+      "mean_experiments": 16.166666666666668,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.0007176013249489996,
+      "mean_execution_seconds": 7.366248093648917,
+      "mean_seconds": 8.85267946900179,
+      "execution_errors": 0
+    },
+    {
+      "condition": "reference",
+      "regime": "seen_recipe_new_instance",
+      "instances": 12,
+      "completed": 12,
+      "mean_native_actions": 166.75,
+      "mean_experiments": 13.083333333333334,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.000531769668062528,
+      "mean_execution_seconds": 5.7655477989465,
+      "mean_seconds": 7.025996699463576,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial",
+      "regime": "all",
+      "instances": 30,
+      "completed": 30,
+      "mean_native_actions": 193.9,
+      "mean_experiments": 14.933333333333334,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.7830480359494686,
+      "mean_execution_seconds": 7.074877265902857,
+      "mean_seconds": 8.280921905611953,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial",
+      "regime": "untrained_recipe",
+      "instances": 18,
+      "completed": 18,
+      "mean_native_actions": 212.0,
+      "mean_experiments": 16.166666666666668,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.9043857991281483,
+      "mean_execution_seconds": 7.732291332652999,
+      "mean_seconds": 9.06166893771539,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial",
+      "regime": "seen_recipe_new_instance",
+      "instances": 12,
+      "completed": 12,
+      "mean_native_actions": 166.75,
+      "mean_experiments": 13.083333333333334,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.6010413911814491,
+      "mean_execution_seconds": 6.088756165777643,
+      "mean_seconds": 7.109801357456793,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained",
+      "regime": "all",
+      "instances": 30,
+      "completed": 30,
+      "mean_native_actions": 78.3,
+      "mean_experiments": 5.533333333333333,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.2713608894497156,
+      "mean_execution_seconds": 2.9022228999684256,
+      "mean_seconds": 3.5766029939676325,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained",
+      "regime": "untrained_recipe",
+      "instances": 18,
+      "completed": 18,
+      "mean_native_actions": 93.16666666666667,
+      "mean_experiments": 6.666666666666667,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.33735146683951217,
+      "mean_execution_seconds": 3.455959093032612,
+      "mean_seconds": 4.19911177477075,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained",
+      "regime": "seen_recipe_new_instance",
+      "instances": 12,
+      "completed": 12,
+      "mean_native_actions": 56.0,
+      "mean_experiments": 3.8333333333333335,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.17237502336502075,
+      "mean_execution_seconds": 2.071618610372146,
+      "mean_seconds": 2.6428398227629564,
+      "execution_errors": 0
+    }
+  ],
+  "paired_comparisons": {
+    "trained:reference:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -115.6,
+        "difference_95ci": [
+          -211.87004830917874,
+          -60.70775462962964
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.545403367218872,
+        "difference_95ci": [
+          -7.984442702067254,
+          -2.619573396149772
+        ]
+      }
+    },
+    "trained:reference:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -118.83333333333333,
+        "difference_95ci": [
+          -318.8888888888889,
+          -43.269346846846865
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.6535676942310396,
+        "difference_95ci": [
+          -11.969233924869654,
+          -1.9878631732116143
+        ]
+      }
+    },
+    "trained:reference:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -110.75,
+        "difference_95ci": [
+          -170.375,
+          -70.93333333333334
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.38315687670062,
+        "difference_95ci": [
+          -6.559041351079941,
+          -2.871013338944283
+        ]
+      }
+    },
+    "trained:initial:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -115.6,
+        "difference_95ci": [
+          -211.87004830917874,
+          -60.70775462962964
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.70431891164432,
+        "difference_95ci": [
+          -8.667434599104338,
+          -2.4619495496604946
+        ]
+      }
+    },
+    "trained:initial:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -118.83333333333333,
+        "difference_95ci": [
+          -318.8888888888889,
+          -43.269346846846865
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.862557162944642,
+        "difference_95ci": [
+          -13.17671113833785,
+          -1.7640941236598866
+        ]
+      }
+    },
+    "trained:initial:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -110.75,
+        "difference_95ci": [
+          -170.375,
+          -70.93333333333334
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": -4.466961534693837,
+        "difference_95ci": [
+          -6.932988500843446,
+          -2.838793699762651
+        ]
+      }
+    }
+  },
+  "scope": {
+    "environment": "Native Combinatorial Chemistry with public observations and actual instrument operations",
+    "regimes": "Unseen named ingredient-ratio combinations versus seen-combination new instances; same chemical response mechanism",
+    "selection": "Fixed complete-epoch endpoint; no native-evaluation checkpoint selection",
+    "warmup": "Reaction and cost heads trained with the shared recurrent core frozen",
+    "policy": "Predicted observable rust reduction per predicted operation; current-task returned history",
+    "not_evaluated": "Autonomous internal-compute allocation or cross-task neural online learning"
+  }
+}
