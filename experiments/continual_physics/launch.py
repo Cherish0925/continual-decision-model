@@ -15,12 +15,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--environment-truth", type=Path, required=True)
+    parser.add_argument("--execution-geometry", type=Path)
+    parser.add_argument("--condition-failure-weights", action="store_true")
+    parser.add_argument("--cache-observations", action="store_true")
+    parser.add_argument("--seed-offset", type=int, default=0)
     parser.add_argument("--updates", type=int, default=200)
     parser.add_argument("--batch", type=int, default=32)
     parser.add_argument("--external-per-stream", type=int, default=32)
     parser.add_argument("--jobs-per-gpu", type=int, default=4)
     parser.add_argument("--seeds", type=int, nargs="+", choices=(231, 232), default=(231, 232))
-    parser.add_argument("--modes", nargs="+", choices=("full", "discard_physical", "task_reset", "fixed_schedule"),
+    parser.add_argument("--modes", nargs="+", choices=("full", "discard_physical", "task_reset", "fixed_schedule", "recurrent_reference"),
                         default=("full", "discard_physical", "task_reset", "fixed_schedule"))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -29,6 +33,7 @@ def main():
                                            (1, 232, "joint_repeat_20261029", 222)):
         if seed not in args.seeds:
             continue
+        seed += args.seed_offset
         parent_root = Path("runs/physical_belief") / campaign / f"carry_seed{parent}"
         for mode in args.modes:
             name = f"{mode}_seed{seed}"
@@ -42,12 +47,20 @@ def main():
                 "--device", f"cuda:{device}", "--seed", str(seed),
                 "--updates", str(args.updates), "--batch", str(args.batch),
                 "--external-per-stream", str(args.external_per_stream)]
+            if args.execution_geometry is not None:
+                command += ["--execution-geometry", str(args.execution_geometry)]
+            if args.condition_failure_weights:
+                command += ["--condition-failure-weights"]
+            if args.cache_observations:
+                command += ["--cache-observations"]
             jobs.append({"name": name, "gpu": device, "seed": seed, "parent_seed": parent,
                          "mode": mode, "arguments": command})
     plan = {"jobs": jobs,
             "external_requests_per_training": args.updates * args.batch * args.external_per_stream,
             "matched": "same parent within repetition, initialization seed, external-request budget and task plan",
-            "recorded_separately": "internal activities, waiting ticks and wall time",
+            "recorded_separately": "internal activities, waiting ticks, native primitive actions and wall time",
+            "execution": "native tool execution with 400 primitive-action task budget" if args.execution_geometry else "single-setting proxy",
+            "condition_failure_weights": args.condition_failure_weights,
             "selection": "fixed final update"}
     (args.output / "plan.json").write_text(json.dumps(plan, indent=2) + "\n")
     slots = {gpu: threading.Semaphore(args.jobs_per_gpu) for gpu in (0, 1)}

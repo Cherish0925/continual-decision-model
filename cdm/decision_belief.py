@@ -17,7 +17,13 @@ def failure_conditioned_weights(means, std, weights, exclusions, mask):
         return {"weights": weights, "log_survival": torch.zeros_like(means),
                 "log_event_probability": means.new_zeros(len(means))}
     event = censored_gaussian_observation(means, std, exclusions[:, :used], mask[:, :used])
-    log_joint = weights.double().log() + event["log_survival"]
+    # Zero prior mass stays zero. Avoid evaluating log(0), whose unused
+    # infinite derivative otherwise becomes NaN through normalization.
+    weights = weights.double()
+    positive = weights > 0
+    log_weights = torch.where(positive, weights, torch.ones_like(weights)).log()
+    log_weights = log_weights.masked_fill(~positive, -torch.inf)
+    log_joint = log_weights + event["log_survival"]
     normalizer = log_joint.logsumexp(-1, keepdim=True)
     return {"weights": (log_joint - normalizer).exp(),
             "log_survival": event["log_survival"],

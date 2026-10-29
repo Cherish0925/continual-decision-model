@@ -1,0 +1,8 @@
+{
+  "episodes": 12,
+  "requests": 243,
+  "mismatches": 0,
+  "cost_absolute_error": 0,
+  "purpose": "Verify fixed recorded requests against the compiled execution environment; no policy performance estimate",
+  "training_measurements": "Replay recorded requested readings, not newly simulated measurement noise"
+}

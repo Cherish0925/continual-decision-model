@@ -32,9 +32,12 @@ def observe(model, environment, state, boundary=None, delayed=None):
                                                  model.belief_memory(state))
     bounds = belief["means"].new_zeros(belief["means"].shape[0])
     obs.update(physical_lower_hz=bounds, physical_upper_hz=bounds + 10000.,
-               physical_minimum_step_hz=bounds,
+               physical_minimum_step_hz=bounds + int(hasattr(environment, "execution")),
                physical_means=belief["means"], physical_std=belief["std"],
                physical_weights=belief["weights"], physical_eligible=belief["eligible"])
+    if hasattr(environment.table, "current_hz"):
+        rows = torch.arange(environment.batch, device=environment.device)
+        obs["physical_current_hz"] = environment.table.current_hz[rows, environment.table.query].clone()
     if boundary is not None:
         obs["task_boundary"] = boundary
     if delayed is not None:
@@ -49,7 +52,8 @@ def physical_nll(output, target):
     return -(weights.log() - weights.sum(-1, keepdim=True).log() + density).logsumexp(-1)
 
 
-def receive_returns(model, delayed, state, receipt, mode, reference=None, reference_state=None):
+def receive_returns(model, delayed, state, receipt, mode, reference=None, reference_state=None,
+                    observation_cache=None):
     arrived, done = receipt["arrived"], receipt["task_done"]
     if not arrived.any():
         return state, reference_state
@@ -70,6 +74,8 @@ def receive_returns(model, delayed, state, receipt, mode, reference=None, refere
         if reference is not None:
             reference_state = reference.reset_rows(reference_state, done)
             reference_state = reference_receive(reference, reference_state, obs, done)
+    if observation_cache is not None:
+        observation_cache["observation"] = obs
     return state, reference_state
 
 
@@ -86,7 +92,7 @@ def reference_receive(reference, state, observation, selected):
 def train_window(model, delayed, state, *, external_per_stream, mode="full",
                  compute_cost=.001, latency_cost=.0002, physical_weight=.05, gamma=.99,
                  activity_entropy_weight=.01, action_entropy_weight=.005,
-                 reference=None, reference_state=None, anchor_weight=.02):
+                 reference=None, reference_state=None, anchor_weight=.02, cache_observations=False):
     batch, device = delayed.batch, delayed.device
     issued = torch.zeros(batch, dtype=torch.long, device=device)
     logps, values, rewards, ends, discounts, valid = [], [], [], [], [], []
@@ -101,9 +107,17 @@ def train_window(model, delayed, state, *, external_per_stream, mode="full",
     setting_requests = 0
     latency_ticks, tick = 0, 0
     before = delayed.dispatched.clone()
+    # A graph is reused only within this optimizer window. Public receipts and
+    # task/memory transitions replace it; a new window always reconstructs it.
+    observation_cache = {} if cache_observations else None
     while bool(((issued < external_per_stream) | delayed.pending).any()):
         active = (issued < external_per_stream) | delayed.pending
-        obs, _ = observe(model, delayed.env, state, delayed=delayed)
+        if observation_cache is not None and "observation" in observation_cache:
+            obs = observation_cache["observation"]
+        else:
+            obs, _ = observe(model, delayed.env, state, delayed=delayed)
+            if observation_cache is not None:
+                observation_cache["observation"] = obs
         output = model.readout(state, obs["candidates"], obs["action_mask"])
         logits = output["activity_logits"].clone()
         logits[:, Activity.ACT] = logits[:, Activity.ACT].masked_fill(
@@ -149,7 +163,7 @@ def train_window(model, delayed, state, *, external_per_stream, mode="full",
         receipt = delayed.advance()
         crossings += receipt["task_done"].long()
         lifetime_crossings += receipt["lifetime_done"].long()
-        state, reference_state = receive_returns(model, delayed, state, receipt, mode, reference, reference_state)
+        state, reference_state = receive_returns(model, delayed, state, receipt, mode, reference, reference_state, observation_cache)
         internal = (activity > Activity.ACT) & (activity < Activity.WAIT) & active
         reward = receipt["reward"] - compute_cost * internal.float() - latency_cost * pending.float()
         logps.append(activity_dist.log_prob(activity) + action_dist.log_prob(action) * external)
@@ -219,6 +233,10 @@ def training_parser():
     p.add_argument("--belief-checkpoint", type=Path)
     p.add_argument("--mixture-checkpoint", type=Path, required=True)
     p.add_argument("--environment-truth", type=Path)
+    p.add_argument("--cache-observations", action="store_true", help="Reuse unchanged public posterior graphs within one optimizer window")
+    p.add_argument("--execution-geometry", type=Path, help="Use native navigation, scalar probes and primitive-action costs")
+    p.add_argument("--native-action-budget", type=int, default=400)
+    p.add_argument("--native-action-cost", type=float, default=.005)
     p.add_argument("--allow-proxy", action="store_true", help="Explicitly label a pilot using public working settings as resonance")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--device", default="cuda:0")
@@ -262,8 +280,15 @@ def initialize_experiment(args):
     plan = MixedTaskStreamPlan(pool, source_path=args.data / "train.npz", streams=args.batch,
         lifetimes=(args.updates * args.external_per_stream + 19) // 20 + 2,
         seed=args.seed, device=args.device, native_fraction=args.native_fraction)
-    environment = ExactPhysicalTasks(pool, plan, mixture, truth_path=args.environment_truth, max_steps=args.max_steps)
-    delayed = DelayedExperiments(environment, seed=args.seed, max_delay=args.max_delay)
+    if args.execution_geometry is not None:
+        from .native_execution import NativeExecutionTasks, NativeDelayedExperiments
+        environment = NativeExecutionTasks(pool, plan, mixture, truth_path=args.environment_truth,
+            geometry_path=args.execution_geometry, max_steps=args.max_steps,
+            action_budget=args.native_action_budget, action_cost=args.native_action_cost)
+        delayed = NativeDelayedExperiments(environment, seed=args.seed, max_delay=args.max_delay)
+    else:
+        environment = ExactPhysicalTasks(pool, plan, mixture, truth_path=args.environment_truth, max_steps=args.max_steps)
+        delayed = DelayedExperiments(environment, seed=args.seed, max_delay=args.max_delay)
     recurrent = args.mode == "recurrent_reference"
     activity_mode = "fixed" if recurrent else ("fixed_schedule" if args.mode == "fixed_schedule" else "learned")
     if recurrent:
@@ -320,7 +345,13 @@ def main():
             "interval likelihood on received activation and non-activation feedback"),
         cost_target="log1p(1) for one executed request; queue delay is a separate latency cost",
         execution="single scalar setting per request; native operator may run multiple local probes",
-        selection="fixed final update")
+        selection="fixed final update", discount="gamma=0.99 per external request; internal ticks have discount 1")
+    if args.execution_geometry is not None:
+        settings.update(execution="native public additive tuning, local probes and stateful tool navigation",
+            cost_target="log1p(actual primitive actions in the completed request)",
+            primitive_budget_per_task=args.native_action_budget, primitive_reward_cost=args.native_action_cost,
+            scalar_feedback="all returned intermediate frequencies and activation flags",
+            measurements="recorded measurement sequence; sampling noise is replayed, not regenerated")
     (args.output / "config.json").write_text(json.dumps(settings, indent=2) + "\n")
     torch.save({**model.configuration(), "model": model.state_dict(), "training": settings, "update": 0}, args.output / "initial.pt")
     state = model.initial(args.batch, args.device)
@@ -339,13 +370,18 @@ def main():
                 external_per_stream=args.external_per_stream, mode=args.mode,
                 compute_cost=args.compute_cost, latency_cost=args.latency_cost, physical_weight=args.physical_weight,
                 activity_entropy_weight=activity_entropy_weight, action_entropy_weight=args.action_entropy_weight,
-                reference=reference, reference_state=reference_state, anchor_weight=args.anchor_weight)
+                reference=reference, reference_state=reference_state, anchor_weight=args.anchor_weight,
+                cache_observations=args.cache_observations)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             grad = torch.nn.utils.clip_grad_norm_([x for group in groups for x in group["params"]], 1.)
             if not torch.isfinite(grad):
                 raise FloatingPointError(f"Nonfinite gradient at update {update}")
             optimizer.step()
+            if hasattr(delayed, "total_native_actions"):
+                row["cumulative_request_native_actions"] = delayed.total_native_actions
+                row["cumulative_bootstrap_actions"] = environment.total_bootstrap_actions
+                row["cumulative_native_actions"] = delayed.total_native_actions + environment.total_bootstrap_actions
             row.update(update=update, loss=float(loss.detach()), gradient_norm=float(grad),
                        seconds=time.monotonic() - started, update_seconds=time.monotonic() - update_started,
                        cumulative_external_requests=int(delayed.dispatched.sum()))

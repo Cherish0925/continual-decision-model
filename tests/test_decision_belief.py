@@ -32,3 +32,15 @@ def test_repeated_or_split_exclusions_are_one_public_event():
     torch.testing.assert_close(first['weights'], third['weights'], rtol=0, atol=0)
     empty = failure_conditioned_weights(means, std, prior, union, torch.zeros(1, 1, dtype=torch.bool))
     assert torch.equal(empty['weights'], prior)
+
+
+def test_zero_prior_mass_has_finite_training_gradient():
+    means = torch.tensor([[0., 3., 5.]], dtype=torch.float64, requires_grad=True)
+    std = torch.ones_like(means, requires_grad=True)
+    weights = torch.tensor([[0., .3, .7]], dtype=torch.float64, requires_grad=True)
+    result = failure_conditioned_weights(means, std, weights,
+        torch.tensor([[[2., 4.]]], dtype=torch.float64), torch.tensor([[True]]))
+    assert result["weights"][0, 0] == 0.
+    result["weights"][0, 1].backward()
+    for value in (means, std, weights):
+        assert torch.isfinite(value.grad).all()
