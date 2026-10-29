@@ -1,0 +1,327 @@
+{
+  "purpose": "Fixed independent confirmation after correcting primitive execution, feedback and cost modeling",
+  "setting": "Native Reactor Lab Normal; new instances of familiar five relation families, all 20 ordered A/B pairs",
+  "overlap_check": "No selected seed appears in existing experiment JSON seed/seeds fields at creation",
+  "streams": [
+    {
+      "name": "native_execution_00",
+      "seeds": [
+        140000,
+        140005,
+        140011,
+        140016,
+        140020,
+        140025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_01",
+      "seeds": [
+        140100,
+        140105,
+        140112,
+        140117,
+        140120,
+        140125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_02",
+      "seeds": [
+        140200,
+        140205,
+        140213,
+        140218,
+        140220,
+        140225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_03",
+      "seeds": [
+        140300,
+        140305,
+        140314,
+        140319,
+        140320,
+        140325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_04",
+      "seeds": [
+        140401,
+        140406,
+        140410,
+        140415,
+        140421,
+        140426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_05",
+      "seeds": [
+        140501,
+        140506,
+        140512,
+        140517,
+        140521,
+        140526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_06",
+      "seeds": [
+        140601,
+        140606,
+        140613,
+        140618,
+        140621,
+        140626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_07",
+      "seeds": [
+        140701,
+        140706,
+        140714,
+        140719,
+        140721,
+        140726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_08",
+      "seeds": [
+        140802,
+        140807,
+        140810,
+        140815,
+        140822,
+        140827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_09",
+      "seeds": [
+        140902,
+        140907,
+        140911,
+        140916,
+        140922,
+        140927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_10",
+      "seeds": [
+        141002,
+        141007,
+        141013,
+        141018,
+        141022,
+        141027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_11",
+      "seeds": [
+        141102,
+        141107,
+        141114,
+        141119,
+        141122,
+        141127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_12",
+      "seeds": [
+        141203,
+        141208,
+        141210,
+        141215,
+        141223,
+        141228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_13",
+      "seeds": [
+        141303,
+        141308,
+        141311,
+        141316,
+        141323,
+        141328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_14",
+      "seeds": [
+        141403,
+        141408,
+        141412,
+        141417,
+        141423,
+        141428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_15",
+      "seeds": [
+        141503,
+        141508,
+        141514,
+        141519,
+        141523,
+        141528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_16",
+      "seeds": [
+        141604,
+        141609,
+        141610,
+        141615,
+        141624,
+        141629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_17",
+      "seeds": [
+        141704,
+        141709,
+        141711,
+        141716,
+        141724,
+        141729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_18",
+      "seeds": [
+        141804,
+        141809,
+        141812,
+        141817,
+        141824,
+        141829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "native_execution_19",
+      "seeds": [
+        141904,
+        141909,
+        141913,
+        141918,
+        141924,
+        141929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}
