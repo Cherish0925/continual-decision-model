@@ -64,7 +64,8 @@ def main():
         conditions[name] = rows
     reference = conditions[args.reference]
     results = {"cohort_purpose": expected.get("purpose"), "reference": args.reference,
-               "conditions": {}, "comparisons": {}}
+               "inputs": dict(specification.split("=", 1) for specification in args.input),
+               "specified_pair_requests": args.pair, "conditions": {}, "comparisons": {}}
     flattened = []
     for name, rows in conditions.items():
         results["conditions"][name] = {

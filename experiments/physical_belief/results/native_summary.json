@@ -1,6 +1,41 @@
 {
   "cohort_purpose": "Reserved confirmation cohort; use only after configuration selection on development data.",
   "reference": "baseline_rehearsal_183",
+  "inputs": {
+    "baseline_rehearsal_183": "runs/physical_belief/native_confirmation/baseline_rehearsal_183",
+    "baseline_rehearsal_184": "runs/physical_belief/native_confirmation/baseline_rehearsal_184",
+    "baseline_explicit": "runs/physical_belief/native_confirmation/baseline_explicit",
+    "ordinary_seed221": "runs/physical_belief/native_confirmation/ordinary_seed221",
+    "reset_seed221": "runs/physical_belief/native_confirmation/reset_seed221",
+    "carry_seed221": "runs/physical_belief/native_confirmation/carry_seed221",
+    "carry_seed221_memory_reset": "runs/physical_belief/native_confirmation/carry_seed221_memory_reset",
+    "carry_seed221_memory_discard": "runs/physical_belief/native_confirmation/carry_seed221_memory_discard",
+    "ordinary_seed222": "runs/physical_belief/native_confirmation/ordinary_seed222",
+    "reset_seed222": "runs/physical_belief/native_confirmation/reset_seed222",
+    "carry_seed222": "runs/physical_belief/native_confirmation/carry_seed222",
+    "carry_seed222_memory_reset": "runs/physical_belief/native_confirmation/carry_seed222_memory_reset",
+    "carry_seed222_memory_discard": "runs/physical_belief/native_confirmation/carry_seed222_memory_discard"
+  },
+  "specified_pair_requests": [
+    "carry_seed221:baseline_rehearsal_183",
+    "carry_seed221:ordinary_seed221",
+    "carry_seed221:reset_seed221",
+    "carry_seed221:carry_seed221_memory_reset",
+    "carry_seed221:carry_seed221_memory_discard",
+    "ordinary_seed221:baseline_rehearsal_183",
+    "reset_seed221:baseline_rehearsal_183",
+    "carry_seed222:baseline_rehearsal_184",
+    "carry_seed222:ordinary_seed222",
+    "carry_seed222:reset_seed222",
+    "carry_seed222:carry_seed222_memory_reset",
+    "carry_seed222:carry_seed222_memory_discard",
+    "ordinary_seed222:baseline_rehearsal_184",
+    "reset_seed222:baseline_rehearsal_184",
+    "carry_seed221_memory_reset:baseline_rehearsal_183",
+    "carry_seed221_memory_discard:baseline_rehearsal_183",
+    "carry_seed222_memory_reset:baseline_rehearsal_184",
+    "carry_seed222_memory_discard:baseline_rehearsal_184"
+  ],
   "conditions": {
     "baseline_rehearsal_183": {
       "instances": 120,
@@ -1924,6 +1959,282 @@
         "mean_action_difference_95ci": [
           -33.5,
           6.45
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "carry_seed221_memory_reset:baseline_rehearsal_183": {
+      "left": "carry_seed221_memory_reset",
+      "right": "baseline_rehearsal_183",
+      "difference": "left minus right",
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -3.6,
+        "mean_action_difference_95ci": [
+          -12.208541666666667,
+          4.825
+        ],
+        "completion_fraction_difference": 0.025,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -10.9,
+        "mean_action_difference_95ci": [
+          -46.95125,
+          22.002499999999962
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -8.65,
+        "mean_action_difference_95ci": [
+          -24.8,
+          8.001249999999981
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -4.7,
+        "mean_action_difference_95ci": [
+          -27.80125,
+          18.5
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "carry_seed221_memory_discard:baseline_rehearsal_183": {
+      "left": "carry_seed221_memory_discard",
+      "right": "baseline_rehearsal_183",
+      "difference": "left minus right",
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -3.6,
+        "mean_action_difference_95ci": [
+          -12.208541666666667,
+          4.825
+        ],
+        "completion_fraction_difference": 0.025,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -10.9,
+        "mean_action_difference_95ci": [
+          -46.95125,
+          22.002499999999962
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -8.65,
+        "mean_action_difference_95ci": [
+          -24.8,
+          8.001249999999981
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -4.7,
+        "mean_action_difference_95ci": [
+          -27.80125,
+          18.5
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "carry_seed222_memory_reset:baseline_rehearsal_184": {
+      "left": "carry_seed222_memory_reset",
+      "right": "baseline_rehearsal_184",
+      "difference": "left minus right",
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -18.258333333333333,
+        "mean_action_difference_95ci": [
+          -32.08354166666667,
+          -5.974375000000009
+        ],
+        "completion_fraction_difference": 0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.016666666666666666,
+          0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -19.5,
+        "mean_action_difference_95ci": [
+          -62.75125,
+          25.6
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -14.3,
+        "mean_action_difference_95ci": [
+          -27.5,
+          -3.2
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -22.15,
+        "mean_action_difference_95ci": [
+          -60.35,
+          12.25
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "carry_seed222_memory_discard:baseline_rehearsal_184": {
+      "left": "carry_seed222_memory_discard",
+      "right": "baseline_rehearsal_184",
+      "difference": "left minus right",
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -18.258333333333333,
+        "mean_action_difference_95ci": [
+          -32.08354166666667,
+          -5.974375000000009
+        ],
+        "completion_fraction_difference": 0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.016666666666666666,
+          0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -19.5,
+        "mean_action_difference_95ci": [
+          -62.75125,
+          25.6
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -14.3,
+        "mean_action_difference_95ci": [
+          -27.5,
+          -3.2
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -22.15,
+        "mean_action_difference_95ci": [
+          -60.35,
+          12.25
         ],
         "completion_fraction_difference": 0.1,
         "completion_fraction_difference_95ci": [
