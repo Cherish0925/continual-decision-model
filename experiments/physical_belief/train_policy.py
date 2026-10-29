@@ -23,6 +23,7 @@ from experiments.discoveryworld.train_active_lifetime import (
     ActiveLifetimeEnvironment, CalibrationTaskPool, TaskStreamPlan, flush_terminal_state,
 )
 from .observations import add_physical_context
+from .task_streams import MixedTaskStreamPlan, PhysicalTaskEnvironment
 
 
 def detach(state):
@@ -163,6 +164,7 @@ def main():
     p.add_argument("--head-lr", type=float, default=3e-5)
     p.add_argument("--belief-lr", type=float, default=1e-4)
     p.add_argument("--physical-weight", type=float, default=.05)
+    p.add_argument("--native-fraction", type=float, default=.5)
     p.add_argument("--anchor-weight", type=float, default=.02)
     p.add_argument("--save-every", type=int, default=100)
     args = p.parse_args()
@@ -175,9 +177,10 @@ def main():
     if args.mode != "ordinary":
         belief_model, _ = load_experimental_belief_checkpoint(args.belief_checkpoint, args.device)
     pool = CalibrationTaskPool(args.data / "train.npz", mixture, args.device)
-    plan = TaskStreamPlan(pool, streams=args.batch, lifetimes=(args.updates * args.unroll + 19) // 20 + 2,
-                          seed=args.seed, device=args.device)
-    env = ActiveLifetimeEnvironment(pool, plan, mixture, max_steps=args.max_steps)
+    plan = MixedTaskStreamPlan(pool, source_path=args.data / "train.npz", streams=args.batch,
+        lifetimes=(args.updates * args.unroll + 19) // 20 + 2, seed=args.seed,
+        device=args.device, native_fraction=args.native_fraction)
+    env = PhysicalTaskEnvironment(pool, plan, mixture, max_steps=args.max_steps)
     policy, _ = load_active_checkpoint(args.checkpoint, args.device)
     reference, _ = load_active_checkpoint(args.checkpoint, args.device)
     reference.eval().requires_grad_(False)
@@ -212,6 +215,8 @@ def main():
             optimizer.step()
             stats.update(update=update, loss=float(loss.detach()), gradient_norm=float(norm),
                          seconds=time.monotonic() - started)
+            if torch.device(args.device).type == "cuda":
+                stats["peak_allocated_gib"] = torch.cuda.max_memory_allocated(args.device) / 2 ** 30
             log.write(json.dumps(stats) + "\n"); log.flush()
             if update == 1 or update % 10 == 0:
                 print(json.dumps(stats), flush=True)
