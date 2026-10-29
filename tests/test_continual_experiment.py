@@ -244,3 +244,22 @@ def test_joint_training_crosses_task_boundaries_with_finite_gradients(tmp_path, 
         optimizer.step()
     assert len(env.task_rows) > 2
     assert not state["pending"].any()
+
+
+def test_task_boundary_separates_neural_state_from_learning_memory():
+    from experiments.discoveryworld.evaluate_active_stream import task_boundary_state
+    model, obs = make_model(), observation()
+    state, _ = remember(model, model.receive(model.initial(2, 'cpu'), obs), obs)
+    state = model.internal(state, torch.full((2,), int(Activity.LEARN)), obs)
+    initial = model.initial(2, 'cpu')
+    neural = task_boundary_state(model, state, 'neural_only')
+    learning = task_boundary_state(model, state, 'learning_only')
+    for key in ('h', 'z'):
+        assert torch.equal(neural[key], state[key])
+        assert torch.equal(learning[key], initial[key])
+    for key in ('memory_x', 'memory_y', 'memory_valid', 'memory_cursor', 'fast', 'slow'):
+        assert torch.equal(neural[key], initial[key])
+        assert torch.equal(learning[key], state[key])
+    for key in ('pending', 'pending_x', 'observation_count', 'internal_steps', 'activity_counts'):
+        assert torch.equal(neural[key], state[key])
+        assert torch.equal(learning[key], state[key])

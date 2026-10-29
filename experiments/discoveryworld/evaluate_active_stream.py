@@ -21,7 +21,7 @@ from time import perf_counter
 import torch
 
 from cdm.active_experiment import load_active_checkpoint
-from cdm.continual_experiment import load_continual_checkpoint
+from cdm.continual_experiment import ContinualExperimentPolicy, load_continual_checkpoint
 from .active_native import NativeActiveEpisode
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .calibration_mixture import load_mixture_checkpoint
@@ -109,6 +109,30 @@ def schedule_position(stream, index):
     return {}
 
 
+
+def task_boundary_state(model, state, mode):
+    """Intervene only at task boundaries; public numerical ledgers are fresh.
+
+    neural_only keeps h/z and clears replay plus fast/slow prediction adapters.
+    learning_only clears h/z and keeps replay plus those adapters. Pending state
+    and activity/observation counters retain the original carry protocol. Every
+    task's terminal feedback must have been consumed before this intervention.
+    """
+    if mode == "carry":
+        return state
+    initial = model.initial(len(state["h"]), state["h"].device)
+    if mode == "reset":
+        return initial
+    if not isinstance(model, ContinualExperimentPolicy):
+        raise ValueError("Selective state controls require a continual policy")
+    if bool(state["pending"].any()):
+        raise ValueError("Receive terminal feedback before changing task state")
+    reset_keys = (("memory_x", "memory_y", "memory_valid", "memory_cursor", "fast", "slow")
+                  if mode == "neural_only" else ("h", "z"))
+    if mode not in {"neural_only", "learning_only"}:
+        raise ValueError(f"Unknown task-boundary state mode: {mode}")
+    return {key: initial[key] if key in reset_keys else value for key, value in state.items()}
+
 def run_stream(job):
     options, stream = job
     torch.set_num_threads(options["threads"])
@@ -140,8 +164,7 @@ def run_stream(job):
     rows, boundaries = [], []
     started = perf_counter()
     for index, seed in enumerate(stream["seeds"]):
-        if options["state_mode"] == "reset":
-            state = model.initial(1, device)
+        state = task_boundary_state(model, state, options["state_mode"])
         if belief_source is not None:
             belief_source.begin_episode()
         entry_memory = None if belief_source is None else belief_source.summary()
@@ -173,7 +196,12 @@ def run_stream(job):
             metadata = {**env.configuration, "policy": "active_stream",
                         "policy_inputs": "public_structured_measurements_and_native_feedback",
                         "state_mode": options["state_mode"],
-                        "carried_state": list(state) if options["state_mode"] == "carry" else [],
+                        "carried_state": ([key for key in state if key not in
+                            ({"memory_x", "memory_y", "memory_valid", "memory_cursor", "fast", "slow"}
+                             if options["state_mode"] == "neural_only" else {"h", "z"})]
+                            if options["state_mode"] in {"neural_only", "learning_only"}
+                            else list(state) if options["state_mode"] == "carry" else []),
+                        "task_boundary_intervention": options["state_mode"],
                         "continual_activities": continual,
                         "physical_context_tokens": physical_context,
                         "event_cost": "measurement=1,test=5",
@@ -305,8 +333,8 @@ def main():
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--manifest", type=Path, help="JSON object with streams: [{name, seeds}]")
     source.add_argument("--seeds", type=int, nargs="+", help="One ordered sequence of native instances")
-    parser.add_argument("--state-mode", choices=("carry", "reset"), required=True,
-                        help="Carry all model state or reset it between instances")
+    parser.add_argument("--state-mode", choices=("carry", "reset", "neural_only", "learning_only"), required=True,
+                        help="Task-boundary intervention: all, none, h/z only, or replay and adapters only")
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--mixture-checkpoint", required=True)
     parser.add_argument("--initial-rng-root", required=True)
@@ -329,6 +357,8 @@ def main():
     parser.add_argument("--activity-seed", type=int,
                         help="Independent activity RNG base seed; stream i uses seed+i and retains it across tasks")
     args = parser.parse_args()
+    if args.state_mode in {"neural_only", "learning_only"} and not args.continual:
+        parser.error("Selective state controls require --continual")
     if args.discard_adaptation and not args.continual:
         parser.error("--discard-adaptation requires --continual")
     if args.activity_selection == "sample" and (not args.continual or args.activity_seed is None):
