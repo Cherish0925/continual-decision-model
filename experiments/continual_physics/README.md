@@ -195,10 +195,34 @@ The [complete primary results](results/native_confirmation.json) include
 activity counts, physical prediction corrections and timing. The
 [compact table](results/native_confirmation.csv) and
 [1,680 per-instance records](results/native_instances.csv) preserve all
-primary conditions and the separately declared recurrent references. The
-separate initial-checkpoint comparison is post hoc and
-will distinguish continued training from the combined new-runtime/new-module
-initialization, rather than attributing that combined change solely to runtime.
+primary conditions and the separately declared recurrent references.
+
+### Initial-checkpoint follow-up
+
+After observing the fixed-final results, both saved initial checkpoints were
+evaluated on the same 120 instances and saved initial environment states.
+This is a post-hoc comparison, separate from the primary declaration. It
+measures the combined new runtime, state policy and module initialization;
+it does not isolate runtime alone.
+
+| Saved initial model | Completed | Mean native actions |
+| --- | ---: | ---: |
+| Initial full model, 231 | 63/120 | 233.02 |
+| Initial full model, 232 | 74/120 | 207.42 |
+
+The new combinations are already substantially weaker than their frozen
+parents before continued training. Training repetition 231 improves completion
+from 63 to 94 and reduces mean actions by 73.73, with a paired stream interval
+[−109.84, −40.05] for the operation difference. Repetition 232 changes completion
+from 74 to 71 and mean actions by +8.01, with interval [−28.33, 46.01]. Thus the
+parent-to-final deficit cannot be assigned wholly to continued training;
+one repetition recovers part of the initial deficit and the other does not
+show a clear improvement. Neither returns to parent performance.
+
+The [initial-checkpoint comparisons](results/initial_native.json) and
+[240 individual executions](results/initial_native_instances.csv) preserve
+both parent-to-initial and initial-to-final differences. No training endpoint
+was changed or selected using these results.
 
 The current task interface is structured scientific observation. It does not
 train a new multimodal encoder or establish transfer to unrelated scientific

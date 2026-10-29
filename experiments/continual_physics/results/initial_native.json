@@ -1,0 +1,413 @@
+{
+  "protocol": {
+    "scope": "Post-hoc decomposition after observing fixed-final performance; original comparison unchanged",
+    "interpretation": "Initial new runtime and new-module parameters jointly; not an isolated runtime-only intervention",
+    "selection": "Both declared training initializations, unchanged weights and original 120-instance manifest",
+    "jobs": [
+      {
+        "name": "initial_full_seed231",
+        "seed": 231,
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--output",
+          "runs/continual_physics/initial_native/initial_full_seed231",
+          "--checkpoint",
+          "runs/continual_physics/joint_20261029/full_seed231/initial.pt",
+          "--state-mode",
+          "carry",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/native_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/native_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu"
+        ]
+      },
+      {
+        "name": "initial_full_seed232",
+        "seed": 232,
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--output",
+          "runs/continual_physics/initial_native/initial_full_seed232",
+          "--checkpoint",
+          "runs/continual_physics/joint_20261029/full_seed232/initial.pt",
+          "--state-mode",
+          "carry",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/native_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/native_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu"
+        ]
+      }
+    ]
+  },
+  "conditions": {
+    "initial_full_seed231": {
+      "instances": 120,
+      "completed": 63,
+      "mean_actions": 233.01666666666668
+    },
+    "initial_full_seed232": {
+      "instances": 120,
+      "completed": 74,
+      "mean_actions": 207.41666666666666
+    }
+  },
+  "comparisons": {
+    "initial_full_seed231:parent_seed221": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 126.34166666666667,
+        "mean_action_difference_95ci": [
+          93.49854166666667,
+          158.63416666666666
+        ],
+        "completion_fraction_difference": -0.45,
+        "completion_fraction_difference_95ci": [
+          -0.5666666666666667,
+          -0.325
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 84.25,
+        "mean_action_difference_95ci": [
+          34.29875,
+          139.70124999999996
+        ],
+        "completion_fraction_difference": -0.35,
+        "completion_fraction_difference_95ci": [
+          -0.55,
+          -0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 132.2,
+        "mean_action_difference_95ci": [
+          65.79875,
+          200.5
+        ],
+        "completion_fraction_difference": -0.45,
+        "completion_fraction_difference_95ci": [
+          -0.65,
+          -0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 161.45,
+        "mean_action_difference_95ci": [
+          91.39875,
+          229.60124999999996
+        ],
+        "completion_fraction_difference": -0.55,
+        "completion_fraction_difference_95ci": [
+          -0.75,
+          -0.35
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 130.6,
+        "mean_action_difference_95ci": [
+          44.5,
+          213.40249999999997
+        ],
+        "completion_fraction_difference": -0.5,
+        "completion_fraction_difference_95ci": [
+          -0.75,
+          -0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "full_seed231:initial_full_seed231": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -73.725,
+        "mean_action_difference_95ci": [
+          -109.844375,
+          -40.04916666666668
+        ],
+        "completion_fraction_difference": 0.25833333333333336,
+        "completion_fraction_difference_95ci": [
+          0.15,
+          0.375
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 17.85,
+        "mean_action_difference_95ci": [
+          -16.4,
+          55.0
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -44.35,
+        "mean_action_difference_95ci": [
+          -124.205,
+          37.0
+        ],
+        "completion_fraction_difference": 0.2,
+        "completion_fraction_difference_95ci": [
+          -0.05,
+          0.45
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -98.45,
+        "mean_action_difference_95ci": [
+          -166.4,
+          -35.096250000000055
+        ],
+        "completion_fraction_difference": 0.35,
+        "completion_fraction_difference_95ci": [
+          0.15,
+          0.55
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -102.1,
+        "mean_action_difference_95ci": [
+          -183.15,
+          -19.648750000000017
+        ],
+        "completion_fraction_difference": 0.35,
+        "completion_fraction_difference_95ci": [
+          0.1,
+          0.6
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "initial_full_seed232:parent_seed222": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 104.575,
+        "mean_action_difference_95ci": [
+          72.81645833333333,
+          139.48333333333332
+        ],
+        "completion_fraction_difference": -0.375,
+        "completion_fraction_difference_95ci": [
+          -0.5,
+          -0.25833333333333336
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 55.15,
+        "mean_action_difference_95ci": [
+          13.548750000000002,
+          105.00124999999998
+        ],
+        "completion_fraction_difference": -0.2,
+        "completion_fraction_difference_95ci": [
+          -0.4,
+          -0.05
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 181.3,
+        "mean_action_difference_95ci": [
+          117.29875,
+          242.60249999999996
+        ],
+        "completion_fraction_difference": -0.55,
+        "completion_fraction_difference_95ci": [
+          -0.75,
+          -0.35
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 112.1,
+        "mean_action_difference_95ci": [
+          40.04875,
+          185.15
+        ],
+        "completion_fraction_difference": -0.45,
+        "completion_fraction_difference_95ci": [
+          -0.65,
+          -0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 61.7,
+        "mean_action_difference_95ci": [
+          -2.2,
+          131.1
+        ],
+        "completion_fraction_difference": -0.25,
+        "completion_fraction_difference_95ci": [
+          -0.45,
+          -0.1
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    },
+    "full_seed232:initial_full_seed232": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 8.008333333333333,
+        "mean_action_difference_95ci": [
+          -28.333541666666665,
+          46.00833333333333
+        ],
+        "completion_fraction_difference": -0.025,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.1
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 44.85,
+        "mean_action_difference_95ci": [
+          -2.2,
+          101.65
+        ],
+        "completion_fraction_difference": -0.15,
+        "completion_fraction_difference_95ci": [
+          -0.3,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -21.6,
+        "mean_action_difference_95ci": [
+          -98.655,
+          56.5
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -5.0,
+        "mean_action_difference_95ci": [
+          -50.75125,
+          36.05
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          -0.1,
+          0.2
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 36.95,
+        "mean_action_difference_95ci": [
+          -36.65125,
+          110.85124999999998
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.35,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      }
+    }
+  }
+}
