@@ -890,9 +890,9 @@
   },
   "scope": {
     "environment": "Native Combinatorial Chemistry with public observations and actual instrument operations",
-    "regimes": "Unseen named ingredient-ratio combinations versus seen-combination new instances; same chemical response mechanism",
+    "regimes": "Native-unsampled named ingredient-ratio groups versus sampled-group new instances; joint ingredient-renaming augmentation may cover isomorphic combinations",
     "selection": "Fixed complete-epoch endpoint; no native-evaluation checkpoint selection",
-    "training": "Fixed two complete joint epochs updating the shared recurrent core and chemical readouts",
+    "training": "Fixed two complete joint epochs updating the shared recurrent core and chemical readouts with consistent ingredient-renaming augmentation; joint-versus-warmup does not isolate core unfreezing",
     "policy": "Predicted observable rust reduction per predicted operation; current-task returned history",
     "not_evaluated": "Autonomous internal-compute allocation or cross-task neural online learning"
   }

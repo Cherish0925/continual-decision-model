@@ -26,10 +26,11 @@ def main():
             if left and len(left)==len(right):comparisons[f'trained:{control}:{regime}']=paired(left,right)
     compact={'protocol':data['protocol'],'conditions':data['conditions'],'paired_comparisons':comparisons,
         'scope':{'environment':'Native Combinatorial Chemistry with public observations and actual instrument operations',
-            'regimes':'Unseen named ingredient-ratio combinations versus seen-combination new instances; same chemical response mechanism',
+            'regimes':('Unseen named ingredient-ratio combinations versus seen-combination new instances; same chemical response mechanism'
+                       if args.phase=='warmup' else 'Native-unsampled named ingredient-ratio groups versus sampled-group new instances; joint ingredient-renaming augmentation may cover isomorphic combinations'),
             'selection':'Fixed complete-epoch endpoint; no native-evaluation checkpoint selection',
             'training':('Reaction and cost heads trained with the shared recurrent core frozen' if args.phase=='warmup'
-                        else 'Fixed two complete joint epochs updating the shared recurrent core and chemical readouts'),
+                        else 'Fixed two complete joint epochs updating the shared recurrent core and chemical readouts with consistent ingredient-renaming augmentation; joint-versus-warmup does not isolate core unfreezing'),
             'policy':'Predicted observable rust reduction per predicted operation; current-task returned history',
             'not_evaluated':'Autonomous internal-compute allocation or cross-task neural online learning'}}
     output=Path('experiments/continual_chemistry/results');output.mkdir(exist_ok=True)
