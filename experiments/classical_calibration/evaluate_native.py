@@ -75,7 +75,9 @@ def run_stream(job):
             with TrajectoryWriter(output,{**env.configuration,'policy':'bayesian_active_calibration',
                     'mode':options['mode'],'max_decisions':options['max_decisions'],
                     'inputs':'public instrument readings and actually returned device settings',
-                    'scalar_executor':'shared NativeExperimentOperator including local probes'}) as writer:
+                    'scalar_executor':'shared NativeExperimentOperator including local probes',
+                    'planning_rng_seed':stream['seeds'][0]+700000,'posterior_samples':options['samples'],
+                    'moment_refit_iterations':options.get('iterations',3)}) as writer:
                 episode=NativeActiveEpisode(env,writer)
                 try:
                     episode.bootstrap()
@@ -112,7 +114,7 @@ def main():
     p.add_argument('--max-actions',type=int,default=400);p.add_argument('--max-decisions',type=int,default=160)
     args=p.parse_args();root=Path(args.output);root.mkdir(parents=True,exist_ok=True)
     streams=json.loads(Path(args.manifest).read_text())['streams']
-    (root/'configuration.json').write_text(json.dumps(vars(args),indent=2)+'\n')
+    (root/'configuration.json').write_text(json.dumps({**vars(args),'planning_rng_seeds':{s['name']:s['seeds'][0]+700000 for s in streams}},indent=2)+'\n')
     rows=[]
     with ProcessPoolExecutor(args.workers,mp_context=multiprocessing.get_context('spawn')) as pool:
         for future in as_completed([pool.submit(run_stream,(vars(args),s)) for s in streams]):
