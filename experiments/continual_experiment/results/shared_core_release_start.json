@@ -1,0 +1,68 @@
+{
+  "purpose": "shared-core implementation and one real-data update; no task-performance claim",
+  "new_interface_initialization_seed": 811,
+  "physical_source": "policy.pt",
+  "physical_belief_source": "belief.pt",
+  "core": {
+    "width": 1024,
+    "slots": 8,
+    "tensors_stored_once": 72
+  },
+  "initial_output_max_difference": {
+    "physics": {
+      "logits": 0.0,
+      "outcomes": 0.0,
+      "predictions": 0.0,
+      "physical_means": 0.0,
+      "physical_std": 0.0,
+      "physical_settings": 0.0
+    },
+    "chemistry": {
+      "logits": 0.0,
+      "outcomes": 0.0,
+      "predictions": 0.0
+    }
+  },
+  "reloaded_output_max_difference": {
+    "physics": {
+      "logits": 0.0,
+      "outcomes": 0.0,
+      "predictions": 0.0
+    },
+    "chemistry": {
+      "logits": 0.0,
+      "outcomes": 0.0,
+      "predictions": 0.0
+    }
+  },
+  "core_gradient_norm_by_task": {
+    "physics": 0.03854825347661972,
+    "chemistry": 0.08381545543670654
+  },
+  "updated_gru_weight_norm": 0.04812292754650116,
+  "optimizer_parameters": 162,
+  "optimizer_unique_parameters": 162,
+  "task_head_tensors": {
+    "physics": 63,
+    "chemistry": 74
+  },
+  "loss": {
+    "physics": 0.43948984146118164,
+    "chemistry": 0.9574666619300842
+  },
+  "physical_measurement": {
+    "seed": 100,
+    "action": 3,
+    "returned_targets": [
+      [
+        0.0,
+        1.6094379425048828
+      ]
+    ],
+    "native_operations": 4
+  },
+  "chemical_training_record": "normal/seed10000/experiments.jsonl",
+  "shared_state_continues": true,
+  "task_numeric_memories_preserved": true,
+  "seconds": 4.588668800890446
+}

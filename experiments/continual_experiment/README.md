@@ -398,7 +398,15 @@ result, not evidence of improved task performance.
 
 ```bash
 PYTHONHASHSEED=0 python -m experiments.continual_experiment.verify_shared_tasks \
-  --physics runs/continual_physics/execution_pilot/first/initial.pt \
+  --physics runs/physical_belief/joint_20261029/carry_seed221/policy.pt \
+  --belief-checkpoint runs/physical_belief/joint_20261029/carry_seed221/belief.pt \
   --chemistry runs/continual_physics/chemistry_reaction/warmup753/warmup.pt \
+  --initialization-seed 811 \
   --output runs/continual_physics/shared_core_check
 ```
+
+This command uses the released physical policy/belief and chemical warmup, not
+an intermediate physical pilot. Any new physical interface parameters use the
+explicit initialization seed; inherited core tensors remain unchanged before
+the joint update. The original check and this released-input check are recorded
+separately, because their newly initialized interface weights need not match.

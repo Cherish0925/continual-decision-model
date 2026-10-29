@@ -68,15 +68,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--physics', type=Path, required=True)
     parser.add_argument('--chemistry', type=Path, required=True)
+    parser.add_argument('--belief-checkpoint', type=Path,
+                        help='Released physical belief when initializing from an active policy')
+    parser.add_argument('--initialization-seed', type=int, default=811)
     parser.add_argument('--chemical-data', type=Path, default=Path('runs/continual_physics/chemistry_exploration'))
     parser.add_argument('--physical-data', type=Path, default=Path('runs/discoveryworld/active_experiments/data_large/train.npz'))
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     torch.set_num_threads(4)
-    torch.manual_seed(811)
+    torch.manual_seed(args.initialization_seed)
     args.output.mkdir(parents=True, exist_ok=False)
     start = perf_counter()
-    physics, _ = load_continual_physics_checkpoint(args.physics)
+    physics, _ = load_continual_physics_checkpoint(args.physics, belief_checkpoint=args.belief_checkpoint)
     chemistry, chemical_saved = load_reaction_checkpoint(args.chemistry)
     physics.eval(); chemistry.eval()
     physical_obs, action, returned, measurement = measured_example(physics, args.output, args.physical_data)
@@ -132,6 +135,7 @@ def main():
     assert change > 0
     save_shared_checkpoint(args.output/'shared.pt', model,
         training={'updates': 1, 'purpose': 'real two-task gradient and continuation check',
+                  'new_interface_initialization_seed': args.initialization_seed,
                   'physical_loss': 'actual measurement progress and log native-operation cost',
                   'chemical_loss': 'censored returned-rust likelihood and train-scaled native cost'})
     restored, saved = load_shared_checkpoint(args.output/'shared.pt')
@@ -156,6 +160,9 @@ def main():
         for key, value in held.items():
             torch.testing.assert_close(state[key], value, rtol=0, atol=0)
     summary = {'purpose': 'shared-core implementation and one real-data update; no task-performance claim',
+        'new_interface_initialization_seed': args.initialization_seed,
+        'physical_source': args.physics.name,
+        'physical_belief_source': None if args.belief_checkpoint is None else args.belief_checkpoint.name,
         'core': {'width': model.core.config.width, 'slots': model.core.config.slots,
                  'tensors_stored_once': len(saved['core'])},
         'initial_output_max_difference': equivalent, 'reloaded_output_max_difference': reloaded,

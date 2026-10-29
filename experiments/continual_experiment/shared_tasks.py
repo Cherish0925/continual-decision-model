@@ -14,8 +14,12 @@ from cdm.shared_core import SharedCorePolicies
 from experiments.continual_chemistry.reaction import ReactionExperimentPolicy, load_reaction_checkpoint
 
 
-def from_task_checkpoints(physical_path, chemistry_path, device='cpu'):
-    physical, _ = load_continual_physics_checkpoint(physical_path, device)
+def from_task_checkpoints(physical_path, chemistry_path, device='cpu', *, belief_checkpoint=None,
+                          initialization_seed=811):
+    # A released active policy may need the continuing/physical interfaces
+    # initialized. Fix that initialization separately from the inherited core.
+    torch.manual_seed(initialization_seed)
+    physical, _ = load_continual_physics_checkpoint(physical_path, device, belief_checkpoint=belief_checkpoint)
     chemistry, _ = load_reaction_checkpoint(chemistry_path, device)
     return SharedCorePolicies({'physics': physical, 'chemistry': chemistry})
 
