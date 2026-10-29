@@ -227,7 +227,11 @@ def run_stream(job):
                                                       ("feedback_seconds", "feedback_seconds"))}},
                    "physical_learning": {"setting_decisions": len(tested),
                                          "sum_absolute_mean_correction_hz": sum(corrections),
-                                         "max_absolute_mean_correction_hz": max(corrections, default=0.)},
+                                         "max_absolute_mean_correction_hz": max(corrections, default=0.),
+                                         "fast_correction_norm": float(final["physics_fast"].norm()),
+                                         "slow_correction_norm": float(final["physics_slow"].norm()),
+                                         "received_setting_events": int((final["physics_memory_cursor"]-entry_state["physics_memory_cursor"]).sum()),
+                                         "retained_physical_memories": int(final["belief_valid"].sum())},
                    "internal_activity_counts": (final["activity_counts"]-entry_state["activity_counts"])[0].tolist()}
             (output / "summary.json").write_text(json.dumps(row, indent=2)+"\n")
         rows.append({key: value for key, value in row.items() if key != "decisions"})
