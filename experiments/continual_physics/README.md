@@ -158,11 +158,38 @@ activity choices improve the quality–cost tradeoff. Implementing all three
 paths makes these questions testable; their answers come from the matched
 training and native execution results.
 
-Training and the native comparison are in progress. The frozen parent models
-complete 117/120 and 119/120 new confirmation instances, with 106.68 and 102.84
-mean native actions. These new instances differ from the preceding study's
-cohort. New-model results will be reported together after the fixed comparison
-finishes.
+The eight fixed-budget trainings and all **1,440 primary native executions**
+are complete. Each column below uses the same 120 instances and parent within
+that training repetition; these instances differ from the preceding study.
+
+| Policy | Repetition 231: completed / mean actions | Repetition 232: completed / mean actions |
+| --- | ---: | ---: |
+| Frozen physical-learning parent | 117 / 106.68 | 119 / 102.84 |
+| Full model | 94 / 159.29 | 71 / 215.43 |
+| Trained without retained physical online corrections | 100 / 144.37 | 86 / 174.50 |
+| Trained with task-boundary state reset | 96 / 157.26 | 81 / 191.04 |
+| Trained with a fixed internal schedule | 88 / 179.88 | 84 / 177.26 |
+| Full weights, physical online corrections discarded at execution | 94 / 156.98 | 73 / 210.14 |
+
+Neither full model improves on its strong parent. Against the same weights with
+physical corrections discarded, retaining corrections adds 2.31 and 5.28
+operations on average; the paired whole-stream 95% intervals are [0.42, 4.60]
+and [0.48, 12.06]. Completion is unchanged in the first repetition and decreases
+by two instances in the second. The learned activity schedule outperforms the
+fixed schedule in one repetition and underperforms it in the other. These
+results establish that the implemented online and activity mechanisms run and
+change behavior, but not that their original training improves native tasks.
+
+The [complete primary results](results/native_confirmation.json) include
+20-stream paired intervals, first/second return-instance comparisons, actual
+activity counts, physical prediction corrections and timing. The
+[compact table](results/native_confirmation.csv) and
+[1,440 per-instance records](results/native_instances.csv) preserve all
+conditions. Separately trained recurrent references are still running; their
+results will be added as additional comparisons without changing the frozen
+primary outcomes. The separate initial-checkpoint comparison is post hoc and
+will distinguish continued training from the combined new-runtime/new-module
+initialization, rather than attributing that combined change solely to runtime.
 
 The current task interface is structured scientific observation. It does not
 train a new multimodal encoder or establish transfer to unrelated scientific
@@ -253,7 +280,7 @@ training permits 160 individual setting requests, while the native 400-action
 budget also pays for navigation, device adjustment and local probing within
 each request. The task-reset seed-232 model completes about 99% of its ended
 training tasks but 81/120 native tasks. Its native failures repeatedly test the
-same relationship while changing the proposed frequency. The ongoing primary
+same relationship while changing the proposed frequency. The completed primary
 comparisons remain unchanged; the feedback candidates will be compared after
 the training execution model and its matching reference are revised.
 
