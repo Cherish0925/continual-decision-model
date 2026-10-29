@@ -12,13 +12,14 @@ def main():
     p.add_argument('--output',required=True,type=Path);p.add_argument('--workers',type=int,default=8)
     p.add_argument('--manifest',type=Path,default=Path('runs/continual_physics/chemistry_data/manifest.json'))
     p.add_argument('--cohort',choices=['development','confirmation'],default='development')
+    p.add_argument('--conditions',nargs='+',choices=['reference','initial','trained'],default=['reference','initial','trained'])
     args=p.parse_args()
     if os.environ.get('PYTHONHASHSEED')!='0':raise ValueError('Use PYTHONHASHSEED=0')
     manifest=json.loads(args.manifest.read_text())
     if args.cohort=='development':rows=[row for row in manifest['episodes'] if row['split']=='validation']
     else:rows=[{**row,'evaluation_regime':row['regime']} for row in manifest['confirmation_episodes']]
     args.output.mkdir(parents=True)
-    conditions=[('reference',None),('initial',args.initial),('trained',args.checkpoint)]
+    conditions=[(name,path) for name,path in [('reference',None),('initial',args.initial),('trained',args.checkpoint)] if name in args.conditions]
     protocol={'manifest':str(args.manifest),'cohort':args.cohort,'episodes':rows,
         'conditions':{name:None if path is None else str(path) for name,path in conditions},
         'max_native_actions':1000,'max_experiments':209,'primitive_candidates':True,
