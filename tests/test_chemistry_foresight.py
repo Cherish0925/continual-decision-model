@@ -67,6 +67,9 @@ def test_forecasts_change_only_isolated_hypothetical_state():
         assert not torch.equal(future['h'], state['h'])
         assert not torch.equal(future['z'], state['z'])
         assert int(future['reaction_mask'].sum()) == 3
+        received = m.receive(state, future_observation)
+        for key in ('h', 'z', 'reaction_history', 'reaction_mask', 'fast'):
+            torch.testing.assert_close(future[key], received[key], rtol=0, atol=0)
         # Imagined returns never become received observations or replay targets.
         for key in ('observation_count', 'memory_cursor', 'memory_target', 'pending'):
             if key in state:

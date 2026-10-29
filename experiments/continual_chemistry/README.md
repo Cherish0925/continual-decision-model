@@ -495,3 +495,36 @@ The first command reuses existing completed executions and waits for each
 declared fixed training endpoint; the second exports only the completed
 six-condition comparison. Full trajectories and checkpoints remain in the
 corresponding `runs/continual_physics/chemistry_reaction/` directories.
+
+## Forecasting the next two experiments
+
+`foresight.py` uses the fixed first joint checkpoint to compare experiments by
+their predicted completion probability per expected native experiment operation.
+The one-step `completion` policy and the `two_step` policy share this objective,
+the primitive candidates, the received history and the native action budget.
+The earlier progress-per-operation policy remains a separate reference: changing
+the goal from partial rust removal to completion can itself change decisions.
+
+Two-step planning shortlists six first experiments: three by immediate completion
+rate, then additional candidates by outcome entropy per predicted cost. For each
+possible nonterminal return, the same model advances a cloned h/z state with the
+predicted public observation and predicts the remaining candidates. This retains
+the chemistry observation rule that unchanged rust is a censored return. The
+predicted native cost also appears in the hypothetical observation; no simulator
+call or hidden recipe supplies a forecast. A finite fractional optimization picks
+the conditional second choices and the first action. The first experiment is
+executed, its actual return is received, and planning starts again.
+
+Imagined branches never enter actual feedback memory, received-observation counts
+or parameter updates. Their state transition matches the ordinary observation
+update, but their h/z and history remain isolated. The six-candidate first-action
+shortlist bounds computation; this is not exhaustive planning over all first
+experiments. Five terminal operations are reserved when testing budget feasibility;
+the score counts experiment operations, while native execution counts all actions.
+
+The fixed development comparison uses the original 30 instances, shared initial
+simulator RNG, topK=6 and 1,000 native actions. Both policies use joint753 without
+additional training or endpoint selection. Each episode records model-inference
+and environment-execution time separately; each planning trace records its branch
+count, forecast and computation time. The newer 60-instance confirmation set is
+not used to select the planning configuration.
