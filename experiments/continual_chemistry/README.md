@@ -1,5 +1,11 @@
 # Continual learning from chemical experiments
 
+The [fixed native confirmation](#native-confirmation-of-history-conditioned-decisions)
+now includes 360 complete executions. Learned conditional predictions reduce
+experimental operations, with a substantial effect from returned-history use;
+the incremental effect of the recurrent-state readout and training-repeat
+stability remain unresolved. Earlier developmental results are retained below.
+
 Combinatorial Chemistry provides a second native scientific task with a
 qualitatively different action and observation structure. An experiment selects
 integer amounts from the visible dispensers, mixes them in a jar, treats a
@@ -395,3 +401,94 @@ can produce their ingredient-renamed counterparts. No unseen reaction mechanism
 is claimed. [Joint records](results/reaction_joint.json) preserve both runs and
 the parameter substitutions. Neither final endpoint was chosen from these
 development scores.
+
+## Native confirmation of history-conditioned decisions
+
+The 320-instance collection supplies 10,610 actual experimental returns.
+Warmup trains the reaction and cost interfaces for 12 complete epochs with the
+inherited core frozen. Two predetermined training initializations then receive
+two complete joint epochs. Joint training both unfreezes the recurrent core
+and consistently renames ingredients; its comparison with warmup does not
+isolate core unfreezing. Every endpoint and the six comparison conditions were
+fixed before running the new confirmation instances.
+
+All six conditions complete **60/60 tasks**, without execution errors, under
+the same 1,000-native-operation budget, public apparatus executor, primitive
+recipe candidates and initial environment random states. The reference
+enumerates available primitive recipes by quantity. Learned policies rank
+their predicted visible rust reduction per predicted native operation.
+Every environment operation, including unsuccessful experiments, is counted.
+
+| Policy | Mean native operations | Native-unsampled groups, 30 | Sampled-group new instances, 30 | Mean episode seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Primitive-recipe reference | 367.38 | 519.17 | 215.60 | 14.48 |
+| Frozen-core warmup, 753 | 162.10 | 224.17 | 100.03 | 6.63 |
+| Joint training, 753 | 143.35 | 177.50 | 109.20 | 5.80 |
+| Joint training, 754 | 278.37 | 441.83 | 114.90 | 10.70 |
+| Joint 753, direct-history readout disabled | 343.75 | 448.00 | 239.50 | 13.13 |
+| Joint 753, recurrent-state response input disabled | 178.95 | 247.00 | 110.90 | 6.94 |
+
+The first subgroup contains six named ingredient-ratio groups not directly
+sampled in the native training collection; the second contains new instances
+of 16 sampled groups. All ratio shapes and the reaction mechanism are already
+represented in training. Consistent ingredient-renaming augmentation can also
+produce isomorphic versions of native-unsampled combinations. Accordingly,
+these are not unseen chemical laws or combinations absent from every possible
+augmented training example. The original frozen protocol label
+`untrained_recipe` is retained in machine-readable records with this corrected
+interpretation.
+
+Uncertainty uses 10,000 paired bootstrap draws of the **22 whole named recipe
+groups**, retaining all instances of each sampled group. Negative differences
+below mean fewer operations for the first policy. These intervals describe
+variation across the evaluated groups, not uncertainty across all possible
+training initializations.
+
+| Paired comparison | Mean operation difference | 95% group interval |
+| --- | ---: | ---: |
+| Warmup 753 − reference | −205.28 | [−286.83, −123.32] |
+| Joint 753 − reference | −224.03 | [−324.71, −114.12] |
+| Joint 754 − reference | −89.02 | [−206.63, 18.93] |
+| Joint 753 − warmup 753 | −18.75 | [−77.38, 28.80] |
+| Joint 753 − same weights without direct history | −200.40 | [−278.84, −107.65] |
+| Joint 753 − same weights without recurrent response input | −35.60 | [−106.15, 3.18] |
+
+The direct-history intervention masks the returned experiments from the
+response readout. The recurrent-input intervention zeros that readout's h/z
+feature input. Both retain the actual recurrent updates, experiment history,
+cost predictions, public tools and candidate constraints; neither stops the
+entire core from running. Their subsequent action sequences can diverge after
+the first changed decision.
+
+The learned history-conditioned response has a demonstrated role in reducing
+actual experiments. A further benefit from the recurrent response input is
+not established by this interval, and the two joint training repetitions differ
+substantially. Joint training does not consistently improve over frozen-core
+warmup. These results establish a useful chemical prediction-and-decision path;
+they do not yet demonstrate autonomous computation allocation, cross-task
+retention or neural learning during deployment. Episode timing includes native
+execution and concurrent CPU contention; it is not a standardized hardware
+throughput benchmark. The raw table separates inference and execution time.
+
+The earlier 30-instance development runs are separately preserved:
+warmup uses 78.30 operations, joint 753 uses 143.73, and their matched primitive
+reference uses 193.90; all complete 30/30. These instances were not reused as
+the new 60-instance confirmation. The selected checkpoints remain their fixed
+epoch endpoints despite the different development ordering.
+
+The [confirmation summary](results/reaction_confirmation.json),
+[compact table](results/reaction_confirmation.csv) and
+[360 individual executions](results/reaction_confirmation_instances.csv)
+are the canonical native results. The [warmup development records](results/reaction_warmup_development.json)
+and [joint development records](results/reaction_joint_development.json)
+retain the preceding comparisons and recipe-group intervals.
+
+```bash
+PYTHONHASHSEED=0 python -m experiments.continual_chemistry.confirm_reaction --workers 8
+python -m experiments.continual_chemistry.summarize_reaction_confirmation
+```
+
+The first command reuses existing completed executions and waits for each
+declared fixed training endpoint; the second exports only the completed
+six-condition comparison. Full trajectories and checkpoints remain in the
+corresponding `runs/continual_physics/chemistry_reaction/` directories.
