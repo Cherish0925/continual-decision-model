@@ -11,7 +11,7 @@ in addition to predictions of operation cost or success.
 The [belief model](../../cdm/experimental_belief.py) maintains affine hypotheses
 over measured quantities. For each hypothesis it represents uncertainty about
 the intercept and slope. A new task starts with the shared learned prior and a
-bounded set of previously inferred task posteriors. A learned coefficient-drift
+bounded set of Gaussian summaries of previous task posteriors. A learned coefficient-drift
 distribution allows an earlier relation to recur with a new calibration.
 Current measurements and publicly observed working settings determine the
 relative evidence for each candidate context and relation.
@@ -169,6 +169,64 @@ training repetition.
 Native records are under `runs/physical_belief/native_development/`, including
 the per-instance comparisons in `comparisons/`. The joint action-training and
 independent confirmation study use separately recorded conditions.
+
+## Joint physical learning and experimental control
+
+The [joint trainer](train_policy.py) connects physical prediction to both
+information acquisition and device control. Nine relation tokens describe the
+current means, uncertainty, relation probabilities and support counts. They
+enter the same Transformer workspace as the received experimental evidence.
+Consequently, the model can use previous physical knowledge when deciding which
+quantity to measure, before a setting experiment is available. The setting
+executor then uses the same physical prediction that informed the policy.
+
+Each of two independently trained action parents has three continuations:
+
+| Training condition | Physical prediction | Across-task physical memory |
+| --- | --- | --- |
+| Ordinary continuation | Existing fixed numerical prior | None |
+| Task-reset physical learning | Trainable shared physical prior | Reset for each task |
+| Physical memory | Trainable prior and context retrieval | Preserved within the task stream |
+
+Every condition updates the GRU, Transformer workspace, evidence projections
+and action/value heads: 26,653,443 trainable policy parameters. Physical-learning
+conditions also update the 73 predictive parameters. Training through the
+resulting posteriors lets subsequent prediction and action losses shape the
+knowledge transferred between tasks. The neural task state resets at task
+boundaries in every condition; within-task computation remains persistent.
+One workspace refinement per received event is fixed across conditions.
+
+The budget is 400 updates, 128 parallel streams and 16 experimental decisions
+per update, or 819,200 decisions per training. Half of complete training
+lifetimes retain actual measured tasks and publicly observed working settings.
+The remainder use generated alternative calibrations. All conditions in a
+repetition share the same independently generated task plan and initial parent.
+Objects do not repeat within a lifetime. Policy observations exclude generating
+relations, schedule positions, and unreceived results.
+
+The objective combines actor–critic returns, physical predictive likelihood,
+entropy and a small action-distribution anchor to the frozen parent. Future
+working settings are supervised loss targets, never inputs to the policy.
+An unmeasured candidate relation remains in that predictive likelihood: masking
+it would incorrectly force the measured alternatives to explain an outcome
+they may not determine. Prediction tokens connect this loss to measurement
+choice, while executed settings connect prediction to task returns.
+
+Final checkpoints are fixed at update 400. The [confirmation protocol](native_confirmation.json)
+contains 120 new native instances in 20 ordered A→B→A streams. Both frozen
+parents and the explicit relation-memory policy are references. The complete
+comparison includes separately trained task-reset models and same-weight
+reset/computed-and-discarded interventions. Navigation, measurements, scalar
+adjustments and failures all contribute to the 400-action native budget.
+The simulator's actual activation criterion, rather than the training replay's
+8 Hz proxy, determines task completion.
+
+Belief-conditioned action and learned experimental design connect this study to
+[VariBAD](https://arxiv.org/abs/1910.08348) and
+[Deep Adaptive Design](https://proceedings.mlr.press/v139/foster21a.html).
+The present experiment studies reusable physical posterior knowledge and its
+effect on decisions made by the continuing neural core, including when a
+previous relationship returns with a fresh calibration.
 
 ## Reproduce the physical prediction study
 
