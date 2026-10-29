@@ -69,15 +69,24 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, default=Path("experiments/continual_physics/native_confirmation.json"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--completed-only", action="store_true", help="Summarize only whole completed conditions; mark the campaign incomplete")
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())["streams"]
     expected = {(s["name"], i, seed) for s in manifest for i, seed in enumerate(s["seeds"])}
     plan = json.loads((args.root/"evaluation_plan.json").read_text())
+    jobs = plan["jobs"]
+    if args.completed_only:
+        completed = json.loads((args.root/"evaluation_completion.json").read_text())
+        names = {row["name"] for row in completed if row["exit_code"] == 0}
+        jobs = [job for job in jobs if job["name"] in names]
     conditions = {}
     rows = []
     result = {"manifest": str(args.manifest), "bootstrap_unit": "whole_six_instance_stream",
-              "conditions": {}, "comparisons": {}, "same_weight_trajectories": {}}
-    for job in plan["jobs"]:
+              "conditions": {}, "comparisons": {}, "same_weight_trajectories": {},
+              "planned_conditions": [job["name"] for job in plan["jobs"]],
+              "completed_conditions": [job["name"] for job in jobs],
+              "campaign_complete": len(jobs) == len(plan["jobs"])}
+    for job in jobs:
         name = job["name"]
         values = load_rows(args.root/name)
         actual = {(r["stream"], r["episode_index"], r["seed"]) for r in values}
@@ -111,11 +120,15 @@ def main():
         controls = [f"parent_seed{parent}", f"discard_physical_seed{seed}", f"task_reset_seed{seed}",
                     f"fixed_schedule_seed{seed}", f"full_seed{seed}_discard_physical"]
         for control in controls:
+            if full not in conditions or control not in conditions:
+                continue
             compared = comparison(conditions[full], conditions[control])
             compared["timing"] = {key: paired_seconds(conditions[full], conditions[control], key)
                                   for key in ("episode_seconds", "inference_seconds", "execution_seconds", "feedback_seconds")}
             result["comparisons"][f"{full}:{control}"] = compared
         discarded = controls[-1]
+        if full not in conditions or discarded not in conditions:
+            continue
         index = {(r["stream"], r["episode_index"]): r for r in conditions[discarded]}
         differences = []
         for row in conditions[full]:
