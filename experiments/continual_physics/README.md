@@ -33,6 +33,13 @@ trained jointly from subsequent outcomes. The numerical calibration remains a
 tool within the model; physical learning is not reduced to predicting the cost
 of an otherwise unchanged setting.
 
+Prediction and execution remain distinct. A failed setting rules out a range
+of possible resonances; the model then proposes a reachable setting with high
+remaining activation probability. It can retry the same physical relationship
+at a different setting. The proposal uses the public dial range and resolution.
+Its probability distribution is also trained by the received outcome, so the
+online update affects both later predictions and later choices.
+
 Within a task stream, neural state, physical memory and online corrections
 continue across A–B–A task changes. Independent streams reset all state.
 The task-reset comparison removes this continuation explicitly. Repeated
@@ -69,6 +76,21 @@ external training budget. Task return, elapsed waiting, internal computation,
 and physical predictive likelihood train the shared model. Final-update
 checkpoints are used without selection on the confirmation instances.
 
+The fixed budget is 200 updates, 32 parallel streams and 32 external requests
+per stream per update: 204,800 requests per training, or 1,638,400 across the
+eight trainings. Gradients propagate through each 32-request window. State
+continues across windows, and value estimates bootstrap subsequent returns.
+This separates the duration of retained experience from the length of direct
+gradient propagation. The logs record how often a window crosses task and
+complete-stream boundaries.
+
+A small action-distribution term preserves the frozen parent's demonstrated
+behavior on the same received observations. Activity entropy is averaged over
+the active ticks, then annealed to zero in the first half of training. Extra
+internal steps therefore cannot accumulate an unbounded entropy bonus.
+Operation feedback trains operation predictions; delivery latency contributes
+its own cost.
+
 Two parent models each have four continuations:
 
 | Training | Physical online correction | State between tasks | Internal activities |
@@ -83,6 +105,28 @@ operation-cost learner. It isolates the new physical correction. Evaluation
 also discards that correction in the full trained weights. A fixed activity
 schedule tests learned allocation against performing the available activities
 in a predetermined order.
+
+The complete comparison can be launched with:
+
+```bash
+python -m experiments.continual_physics.prepare_environment \
+  --data runs/discoveryworld/active_experiments/data_large/train.npz \
+  --output runs/continual_physics/environment_train --workers 16
+
+python -m experiments.continual_physics.launch \
+  --environment-truth runs/continual_physics/environment_train/environment.npz \
+  --output runs/continual_physics/joint_20261029 \
+  --updates 200 --batch 32 --external-per-stream 32 --jobs-per-gpu 4
+
+python -m experiments.continual_physics.native_campaign \
+  --training-root runs/continual_physics/joint_20261029 \
+  --output runs/continual_physics/native_confirmation \
+  --feedback-delay-ticks 2 --parallel 8 --workers 6
+```
+
+The evaluation command waits for each final training checkpoint. Dependencies
+are the released parent policies, beliefs and prepared measurement data listed
+in the [physical-learning release guide](../discoveryworld/RELEASE.md#physical-prediction-and-action-v0110).
 
 ## Native evaluation
 
@@ -99,6 +143,12 @@ execution, whether retained state helps after interference, and whether learned
 activity choices improve the quality–cost tradeoff. Implementing all three
 paths makes these questions testable; their answers come from the matched
 training and native execution results.
+
+Training and the native comparison are in progress. The frozen parent models
+complete 117/120 and 119/120 new confirmation instances, with 106.68 and 102.84
+mean native actions. These new instances differ from the preceding study's
+cohort. New-model results will be reported together after the fixed comparison
+finishes.
 
 The current task interface is structured scientific observation. It does not
 train a new multimodal encoder or establish transfer to unrelated scientific

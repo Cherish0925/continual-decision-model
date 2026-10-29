@@ -1,5 +1,23 @@
 # Research progress
 
+## Continuing physical learning and activity selection
+
+The [unified study](experiments/continual_physics/README.md) is now training
+from the two released physical-memory policies. One persistent model selects
+experiments, internal computation and online learning. Physical updates change
+the settings actually executed; neural state, physical memory and learned
+corrections continue across task changes. Received outcomes enter the model
+after an explicit delivery delay.
+
+All eight fixed-budget trainings have started: two parent repetitions of the
+full model, discarded physical online corrections, task-reset state and a
+fixed activity schedule. Each trains on 204,800 external requests with
+32-request gradient windows. The original simulator supplies exact training
+transitions; only public measurements and actual setting feedback enter the
+policy. Twelve native conditions are queued on a new 120-instance cohort.
+The new model's performance is not yet known. Code, commands, comparison
+conditions and the measured integration results are in the study directory.
+
 ## Physical prediction and experimental decisions
 
 Updated 29 October 2026. The [physical-learning study](experiments/physical_belief/README.md)
