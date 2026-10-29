@@ -1,15 +1,22 @@
 # CDM: objective, implementation, and results
 
-**Completed joint comparison:** the [integrated activity and learning path](experiments/continual_experiment/README.md)
-connects the scientific-task core, bounded experience retrieval and per-stream
-prediction updates. Eight trainings and twenty native conditions are complete.
-Full models finish 179/184 and 174/184 tasks; the calibration-rehearsal reference
-finishes 179/184 with fewer actions. Learned activity schedules outperform the
-fixed complete schedule in action cost, while retained online updates do not
-establish a task benefit. [Results and paired comparisons](experiments/continual_experiment/results/README.md)
-report the two repetitions separately.
+**Latest completed comparison:** [physical prediction and experimental control](experiments/physical_belief/README.md)
+jointly train the continuing neural core and a reusable physical belief. Six
+trainings and thirteen native conditions are complete. On 120 new instances,
+the two complete models finish 117 and 116 tasks, against 115 for each parent,
+and reduce mean actions by 9.9% and 15.1%. Ordinary continuation does not produce
+this improvement. Retaining the same trained memory has a completion–cost
+tradeoff and does not improve the first task when a previous relationship returns.
+The study uses Bayesian task updates, structured inputs and one fixed workspace
+refinement; learned activity scheduling and general cross-domain deployment
+remain separate objectives.
 
-Implementation updated **28 October 2026**, including autonomous Reactor Lab
+The preceding [joint activity and learning comparison](experiments/continual_experiment/results/README.md)
+finished 179/184 and 174/184 tasks without surpassing its strongest reference.
+That result motivated learning physical predictions that directly affect the
+experimental decision, rather than only predicting operation cost and success.
+
+Implementation updated **29 October 2026**, including autonomous Reactor Lab
 completion, fixed-prior numerical learning and action training from actual
 experimental feedback. The native results below supersede the earlier
 supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in

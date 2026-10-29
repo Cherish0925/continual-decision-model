@@ -4,6 +4,26 @@ These experiments connect the continuing core to visual observations, object-dir
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.
 
+## Physical prediction and experimental action — 29 October
+
+The [physical-belief study](../physical_belief/README.md) trains the continuing
+core with knowledge that changes physical predictions, measurement choices and
+device settings. Four predictive pretrainings and six joint policy trainings
+have completed. Thirteen native conditions use the same 120 new instances in
+20 ordered A–B–A streams, totaling 1,560 executions.
+
+The complete models finish 117/120 and 116/120 at 105.63 and 106.93 actions per
+task. Their independently trained parents each finish 115/120 at 117.18 and
+125.91 actions. The action savings are 9.9% and 15.1%, and both also outperform
+matched ordinary continuation in action cost. All averages include failures.
+
+This supports the complete joint method. Same-weight memory removal yields one
+additional completion in each repetition; retaining memory saves 7.94 actions
+in the first repetition and only 0.72 in the second. The first returning task
+does not improve. The [complete results](../physical_belief/README.md#native-confirmation-after-joint-training)
+include these interventions, predictive transfer tradeoffs, and the
+history-matched comparison of failed-setting feedback.
+
 ## Joint activity and learning — 28 October
 
 Eight trainings connect the scientific core, internal activity selection,

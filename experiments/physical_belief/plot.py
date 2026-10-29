@@ -14,8 +14,8 @@ def draw(summary, output):
         "axes.spines.top": False, "axes.spines.right": False,
         "axes.spines.left": False, "pdf.fonttype": 42, "svg.fonttype": "none"})
     conditions = summary["conditions"]
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5.4))
-    fig.subplots_adjust(left=.17, right=.91, bottom=.21, top=.77, wspace=.85)
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 5.4))
+    fig.subplots_adjust(left=.30, right=.91, bottom=.24, top=.79, wspace=.65)
     labels = ["Frozen parent", "Ordinary continuation", "Task-reset physical learning",
               "Physical memory", "Same weights: memory reset", "Same weights: updates discarded"]
     colors = ["#626970", "#D55E00", "#8C6BB1", "#0072B2", "#626970", "#626970"]
@@ -41,17 +41,17 @@ def draw(summary, output):
                     transform=blended_transform_factory(ax.transAxes, ax.transData))
         ax.axvline(0, color="#BFC4C9", lw=1, zorder=0)
         ax.grid(axis="x", color="#E7E9EC", linewidth=.7)
-        ax.set(yticks=range(len(labels)), yticklabels=labels, ylim=(5.65, -.65),
-               xlabel="Native actions relative to frozen parent")
+        ax.set(yticks=range(len(labels)), yticklabels=labels if seed == 221 else [], ylim=(5.65, -.65),
+               xlabel="Native actions relative\nto frozen parent")
         ax.tick_params(axis="y", length=0)
         ax.set_title(f"Parent {letter} · independent training", loc="left", fontsize=11, pad=17)
         ax.text(1.04, 1.04, "Completed", transform=ax.transAxes, fontsize=9)
     limits = [ax.get_xlim() for ax in axes]
     common = min(x[0] for x in limits), max(x[1] for x in limits)
     for ax in axes: ax.set_xlim(*common)
-    fig.suptitle("Physical knowledge and experimental decisions", x=.17, ha="left", fontsize=15)
-    fig.text(.17, .095, "120 new native instances; all action costs include failed tasks.", fontsize=9)
-    fig.text(.17, .045, "Intervals resample 20 complete task streams. Negative differences indicate fewer actions.", fontsize=9)
+    fig.suptitle("Physical knowledge and experimental decisions", x=.03, ha="left", fontsize=15)
+    fig.text(.03, .085, "120 new native instances; all action costs include failed tasks.", fontsize=9)
+    fig.text(.03, .035, "Intervals resample 20 complete task streams. Negative differences indicate fewer actions.", fontsize=9)
     output.parent.mkdir(parents=True, exist_ok=True)
     for ext in ("svg", "pdf", "png"):
         fig.savefig(output.with_suffix('.'+ext), dpi=220, bbox_inches="tight")

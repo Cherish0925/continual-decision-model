@@ -201,6 +201,8 @@ per update, or 819,200 decisions per training. Half of complete training
 lifetimes retain actual measured tasks and publicly observed working settings.
 The remainder use generated alternative calibrations. All conditions in a
 repetition share the same independently generated task plan and initial parent.
+The budget matches experimental decisions; policies complete different numbers
+of training tasks (38,927–43,539), so task exposure is not identical.
 Objects do not repeat within a lifetime. Policy observations exclude generating
 relations, schedule positions, and unreceived results.
 
@@ -227,6 +229,86 @@ Belief-conditioned action and learned experimental design connect this study to
 The present experiment studies reusable physical posterior knowledge and its
 effect on decisions made by the continuing neural core, including when a
 previous relationship returns with a fresh calibration.
+
+## Native confirmation after joint training
+
+All six trainings reached their fixed final checkpoint. Each received 819,200
+experimental decisions; together they cover 4,915,200 training decisions.
+[Training records](results/joint_training.csv) include actual parameter updates,
+wall time, memory use and loss summaries. These runs do not show a large
+reduction in physical predictive NLL; the demonstrated gain is in native task
+execution. The
+complete native comparison has 13 conditions on the same 120 fresh instances,
+or 1,560 executions. These executions are repeated measurements of 120
+instances, not 1,560 independent tasks.
+
+| Method | Parent A: completed | Parent A: mean actions | Parent B: completed | Parent B: mean actions |
+| --- | ---: | ---: | ---: | ---: |
+| Frozen calibration-rehearsal parent | 115/120 | 117.18 | 115/120 | 125.91 |
+| Ordinary continuation | 114/120 | 122.40 | 115/120 | 137.80 |
+| Task-reset physical learning | 117/120 | 113.77 | 116/120 | 114.22 |
+| Physical memory and joint training | **117/120** | **105.63** | **116/120** | **106.93** |
+| Same trained weights, memory reset | 118/120 | 113.58 | 117/120 | 107.65 |
+| Same trained weights, memory computed and discarded | 118/120 | 113.58 | 117/120 | 107.65 |
+
+The explicit relation-memory reference completes 117/120 with 148.88 actions.
+All costs include navigation, acquisition, settings and unsuccessful tasks.
+Parent A and B are independently trained starting policies; their continuations
+use seeds 221 and 222. The same instances and initial simulator randomness are
+used in every condition.
+
+![Native actions relative to each independent parent](results/native_comparison.svg)
+
+The complete learned method reduces actions by **9.9% and 15.1%** relative to
+its corresponding frozen parent, with two and one additional completions.
+Relative to ordinary continuation it saves 16.77 and 30.87 actions per task.
+Resampling the 20 complete ordered streams gives 95% intervals of
+[−21.64, −1.77] and [−36.35, −3.13] actions against the parents, and
+[−28.44, −5.57] and [−53.86, −9.32] against ordinary continuation.
+The completion-difference intervals include zero; the extra completed tasks do
+not establish a population-level completion advantage.
+
+The memory intervention gives a more qualified result. Retaining memory saves
+7.94 actions in repetition A (95% interval [−15.33, −1.96]) and 0.72 in B
+([−12.89, 10.41]) relative to computing and discarding the same updates. Each
+retained-memory model completes one fewer task. Both trained task-reset models
+also improve on their parents. The overall result therefore supports joint
+physical prediction and action training; it does not attribute all improvement
+to cross-task memory.
+
+The first task after a previous relationship returns still does not improve.
+Against discarding memory, it costs 4.60 and 3.00 more actions, with two and one
+fewer completions among the 20 first-return instances. The strong offline
+recovery with all readings supplied has not become reliable recovery when the
+policy must choose and pay for those readings. That is the remaining connection
+between remembering a relationship and actively acquiring the evidence needed
+to use it.
+
+The [public-ledger reconstruction](results/native_memory_cases.csv) follows all
+six instances whose completion changes under the memory intervention. Across
+51 setting attempts, reconstructed physical means agree exactly with the saved
+predictions. The three first-return losses already assign 0.98–1.00 probability
+to the correct radiation relation. In one case, closely spaced support readings
+around 43.96 and 44.60 are extrapolated to a target reading of 23.30; changes of
+0.02–0.04 in later support readings shift the proposed frequency by tens of Hz.
+Removing memory while keeping the same ledger changes the failed predictions by
+only about 0.02–4 Hz. The actual retained/discarded trajectories acquire different
+readings and spend different actions, so these failures do not isolate a pure
+memory-parameter effect. They expose a concrete limitation: input measurement
+error and the successful-setting tolerance are not yet propagated through the
+physical posterior. The policy also spends attempts on low-probability
+alternatives after a setting fails, instead of consistently improving the
+relevant calibration. The reconstruction script is
+[analyze_native_memory.py](analyze_native_memory.py).
+
+[All instance results](results/native_instances.csv) and
+[paired stream-level comparisons](results/native_summary.json) preserve every
+condition, including task-reset training, memory interventions and phase results.
+The intervals describe variability over these ordered native streams; two
+training repetitions do not establish architecture-wide or task-wide transfer.
+The native experiment uses structured observations and one fixed internal
+refinement per event. It does not yet demonstrate useful learned computation
+scheduling or a single trained model across different scientific domains.
 
 ## Learning from observed failed settings
 
@@ -309,3 +391,23 @@ Repeat with seed 212. Add `--mode reset` to training for the matched episodic
 control. Prediction records retain the actual inputs' source identities,
 predictions made before label disclosure, and subsequent labels. Generate the
 compact tables with [summarize_prediction.py](summarize_prediction.py).
+
+
+## Reproduce the joint policy comparison
+
+The [download guide](../discoveryworld/RELEASE.md#physical-prediction-and-action-v0110)
+provides both independently trained parents, the prepared measurement data,
+physical pretraining checkpoints and native simulator randomness. With those
+paths restored, start the matched six-condition training:
+
+```bash
+python -m experiments.physical_belief.launch_policy \
+  --output runs/reproduced-physical-joint --updates 400 --batch 128 --unroll 16
+```
+
+Each final `policy.pt` records whether it expects physical-context tokens.
+For the complete model, pass its paired `belief.pt` to
+[evaluate_native.py](evaluate_native.py). Ordinary continuation uses the original
+numerical prior with the same added context-token interface. All conditions use
+one workspace refinement and reset neural task state at native task boundaries.
+The downloaded records retain the complete invocation for every condition.

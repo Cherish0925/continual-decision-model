@@ -2,6 +2,77 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Physical prediction and action: v0.11.0
+
+[Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.11.0)
+· [Method and complete results](../physical_belief/README.md)
+· [Native instance table](../physical_belief/results/native_instances.csv)
+
+Four physical pretrainings and six joint action trainings connect acquired
+relationship knowledge to measurement and setting decisions. Two independent
+parents each receive ordinary continuation, task-reset physical training and
+training through physical memory. All final checkpoints use the fixed
+400-update budget. Thirteen native conditions share 120 new task instances,
+including same-weight memory reset and computed-and-discarded controls.
+
+| Archive | Contents | Approximate download |
+| --- | --- | ---: |
+| `cdm-physical-seed221-inference.tar.zst` | Three final policies, their physical beliefs, seed-211 predictive pretrainings and numerical prior; optimizer omitted | 351 MB |
+| `cdm-physical-seed222-inference.tar.zst` | Corresponding policies and seed-212 predictive pretrainings | 351 MB |
+| `cdm-physical-seed221-models.tar.zst` | Same trained checkpoints with optimizer state | 945 MB |
+| `cdm-physical-seed222-models.tar.zst` | Same trained checkpoints with optimizer state | 942 MB |
+| `cdm-physical-records.tar.zst` | Training curves, unique-source prediction comparisons, development and all confirmation executions, shared simulator randomness and failure-feedback replay | 637 MB |
+
+Archives restore repository-relative paths and include separate file lists.
+These policies use structured observations; no visual encoder or language model
+is required. Download one inference archive and the records to reproduce the
+complete first repetition:
+
+```bash
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.11.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-physical-seed221-inference.tar.zst' \
+  --pattern 'cdm-physical-records.tar.zst' --dir artifacts/v0.11.0
+for group in seed221-inference records; do
+  zstd -dc --long=30 artifacts/v0.11.0/cdm-physical-${group}.tar.zst | tar -x
+done
+python -m experiments.physical_belief.evaluate_native \
+  --checkpoint runs/physical_belief/joint_20261029/carry_seed221/policy.pt \
+  --belief-checkpoint runs/physical_belief/joint_20261029/carry_seed221/belief.pt \
+  --belief-mode carry --state-mode reset \
+  --manifest experiments/physical_belief/native_confirmation.json \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --initial-rng-root runs/physical_belief/native_confirmation/initial_rng \
+  --output runs/reproduced-physical-221 --workers 6 --threads 1
+```
+
+Use `--belief-mode reset` or `--belief-mode discard` for the same-weight
+interventions. The second repetition uses
+`runs/physical_belief/joint_repeat_20261029/carry_seed222/`. Each output directory
+must be distinct. The separately trained `reset` models use `--belief-mode reset`;
+ordinary continuations omit `--belief-checkpoint`.
+
+To repeat training, additionally extract `cdm-active-inference.tar.zst` from
+[v0.8.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.8.0)
+and `cdm-joint-activity-data-records.tar.zst` from
+[v0.10.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.10.0).
+They provide the two parent policies and the fixed measured training data.
+The [dependency table](../physical_belief/results/reproduction_dependencies.csv)
+identifies the paths. Training starts a fresh optimizer from each parent;
+the model archives preserve final optimizer state for further work.
+
+```bash
+python -m experiments.physical_belief.launch_policy \
+  --output runs/reproduced-physical-joint --updates 400 --batch 128 --unroll 16
+```
+
+The launcher uses three simultaneous jobs on each of two GPUs. The recorded
+H100 trainings each occupied 5.30–5.90 GiB of allocated GPU memory and took
+20–22 minutes while sharing their device. For a single device, invoke
+[train_policy.py](../physical_belief/train_policy.py) for each condition directly.
+Physical pretraining commands and the exact observation/learning protocols are
+in the [experiment README](../physical_belief/README.md).
+
 ## Joint activity and learning: v0.10.0
 
 [Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.10.0)

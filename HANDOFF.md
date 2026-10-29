@@ -1,6 +1,37 @@
 # Research progress
 
-## Joint activity and learning
+## Physical prediction and experimental decisions
+
+Updated 29 October 2026. The [physical-learning study](experiments/physical_belief/README.md)
+connects acquired relationship knowledge directly to physical prediction,
+measurement choice and setting control. Four predictive pretrainings and six
+joint neural-policy trainings are complete. The shared experimental core and
+physical beliefs learn together; Bayesian state updates during deployment can
+change the settings proposed for later tasks.
+
+On 120 new native instances, the complete models finish 117 and 116 tasks,
+against 115 for each independent parent. Mean actions fall from 117.18 to 105.63
+and from 125.91 to 106.93. Matched ordinary continuation uses 122.40 and 137.80.
+These action reductions hold in both repetitions and their whole-stream
+uncertainty intervals exclude zero. Completion differences are small and their
+intervals include zero.
+
+Retaining the same model's physical memory saves 7.94 and 0.72 actions relative
+to discarding it, but loses one completion in each repetition. It does not
+improve the first task when an earlier relationship returns. Thus the complete
+learning method advances native experimental efficiency, while reliable old
+knowledge recovery remains the next substantive problem. The comparison fixes
+one internal refinement, resets neural state between tasks, and uses structured
+observations; it does not establish general autonomous computation or learning
+across different scientific domains.
+
+The [release guide](experiments/discoveryworld/RELEASE.md#physical-prediction-and-action-v0110)
+contains the six policies, four physical pretrainings, source data dependencies,
+all native executions and reproduction commands. The [result table](experiments/physical_belief/results/native_instances.csv)
+keeps every instance and intervention. Earlier research and its unresolved
+questions remain below.
+
+## Preceding joint activity and learning study
 
 The [integrated model](experiments/continual_experiment/README.md) now trains the
 scientific-task core, internal activity selection, bounded experience retrieval
@@ -22,9 +53,7 @@ computing and discarding the same updates.
 Continuing state helps later instances while a relation remains unchanged.
 It does not provide rapid recovery when an earlier relation returns: the first
 returning instance costs 23.20 and 32.60 more native actions than resetting the
-same weights. The next research unit below connects learning to the physical
-beliefs used for experimental decisions. This distinction follows from the
-completed comparison and the actual prediction-to-action path.
+same weights. This motivated the physical-prediction study above.
 
 The study fixes final checkpoints after 1,200 updates, with 128 parallel streams
 and 32 model ticks per update. Both training repetitions start from the same
@@ -33,7 +62,7 @@ this experiment trains structured observations and evaluates synchronous native
 tools. The [release guide](experiments/discoveryworld/RELEASE.md) supplies models,
 prepared data and full execution records.
 
-Updated 28 October 2026. The current study trains the continuing core to select
+The 28 October active-measurement study trains the continuing core to select
 measurements and setting experiments from incomplete evidence. Its
 [method](experiments/discoveryworld/ACTIVE_LEARNING.md),
 [paired results](experiments/discoveryworld/results/active_experiments.md), and
@@ -71,8 +100,9 @@ Earlier scientific studies, including successful task execution, prediction
 training, unsuccessful computation allocation and learned complete-experiment
 selection, remain in [RESULTS.md](experiments/discoveryworld/RESULTS.md). The
 separate process-lifetime studies below establish useful online parameter
-learning. The joint study above connects those mechanisms to the active scientific policy;
-improving experimental decisions through them remains the research question.
+learning. The joint-activity study connects those mechanisms to the active scientific policy;
+the subsequent physical-prediction study improves the complete method while
+leaving activity scheduling and reliable returning-context recovery unresolved.
 
 ## 1. The question
 
@@ -219,42 +249,49 @@ this overview have finished; planned capabilities are listed below.
 
 ## 8. Next research unit
 
-The joint activity implementation puts computation, retrieval and parameter
-updates in one executable model. The next research question concerns the
-object of that learning. In the current scientific path, `visible_beliefs`
-refits nine affine hypotheses from the public ledger on every observation.
-The numerical predictions and their uncertainty go directly to the setting
-executor. LEARN and CONSOLIDATE update operation-success and log-cost forecasts;
-they do not update those physical predictions. Better forecast calibration can
-therefore coexist with unchanged experimental choices.
+Physical knowledge now reaches the action core and improves the complete native
+policy in both repetitions. The next problem is using that knowledge reliably
+under partial and noisy measurements. The completed evidence separates two
+failure mechanisms that need different experiments.
 
-The next model should maintain a shared experimental belief that is used for
-physical prediction, measurement choice and later learning. Retain the analytic
-fits and precise setting tools. Refit each instance's coefficients from its own
-measurements, while continuing state and online updates learn relationship
-priors and uncertainty from accumulated evidence. A prediction must precede
-the reading or publicly observed working setting used to train it. Failed
-experiments supply their actual feedback, without hidden target distances or
-generating-law labels. A useful update should change predictions for subsequent
-experiments and help choose what information to obtain next.
+In the wider-calibration prediction study, wrong relationship selection causes
+more than 99.99% of first-target absolute error. Two calibration pairs can fit
+all nine candidate affine relationships. Distinguishing these hypotheses needs
+additional evidence whose value depends on their conflicting predictions.
 
-Train these updates and their scheduling through later prediction and task
-returns over changing, returning conditions. Compare with the existing strong
-automatic fitter, explicit relation memory, and the same belief model with
-fixed update timing. Keep the same available measurements and numerical tools.
-The question is whether learned adaptation improves physical calibration and
-experimental decisions, including after interference. Lower replay error or
-an update that leaves every relevant choice unchanged does not answer it.
-The [function-preserving retention candidate](DESIGN.md#candidate-function-preserving-transfer)
-addresses how a useful correction might persist; its benefit must be tested
-once the correction contributes to the experimental belief.
+The [examined native first-return failures](experiments/physical_belief/results/native_memory_cases.csv)
+have a different cause structure.
+The model already places 0.98–1.00 probability on the correct radiation
+relationship. Some calibration points are nearly coincident, while the new
+object requires distant extrapolation. In one instance, support readings near
+43.96 and 44.60 are used to predict at 23.30. Subsequent support-reading changes
+of only 0.02–0.04 produce setting predictions separated by tens of Hz. The
+physical posterior treats these measured inputs as exact; the tool's successful
+setting also represents an interval of acceptable values, not the hidden exact
+resonance. Same-ledger reconstruction shows that removing memory shifts some
+failed predictions by much less than the difference between the actually
+executed measurement trajectories. These records do not identify memory drift
+as the sole cause of failure.
 
-This same belief, activity and feedback contract should extend beyond the
-current affine calibration task. The chemistry executor already provides 15
-successful reference trajectories and 262 recipe experiments, including
-unsuccessful trials; a learned chemistry policy has not been established.
-Chemistry and nutrient interventions require predictions about interventions
-and relationships, rather than just a setting score. Instrument, thermal and
-vehicle lifetimes supply the complementary independently timed environments.
-Use them to train and compare response to changing observations, pending results
-and the future benefit of learning, while retaining one continuing core.
+The next model should therefore maintain uncertainty about measured quantities
+as well as relation coefficients, and condition physical inference on the
+interval evidence supplied by successful and unsuccessful settings. The action
+core should compare the consequences of obtaining a more precise reading,
+measuring a distinguishing quantity, and testing a setting. These choices need
+training on later completion and actual interaction cost, including adverse
+calibration geometry and returning contexts. The concrete goal is fewer real
+experiments at matched completion, especially on the first returning task.
+
+The failed-setting replay already implements one part of this inference. It
+does not improve likelihood over the existing cumulative failure mask, and all
+29 relationship choices agree. Its remaining use is as an inference component
+in the joint uncertain-measurement problem; it is not an additional demonstrated
+capability gain. Strong numerical decision references and same-weight physical
+memory interventions remain necessary comparisons.
+
+Extend this same belief, activity and feedback interface beyond affine
+calibration. The chemistry executor already has 15 successful reference
+trajectories and 262 recipe experiments, but no established learned policy.
+The instrument, thermal and vehicle lifetimes supply independently timed
+changing environments. Autonomous calculation scheduling, multimodal inference
+and cross-domain skill accumulation remain part of the complete CDM objective.
