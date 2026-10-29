@@ -162,6 +162,59 @@ def condition_gaussian_mixture(prediction: dict, intervals: Tensor, mask: Tensor
             "possible": result["possible"]}
 
 
+def setting_event_observation(means: Tensor, std: Tensor, exclusions: Tensor,
+                              mask: Tensor, success_domain: Tensor):
+    """A setting-event probability, or density when the event identifies one point.
+
+    Failed setting intervals are OPEN: their endpoints remain possible. The
+    successful domain is also OPEN: its endpoints are excluded. ``exclusions``
+    may contain its two complementary half-lines, as stored by physical replay.
+
+    If positive-length support remains, isolated endpoints have zero mass under
+    this continuous Gaussian approximation. If only one point remains, use its
+    conditional-density limit, with deterministic moments. Density and interval
+    probability have different units: ``log_score`` must not be summed as a
+    mixture of these event types. Components within one row all use the same
+    measure. A multi-point residual event requires an explicit discrete model.
+    """
+    intervals = exclusions.to(device=means.device, dtype=torch.float64)
+    mask = mask.to(device=means.device, dtype=torch.bool)
+    domain = success_domain.to(device=means.device, dtype=torch.float64)
+    if domain.shape != (len(means), 2) or bool((domain[:, 0] >= domain[:, 1]).any()):
+        raise ValueError('Successful setting domain must be a nonempty open interval')
+    outside = torch.stack((torch.stack((torch.full_like(domain[:, 0], -torch.inf), domain[:, 0]), -1),
+                           torch.stack((domain[:, 1], torch.full_like(domain[:, 1], torch.inf)), -1)), 1)
+    intervals = torch.cat((intervals, outside), 1)
+    mask = torch.cat((mask, torch.isfinite(domain)), 1)
+    _, _, segments = _complement(intervals, mask)
+    no_length = ~segments.any(-1)
+    endpoints = intervals.flatten(1)
+    candidate = torch.isfinite(endpoints) & (endpoints > domain[:, :1]) & (endpoints < domain[:, 1:])
+    inside_failure = ((endpoints[:, :, None] > intervals[:, None, :, 0]) &
+                      (endpoints[:, :, None] < intervals[:, None, :, 1]) & mask[:, None]).any(-1)
+    points = endpoints.masked_fill(~candidate | inside_failure, torch.inf).sort(-1).values
+    unique = torch.isfinite(points)
+    if points.shape[1] > 1:
+        unique[:, 1:] &= points[:, 1:] != points[:, :-1]
+    count = unique.sum(-1)
+    if bool((no_length & (count > 1)).any()):
+        raise ValueError('Multiple isolated setting outcomes require an explicit discrete observation measure')
+    point_event = no_length & (count == 1)
+    point = torch.where(point_event, points[:, 0] if points.shape[1] else means.new_zeros(len(means)), 0.)
+    # Never form undefined conditional moments and then mask their gradients.
+    # A point row first uses an ordinary finite Gaussian before its exact limit
+    # replaces all moments and the score.
+    continuous = censored_gaussian_observation(means, std, intervals, mask & ~point_event[:, None])
+    mu, sigma = means.double(), std.double()
+    log_density = -.5 * ((point[:, None] - mu) / sigma).square() - sigma.log() - .5 * math.log(2 * math.pi)
+    select = point_event[:, None]
+    return {'log_score': torch.where(select, log_density, continuous['log_survival']),
+            'mean': torch.where(select, point[:, None].expand_as(mu), continuous['mean']),
+            'variance': torch.where(select, torch.zeros_like(mu), continuous['variance']),
+            'possible': continuous['possible'] | select,
+            'score_is_density': point_event, 'point': point}
+
+
 def _segment_log_mass_in_units(means, std, low, high, present):
     low = torch.where(present, low, -1.)
     high = torch.where(present, high, 1.)

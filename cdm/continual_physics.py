@@ -20,7 +20,7 @@ from .continual_experiment import (Activity, ContinualExperimentConfig,
                                   ContinualExperimentPolicy, load_continual_checkpoint,
                                   select_rows)
 from .core import CoreConfig, ContinualCore
-from .censored_observation import censored_gaussian_observation, _complement, _log_interval_mass
+from .censored_observation import setting_event_observation, _complement, _log_interval_mass
 from .experimental_belief import ExperimentalBelief, load_experimental_belief_checkpoint
 from .recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 from .decision_belief import failure_conditioned_weights
@@ -353,6 +353,10 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
         d(-log P(E))/d mu = responsibility * (mu - E[Y|E]) / sigma**2.
         The scale derivative is responsibility * (1 - E[(Y-mu)**2|E]/sigma**2).
         These operations also support outer gradients through online updates.
+        An event that identifies one exact point uses the density limit with
+        deterministic moments and the same derivatives. Density scores and
+        interval-probability scores are not directly comparable performance
+        metrics; this replay objective is used for their parameter gradients.
         """
         b, r = len(state["h"]), self.continual_config.adapter_width
         indices = state["physics_memory_valid"].nonzero()
@@ -366,9 +370,17 @@ class ContinualPhysicsPolicy(ContinualExperimentPolicy):
         eligible = state["physics_memory_eligible"][rows, slots]
         mean, std, raw = self._correction(x, base_mean, base_std, eligible,
                                          state["physics_fast"][rows], state["physics_slow"][rows])
-        event = censored_gaussian_observation(mean, std, state["physics_memory_intervals"][rows, slots],
-                                             state["physics_memory_mask"][rows, slots])
-        log_joint = state["physics_memory_weights"][rows, slots].clamp_min(1e-300).log() + event["log_survival"]
+        intervals = state["physics_memory_intervals"][rows, slots]
+        interval_mask = state["physics_memory_mask"][rows, slots]
+        # _event_exclusions reserves the final two entries for the complement
+        # of a STRICT successful interval. Unlike failed-open intervals, those
+        # success boundaries cannot become surviving point observations.
+        lower = intervals[:, -2, 1].masked_fill(~interval_mask[:, -2], -torch.inf)
+        upper = intervals[:, -1, 0].masked_fill(~interval_mask[:, -1], torch.inf)
+        event = setting_event_observation(mean, std, intervals, interval_mask, torch.stack((lower, upper), -1))
+        if not bool(event["possible"].all()):
+            raise ValueError('Public setting feedback leaves no possible target value')
+        log_joint = state["physics_memory_weights"][rows, slots].clamp_min(1e-300).log() + event["log_score"]
         log_probability = log_joint.logsumexp(-1)
         responsibility = log_joint.softmax(-1)
         difference = mean - event["mean"]
