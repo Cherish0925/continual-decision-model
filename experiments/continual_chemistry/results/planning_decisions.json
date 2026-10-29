@@ -1,0 +1,311 @@
+{
+  "source": "runs/continual_physics/chemistry_planning/development/summary.json",
+  "cohort": "original 30 development instances; fixed joint753 and topK6",
+  "interpretation": "On-policy predictions use different selected histories; their score difference is not a matched-prefix causal comparison.",
+  "instances": [
+    {
+      "difficulty": "Challenge",
+      "seed": 7815,
+      "recipe_group": "Substance A:1|Substance D:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -186
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 7822,
+      "recipe_group": "Substance C:3|Substance D:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -362
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 7824,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 215
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 7827,
+      "recipe_group": "Substance A:3|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 48
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 7832,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+      "first_different_experiment": 0,
+      "native_action_difference": 0
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 7833,
+      "recipe_group": "Substance B:2|Substance C:1|Substance D:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -547
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7609,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7610,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7611,
+      "recipe_group": "Substance A:1|Substance B:3",
+      "first_different_experiment": 0,
+      "native_action_difference": 375
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7617,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "first_different_experiment": 0,
+      "native_action_difference": -43
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7626,
+      "recipe_group": "Substance A:3|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -55
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7631,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7634,
+      "recipe_group": "Substance A:3|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -55
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7636,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7641,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7647,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -12
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7648,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7652,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7653,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7655,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7657,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "first_different_experiment": 0,
+      "native_action_difference": 179
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7659,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -10
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7663,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7665,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 18
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7666,
+      "recipe_group": "Substance A:1|Substance B:3",
+      "first_different_experiment": 0,
+      "native_action_difference": 375
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7674,
+      "recipe_group": "Substance A:1|Substance B:3",
+      "first_different_experiment": 0,
+      "native_action_difference": 375
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7675,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7685,
+      "recipe_group": "Substance A:1|Substance B:1",
+      "first_different_experiment": 0,
+      "native_action_difference": -316
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7688,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 7696,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "first_different_experiment": 0,
+      "native_action_difference": 18
+    }
+  ],
+  "paired_recipe_groups": [
+    {
+      "recipe_group": "Substance A:1|Substance B:1",
+      "instances": 8,
+      "mean_native_action_difference": -316.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "instances": 5,
+      "mean_native_action_difference": 142.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "instances": 1,
+      "mean_native_action_difference": 179.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "instances": 2,
+      "mean_native_action_difference": 18.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance B:3",
+      "instances": 3,
+      "mean_native_action_difference": 375.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance C:2",
+      "instances": 1,
+      "mean_native_action_difference": -43.0
+    },
+    {
+      "recipe_group": "Substance A:1|Substance D:1",
+      "instances": 1,
+      "mean_native_action_difference": -186.0
+    },
+    {
+      "recipe_group": "Substance A:3|Substance C:1",
+      "instances": 3,
+      "mean_native_action_difference": -20.666666666666668
+    },
+    {
+      "recipe_group": "Substance B:1|Substance C:1",
+      "instances": 1,
+      "mean_native_action_difference": -10.0
+    },
+    {
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "instances": 1,
+      "mean_native_action_difference": 215.0
+    },
+    {
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+      "instances": 1,
+      "mean_native_action_difference": 0.0
+    },
+    {
+      "recipe_group": "Substance B:2|Substance C:1",
+      "instances": 1,
+      "mean_native_action_difference": -12.0
+    },
+    {
+      "recipe_group": "Substance B:2|Substance C:1|Substance D:1",
+      "instances": 1,
+      "mean_native_action_difference": -547.0
+    },
+    {
+      "recipe_group": "Substance C:3|Substance D:1",
+      "instances": 1,
+      "mean_native_action_difference": -362.0
+    }
+  ],
+  "prediction_on_executed_choices": {
+    "completion": {
+      "executed_experiments": 386,
+      "mean_return_nll": 1.5125368127206231,
+      "native_cost_mae": 0.21273319101298588,
+      "predicted_completion_above_0_9": {
+        "count": 82,
+        "completed": 5,
+        "mean_predicted": 0.9589457749176854
+      }
+    },
+    "two_step": {
+      "executed_experiments": 284,
+      "mean_return_nll": 0.8913623546100801,
+      "native_cost_mae": 0.16114345279878867,
+      "predicted_completion_above_0_9": {
+        "count": 16,
+        "completed": 4,
+        "mean_predicted": 0.9451997806038276
+      }
+    }
+  }
+}

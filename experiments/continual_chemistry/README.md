@@ -528,3 +528,24 @@ additional training or endpoint selection. Each episode records model-inference
 and environment-execution time separately; each planning trace records its branch
 count, forecast and computation time. The newer 60-instance confirmation set is
 not used to select the planning configuration.
+
+The completed comparison finishes all 30 tasks with each policy. One-step
+completion takes 192.6 native actions per task; two-step planning takes 143.1.
+Model inference increases from 0.666 to 1.634 seconds per task. The paired
+14-recipe-group interval for the action difference is [-203.13, 129.17], so this
+development sample does not establish a stable improvement. The previous
+progress-per-cost policy takes 143.73 actions. Full timings and recipe-group
+comparisons are in [the native results](results/planning_development.json).
+
+Planning changes the first experiment in every instance; 16 use fewer actions,
+one ties and 13 use more. The eight A:B=1:1 instances improve from 356 to 40
+actions, while three A:B=1:3 instances worsen from 67 to 442. A concrete limit
+is prediction under the histories the policy chooses: one-step completion
+executes 82 experiments with predicted completion above 0.9 (mean 0.959), but
+only five complete; two-step planning has 16 such predictions (mean 0.945), of
+which four complete. Native cost MAE is only 0.213 and 0.161 actions. Thus the
+completed implementation makes prediction affect experimental choice, while
+high-confidence response errors remain consequential. The two prediction scores
+come from different selected histories and are not a matched-prefix comparison.
+[Decision-level analysis](results/planning_decisions.json) is reproduced by
+`analyze_foresight.py`; no planning setting was changed after these results.
