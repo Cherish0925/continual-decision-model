@@ -14,6 +14,7 @@ import torch.nn.functional as F
 
 from .active_experiment import ActiveExperimentPolicy, ActiveExperimentConfig, load_active_checkpoint
 from .core import ContinualCore, CoreConfig
+from .recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 
 
 class Activity(IntEnum):
@@ -61,6 +62,7 @@ class ContinualExperimentPolicy(nn.Module):
         if config.activity_mode == "fixed_schedule" and config.max_internal_steps < 4:
             raise ValueError("The complete fixed schedule needs four internal activities")
         self.base, self.continual_config = base, config
+        self.recurrent_feedback = None
         self.retain_adaptation = True  # Deployment intervention; shared weights stay unchanged.
         w, a, r = base.core.config.width, base.config.action_width, config.adapter_width
         self.activity = nn.Sequential(nn.Linear(2 * w + 6, a), nn.GELU(), nn.Linear(a, len(Activity)))
@@ -134,11 +136,14 @@ class ContinualExperimentPolicy(nn.Module):
                 return {k: v.index_copy(0, rows, revised[k]) for k, v in state.items()}
         selected = (torch.ones(len(state["h"]), dtype=torch.bool, device=state["h"].device)
                     if selected is None else selected)
-        h = self.core.fast_embeddings(state["h"], self.base.event(observation["event"]).unsqueeze(0))[0]
+        tokens, mask = self._context(observation)
+        received = self.base.event(observation["event"])
+        if self.recurrent_feedback is not None:
+            received = received + self.recurrent_feedback(state["z"], tokens, mask)
+        h = self.core.fast_embeddings(state["h"], received.unsqueeze(0))[0]
         updated = {**state, "h": h, "fast": state["fast"] * self.continual_config.fast_decay,
                    "internal_steps": torch.zeros_like(state["internal_steps"]),
                    "observation_count": state["observation_count"] + 1}
-        tokens, mask = self._context(observation)
         updated = self._refine(updated, tokens, mask, selected)
         return select_rows(state, updated, selected)
 
@@ -255,7 +260,10 @@ class ContinualExperimentPolicy(nn.Module):
                 "activity_counts": original["activity_counts"] + F.one_hot(activity, len(Activity))}
 
     def configuration(self):
-        return {**self.base.configuration(), "continual_config": asdict(self.continual_config)}
+        config = {**self.base.configuration(), "continual_config": asdict(self.continual_config)}
+        if self.recurrent_feedback is not None:
+            config["recurrent_feedback_config"] = self.recurrent_feedback.configuration()
+        return config
 
     def advance(self, event, evidence, evidence_mask, state, refinements=1, feedback_targets=None):
         """v0.9 evaluator compatibility; feedback is the received event, once."""
@@ -306,5 +314,7 @@ def load_continual_checkpoint(path, device="cpu", config=None):
     core = ContinualCore(CoreConfig(**saved["core_config"]), saved["model"]["base.core.action_values"])
     base = ActiveExperimentPolicy(ActiveExperimentConfig(**saved["active_config"]), core)
     model = ContinualExperimentPolicy(base, ContinualExperimentConfig(**saved["continual_config"]))
+    if "recurrent_feedback_config" in saved:
+        configure_recurrent_feedback(model, RecurrentFeedbackConfig(**saved["recurrent_feedback_config"]))
     model.load_state_dict(saved["model"], strict=True)
     return model.to(device), saved

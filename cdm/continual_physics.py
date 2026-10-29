@@ -22,6 +22,7 @@ from .continual_experiment import (Activity, ContinualExperimentConfig,
 from .core import CoreConfig, ContinualCore
 from .censored_observation import censored_gaussian_observation, _complement, _log_interval_mass
 from .experimental_belief import ExperimentalBelief, load_experimental_belief_checkpoint
+from .recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 
 
 @dataclass(frozen=True)
@@ -456,6 +457,8 @@ def load_continual_physics_checkpoint(path, device="cpu", belief_checkpoint=None
         belief, _ = load_experimental_belief_checkpoint(belief_checkpoint, device)
         model = ContinualPhysicsPolicy(parent.base, belief, parent.continual_config,
                                        physics_config or ContinualPhysicsConfig()).to(device)
+        if parent.recurrent_feedback is not None:
+            configure_recurrent_feedback(model, parent.recurrent_feedback.config)
         # Keep any already-trained activity/cost learning modules from the parent.
         model.load_state_dict(parent.state_dict(), strict=False)
         return model, saved
@@ -465,6 +468,8 @@ def load_continual_physics_checkpoint(path, device="cpu", belief_checkpoint=None
     base = ActiveExperimentPolicy(ActiveExperimentConfig(**saved["active_config"]), core)
     model = ContinualPhysicsPolicy(base, belief, ContinualExperimentConfig(**saved["continual_config"]),
                                    ContinualPhysicsConfig(**saved["physics_config"]))
+    if "recurrent_feedback_config" in saved:
+        configure_recurrent_feedback(model, RecurrentFeedbackConfig(**saved["recurrent_feedback_config"]))
     model.load_state_dict(saved["model"], strict=True)
     mode = saved.get("training", {}).get("mode")
     model.retain_adaptation = saved.get("retain_adaptation", mode != "recurrent_reference")

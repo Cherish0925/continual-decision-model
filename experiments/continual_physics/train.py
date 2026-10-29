@@ -18,6 +18,7 @@ import torch.nn.functional as F
 
 from cdm.continual_experiment import Activity, ContinualExperimentConfig, detach_state, select_rows
 from cdm.continual_physics import load_continual_physics_checkpoint
+from cdm.recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 from experiments.discoveryworld.calibration_mixture import load_mixture_checkpoint
 from experiments.discoveryworld.train_active_lifetime import CalibrationTaskPool
 from experiments.physical_belief.task_streams import MixedTaskStreamPlan
@@ -220,6 +221,8 @@ def main():
     p.add_argument("--device", default="cuda:0")
     p.add_argument("--seed", type=int, default=231)
     p.add_argument("--mode", choices=("full", "discard_physical", "task_reset", "fixed_schedule", "recurrent_reference"), default="full")
+    p.add_argument("--recurrent-feedback", choices=("workspace", "evidence", "both"),
+                   help="Candidate GRU context input; omitted keeps the parent architecture")
     p.add_argument("--updates", type=int, default=200)
     p.add_argument("--batch", type=int, default=32)
     p.add_argument("--external-per-stream", type=int, default=32)
@@ -264,6 +267,8 @@ def main():
         config=ContinualExperimentConfig(memory_size=args.memory_size,
             max_internal_steps=args.max_internal_steps, activity_mode=activity_mode,
             fixed_refinements=0 if recurrent else 1))
+    if args.recurrent_feedback is not None:
+        configure_recurrent_feedback(model, RecurrentFeedbackConfig(args.recurrent_feedback))
     model.retain_adaptation = not recurrent
     model.retain_physical_adaptation = args.mode not in {"discard_physical", "recurrent_reference"}
     reference = deepcopy(model.base).eval().requires_grad_(False)

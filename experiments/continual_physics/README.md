@@ -169,3 +169,45 @@ train a new multimodal encoder or establish transfer to unrelated scientific
 domains. The shared state and activity mechanisms are the objects being
 investigated; Reactor Lab supplies a concrete environment in which their
 consequences can be measured.
+
+## Recurrent feedback candidate
+
+The [task-boundary controls](../continual_experiment/results/neural_state_controls.md)
+locate the earlier cross-task benefits and transition costs in the GRU state.
+The original GRU reads operation events; the workspace reads that state and the
+public ledger, but its computation does not feed directly into the next GRU
+update. A candidate connection adds a projection of the preceding workspace
+summary to the received-event embedding. A separate evidence-only condition
+tests direct access to the current visible ledger. Both projections start at
+zero, preserving the parent policy and its random-generator state.
+
+The `workspace`, `evidence` and `both` options select these inputs independently.
+The first comparison should use `workspace` versus an equally trained parent;
+`evidence` distinguishes computational feedback from more direct observation
+access. Internal REFINE still changes z alone. Its result can change h on the
+next real receive, without incrementing the observation count during internal
+computation. Immediate REFINE-to-h writeback is a separate, unimplemented
+timing comparison. No additional memory bank or activity selector is introduced.
+
+The existing training entry accepts the candidate directly:
+
+```bash
+python -m experiments.continual_physics.train \
+  --data runs/discoveryworld/active_experiments/data_large \
+  --checkpoint runs/physical_belief/joint_20261029/carry_seed221/policy.pt \
+  --belief-checkpoint runs/physical_belief/joint_20261029/carry_seed221/belief.pt \
+  --mixture-checkpoint runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt \
+  --environment-truth runs/continual_physics/environment_train/environment.npz \
+  --recurrent-feedback workspace --seed 231 --updates 200 \
+  --batch 32 --external-per-stream 32 \
+  --output runs/continual_physics/recurrent_feedback_candidate
+```
+
+When starting from an unmodified parent, omit `--recurrent-feedback` for its
+unchanged architecture, or use `evidence` / `both` for the other inputs. Loading
+a candidate checkpoint retains its saved connection. The connection uses the existing
+new-parameter learning rate, and its source and weights are saved in the model
+checkpoint. CPU checks establish initialization equivalence, future-state
+gradients, masked observation behavior, checkpoint restoration and two short
+cross-task training windows. They do not establish task-performance gains;
+the candidate has not entered the running comparison or a new large training.
