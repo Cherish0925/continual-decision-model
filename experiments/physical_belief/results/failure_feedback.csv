@@ -1,0 +1,6 @@
+method,failed_boundaries,scored_boundaries,mean_future_success_interval_nll,zero_probability_future_intervals,mean_future_working_setting_absolute_error_hz,changed_map_relations,mean_weight_l1_change
+exclude_current_test,29,29,7.711069790937802,0,1624.1056018096992,4,0.19446182208032928
+exclude_observed_history,29,29,7.610407161401913,0,1393.561884613361,7,0.33581729832007506
+mask_active_failed_relations,29,29,7.609744306906616,0,1400.8102248639873,7,0.3558916249995302
+mask_chosen_relation,29,29,7.729617644149839,0,1793.6215060756508,3,0.18003545308679023
+unchanged,29,29,7.834134069023187,0,1944.5699012012167,0,0.0

@@ -228,6 +228,62 @@ The present experiment studies reusable physical posterior knowledge and its
 effect on decisions made by the continuing neural core, including when a
 previous relationship returns with a fresh calibration.
 
+## Learning from observed failed settings
+
+A failed physical test constrains the unknown resonance. If a device containing
+the intended object does not activate at frequency \(f\), its resonance is outside
+\((f-2,f+2)\) Hz. The [interval-conditioning implementation](../../cdm/censored_observation.py)
+uses this observation to update every relation hypothesis, including uncertainty
+within each hypothesis. It integrates the union of excluded intervals, so
+repeated settings and overlapping intervals do not count as independent evidence.
+
+[Offline replay](replay_failures.py) uses all 29 completed failed tests in 14
+instances from the seed-211 development deployment. The operator recorded 623
+actual, explicitly non-activating setting attempts, after checking the public
+object and reactor identities. Navigation errors, interrupted dialogs and budget
+exhaustion do not qualify. Each comparison begins from the same physical
+prediction logged before a test. Its update receives only the actual failed
+settings available by that boundary. A later publicly observed working setting
+provides a ±2 Hz scoring interval; it never enters the update. All 29 boundaries
+have such a later observation, and none is removed based on its prediction error.
+
+The history-aware masking control reproduces the existing controller's rule:
+exclude failed relation choices until a relevant support or current-target
+measurement changes. This is necessary to compare against the existing use of
+failure history, rather than only the last failed choice.
+
+| Forecast update | Later working-interval NLL | Point MAE, Hz | Changed relation choices |
+| --- | ---: | ---: | ---: |
+| No failure update | 7.8341 | 1,944.57 | 0/29 |
+| Mask the latest failed relation | 7.7296 | 1,793.62 | 3/29 |
+| Mask all currently failed relations | **7.6097** | 1,400.81 | 7/29 |
+| Exclude settings from the latest test | 7.7111 | 1,624.11 | 4/29 |
+| Exclude all observed failed settings | 7.6104 | **1,393.56** | 7/29 |
+
+Interval probabilities are integrated exactly from the original Gaussian
+mixture after subtracting the excluded interval union. Point predictions use
+the conditional mean of the most probable relation. The two history-aware
+methods choose the same relation at all 29 boundaries. Interval conditioning
+slightly shifts their setting predictions but does not improve mean interval
+likelihood over the existing mask. Thus the apparent advantage over a
+single-failure mask mainly comes from preserving more history. This cohort
+does not establish an additional advantage from interval conditioning.
+
+The result identifies both a usable mechanism and its present limit: observed
+failures can update physical predictions without hidden labels, but the current
+local tests largely reproduce the information already retained by relation
+masking. These are fixed-history forecasts, not reexecutions of an alternative
+policy, and the 29 boundaries share 14 instances. The large remaining errors
+also show that failure feedback alone has not resolved relation ambiguity.
+Full results are in [failure_feedback.csv](results/failure_feedback.csv), with
+every boundary in [failure_feedback_boundaries.csv](results/failure_feedback_boundaries.csv).
+
+```bash
+python -m experiments.physical_belief.replay_failures \
+  --native-root runs/physical_belief/native_development/pretrain211_carry \
+  --output runs/physical_belief/public_failure_replay/pretrain211
+```
+
 ## Reproduce the physical prediction study
 
 From the repository root, extract the existing measured-data and numerical-prior
