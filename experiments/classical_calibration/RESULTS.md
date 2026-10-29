@@ -38,7 +38,8 @@ return-after-interference comparisons. The first task after a relationship
 returns uses 121.65 actions with reset and 67.45 with memory. The exact intervals
 and both return positions are in the machine-readable results.
 
-The two remaining memory-reference failures concern initial radiation tasks;
-there is no earlier same-stream context to retrieve in either case. These
+The two remaining memory-reference failures concern first encounters with a
+radiation relationship: one initial task and one task switch. Neither has an
+earlier matching relationship in its own stream. These
 remain failures of this reference, including its approximate input-noise model
 and myopic measurement planner. No parameters were changed after confirmation.
