@@ -33,6 +33,8 @@ def main():
                         else 'Fixed two complete joint epochs updating the shared recurrent core and chemical readouts with consistent ingredient-renaming augmentation; joint-versus-warmup does not isolate core unfreezing'),
             'policy':'Predicted observable rust reduction per predicted operation; current-task returned history',
             'not_evaluated':'Autonomous internal-compute allocation or cross-task neural online learning'}}
+    if args.reference_root:
+        compact['scope']['initial_random_states']='The added joint development run shares scenario seeds and world/API/UUID random states with reused controls, but its per-object and global random-state snapshots were saved independently. Do not interpret this historical development comparison as sharing every random-state snapshot. The later 60-instance confirmation shares one saved initial state across all methods.'
     output=Path('experiments/continual_chemistry/results');output.mkdir(exist_ok=True)
     (output/f'{args.name}.json').write_text(json.dumps(compact,indent=2)+'\n')
     with (output/f'{args.name}.csv').open('w') as file:
