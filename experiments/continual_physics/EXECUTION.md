@@ -83,3 +83,53 @@ training-pool worlds under both execution paths. Its three failures required
 primitive actions after 17–20 test requests. This comparison identifies the
 training incentive mismatch; it does not select a model or measure held-out
 performance.
+
+## Fixed-endpoint training
+
+Four matched runs are in progress. Each trains for 200 windows of 32 streams ×
+32 external requests: 204,800 requests per run. The two repetitions start from
+parent policies 221 and 222, using initialization seeds 241 and 242. All four
+use the same task-plan construction, failure-conditioned decision weights,
+400-action task limit and actual operation costs. The full model learns its
+activities and physical updates; the recurrent reference performs one state
+update per received observation and no online neural parameter updates.
+
+| Condition | Final checkpoint location after update 200 |
+|---|---|
+| Full, seed 241 | `runs/continual_physics/native_execution_joint_20261030_point/full_seed241/last.pt` |
+| Full, seed 242 | `runs/continual_physics/native_execution_joint_20261030_point/full_seed242/last.pt` |
+| Recurrent, seed 241 | `runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed241/last.pt` |
+| Recurrent, seed 242 | `runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed242/last.pt` |
+
+The first full-model attempts remain in `native_execution_joint_20261030`:
+seed 241 stopped before its first update; seed 242 completed seven updates.
+A valid sequence of strict-threshold outcomes could identify an exact frequency
+—for example, failures at 2390 and 2394 Hz followed by success at 2393 Hz identify
+2392 Hz. The continuous-interval implementation incorrectly removed that point.
+The correction uses the conditional-density limit only for an identified point;
+ordinary interval events retain their probability measure. It adds no noise or
+probability floor. Both full models restarted from update zero in the `_point`
+directory and have passed their initial complete training windows with finite
+gradients. The original full, recurrent and restarted full checkpoints have
+identical values for all 135 initial parameter tensors within each repetition.
+The unaffected recurrent runs continue in their original locations.
+
+A fresh reproduction uses the corrected source and one new output directory:
+
+```bash
+python -m experiments.continual_physics.launch \
+  --output runs/continual_physics/native_execution \
+  --environment-truth runs/continual_physics/environment_train/environment.npz \
+  --execution-geometry runs/continual_physics/environment_train/execution_geometry.npz \
+  --condition-failure-weights --cache-observations --seed-offset 10 \
+  --modes full recurrent_reference --updates 200 --batch 32 \
+  --external-per-stream 32 --jobs-per-gpu 2
+```
+
+The actual full-model restart used this same command with
+`--output runs/continual_physics/native_execution_joint_20261030_point`,
+`--modes full` and `--jobs-per-gpu 1`; the continuing recurrent runs were started
+with the first four-condition command and its original output directory.
+Evaluation waits for `finished.json`, which is written only after update 200;
+intermediate checkpoints are not selected by task performance. Final native
+results are pending.
