@@ -1,0 +1,86 @@
+{
+  "purpose": "Development instances for implementation and selection.",
+  "setting": "Native DiscoveryWorld Reactor Lab Normal; familiar relation families, new instances and ordered task streams.",
+  "streams": [
+    {
+      "name": "development_00",
+      "seeds": [
+        40000,
+        40005,
+        40011,
+        40016,
+        40020,
+        40025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_01",
+      "seeds": [
+        40101,
+        40106,
+        40112,
+        40117,
+        40121,
+        40126
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_02",
+      "seeds": [
+        40202,
+        40207,
+        40213,
+        40218,
+        40222,
+        40227
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_03",
+      "seeds": [
+        40303,
+        40308,
+        40314,
+        40319,
+        40323,
+        40328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_04",
+      "seeds": [
+        40404,
+        40409,
+        40410,
+        40415,
+        40424,
+        40429
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}

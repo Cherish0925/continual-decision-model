@@ -1,0 +1,326 @@
+{
+  "purpose": "Reserved new-instance confirmation; evaluate every fixed final-budget condition without checkpoint selection.",
+  "setting": "Native DiscoveryWorld Reactor Lab Normal; familiar relation families, new instances and ordered task streams.",
+  "streams": [
+    {
+      "name": "confirmation_00",
+      "seeds": [
+        42000,
+        42005,
+        42011,
+        42016,
+        42020,
+        42025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_01",
+      "seeds": [
+        42100,
+        42105,
+        42112,
+        42117,
+        42120,
+        42125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_02",
+      "seeds": [
+        42200,
+        42205,
+        42213,
+        42218,
+        42220,
+        42225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_03",
+      "seeds": [
+        42300,
+        42305,
+        42314,
+        42319,
+        42320,
+        42325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_04",
+      "seeds": [
+        42401,
+        42406,
+        42410,
+        42415,
+        42421,
+        42426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_05",
+      "seeds": [
+        42501,
+        42506,
+        42512,
+        42517,
+        42521,
+        42526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_06",
+      "seeds": [
+        42601,
+        42606,
+        42613,
+        42618,
+        42621,
+        42626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_07",
+      "seeds": [
+        42701,
+        42706,
+        42714,
+        42719,
+        42721,
+        42726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_08",
+      "seeds": [
+        42802,
+        42807,
+        42810,
+        42815,
+        42822,
+        42827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_09",
+      "seeds": [
+        42902,
+        42907,
+        42911,
+        42916,
+        42922,
+        42927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_10",
+      "seeds": [
+        43002,
+        43007,
+        43013,
+        43018,
+        43022,
+        43027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_11",
+      "seeds": [
+        43102,
+        43107,
+        43114,
+        43119,
+        43122,
+        43127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_12",
+      "seeds": [
+        43203,
+        43208,
+        43210,
+        43215,
+        43223,
+        43228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_13",
+      "seeds": [
+        43303,
+        43308,
+        43311,
+        43316,
+        43323,
+        43328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_14",
+      "seeds": [
+        43403,
+        43408,
+        43412,
+        43417,
+        43423,
+        43428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_15",
+      "seeds": [
+        43503,
+        43508,
+        43514,
+        43519,
+        43523,
+        43528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_16",
+      "seeds": [
+        43604,
+        43609,
+        43610,
+        43615,
+        43624,
+        43629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_17",
+      "seeds": [
+        43704,
+        43709,
+        43711,
+        43716,
+        43724,
+        43729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_18",
+      "seeds": [
+        43804,
+        43809,
+        43812,
+        43817,
+        43824,
+        43829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "confirmation_19",
+      "seeds": [
+        43904,
+        43909,
+        43913,
+        43918,
+        43924,
+        43929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}
