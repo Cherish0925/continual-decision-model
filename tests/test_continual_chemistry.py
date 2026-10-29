@@ -29,3 +29,9 @@ def test_door_action_requires_publicly_observed_clean_key():
     assert choices[-1]==(0,0,0) and not obs['action_mask'][0,-1]
     state['rust_level']=0;clean,_=observe(state)
     assert clean['action_mask'].sum()==1 and clean['action_mask'][0,-1]
+
+
+def test_returned_deterministic_recipe_is_not_repeated():
+    obs,choices=observe(public_state())
+    assert not obs['action_mask'][0,choices.index((1,0,0))]
+    assert obs['action_mask'][0,choices.index((0,1,0))]

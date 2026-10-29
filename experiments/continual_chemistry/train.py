@@ -4,7 +4,7 @@ The exploratory reference action indexes the observed outcome. It is not an
 optimal-action label: this entry does not imitate exhaustive recipe ordering.
 """
 from __future__ import annotations
-import argparse,json
+import argparse,json,random
 from pathlib import Path
 from time import perf_counter
 import torch
@@ -34,10 +34,23 @@ def main():
     training=[row for row in manifest['episodes'] if row['split']=='train']
     sequences=[load_episode(args.data_root/row['directory']/'experiments.jsonl',device=args.device) for row in training]
     args.output.mkdir(parents=True,exist_ok=True);started=perf_counter();rows=[]
+    training_metadata={'source_core':source_identity,'objective':'conditional rust class and received progress/cost',
+        'sequence_length':args.sequence_length,'seed':args.seed,
+        'training_episode_directories':[r['directory'] for r in training],
+        'window_schedule':'per-episode seeded permutations, full observed prefix replay',
+        'selection_protocol':'fixed final update, no development checkpoint selection'}
+    def save_checkpoint(name,updates):
+        torch.save({'kind':'chemistry_continual_v1',**model.configuration(),'model':model.state_dict(),
+                    'training':{**training_metadata,'updates':updates}},args.output/name)
+    save_checkpoint('initial.pt',0)
+    schedule_rng=random.Random(args.seed)
+    window_orders={index:[] for index in range(len(sequences))}
     for update in range(args.updates):
         episode_index=update%len(sequences);sequence=sequences[episode_index]
-        starts=list(range(0,len(sequence),args.sequence_length))
-        window_start=starts[(update//len(sequences))%len(starts)]
+        if not window_orders[episode_index]:
+            starts=list(range(0,len(sequence),args.sequence_length))
+            schedule_rng.shuffle(starts);window_orders[episode_index]=starts
+        window_start=window_orders[episode_index].pop()
         window_stop=min(window_start+args.sequence_length,len(sequence))
         state=model.initial(1,args.device)
         # Reconstruct the actual preceding trajectory with current weights.
@@ -68,13 +81,9 @@ def main():
              'transitions':len(losses),'loss':float(loss.detach()),'gradient_norms':gradients,
              'seconds':perf_counter()-started};rows.append(row)
         with (args.output/'training.jsonl').open('a') as file:file.write(json.dumps(row)+'\n')
-    torch.save({'kind':'chemistry_continual_v1',**model.configuration(),'model':model.state_dict(),
-                'training':{'source_core':source_identity,'objective':'conditional rust class and received progress/cost',
-                  'updates':args.updates,'sequence_length':args.sequence_length,'seed':args.seed,
-                  'training_episode_directories':[r['directory'] for r in training],
-                  'is_task_performance_result':False}},args.output/'last.pt')
+    save_checkpoint('last.pt',args.updates)
     (args.output/'completed.json').write_text(json.dumps({'updates':args.updates,'seconds':perf_counter()-started,
-           'records':rows,'scope':'training-path verification, not a learned task-performance comparison'},indent=2)+'\n')
+           'records':rows,'scope':'fixed-endpoint conditional outcome training; native task results are evaluated separately'},indent=2)+'\n')
     print(json.dumps(rows[-1]))
 
 if __name__=='__main__':main()

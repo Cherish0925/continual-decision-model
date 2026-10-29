@@ -48,7 +48,8 @@ def write_manifest(root,previously_explored):
         if public_sequence not in sequence_groups:sequence_groups[public_sequence]=len(sequence_groups)
         rows.append({'directory':str(directory),'difficulty':row['difficulty'],'seed':row['seed'],
             'recipe_group':group,'public_sequence_group':sequence_groups[public_sequence],
-            'unsuccessful_experiments':sum(not r['rust_removed'] for r in records),'transitions':len(records),'native_actions':row['native_actions'],
+            'nonterminating_experiments':sum(r['rust_after']>0 for r in records),
+            'partial_improvements':sum(0<r['rust_after']<r['rust_before'] for r in records),'transitions':len(records),'native_actions':row['native_actions'],
             'seconds':row['seconds'],'error':row['error'],
             'task_completed':all(r['completed_successfully'] for r in row['task_metrics'])})
     new_groups=sorted({r['recipe_group'] for r in rows if r['recipe_group']} - previously_explored)
@@ -71,7 +72,8 @@ def write_manifest(root,previously_explored):
         'summary':{'episodes':len(rows),'transitions':sum(r['transitions'] for r in rows),
           'unique_recipe_groups':len({r['recipe_group'] for r in rows if r['recipe_group']}),
           'distinct_public_experiment_sequences':len(sequence_groups),
-          'unsuccessful_experiments':sum(r['unsuccessful_experiments'] for r in rows),
+          'nonterminating_experiments':sum(r['nonterminating_experiments'] for r in rows),
+          'partial_improvements':sum(r['partial_improvements'] for r in rows),
           'development_regimes':dict(Counter(r['evaluation_regime'] for r in rows if r['split']=='validation')),
           'splits':dict(Counter(r['split'] for r in rows)),
           'completed':sum(r['task_completed'] for r in rows),'errors':sum(bool(r['error']) for r in rows)}}

@@ -121,7 +121,7 @@ selects only the explicitly listed public-state fields for observations.
 
 The subsequent CPU collection contains 100 new Normal and 40 new Challenge
 instances. The public exploratory reference completes all 140 tasks, recording
-2,926 experiments including 2,786 unsuccessful recipes. The largest Challenge
+2,926 experiments including 2,786 non-terminating trials. The largest Challenge
 run costs 882 native actions under the 1,000-action collection budget. These
 are reference trajectories, not trained CDM task results.
 
@@ -143,7 +143,50 @@ are never passed to the observation encoder or prediction model.
 [The data manifest](results/data_manifest.json) records every instance, split,
 recipe group and duplicate sequence group. Raw experiments remain in
 `runs/continual_physics/chemistry_data/`; pass that directory to `train --data-root`
-to use its training split. All native transitions, including unsuccessful
-recipes and partial cleaning, are retained. The next sampling work should
+to use its training split. All native transitions, including non-terminating
+trials and partial cleaning, are retained. The next sampling work should
 increase histories and experiment-order diversity rather than repeat the same
 fixed sequence under further seeds.
+
+## Fixed-endpoint chemistry comparison
+
+The expanded data contain 110 training episodes and 30 development episodes:
+18 use seven recipe parameter groups absent from the training and earlier
+exploration records; 12 are new instances of seen recipes. All use the same
+native chemical mechanism. Of 2,786 non-terminating trials, 214 visibly remove
+some rust; they are useful conditional feedback, not uniformly failed trials.
+
+Two runs initialize the chemical interfaces independently (seeds 741 and 742)
+from the same public recurrent core, and train for exactly 500 updates of eight
+transitions. Each episode's windows are traversed in seeded random order with
+the complete earlier observed prefix reconstructed before the trained window.
+`initial.pt` preserves each exact untrained interface; `last.pt` is the fixed
+endpoint. No development result selects an endpoint.
+
+All native conditions share 1,000 actual operations, at most 209 recipe trials,
+the same tools and initial environment random states. An identical returned
+recipe is unavailable when its observed endpoint cannot improve the current
+rust state: the native response is deterministic and rust only decreases. This
+rule applies to the reference, both initial models and both trained models.
+The reference enumerates available recipes by total quantity. The model ranks
+recipes by predicted immediate rust reduction per predicted operation cost;
+its action scores use the trained outcome and cost predictions directly.
+
+Run the native comparison with a fixed Python hash seed:
+
+```bash
+PYTHONHASHSEED=0 python -m experiments.continual_chemistry.evaluate \
+  --training-root runs/continual_physics/chemistry_training --workers 8
+```
+
+The evaluator checks the actual recipe identity against the frozen split only
+after execution. Those identities, simulator diagnostics and task scores never
+enter model inputs. Set iteration changes the order of both vectors in the
+native cosine calculation together; recipe generation itself uses a seeded
+ordered-name list. The comparison additionally fixes Python hashing and shares
+initial random states across methods.
+
+This experiment concerns conditional learning and its effect on chemistry
+choices. It uses structured observations and a new task interface over the
+existing core; it does not demonstrate a jointly trained two-task model or
+learned autonomous computation scheduling.

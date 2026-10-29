@@ -54,6 +54,11 @@ def observe(state,*,max_parts=6,max_actions=1000,elapsed_actions=0,device='cpu')
             candidate[0,index,27]=seen[-1]['rust_after']/3;candidate[0,index,28]=1
         candidate[0,index,29]=math.log1p(total)/math.log1p(max_parts)
         mask[0,index]=(total==0) if rust==0 else (total>0)
+        # The public chemical response is deterministic and rust only decreases.
+        # Repeating a returned recipe cannot improve the current rust if its
+        # previously observed endpoint is at least the present rust level.
+        if total and any(row['rust_after']>=rust for row in seen):
+            mask[0,index]=False
     return {'event':event,'evidence':evidence,'evidence_mask':torch.ones(1,len(history)+1,dtype=torch.bool,device=device),
             'candidates':candidate,'action_mask':mask},choices
 
