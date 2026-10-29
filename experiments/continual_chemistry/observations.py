@@ -81,3 +81,18 @@ def load_chemistry_policy(path,*,device='cpu'):
         model,record=load_continual_checkpoint(path,device)
         return model,record
     return model_from_core_checkpoint(path,device=device),{'kind':'untrained_chemistry_heads'}
+
+
+def outcome_action_scores(out,observation):
+    """One-step expected rust reduction per predicted native operation.
+
+    Both terms are trained from actual conditional experiment returns. The
+    untrained base action head is not used to select the chemical experiment.
+    """
+    probabilities=out['outcomes'].softmax(-1)
+    current_rust=observation['candidates'][...,25]*3
+    levels=torch.arange(4,device=probabilities.device,dtype=probabilities.dtype)
+    reductions=(current_rust[...,None]-levels).clamp_min(0)
+    expected_reduction=(probabilities*reductions).sum(-1)
+    expected_cost=out['predictions'][...,1].clamp(0,math.log(1001)).expm1().clamp_min(1)
+    return (expected_reduction/expected_cost).masked_fill(~observation['action_mask'],-torch.inf)

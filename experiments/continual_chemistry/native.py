@@ -14,7 +14,7 @@ from cdm.continual_experiment import Activity
 from experiments.discoveryworld.adapter import TrajectoryWriter
 from experiments.discoveryworld.collect_chemistry import ChemistryExperiments
 from experiments.discoveryworld.structured_observation import StructuredDiscoveryWorldEnv
-from .observations import observe,feedback,load_chemistry_policy
+from .observations import observe,feedback,load_chemistry_policy,outcome_action_scores
 
 
 def main():
@@ -44,7 +44,7 @@ def main():
                         selected=len(choices)-1
                     elif index>=args.max_experiments:break
                     elif args.policy=='reference':selected=index
-                    else:selected=int(out['logits'][0].argmax())
+                    else:selected=int(outcome_action_scores(out,obs)[0].argmax())
                     action=torch.tensor([selected]);state=model.begin_action(state,out['features'],action)
                     before_h=state['h'].clone();before_z=state['z'].clone()
                     if not any(choices[selected]):
@@ -53,6 +53,7 @@ def main():
                     else:
                         result=executor.experiment(choices[selected])
                         result['model_outcome_logits']=out['outcomes'][0,selected].tolist()
+                        result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
                     state=model.feedback(state,feedback(result))
                     public=executor.state();obs,choices=observe(public,max_actions=args.max_actions,elapsed_actions=env.steps)

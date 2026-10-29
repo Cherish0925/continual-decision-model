@@ -29,9 +29,21 @@ def main():
     sequences=[load_episode(args.data_root/row['directory']/'experiments.jsonl',device=args.device) for row in training]
     args.output.mkdir(parents=True,exist_ok=True);started=perf_counter();rows=[]
     for update in range(args.updates):
-        sequence=sequences[update%len(sequences)];state=model.initial(1,args.device)
+        episode_index=update%len(sequences);sequence=sequences[episode_index]
+        starts=list(range(0,len(sequence),args.sequence_length))
+        window_start=starts[(update//len(sequences))%len(starts)]
+        window_stop=min(window_start+args.sequence_length,len(sequence))
+        state=model.initial(1,args.device)
+        # Reconstruct the actual preceding trajectory with current weights.
+        # Later examples never begin from an invented empty history.
+        with torch.no_grad():
+            for obs,target,record in sequence[:window_start]:
+                state=model.receive(state,obs);out=model.readout(state,obs['candidates'],obs['action_mask'])
+                state=model.begin_action(state,out['features'],target['action'])
+                state=model.feedback(state,feedback(record,args.device))
+        state=detach_state(state) if window_start else state
         optimizer.zero_grad(set_to_none=True);losses=[]
-        for obs,target,record in sequence[:args.sequence_length]:
+        for obs,target,record in sequence[window_start:window_stop]:
             state=model.receive(state,obs);out=model.readout(state,obs['candidates'],obs['action_mask'])
             selected=target['action'];index=int(selected[0])
             outcome=F.cross_entropy(out['outcomes'][:,index],target['rust_after'])
@@ -44,7 +56,10 @@ def main():
         gradients={name:float(sum(p.grad.square().sum() for p in module.parameters() if p.grad is not None).sqrt())
                    for name,module in [('gru',model.core.gru),('workspace',model.core.block),('outcome',model.base.outcome)]}
         torch.nn.utils.clip_grad_norm_(model.parameters(),1.);optimizer.step()
-        row={'update':update+1,'transitions':len(losses),'loss':float(loss.detach()),'gradient_norms':gradients,
+        row={'update':update+1,'episode':training[episode_index]['directory'],
+             'window_start':window_start,'window_stop':window_stop,'replayed_prefix_transitions':window_start,
+             'terminal_rust_in_window':any(r['rust_after']==0 for _,_,r in sequence[window_start:window_stop]),
+             'transitions':len(losses),'loss':float(loss.detach()),'gradient_norms':gradients,
              'seconds':perf_counter()-started};rows.append(row)
         with (args.output/'training.jsonl').open('a') as file:file.write(json.dumps(row)+'\n')
     torch.save({'kind':'chemistry_continual_v1',**model.configuration(),'model':model.state_dict(),

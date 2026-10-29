@@ -41,10 +41,22 @@ There is no affine reactor model in this task path. The input is currently
 structured; these experiments do not establish multimodal chemical reasoning.
 
 `train.py` trains conditional rust-class prediction and returned progress/cost.
-It uses the executed action only to select its observed outcome. Policy
-learning and cross-task continual improvement remain the next experimental
-step; exhaustive recipe ordering is not silently used as a success-policy
-label.
+It uses the executed action only to select its observed outcome. At deployment, the model chooses a recipe by expected rust reduction from
+its learned conditional rust distribution divided by predicted native cost.
+The randomly initialized action head is not used. This is a myopic
+prediction-guided rule; learning long-term action value and cross-task
+improvement remain subsequent experiments. Exhaustive recipe ordering is not
+used as a success-policy label.
+
+Training rotates through all contiguous windows of every episode. A later
+window first replays its complete, actually observed prefix with current
+weights, then applies truncated backpropagation within that window. Later
+successful recipes and partial-cleaning states are included. Twelve short CPU
+updates verified a terminal-success window after eight replayed transitions.
+Saved/reloaded outcome-based scores match exactly; after the initial two CPU
+updates, candidate scores change by up to 0.0141 on the checked state (the top
+choice remains the same). These checks establish the causal training-to-score
+path, not a task improvement.
 
 ## Existing data and verified execution
 

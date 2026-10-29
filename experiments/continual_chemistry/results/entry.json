@@ -458,6 +458,24 @@
       "final_z_change": 90.3167495727539,
       "error": null,
       "seconds": 3.2267417199909687
+    },
+    {
+      "scenario": "Combinatorial Chemistry",
+      "difficulty": "Normal",
+      "seed": 7403,
+      "policy": "model",
+      "has_trained_chemistry_heads": true,
+      "is_task_performance_comparison": false,
+      "native_actions": 64,
+      "experiments": 4,
+      "returned_rust": 3,
+      "completed_successfully": false,
+      "feedback_events": 4,
+      "observations": 5,
+      "final_h_change": 4.864635467529297,
+      "final_z_change": 90.34469604492188,
+      "error": null,
+      "seconds": 3.392295230180025
     }
   ],
   "training_path": {
@@ -485,6 +503,212 @@
           "outcome": 0.7219126224517822
         },
         "seconds": 0.7088249754160643
+      }
+    ],
+    "scope": "training-path verification, not a learned task-performance comparison"
+  },
+  "learning_to_action": {
+    "save_reload_scores_identical": true,
+    "max_recipe_score_change_after_learning": 0.014106988906860352,
+    "before_first_choice": 76,
+    "after_first_choice": 76,
+    "scope": "two short CPU updates change conditional outcome scores; no task-performance claim"
+  },
+  "late_window_training_path": {
+    "updates": 12,
+    "seconds": 4.6529052797704935,
+    "records": [
+      {
+        "update": 1,
+        "episode": "train/seed7101",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.4943833351135254,
+        "gradient_norms": {
+          "gru": 0.375259667634964,
+          "workspace": 0.2230575978755951,
+          "outcome": 0.5906680822372437
+        },
+        "seconds": 0.5466242022812366
+      },
+      {
+        "update": 2,
+        "episode": "train/seed7102",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.432389736175537,
+        "gradient_norms": {
+          "gru": 0.41408953070640564,
+          "workspace": 0.2677193582057953,
+          "outcome": 0.8463314175605774
+        },
+        "seconds": 0.9140474274754524
+      },
+      {
+        "update": 3,
+        "episode": "train/seed7103",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.3727188110351562,
+        "gradient_norms": {
+          "gru": 0.370221883058548,
+          "workspace": 0.25457459688186646,
+          "outcome": 0.7139039635658264
+        },
+        "seconds": 1.283805115148425
+      },
+      {
+        "update": 4,
+        "episode": "train/seed7104",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.3181400299072266,
+        "gradient_norms": {
+          "gru": 0.4170137643814087,
+          "workspace": 0.2781134843826294,
+          "outcome": 1.003768801689148
+        },
+        "seconds": 1.6495646946132183
+      },
+      {
+        "update": 5,
+        "episode": "train/seed7105",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.28316068649292,
+        "gradient_norms": {
+          "gru": 0.3153114318847656,
+          "workspace": 0.21621301770210266,
+          "outcome": 0.5936110019683838
+        },
+        "seconds": 2.021306985989213
+      },
+      {
+        "update": 6,
+        "episode": "train/seed7106",
+        "window_start": 0,
+        "window_stop": 6,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": true,
+        "transitions": 6,
+        "loss": 2.2227323055267334,
+        "gradient_norms": {
+          "gru": 0.3851865828037262,
+          "workspace": 0.21940401196479797,
+          "outcome": 0.8240787386894226
+        },
+        "seconds": 2.332125322893262
+      },
+      {
+        "update": 7,
+        "episode": "train/seed7107",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.159396171569824,
+        "gradient_norms": {
+          "gru": 0.3356865644454956,
+          "workspace": 0.22941645979881287,
+          "outcome": 1.0683187246322632
+        },
+        "seconds": 2.708827383816242
+      },
+      {
+        "update": 8,
+        "episode": "train/seed7108",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.143460273742676,
+        "gradient_norms": {
+          "gru": 0.23896142840385437,
+          "workspace": 0.17848964035511017,
+          "outcome": 0.7402081489562988
+        },
+        "seconds": 3.079909946769476
+      },
+      {
+        "update": 9,
+        "episode": "challenge_explored/seed7300",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.0692830085754395,
+        "gradient_norms": {
+          "gru": 0.31560832262039185,
+          "workspace": 0.19588398933410645,
+          "outcome": 1.141183853149414
+        },
+        "seconds": 3.4698718786239624
+      },
+      {
+        "update": 10,
+        "episode": "challenge_explored/seed7301",
+        "window_start": 0,
+        "window_stop": 8,
+        "replayed_prefix_transitions": 0,
+        "terminal_rust_in_window": false,
+        "transitions": 8,
+        "loss": 2.1540701389312744,
+        "gradient_norms": {
+          "gru": 0.22742603719234467,
+          "workspace": 0.12015941739082336,
+          "outcome": 0.764460027217865
+        },
+        "seconds": 3.8522568866610527
+      },
+      {
+        "update": 11,
+        "episode": "train/seed7101",
+        "window_start": 8,
+        "window_stop": 14,
+        "replayed_prefix_transitions": 8,
+        "terminal_rust_in_window": true,
+        "transitions": 6,
+        "loss": 2.1414952278137207,
+        "gradient_norms": {
+          "gru": 0.13958679139614105,
+          "workspace": 0.17531554400920868,
+          "outcome": 0.9096084237098694
+        },
+        "seconds": 4.235722774639726
+      },
+      {
+        "update": 12,
+        "episode": "train/seed7102",
+        "window_start": 8,
+        "window_stop": 13,
+        "replayed_prefix_transitions": 8,
+        "terminal_rust_in_window": true,
+        "transitions": 5,
+        "loss": 2.1124584674835205,
+        "gradient_norms": {
+          "gru": 0.1290067732334137,
+          "workspace": 0.15805181860923767,
+          "outcome": 0.8956278562545776
+        },
+        "seconds": 4.566693847998977
       }
     ],
     "scope": "training-path verification, not a learned task-performance comparison"
