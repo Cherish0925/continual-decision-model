@@ -28,6 +28,8 @@ def run(options):
     model=state=None;trained_heads=False
     if args.policy!='reference':
         model,record=load_chemistry_policy(args.checkpoint);model.eval();state=model.initial(1,'cpu')
+        if getattr(args,'disable_direct_history',False):model.direct_history=False
+        if getattr(args,'disable_response_core',False):model.core_response=False
         trained_heads=record.get('kind') in {'chemistry_continual_v1','chemistry_reaction_v1'} and record.get('training',{}).get('updates',0)>0
     primitive_candidates=getattr(args,'primitive_candidates',False) or bool(model and hasattr(model,'response'))
     initial_h=None if state is None else state['h'].clone()
@@ -44,6 +46,8 @@ def run(options):
         (args.output/'initial_rng.json.gz').write_bytes(snapshot.read_bytes())
         metadata={**env.configuration,'policy':args.policy,'has_trained_chemistry_heads':trained_heads,
             'primitive_candidates':primitive_candidates,
+            'direct_history':None if model is None else getattr(model,'direct_history',None),
+            'response_reads_core':None if model is None else getattr(model,'core_response',None),
             'input':'visible components, current rust and returned experimental history',
             'initial_rng':rng,'repeated_recipe_rule':'exclude an identical returned recipe with rust endpoint >= current rust',
             'selection':'predicted one-step rust reduction per predicted native action' if model else 'ascending bounded integer recipes'}
@@ -117,6 +121,8 @@ def main():
     p.add_argument('--max-experiments',type=int,default=209);p.add_argument('--threads',type=int,default=1)
     p.add_argument('--initial-rng-root',default='runs/continual_physics/chemistry_initial_rng')
     p.add_argument('--primitive-candidates',action='store_true',help='Use the same unique proportions for reference and learned policies')
+    p.add_argument('--disable-direct-history',action='store_true')
+    p.add_argument('--disable-response-core',action='store_true')
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))
     if summary['error']:raise SystemExit(1)
 
