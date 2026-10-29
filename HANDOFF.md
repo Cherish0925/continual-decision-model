@@ -79,9 +79,25 @@ ingredient–ratio groups absent from original native sampling, but their ratio
 structures occur in training and ingredient-renaming augmentation can generate
 isomorphic combinations. This measures composition reuse within the chemical
 task, not discovery of unseen chemical laws. The [full table and interventions](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
-define these conditions. A two-experiment planning comparison is now being
-implemented using the fixed learned response model; it will test whether extra
-computation improves actual experiment choice.
+define these conditions. The released training experience and four fixed
+checkpoints are in [v0.12.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0).
+
+An additional [Bayesian comparison](experiments/continual_chemistry/BAYESIAN_REFERENCE.md)
+uses the public reaction-function family and only the actual observed history.
+Its one-step and two-step policies both complete the same 60 instances at 98.60
+and 101.40 mean operations. This known-family reference makes its extra prior
+knowledge explicit and is stronger than enumeration.
+
+The learned response model has also completed a separate two-experiment
+planning comparison on the original 30 development instances. Same-objective
+one-step and two-step policies both finish 30/30 at 192.60 and 143.10 operations;
+the existing rust-reduction policy uses 143.73. Mean inference rises from 0.666
+to 1.634 seconds per episode. The paired recipe-group interval for the
+two-step operation gain includes zero, and it does not improve on the existing
+policy. [The complete comparison](experiments/continual_chemistry/results/planning_development.json)
+retains both objectives and actual computation time. Imagined observations
+change only copied state, leaving actual experience untouched. A stable benefit
+from extra computation remains to be established.
 
 ## Physical prediction and experimental decisions
 

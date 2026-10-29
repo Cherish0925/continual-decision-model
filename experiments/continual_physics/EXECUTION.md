@@ -133,3 +133,17 @@ with the first four-condition command and its original output directory.
 Evaluation waits for `finished.json`, which is written only after update 200;
 intermediate checkpoints are not selected by task performance. Final native
 results are pending.
+
+The [independent native comparison](execution_confirmation.json) fixes 120 new
+instances in twenty six-task streams. It compares both parents, both trained
+full models and recurrent references, each full model with physical updates
+discarded or all state reset at task boundaries, and the Bayesian memory
+reference. The [automatic queue](execution_confirmation.py) waits for each
+fixed final checkpoint and writes all 1,320 executions with whole-stream
+comparisons. Parent and classical execution is synchronous; native operation
+costs match, while the internal synthetic feedback delay applies to the new
+policies. That distinction remains explicit in timing results.
+
+```bash
+python -m experiments.continual_physics.execution_confirmation
+```

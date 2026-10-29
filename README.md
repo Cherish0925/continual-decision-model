@@ -48,6 +48,12 @@ differ substantially, and the additional benefit of the recurrent-state readout
 remains uncertain. [Complete comparisons](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
 include both runs, interventions and recipe-group uncertainty. Chemistry and
 physical control currently use separately trained task adaptations.
+An additional [Bayesian reference](experiments/continual_chemistry/BAYESIAN_REFERENCE.md),
+given the public reaction-function family, completes the same 60 tasks in
+98.60 mean operations. This stronger prior and the learned models' different
+information requirements are explicit in the comparison.
+The [v0.12.0 release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)
+provides all 320 training instances and four fixed chemical checkpoints.
 
 ## Current results
 
