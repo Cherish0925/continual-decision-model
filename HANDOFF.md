@@ -18,6 +18,11 @@ policy. Twelve native conditions are queued on a new 120-instance cohort.
 The new model's performance is not yet known. Code, commands, comparison
 conditions and the measured integration results are in the study directory.
 
+Two additional fixed-computation recurrent policies use the same physical tools,
+parent weights and external training budget. They retain neural state across
+tasks and keep neural parameters fixed during deployment. Their training and
+native evaluation queues are separate from the primary eight trainings.
+
 ## Physical prediction and experimental decisions
 
 Updated 29 October 2026. The [physical-learning study](experiments/physical_belief/README.md)
@@ -72,6 +77,17 @@ Continuing state helps later instances while a relation remains unchanged.
 It does not provide rapid recovery when an earlier relation returns: the first
 returning instance costs 23.20 and 32.60 more native actions than resetting the
 same weights. This motivated the physical-prediction study above.
+
+The subsequent [state interventions](experiments/continual_experiment/results/state_controls.md)
+locate that return cost in the retained neural state. Across 736 additional
+native executions, carrying only the GRU and workspace states reproduces both
+first-return penalties exactly. Carrying replay and online adapters while
+resetting those states produces zero first-return difference from a full reset.
+The same neural states substantially reduce actions during consecutive tasks
+with an unchanged relationship. These results identify a task-transition effect;
+they do not yet separate the contents of recurrent state from workspace state.
+This version recomputes its physical posterior from each task's fresh ledger,
+so inherited physical covariance cannot explain the measured return penalty.
 
 The study fixes final checkpoints after 1,200 updates, with 128 parallel streams
 and 32 model ticks per update. Both training repetitions start from the same
