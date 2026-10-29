@@ -115,9 +115,10 @@ from extra computation remains to be established.
 
 The [shared-core entry](experiments/continual_experiment/README.md#a-single-core-for-physical-and-chemical-experiments)
 now attaches both task interfaces to one 1,024-wide recurrent/Transformer core
-with eight workspace slots and one continuing h/z state. The released physical
-parent and chemical warmup have exactly the same core weights, so initialization
-preserves both interfaces' original outputs. One update using an actual physical
+with eight workspace slots and one continuing h/z state. The physical interface
+and chemical warmup start from identical core weights. Sharing the core preserves
+their outputs relative to running those same interfaces separately; the physical
+interface uses the new runtime whose initialization is examined above. One update using an actual physical
 measurement and a recorded chemical experiment sends gradients from both tasks
 into that same core. Checkpoint reconstruction preserves every task head and
 stores the core once. This establishes the joint training entry; long task-stream
