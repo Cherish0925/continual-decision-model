@@ -4,6 +4,7 @@ Each native condition follows the same ordered task instances. Training repetiti
 [Method and stage-level results](methods.csv) · [Data, paired intervals and training records](summary.json)
 
 [Task-boundary state controls](state_controls.md) separate the carried neural state from replay and online adapters on the same instances and checkpoints.
+[Recurrent/workspace controls](neural_state_controls.md) locate these cross-task effects in h and report their different consequences for continuation, switching and return.
 
 | Condition | Completed | Actions / instance | Measurements / instance | CPU-evaluated elapsed s / instance |
 | --- | ---: | ---: | ---: | ---: |
