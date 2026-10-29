@@ -2,6 +2,48 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Learning chemical experiment responses: v0.12.0
+
+[Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)
+· [Training and complete results](../continual_chemistry/README.md)
+· [360 native executions](../continual_chemistry/results/reaction_confirmation_instances.csv)
+
+This release supplies the actual experimental experience and four fixed
+checkpoints for Combinatorial Chemistry. Both joint training repetitions and
+their frozen-core warmup models are included. The six-condition confirmation
+uses 60 new instances, common tools, candidate recipes and operation budgets.
+All conditions complete 60/60; the two joint models use 143.35 and 278.37 mean
+operations, compared with 367.38 for primitive-recipe enumeration. The linked
+results include history/state interventions and recipe-group intervals.
+
+| Archive | Contents | Download |
+| --- | --- | ---: |
+| `chemistry-experience.tar.gz` | 320 native training instances, 10,610 experimental returns, public action records, split definitions and the upstream license | 106 MB |
+| `chemistry-models.tar.gz` | Warmup and joint endpoints for training seeds 753 and 754, with their inherited core and task interfaces | 638 MB |
+
+The checkpoints are self-contained and use structured public observations.
+Running a released model requires no earlier weight archive:
+
+```bash
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.12.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'chemistry-*.tar.gz' --dir artifacts/v0.12.0
+tar -xzf artifacts/v0.12.0/chemistry-models.tar.gz -C artifacts/v0.12.0
+tar -xzf artifacts/v0.12.0/chemistry-experience.tar.gz -C artifacts/v0.12.0
+python -m experiments.continual_chemistry.native \
+  --checkpoint artifacts/v0.12.0/chemistry-models/joint753.pt \
+  --policy model --seed 7401 --primitive-candidates \
+  --output runs/chemistry_example
+```
+
+To repeat the two joint epochs, pass a released warmup checkpoint to
+`experiments.continual_chemistry.joint_reaction`, together with
+`--data-root artifacts/v0.12.0/chemistry-experience`. Repeating warmup itself
+starts from the seed-221 physical policy in v0.11.0. The experiment README gives
+the full schedules and distinguishes the original sampling split from
+ingredient-renaming augmentation. Chemistry and physical control remain
+separate trained task adaptations.
+
 ## Physical prediction and action: v0.11.0
 
 [Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.11.0)

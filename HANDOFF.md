@@ -35,9 +35,12 @@ recorded requests in twelve native episodes, including intermediate settings,
 activation and operation costs. It trains with a 400-operation task budget and
 charges the actual operations in each experimental request. Formal training
 exposed a boundary case where consistent threshold observations identify an
-exact frequency; the interval likelihood is being extended before those runs
-can be treated as valid. [Execution details](experiments/continual_physics/EXECUTION.md)
-separate implementation checks from model results.
+exact frequency. The corrected likelihood preserves that point, and both full
+models have restarted from their original initialization and passed their first
+complete training windows. Two matched recurrent references continue. Each run
+has a fixed 200-window endpoint; model performance is still pending.
+[Execution details](experiments/continual_physics/EXECUTION.md) record the first
+failed attempts, corrected commands and the exact four checkpoint locations.
 
 Two additional fixed-computation recurrent policies use the same physical tools,
 parent weights and external training budget. They retain neural state across

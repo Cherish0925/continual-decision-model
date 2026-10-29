@@ -1,5 +1,8 @@
 # Continual learning from chemical experiments
 
+[Models and training experience](../discoveryworld/RELEASE.md#learning-chemical-experiment-responses-v0120)
+provide the four fixed checkpoints and all 320 native training instances.
+
 The [fixed native confirmation](#native-confirmation-of-history-conditioned-decisions)
 now includes 360 complete executions. Learned conditional predictions reduce
 experimental operations, with a substantial effect from returned-history use;
