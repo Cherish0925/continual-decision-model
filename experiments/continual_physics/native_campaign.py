@@ -38,7 +38,8 @@ def make_jobs(output, training_root, manifest, workers, *, delay_ticks=0):
                            "--feedback-delay-ticks", str(delay_ticks), *common]
                 if discard:
                     command.append("--discard-physical-updates")
-                jobs.append({"name": name, "ready": str(directory/"finished.json"), "command": command})
+                jobs.append({"name": name, "training_condition": f"{mode}_seed{seed}",
+                             "ready": str(directory/"finished.json"), "command": command})
     return jobs
 
 
@@ -76,7 +77,23 @@ def main():
                and (args.only is None or job["name"] in args.only)]
     running = []
     while pending or running:
+        training_completion = args.training_root/"completed.json"
+        try:
+            training_rows = json.loads(training_completion.read_text()) if training_completion.exists() else []
+        except json.JSONDecodeError:
+            training_rows = []  # The launcher writes its short completion list in place.
+        training = {row["name"]: row for row in training_rows}
         for job in list(pending):
+            source = training.get(job.get("training_condition"))
+            if source is not None and (source["exit_code"] != 0 or not Path(job["ready"]).exists()):
+                row = {"name": job["name"], "exit_code": source["exit_code"] or 1,
+                       "reason": "training_failed" if source["exit_code"] else "training_finished_without_final_checkpoint",
+                       "training_condition": job["training_condition"], "seconds": 0.}
+                completed.append(row)
+                pending.remove(job)
+                completion.write_text(json.dumps(completed, indent=2)+"\n")
+                print(json.dumps({"skipped": job["name"], **row}), flush=True)
+                continue
             if len(running) >= args.parallel:
                 break
             if job["ready"] and not Path(job["ready"]).exists():
