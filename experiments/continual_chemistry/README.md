@@ -116,3 +116,34 @@ observations in derived trajectories retain their upstream attribution. We do
 not copy hidden recipe dictionaries into training records or model inputs.
 Raw trajectories also contain evaluator fields for scoring; the dataset loader
 selects only the explicitly listed public-state fields for observations.
+
+## Expanded experience and recipe-separated development
+
+The subsequent CPU collection contains 100 new Normal and 40 new Challenge
+instances. The public exploratory reference completes all 140 tasks, recording
+2,926 experiments including 2,786 unsuccessful recipes. The largest Challenge
+run costs 882 native actions under the 1,000-action collection budget. These
+are reference trajectories, not trained CDM task results.
+
+The official generator uses three or four available substances, two or three
+active components and three or four total parts. Canonically reduced recipes
+identify 35 distinct groups in this collection. There are only 42 distinct
+public experimental sequences under the fixed enumeration order; repeated
+seeds therefore do not supply 140 independent reasoning patterns.
+
+The frozen manifest allocates 110 episodes to training and 30 to development.
+Eighteen development instances reserve complete recipe groups absent from both
+the new training set and all prior explored data. Twelve retain a known recipe
+under a different instance seed. This is a new-recipe-parameter comparison
+within the same official reaction rule, not an unseen physical mechanism.
+The simulator prints its solution in diagnostic logs; `collect.py` reads that
+label only after execution to form groups. Those logs and recipe group labels
+are never passed to the observation encoder or prediction model.
+
+[The data manifest](results/data_manifest.json) records every instance, split,
+recipe group and duplicate sequence group. Raw experiments remain in
+`runs/continual_physics/chemistry_data/`; pass that directory to `train --data-root`
+to use its training split. All native transitions, including unsuccessful
+recipes and partial cleaning, are retained. The next sampling work should
+increase histories and experiment-order diversity rather than repeat the same
+fixed sequence under further seeds.
