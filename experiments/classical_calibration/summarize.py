@@ -37,6 +37,17 @@ def main():
         result['conditions'][name]={'instances':len(group),'completed':sum(r['completed_successfully'] for r in group),
             **{f'mean_{key}':float(np.mean([r[key] for r in group])) for key in ('native_actions','seconds','inference_seconds','execution_seconds')},
             'first_return_mean_actions':float(np.mean([r['native_actions'] for r in group if r['segment_role']=='return' and r['first_in_segment']]))}
+        for label,subset in [('all',group),('first_return',[r for r in group if r['segment_role']=='return' and r['position_in_segment']==0])]:
+            matches=[]
+            for row in subset:
+                tests=[d for d in row['decisions'] if d['action_index']>=20]
+                # Official relation schedule is used only for post-execution
+                # analysis, never as an input to the decision model.
+                if tests:matches.append(tests[0]['action_index']-20==[0,1,3,2,8][row['seed']%5])
+            result['conditions'][name][label+'_decisions']={
+                'mean_measurement_requests':float(np.mean([r['measurement_requests'] for r in subset])),
+                'mean_test_requests':float(np.mean([r['test_requests'] for r in subset])),
+                'first_test_relation_matches':sum(matches),'instances_with_test':len(matches)}
         for r in group:flat.append({'method':name,**{k:r[k] for k in ('stream','seed','segment_role','position_in_segment','completed_successfully','native_actions','seconds','inference_seconds','execution_seconds')}})
     result['comparisons']['forgetting:reset']=paired(groups['forgetting'],groups['reset'])
     pairs=[('forgetting:reset',groups['forgetting'],groups['reset'])]

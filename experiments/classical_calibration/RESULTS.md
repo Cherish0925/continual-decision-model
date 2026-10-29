@@ -36,7 +36,11 @@ storage. Parent phase timings were not recorded and are left blank.
 [whole-stream paired comparisons](results/confirmation/summary.json) include
 return-after-interference comparisons. The first task after a relationship
 returns uses 121.65 actions with reset and 67.45 with memory. The exact intervals
-and both return positions are in the machine-readable results.
+and both return positions are in the machine-readable results. On first return,
+mean measurement requests fall from 9.55 to 5.60 and setting-test requests from
+4.80 to 2.35. The first tested relationship matches the actual task relationship
+in 7/20 reset instances and 18/20 memory instances. Relationship identity is
+used only for this post-execution analysis and is never a model input.
 
 The two remaining memory-reference failures concern first encounters with a
 radiation relationship: one initial task and one task switch. Neither has an
