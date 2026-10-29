@@ -236,3 +236,38 @@ results are preserved. Machine-readable [aggregate comparisons](results/developm
 recipe-group paired uncertainty. Conditional prediction errors can be
 regenerated with `prediction.py`; `summarize.py` rebuilds these tables from the
 saved native records.
+
+## Broader native experiment experience
+
+The next data batch uses 320 new native instances, split equally between Normal
+and Challenge. Its candidate space contains each primitive integer proportion
+once (55 / 161 candidates through six total parts). Scaling a recipe does not
+create a distinct composition; the actual ingredient count and tool operations
+still determine its cost. Rust-free keys end an episode rather than creating
+uninformative zero-rust experiments or an artificial reset.
+
+At each trial, the collector either samples an untried proportion uniformly
+within a randomly selected total-parts stratum, or chooses by predictive entropy
+plus disagreement of the two preceding outcome models. These are sampling
+heuristics, not claimed optimal experiment design. Their predictions select an
+experiment only; all training targets are returned native rust states and
+actual operation counts. Partial cleaning changes the next experiment's input.
+
+Before collecting outcomes, an evaluator-only generator pass freezes recipe
+groups and instance seeds. Six recipe groups absent from the earlier 35 groups
+are reserved for 30 new confirmation instances, with another 30 new instances
+of training-group recipes. Neither these six groups nor the seven earlier
+development groups enter the new training batch. Generator labels are used
+only for this split and post-execution verification. The collector receives
+only a scenario, instance seed and behavior random seed. The
+[fixed plan](results/exploration_plan.json) preserves the exact separation.
+
+```bash
+PYTHONHASHSEED=0 python -m experiments.continual_chemistry.exploration_plan
+PYTHONHASHSEED=0 python -m experiments.continual_chemistry.explore --workers 12
+```
+
+The first command creates worlds for grouping without performing experiments.
+The second records every executed operation and completed experimental return,
+including budget-limited runs. The resulting manifest reports total collection
+cost, recipe-size coverage and the complete distribution of rust transitions.

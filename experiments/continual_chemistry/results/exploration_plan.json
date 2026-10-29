@@ -1,0 +1,3012 @@
+{
+  "scenario": "Combinatorial Chemistry",
+  "pythonhashseed": 0,
+  "max_native_actions": 1000,
+  "max_recipe_parts": 6,
+  "candidate_constraint": "primitive integer proportions; no identical returned recipe repeats",
+  "behavior": "half total-parts-stratified random; half two-model predictive entropy plus disagreement",
+  "development_recipe_groups": [
+    "Substance A:1|Substance B:1",
+    "Substance A:1|Substance B:3",
+    "Substance A:1|Substance D:1",
+    "Substance A:3|Substance C:1",
+    "Substance B:1|Substance C:1|Substance D:2",
+    "Substance B:2|Substance C:1|Substance D:1",
+    "Substance C:3|Substance D:1"
+  ],
+  "confirmation_recipe_groups": [
+    "Substance A:1|Substance C:1|Substance D:2",
+    "Substance A:1|Substance D:3",
+    "Substance A:2|Substance C:1|Substance D:1",
+    "Substance B:1|Substance D:3",
+    "Substance B:3|Substance D:1",
+    "Substance C:2|Substance D:1"
+  ],
+  "split_labels": "generator identity only; never input, training labels, or behavior",
+  "training_episodes": [
+    {
+      "difficulty": "Normal",
+      "seed": 10000,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10000",
+      "split": "train",
+      "behavior_seed": 110000
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10001,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10001",
+      "split": "train",
+      "behavior_seed": 110001
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10002,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10002",
+      "split": "train",
+      "behavior_seed": 110002
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10003,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10003",
+      "split": "train",
+      "behavior_seed": 110003
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10004,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10004",
+      "split": "train",
+      "behavior_seed": 110004
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10005,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10005",
+      "split": "train",
+      "behavior_seed": 110005
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10006,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10006",
+      "split": "train",
+      "behavior_seed": 110006
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10007,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10007",
+      "split": "train",
+      "behavior_seed": 110007
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10008,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10008",
+      "split": "train",
+      "behavior_seed": 110008
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10009,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10009",
+      "split": "train",
+      "behavior_seed": 110009
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10010,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "normal/seed10010",
+      "split": "train",
+      "behavior_seed": 110010
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10011,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10011",
+      "split": "train",
+      "behavior_seed": 110011
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10012,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10012",
+      "split": "train",
+      "behavior_seed": 110012
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10013,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10013",
+      "split": "train",
+      "behavior_seed": 110013
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10014,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10014",
+      "split": "train",
+      "behavior_seed": 110014
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10015,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10015",
+      "split": "train",
+      "behavior_seed": 110015
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10016,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10016",
+      "split": "train",
+      "behavior_seed": 110016
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10017,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10017",
+      "split": "train",
+      "behavior_seed": 110017
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10018,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10018",
+      "split": "train",
+      "behavior_seed": 110018
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10019,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10019",
+      "split": "train",
+      "behavior_seed": 110019
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10020,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10020",
+      "split": "train",
+      "behavior_seed": 110020
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10021,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10021",
+      "split": "train",
+      "behavior_seed": 110021
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10022,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "normal/seed10022",
+      "split": "train",
+      "behavior_seed": 110022
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10023,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10023",
+      "split": "train",
+      "behavior_seed": 110023
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10024,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10024",
+      "split": "train",
+      "behavior_seed": 110024
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10026,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10026",
+      "split": "train",
+      "behavior_seed": 110026
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10027,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10027",
+      "split": "train",
+      "behavior_seed": 110027
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10028,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10028",
+      "split": "train",
+      "behavior_seed": 110028
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10029,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10029",
+      "split": "train",
+      "behavior_seed": 110029
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10030,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10030",
+      "split": "train",
+      "behavior_seed": 110030
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10031,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10031",
+      "split": "train",
+      "behavior_seed": 110031
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10032,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10032",
+      "split": "train",
+      "behavior_seed": 110032
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10033,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10033",
+      "split": "train",
+      "behavior_seed": 110033
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10034,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10034",
+      "split": "train",
+      "behavior_seed": 110034
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10035,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10035",
+      "split": "train",
+      "behavior_seed": 110035
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10036,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10036",
+      "split": "train",
+      "behavior_seed": 110036
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10037,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10037",
+      "split": "train",
+      "behavior_seed": 110037
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10038,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10038",
+      "split": "train",
+      "behavior_seed": 110038
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10039,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10039",
+      "split": "train",
+      "behavior_seed": 110039
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10041,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "normal/seed10041",
+      "split": "train",
+      "behavior_seed": 110041
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10042,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10042",
+      "split": "train",
+      "behavior_seed": 110042
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10043,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10043",
+      "split": "train",
+      "behavior_seed": 110043
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10044,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10044",
+      "split": "train",
+      "behavior_seed": 110044
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10045,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10045",
+      "split": "train",
+      "behavior_seed": 110045
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10046,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10046",
+      "split": "train",
+      "behavior_seed": 110046
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10047,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10047",
+      "split": "train",
+      "behavior_seed": 110047
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10048,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10048",
+      "split": "train",
+      "behavior_seed": 110048
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10049,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10049",
+      "split": "train",
+      "behavior_seed": 110049
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10050,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10050",
+      "split": "train",
+      "behavior_seed": 110050
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10051,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10051",
+      "split": "train",
+      "behavior_seed": 110051
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10053,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10053",
+      "split": "train",
+      "behavior_seed": 110053
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10054,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10054",
+      "split": "train",
+      "behavior_seed": 110054
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10055,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "normal/seed10055",
+      "split": "train",
+      "behavior_seed": 110055
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10056,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10056",
+      "split": "train",
+      "behavior_seed": 110056
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10057,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10057",
+      "split": "train",
+      "behavior_seed": 110057
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10058,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10058",
+      "split": "train",
+      "behavior_seed": 110058
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10060,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10060",
+      "split": "train",
+      "behavior_seed": 110060
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10061,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10061",
+      "split": "train",
+      "behavior_seed": 110061
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10062,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10062",
+      "split": "train",
+      "behavior_seed": 110062
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10063,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10063",
+      "split": "train",
+      "behavior_seed": 110063
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10064,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10064",
+      "split": "train",
+      "behavior_seed": 110064
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10065,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10065",
+      "split": "train",
+      "behavior_seed": 110065
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10066,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10066",
+      "split": "train",
+      "behavior_seed": 110066
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10067,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10067",
+      "split": "train",
+      "behavior_seed": 110067
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10068,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10068",
+      "split": "train",
+      "behavior_seed": 110068
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10070,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10070",
+      "split": "train",
+      "behavior_seed": 110070
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10071,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10071",
+      "split": "train",
+      "behavior_seed": 110071
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10072,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10072",
+      "split": "train",
+      "behavior_seed": 110072
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10073,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10073",
+      "split": "train",
+      "behavior_seed": 110073
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10074,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10074",
+      "split": "train",
+      "behavior_seed": 110074
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10075,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10075",
+      "split": "train",
+      "behavior_seed": 110075
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10076,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10076",
+      "split": "train",
+      "behavior_seed": 110076
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10077,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10077",
+      "split": "train",
+      "behavior_seed": 110077
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10078,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10078",
+      "split": "train",
+      "behavior_seed": 110078
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10079,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10079",
+      "split": "train",
+      "behavior_seed": 110079
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10080,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10080",
+      "split": "train",
+      "behavior_seed": 110080
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10081,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10081",
+      "split": "train",
+      "behavior_seed": 110081
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10082,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10082",
+      "split": "train",
+      "behavior_seed": 110082
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10083,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10083",
+      "split": "train",
+      "behavior_seed": 110083
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10084,
+      "recipe_group": "Substance B:3|Substance C:1",
+      "directory": "normal/seed10084",
+      "split": "train",
+      "behavior_seed": 110084
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10085,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10085",
+      "split": "train",
+      "behavior_seed": 110085
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10086,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10086",
+      "split": "train",
+      "behavior_seed": 110086
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10087,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10087",
+      "split": "train",
+      "behavior_seed": 110087
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10088,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10088",
+      "split": "train",
+      "behavior_seed": 110088
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10089,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "normal/seed10089",
+      "split": "train",
+      "behavior_seed": 110089
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10090,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "normal/seed10090",
+      "split": "train",
+      "behavior_seed": 110090
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10091,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10091",
+      "split": "train",
+      "behavior_seed": 110091
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10094,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10094",
+      "split": "train",
+      "behavior_seed": 110094
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10095,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10095",
+      "split": "train",
+      "behavior_seed": 110095
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10096,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10096",
+      "split": "train",
+      "behavior_seed": 110096
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10097,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10097",
+      "split": "train",
+      "behavior_seed": 110097
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10098,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10098",
+      "split": "train",
+      "behavior_seed": 110098
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10099,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10099",
+      "split": "train",
+      "behavior_seed": 110099
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10100,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10100",
+      "split": "train",
+      "behavior_seed": 110100
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10101,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10101",
+      "split": "train",
+      "behavior_seed": 110101
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10102,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10102",
+      "split": "train",
+      "behavior_seed": 110102
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10103,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10103",
+      "split": "train",
+      "behavior_seed": 110103
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10104,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10104",
+      "split": "train",
+      "behavior_seed": 110104
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10106,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10106",
+      "split": "train",
+      "behavior_seed": 110106
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10107,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "normal/seed10107",
+      "split": "train",
+      "behavior_seed": 110107
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10108,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10108",
+      "split": "train",
+      "behavior_seed": 110108
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10109,
+      "recipe_group": "Substance B:3|Substance C:1",
+      "directory": "normal/seed10109",
+      "split": "train",
+      "behavior_seed": 110109
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10110,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10110",
+      "split": "train",
+      "behavior_seed": 110110
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10111,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10111",
+      "split": "train",
+      "behavior_seed": 110111
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10112,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10112",
+      "split": "train",
+      "behavior_seed": 110112
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10113,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10113",
+      "split": "train",
+      "behavior_seed": 110113
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10114,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10114",
+      "split": "train",
+      "behavior_seed": 110114
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10115,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10115",
+      "split": "train",
+      "behavior_seed": 110115
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10116,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10116",
+      "split": "train",
+      "behavior_seed": 110116
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10117,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10117",
+      "split": "train",
+      "behavior_seed": 110117
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10118,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10118",
+      "split": "train",
+      "behavior_seed": 110118
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10119,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "normal/seed10119",
+      "split": "train",
+      "behavior_seed": 110119
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10120,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10120",
+      "split": "train",
+      "behavior_seed": 110120
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10121,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10121",
+      "split": "train",
+      "behavior_seed": 110121
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10122,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10122",
+      "split": "train",
+      "behavior_seed": 110122
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10123,
+      "recipe_group": "Substance B:3|Substance C:1",
+      "directory": "normal/seed10123",
+      "split": "train",
+      "behavior_seed": 110123
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10124,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10124",
+      "split": "train",
+      "behavior_seed": 110124
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10125,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10125",
+      "split": "train",
+      "behavior_seed": 110125
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10128,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10128",
+      "split": "train",
+      "behavior_seed": 110128
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10129,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10129",
+      "split": "train",
+      "behavior_seed": 110129
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10130,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10130",
+      "split": "train",
+      "behavior_seed": 110130
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10131,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10131",
+      "split": "train",
+      "behavior_seed": 110131
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10132,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10132",
+      "split": "train",
+      "behavior_seed": 110132
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10133,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "normal/seed10133",
+      "split": "train",
+      "behavior_seed": 110133
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10134,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10134",
+      "split": "train",
+      "behavior_seed": 110134
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10135,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10135",
+      "split": "train",
+      "behavior_seed": 110135
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10136,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10136",
+      "split": "train",
+      "behavior_seed": 110136
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10137,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10137",
+      "split": "train",
+      "behavior_seed": 110137
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10138,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10138",
+      "split": "train",
+      "behavior_seed": 110138
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10139,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10139",
+      "split": "train",
+      "behavior_seed": 110139
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10141,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10141",
+      "split": "train",
+      "behavior_seed": 110141
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10142,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10142",
+      "split": "train",
+      "behavior_seed": 110142
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10143,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10143",
+      "split": "train",
+      "behavior_seed": 110143
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10144,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10144",
+      "split": "train",
+      "behavior_seed": 110144
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10146,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10146",
+      "split": "train",
+      "behavior_seed": 110146
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10147,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10147",
+      "split": "train",
+      "behavior_seed": 110147
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10148,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "normal/seed10148",
+      "split": "train",
+      "behavior_seed": 110148
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10149,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10149",
+      "split": "train",
+      "behavior_seed": 110149
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10151,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "normal/seed10151",
+      "split": "train",
+      "behavior_seed": 110151
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10152,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10152",
+      "split": "train",
+      "behavior_seed": 110152
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10153,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10153",
+      "split": "train",
+      "behavior_seed": 110153
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10154,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10154",
+      "split": "train",
+      "behavior_seed": 110154
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10155,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10155",
+      "split": "train",
+      "behavior_seed": 110155
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10156,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10156",
+      "split": "train",
+      "behavior_seed": 110156
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10157,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10157",
+      "split": "train",
+      "behavior_seed": 110157
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10158,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10158",
+      "split": "train",
+      "behavior_seed": 110158
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10159,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10159",
+      "split": "train",
+      "behavior_seed": 110159
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10161,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10161",
+      "split": "train",
+      "behavior_seed": 110161
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10162,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10162",
+      "split": "train",
+      "behavior_seed": 110162
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10163,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10163",
+      "split": "train",
+      "behavior_seed": 110163
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10164,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10164",
+      "split": "train",
+      "behavior_seed": 110164
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10165,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10165",
+      "split": "train",
+      "behavior_seed": 110165
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10166,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10166",
+      "split": "train",
+      "behavior_seed": 110166
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10167,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "normal/seed10167",
+      "split": "train",
+      "behavior_seed": 110167
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10168,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10168",
+      "split": "train",
+      "behavior_seed": 110168
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10169,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10169",
+      "split": "train",
+      "behavior_seed": 110169
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10170,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10170",
+      "split": "train",
+      "behavior_seed": 110170
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10171,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "normal/seed10171",
+      "split": "train",
+      "behavior_seed": 110171
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10172,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10172",
+      "split": "train",
+      "behavior_seed": 110172
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10174,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10174",
+      "split": "train",
+      "behavior_seed": 110174
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11000,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11000",
+      "split": "train",
+      "behavior_seed": 111000
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11001,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11001",
+      "split": "train",
+      "behavior_seed": 111001
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11003,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11003",
+      "split": "train",
+      "behavior_seed": 111003
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11004,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11004",
+      "split": "train",
+      "behavior_seed": 111004
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11006,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11006",
+      "split": "train",
+      "behavior_seed": 111006
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11009,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "challenge/seed11009",
+      "split": "train",
+      "behavior_seed": 111009
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11010,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11010",
+      "split": "train",
+      "behavior_seed": 111010
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11011,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11011",
+      "split": "train",
+      "behavior_seed": 111011
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11012,
+      "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+      "directory": "challenge/seed11012",
+      "split": "train",
+      "behavior_seed": 111012
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11013,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11013",
+      "split": "train",
+      "behavior_seed": 111013
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11014,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11014",
+      "split": "train",
+      "behavior_seed": 111014
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11015,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11015",
+      "split": "train",
+      "behavior_seed": 111015
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11016,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11016",
+      "split": "train",
+      "behavior_seed": 111016
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11017,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "challenge/seed11017",
+      "split": "train",
+      "behavior_seed": 111017
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11018,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "challenge/seed11018",
+      "split": "train",
+      "behavior_seed": 111018
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11019,
+      "recipe_group": "Substance C:1|Substance D:3",
+      "directory": "challenge/seed11019",
+      "split": "train",
+      "behavior_seed": 111019
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11020,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "challenge/seed11020",
+      "split": "train",
+      "behavior_seed": 111020
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11021,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11021",
+      "split": "train",
+      "behavior_seed": 111021
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11022,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11022",
+      "split": "train",
+      "behavior_seed": 111022
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11023,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11023",
+      "split": "train",
+      "behavior_seed": 111023
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11024,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11024",
+      "split": "train",
+      "behavior_seed": 111024
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11025,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11025",
+      "split": "train",
+      "behavior_seed": 111025
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11026,
+      "recipe_group": "Substance B:2|Substance D:1",
+      "directory": "challenge/seed11026",
+      "split": "train",
+      "behavior_seed": 111026
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11027,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "challenge/seed11027",
+      "split": "train",
+      "behavior_seed": 111027
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11028,
+      "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+      "directory": "challenge/seed11028",
+      "split": "train",
+      "behavior_seed": 111028
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11029,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11029",
+      "split": "train",
+      "behavior_seed": 111029
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11030,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "challenge/seed11030",
+      "split": "train",
+      "behavior_seed": 111030
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11031,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11031",
+      "split": "train",
+      "behavior_seed": 111031
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11032,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "challenge/seed11032",
+      "split": "train",
+      "behavior_seed": 111032
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11034,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11034",
+      "split": "train",
+      "behavior_seed": 111034
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11035,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "challenge/seed11035",
+      "split": "train",
+      "behavior_seed": 111035
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11037,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11037",
+      "split": "train",
+      "behavior_seed": 111037
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11038,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11038",
+      "split": "train",
+      "behavior_seed": 111038
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11039,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11039",
+      "split": "train",
+      "behavior_seed": 111039
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11040,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "challenge/seed11040",
+      "split": "train",
+      "behavior_seed": 111040
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11041,
+      "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11041",
+      "split": "train",
+      "behavior_seed": 111041
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11043,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11043",
+      "split": "train",
+      "behavior_seed": 111043
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11045,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11045",
+      "split": "train",
+      "behavior_seed": 111045
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11046,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11046",
+      "split": "train",
+      "behavior_seed": 111046
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11047,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "challenge/seed11047",
+      "split": "train",
+      "behavior_seed": 111047
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11048,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "challenge/seed11048",
+      "split": "train",
+      "behavior_seed": 111048
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11050,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11050",
+      "split": "train",
+      "behavior_seed": 111050
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11051,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11051",
+      "split": "train",
+      "behavior_seed": 111051
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11052,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "challenge/seed11052",
+      "split": "train",
+      "behavior_seed": 111052
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11053,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11053",
+      "split": "train",
+      "behavior_seed": 111053
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11054,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11054",
+      "split": "train",
+      "behavior_seed": 111054
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11055,
+      "recipe_group": "Substance A:1|Substance D:2",
+      "directory": "challenge/seed11055",
+      "split": "train",
+      "behavior_seed": 111055
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11056,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11056",
+      "split": "train",
+      "behavior_seed": 111056
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11057,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11057",
+      "split": "train",
+      "behavior_seed": 111057
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11059,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "challenge/seed11059",
+      "split": "train",
+      "behavior_seed": 111059
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11060,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "challenge/seed11060",
+      "split": "train",
+      "behavior_seed": 111060
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11061,
+      "recipe_group": "Substance A:1|Substance C:3",
+      "directory": "challenge/seed11061",
+      "split": "train",
+      "behavior_seed": 111061
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11063,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11063",
+      "split": "train",
+      "behavior_seed": 111063
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11064,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11064",
+      "split": "train",
+      "behavior_seed": 111064
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11068,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11068",
+      "split": "train",
+      "behavior_seed": 111068
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11069,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11069",
+      "split": "train",
+      "behavior_seed": 111069
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11071,
+      "recipe_group": "Substance B:1|Substance D:2",
+      "directory": "challenge/seed11071",
+      "split": "train",
+      "behavior_seed": 111071
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11072,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "challenge/seed11072",
+      "split": "train",
+      "behavior_seed": 111072
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11073,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11073",
+      "split": "train",
+      "behavior_seed": 111073
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11076,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11076",
+      "split": "train",
+      "behavior_seed": 111076
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11077,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11077",
+      "split": "train",
+      "behavior_seed": 111077
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11078,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "challenge/seed11078",
+      "split": "train",
+      "behavior_seed": 111078
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11080,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11080",
+      "split": "train",
+      "behavior_seed": 111080
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11082,
+      "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+      "directory": "challenge/seed11082",
+      "split": "train",
+      "behavior_seed": 111082
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11083,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11083",
+      "split": "train",
+      "behavior_seed": 111083
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11085,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11085",
+      "split": "train",
+      "behavior_seed": 111085
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11086,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11086",
+      "split": "train",
+      "behavior_seed": 111086
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11087,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11087",
+      "split": "train",
+      "behavior_seed": 111087
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11088,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+      "directory": "challenge/seed11088",
+      "split": "train",
+      "behavior_seed": 111088
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11089,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "challenge/seed11089",
+      "split": "train",
+      "behavior_seed": 111089
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11091,
+      "recipe_group": "Substance A:2|Substance B:1",
+      "directory": "challenge/seed11091",
+      "split": "train",
+      "behavior_seed": 111091
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11096,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11096",
+      "split": "train",
+      "behavior_seed": 111096
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11097,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11097",
+      "split": "train",
+      "behavior_seed": 111097
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11098,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "challenge/seed11098",
+      "split": "train",
+      "behavior_seed": 111098
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11100,
+      "recipe_group": "Substance B:1|Substance D:2",
+      "directory": "challenge/seed11100",
+      "split": "train",
+      "behavior_seed": 111100
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11101,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "challenge/seed11101",
+      "split": "train",
+      "behavior_seed": 111101
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11103,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11103",
+      "split": "train",
+      "behavior_seed": 111103
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11104,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "challenge/seed11104",
+      "split": "train",
+      "behavior_seed": 111104
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11105,
+      "recipe_group": "Substance A:2|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11105",
+      "split": "train",
+      "behavior_seed": 111105
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11106,
+      "recipe_group": "Substance A:3|Substance D:1",
+      "directory": "challenge/seed11106",
+      "split": "train",
+      "behavior_seed": 111106
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11107,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11107",
+      "split": "train",
+      "behavior_seed": 111107
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11108,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11108",
+      "split": "train",
+      "behavior_seed": 111108
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11109,
+      "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11109",
+      "split": "train",
+      "behavior_seed": 111109
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11111,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "challenge/seed11111",
+      "split": "train",
+      "behavior_seed": 111111
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11112,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11112",
+      "split": "train",
+      "behavior_seed": 111112
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11114,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11114",
+      "split": "train",
+      "behavior_seed": 111114
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11115,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "challenge/seed11115",
+      "split": "train",
+      "behavior_seed": 111115
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11116,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11116",
+      "split": "train",
+      "behavior_seed": 111116
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11118,
+      "recipe_group": "Substance A:1|Substance D:2",
+      "directory": "challenge/seed11118",
+      "split": "train",
+      "behavior_seed": 111118
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11119,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11119",
+      "split": "train",
+      "behavior_seed": 111119
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11120,
+      "recipe_group": "Substance C:1|Substance D:1",
+      "directory": "challenge/seed11120",
+      "split": "train",
+      "behavior_seed": 111120
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11122,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11122",
+      "split": "train",
+      "behavior_seed": 111122
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11124,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11124",
+      "split": "train",
+      "behavior_seed": 111124
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11125,
+      "recipe_group": "Substance B:2|Substance D:1",
+      "directory": "challenge/seed11125",
+      "split": "train",
+      "behavior_seed": 111125
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11126,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "challenge/seed11126",
+      "split": "train",
+      "behavior_seed": 111126
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11127,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11127",
+      "split": "train",
+      "behavior_seed": 111127
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11128,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "challenge/seed11128",
+      "split": "train",
+      "behavior_seed": 111128
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11129,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "challenge/seed11129",
+      "split": "train",
+      "behavior_seed": 111129
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11130,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11130",
+      "split": "train",
+      "behavior_seed": 111130
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11131,
+      "recipe_group": "Substance B:2|Substance D:1",
+      "directory": "challenge/seed11131",
+      "split": "train",
+      "behavior_seed": 111131
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11132,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11132",
+      "split": "train",
+      "behavior_seed": 111132
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11133,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11133",
+      "split": "train",
+      "behavior_seed": 111133
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11134,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11134",
+      "split": "train",
+      "behavior_seed": 111134
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11135,
+      "recipe_group": "Substance B:1|Substance C:2",
+      "directory": "challenge/seed11135",
+      "split": "train",
+      "behavior_seed": 111135
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11136,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11136",
+      "split": "train",
+      "behavior_seed": 111136
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11137,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "challenge/seed11137",
+      "split": "train",
+      "behavior_seed": 111137
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11142,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "challenge/seed11142",
+      "split": "train",
+      "behavior_seed": 111142
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11143,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11143",
+      "split": "train",
+      "behavior_seed": 111143
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11144,
+      "recipe_group": "Substance A:1|Substance D:2",
+      "directory": "challenge/seed11144",
+      "split": "train",
+      "behavior_seed": 111144
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11146,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11146",
+      "split": "train",
+      "behavior_seed": 111146
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11147,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11147",
+      "split": "train",
+      "behavior_seed": 111147
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11148,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11148",
+      "split": "train",
+      "behavior_seed": 111148
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11149,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+      "directory": "challenge/seed11149",
+      "split": "train",
+      "behavior_seed": 111149
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11150,
+      "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11150",
+      "split": "train",
+      "behavior_seed": 111150
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11152,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11152",
+      "split": "train",
+      "behavior_seed": 111152
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11153,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11153",
+      "split": "train",
+      "behavior_seed": 111153
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11154,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11154",
+      "split": "train",
+      "behavior_seed": 111154
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11155,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11155",
+      "split": "train",
+      "behavior_seed": 111155
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11156,
+      "recipe_group": "Substance C:1|Substance D:2",
+      "directory": "challenge/seed11156",
+      "split": "train",
+      "behavior_seed": 111156
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11157,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11157",
+      "split": "train",
+      "behavior_seed": 111157
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11158,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11158",
+      "split": "train",
+      "behavior_seed": 111158
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11159,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11159",
+      "split": "train",
+      "behavior_seed": 111159
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11160,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11160",
+      "split": "train",
+      "behavior_seed": 111160
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11161,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11161",
+      "split": "train",
+      "behavior_seed": 111161
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11162,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "challenge/seed11162",
+      "split": "train",
+      "behavior_seed": 111162
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11163,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "challenge/seed11163",
+      "split": "train",
+      "behavior_seed": 111163
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11165,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "challenge/seed11165",
+      "split": "train",
+      "behavior_seed": 111165
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11166,
+      "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+      "directory": "challenge/seed11166",
+      "split": "train",
+      "behavior_seed": 111166
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11167,
+      "recipe_group": "Substance A:2|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11167",
+      "split": "train",
+      "behavior_seed": 111167
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11168,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "challenge/seed11168",
+      "split": "train",
+      "behavior_seed": 111168
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11169,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11169",
+      "split": "train",
+      "behavior_seed": 111169
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11170,
+      "recipe_group": "Substance A:1|Substance D:2",
+      "directory": "challenge/seed11170",
+      "split": "train",
+      "behavior_seed": 111170
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11171,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11171",
+      "split": "train",
+      "behavior_seed": 111171
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11172,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11172",
+      "split": "train",
+      "behavior_seed": 111172
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11174,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11174",
+      "split": "train",
+      "behavior_seed": 111174
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11175,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11175",
+      "split": "train",
+      "behavior_seed": 111175
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11176,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "challenge/seed11176",
+      "split": "train",
+      "behavior_seed": 111176
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11177,
+      "recipe_group": "Substance A:1|Substance D:2",
+      "directory": "challenge/seed11177",
+      "split": "train",
+      "behavior_seed": 111177
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11179,
+      "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11179",
+      "split": "train",
+      "behavior_seed": 111179
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11180,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11180",
+      "split": "train",
+      "behavior_seed": 111180
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11181,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "challenge/seed11181",
+      "split": "train",
+      "behavior_seed": 111181
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11182,
+      "recipe_group": "Substance A:3|Substance D:1",
+      "directory": "challenge/seed11182",
+      "split": "train",
+      "behavior_seed": 111182
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11183,
+      "recipe_group": "Substance C:1|Substance D:1",
+      "directory": "challenge/seed11183",
+      "split": "train",
+      "behavior_seed": 111183
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11184,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11184",
+      "split": "train",
+      "behavior_seed": 111184
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11185,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+      "directory": "challenge/seed11185",
+      "split": "train",
+      "behavior_seed": 111185
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11186,
+      "recipe_group": "Substance B:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11186",
+      "split": "train",
+      "behavior_seed": 111186
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11188,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11188",
+      "split": "train",
+      "behavior_seed": 111188
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11190,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11190",
+      "split": "train",
+      "behavior_seed": 111190
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11191,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+      "directory": "challenge/seed11191",
+      "split": "train",
+      "behavior_seed": 111191
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11192,
+      "recipe_group": "Substance C:1|Substance D:1",
+      "directory": "challenge/seed11192",
+      "split": "train",
+      "behavior_seed": 111192
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11193,
+      "recipe_group": "Substance B:1|Substance C:1",
+      "directory": "challenge/seed11193",
+      "split": "train",
+      "behavior_seed": 111193
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11194,
+      "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11194",
+      "split": "train",
+      "behavior_seed": 111194
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11195,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "challenge/seed11195",
+      "split": "train",
+      "behavior_seed": 111195
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11196,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11196",
+      "split": "train",
+      "behavior_seed": 111196
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11198,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11198",
+      "split": "train",
+      "behavior_seed": 111198
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11199,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11199",
+      "split": "train",
+      "behavior_seed": 111199
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11200,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11200",
+      "split": "train",
+      "behavior_seed": 111200
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11201,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11201",
+      "split": "train",
+      "behavior_seed": 111201
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11202,
+      "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+      "directory": "challenge/seed11202",
+      "split": "train",
+      "behavior_seed": 111202
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11203,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11203",
+      "split": "train",
+      "behavior_seed": 111203
+    }
+  ],
+  "confirmation_episodes": [
+    {
+      "difficulty": "Challenge",
+      "seed": 11062,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+      "directory": "challenge/seed11062",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11141,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+      "directory": "challenge/seed11141",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11208,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+      "directory": "challenge/seed11208",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11294,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+      "directory": "challenge/seed11294",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11376,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+      "directory": "challenge/seed11376",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11005,
+      "recipe_group": "Substance A:1|Substance D:3",
+      "directory": "challenge/seed11005",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11058,
+      "recipe_group": "Substance A:1|Substance D:3",
+      "directory": "challenge/seed11058",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11074,
+      "recipe_group": "Substance A:1|Substance D:3",
+      "directory": "challenge/seed11074",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11094,
+      "recipe_group": "Substance A:1|Substance D:3",
+      "directory": "challenge/seed11094",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11173,
+      "recipe_group": "Substance A:1|Substance D:3",
+      "directory": "challenge/seed11173",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11084,
+      "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11084",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11138,
+      "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11138",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11145,
+      "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11145",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11214,
+      "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11214",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11361,
+      "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11361",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11093,
+      "recipe_group": "Substance B:1|Substance D:3",
+      "directory": "challenge/seed11093",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11237,
+      "recipe_group": "Substance B:1|Substance D:3",
+      "directory": "challenge/seed11237",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11379,
+      "recipe_group": "Substance B:1|Substance D:3",
+      "directory": "challenge/seed11379",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11421,
+      "recipe_group": "Substance B:1|Substance D:3",
+      "directory": "challenge/seed11421",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11439,
+      "recipe_group": "Substance B:1|Substance D:3",
+      "directory": "challenge/seed11439",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11008,
+      "recipe_group": "Substance B:3|Substance D:1",
+      "directory": "challenge/seed11008",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11099,
+      "recipe_group": "Substance B:3|Substance D:1",
+      "directory": "challenge/seed11099",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11121,
+      "recipe_group": "Substance B:3|Substance D:1",
+      "directory": "challenge/seed11121",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11236,
+      "recipe_group": "Substance B:3|Substance D:1",
+      "directory": "challenge/seed11236",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11242,
+      "recipe_group": "Substance B:3|Substance D:1",
+      "directory": "challenge/seed11242",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11067,
+      "recipe_group": "Substance C:2|Substance D:1",
+      "directory": "challenge/seed11067",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11102,
+      "recipe_group": "Substance C:2|Substance D:1",
+      "directory": "challenge/seed11102",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11113,
+      "recipe_group": "Substance C:2|Substance D:1",
+      "directory": "challenge/seed11113",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11225,
+      "recipe_group": "Substance C:2|Substance D:1",
+      "directory": "challenge/seed11225",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11235,
+      "recipe_group": "Substance C:2|Substance D:1",
+      "directory": "challenge/seed11235",
+      "regime": "untrained_recipe"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10175,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10175",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10176,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10176",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10177,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10177",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10178,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10178",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10179,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "normal/seed10179",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10180,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10180",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10181,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "normal/seed10181",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10182,
+      "recipe_group": "Substance B:2|Substance C:1",
+      "directory": "normal/seed10182",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10183,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "normal/seed10183",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10184,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10184",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10185,
+      "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+      "directory": "normal/seed10185",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10187,
+      "recipe_group": "Substance A:1|Substance C:1",
+      "directory": "normal/seed10187",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10188,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "normal/seed10188",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10189,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "normal/seed10189",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Normal",
+      "seed": 10190,
+      "recipe_group": "Substance A:3|Substance B:1",
+      "directory": "normal/seed10190",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11205,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11205",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11206,
+      "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11206",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11207,
+      "recipe_group": "Substance B:2|Substance D:1",
+      "directory": "challenge/seed11207",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11209,
+      "recipe_group": "Substance A:1|Substance C:2",
+      "directory": "challenge/seed11209",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11210,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11210",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11211,
+      "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+      "directory": "challenge/seed11211",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11212,
+      "recipe_group": "Substance A:2|Substance D:1",
+      "directory": "challenge/seed11212",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11213,
+      "recipe_group": "Substance A:1|Substance B:2",
+      "directory": "challenge/seed11213",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11215,
+      "recipe_group": "Substance B:1|Substance C:1|Substance D:1",
+      "directory": "challenge/seed11215",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11216,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "challenge/seed11216",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11217,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+      "directory": "challenge/seed11217",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11218,
+      "recipe_group": "Substance B:1|Substance C:3",
+      "directory": "challenge/seed11218",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11219,
+      "recipe_group": "Substance B:1|Substance D:1",
+      "directory": "challenge/seed11219",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11220,
+      "recipe_group": "Substance A:2|Substance C:1",
+      "directory": "challenge/seed11220",
+      "regime": "seen_recipe_new_instance"
+    },
+    {
+      "difficulty": "Challenge",
+      "seed": 11222,
+      "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+      "directory": "challenge/seed11222",
+      "regime": "seen_recipe_new_instance"
+    }
+  ],
+  "training_count": 320,
+  "confirmation_count": 60
+}
