@@ -21,6 +21,8 @@ def main():
     parser.add_argument('--reference', type=Path, default=Path('runs/discoveryworld/continual_experiment/native'))
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--workers', type=int, default=16)
+    parser.add_argument('--state-modes', nargs='+', choices=('neural_only', 'learning_only', 'h_only', 'z_only'),
+                        default=('neural_only', 'learning_only'))
     parser.add_argument('--pilot', action='store_true', help='One original stream per arm, plus unchanged carry replay')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -31,7 +33,7 @@ def main():
         rng = Path(source['initial_rng_root'])
         if any(not (rng / f'seed{number}.json.gz').is_file() for stream in streams for number in stream['seeds']):
             raise FileNotFoundError('The original initial RNG is required for every instance')
-        modes = ('neural_only', 'learning_only', 'carry') if args.pilot else ('neural_only', 'learning_only')
+        modes = (*args.state_modes, 'carry') if args.pilot else args.state_modes
         for mode in modes:
             name = f'{mode}_seed{seed}'
             output = args.output / name
@@ -47,7 +49,9 @@ def main():
     plan = {'pilot': args.pilot, 'reference': str(args.reference),
             'conditions': list(configs), 'native_instances': sum(len(stream['seeds']) for _, _, stream in jobs),
             'interventions': {'neural_only': 'Carry h/z; reset replay contents, replay cursor and fast/slow adapters',
-                              'learning_only': 'Reset h/z; carry replay contents, replay cursor and fast/slow adapters'},
+                              'learning_only': 'Reset h/z; carry replay contents, replay cursor and fast/slow adapters',
+                              'h_only': 'Carry h; reset z, replay contents, replay cursor and fast/slow adapters',
+                              'z_only': 'Carry z; reset h, replay contents, replay cursor and fast/slow adapters'},
             'unchanged': ['model weights', 'initial simulator RNG', 'ordered streams', 'tools and observations',
                           'actual action budget', 'terminal feedback delivery', 'pending and activity counters'],
             'max_cpu_workers': args.workers}

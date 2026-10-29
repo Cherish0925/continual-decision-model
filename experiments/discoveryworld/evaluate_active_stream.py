@@ -108,13 +108,21 @@ def schedule_position(stream, index):
         offset += length
     return {}
 
+_LEARNING_STATE = ("memory_x", "memory_y", "memory_valid", "memory_cursor", "fast", "slow")
+_BOUNDARY_RESETS = {
+    "neural_only": _LEARNING_STATE,
+    "learning_only": ("h", "z"),
+    "h_only": ("z", *_LEARNING_STATE),
+    "z_only": ("h", *_LEARNING_STATE),
+}
 
 
 def task_boundary_state(model, state, mode):
     """Intervene only at task boundaries; public numerical ledgers are fresh.
 
     neural_only keeps h/z and clears replay plus fast/slow prediction adapters.
-    learning_only clears h/z and keeps replay plus those adapters. Pending state
+    learning_only clears h/z and keeps replay plus those adapters. h_only and
+    z_only retain the named neural state and clear other substantive state. Pending state
     and activity/observation counters retain the original carry protocol. Every
     task's terminal feedback must have been consumed before this intervention.
     """
@@ -127,10 +135,9 @@ def task_boundary_state(model, state, mode):
         raise ValueError("Selective state controls require a continual policy")
     if bool(state["pending"].any()):
         raise ValueError("Receive terminal feedback before changing task state")
-    reset_keys = (("memory_x", "memory_y", "memory_valid", "memory_cursor", "fast", "slow")
-                  if mode == "neural_only" else ("h", "z"))
-    if mode not in {"neural_only", "learning_only"}:
+    if mode not in _BOUNDARY_RESETS:
         raise ValueError(f"Unknown task-boundary state mode: {mode}")
+    reset_keys = _BOUNDARY_RESETS[mode]
     return {key: initial[key] if key in reset_keys else value for key, value in state.items()}
 
 def run_stream(job):
@@ -196,10 +203,8 @@ def run_stream(job):
             metadata = {**env.configuration, "policy": "active_stream",
                         "policy_inputs": "public_structured_measurements_and_native_feedback",
                         "state_mode": options["state_mode"],
-                        "carried_state": ([key for key in state if key not in
-                            ({"memory_x", "memory_y", "memory_valid", "memory_cursor", "fast", "slow"}
-                             if options["state_mode"] == "neural_only" else {"h", "z"})]
-                            if options["state_mode"] in {"neural_only", "learning_only"}
+                        "carried_state": ([key for key in state if key not in _BOUNDARY_RESETS[options["state_mode"]]]
+                            if options["state_mode"] in _BOUNDARY_RESETS
                             else list(state) if options["state_mode"] == "carry" else []),
                         "task_boundary_intervention": options["state_mode"],
                         "continual_activities": continual,
@@ -333,8 +338,8 @@ def main():
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--manifest", type=Path, help="JSON object with streams: [{name, seeds}]")
     source.add_argument("--seeds", type=int, nargs="+", help="One ordered sequence of native instances")
-    parser.add_argument("--state-mode", choices=("carry", "reset", "neural_only", "learning_only"), required=True,
-                        help="Task-boundary intervention: all, none, h/z only, or replay and adapters only")
+    parser.add_argument("--state-mode", choices=("carry", "reset", *_BOUNDARY_RESETS), required=True,
+                        help="Task-boundary intervention on neural state, replay, and adapters")
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--mixture-checkpoint", required=True)
     parser.add_argument("--initial-rng-root", required=True)
