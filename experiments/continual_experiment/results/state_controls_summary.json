@@ -1,0 +1,1456 @@
+{
+  "source_release": "v0.10.0",
+  "source": {
+    "full_seed201": {
+      "source": "runs/discoveryworld/continual_experiment/native/full_seed201",
+      "training_seed": 201,
+      "new_execution": false
+    },
+    "reset_seed201": {
+      "source": "runs/discoveryworld/continual_experiment/native/full_reset_seed201",
+      "training_seed": 201,
+      "new_execution": false
+    },
+    "neural_only_seed201": {
+      "source": "runs/continual-experiment/state_controls_v010/full/neural_only_seed201",
+      "training_seed": 201,
+      "new_execution": true
+    },
+    "learning_only_seed201": {
+      "source": "runs/continual-experiment/state_controls_v010/full/learning_only_seed201",
+      "training_seed": 201,
+      "new_execution": true
+    },
+    "full_seed202": {
+      "source": "runs/discoveryworld/continual_experiment/native/full_seed202",
+      "training_seed": 202,
+      "new_execution": false
+    },
+    "reset_seed202": {
+      "source": "runs/discoveryworld/continual_experiment/native/full_reset_seed202",
+      "training_seed": 202,
+      "new_execution": false
+    },
+    "neural_only_seed202": {
+      "source": "runs/continual-experiment/state_controls_v010/full/neural_only_seed202",
+      "training_seed": 202,
+      "new_execution": true
+    },
+    "learning_only_seed202": {
+      "source": "runs/continual-experiment/state_controls_v010/full/learning_only_seed202",
+      "training_seed": 202,
+      "new_execution": true
+    }
+  },
+  "methods": {
+    "full_seed201": {
+      "all": {
+        "instances": 184,
+        "completed": 179,
+        "mean_actions": 148.58152173913044,
+        "mean_measurements": 9.190217391304348,
+        "mean_tests": 4.989130434782608,
+        "activity_counts": [
+          2609,
+          9464,
+          25,
+          0,
+          0,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 40,
+        "mean_actions": 114.3170731707317,
+        "mean_measurements": 7.2439024390243905,
+        "mean_tests": 3.8292682926829267,
+        "activity_counts": [
+          454,
+          1813,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 207.1,
+        "mean_measurements": 14.5,
+        "mean_tests": 6.4,
+        "activity_counts": [
+          418,
+          1672,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 236.15,
+        "mean_measurements": 13.95,
+        "mean_tests": 7.75,
+        "activity_counts": [
+          434,
+          1736,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 126.25,
+        "mean_measurements": 7.5,
+        "mean_tests": 4.318181818181818,
+        "activity_counts": [
+          520,
+          2060,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "reset_seed201": {
+      "all": {
+        "instances": 184,
+        "completed": 179,
+        "mean_actions": 197.1195652173913,
+        "mean_measurements": 11.554347826086957,
+        "mean_tests": 6.771739130434782,
+        "activity_counts": [
+          3372,
+          3772,
+          144,
+          0,
+          0,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 41,
+        "mean_actions": 196.5609756097561,
+        "mean_measurements": 12.170731707317072,
+        "mean_tests": 6.780487804878049,
+        "activity_counts": [
+          777,
+          852,
+          28,
+          0,
+          0,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 187.25,
+        "mean_measurements": 11.25,
+        "mean_tests": 6.3,
+        "activity_counts": [
+          351,
+          409,
+          10,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 212.95,
+        "mean_measurements": 11.65,
+        "mean_tests": 7.4,
+        "activity_counts": [
+          381,
+          434,
+          23,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 199.36363636363637,
+        "mean_measurements": 11.454545454545455,
+        "mean_tests": 6.818181818181818,
+        "activity_counts": [
+          804,
+          838,
+          28,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "neural_only_seed201": {
+      "all": {
+        "instances": 184,
+        "completed": 179,
+        "mean_actions": 148.58152173913044,
+        "mean_measurements": 9.190217391304348,
+        "mean_tests": 4.989130434782608,
+        "activity_counts": [
+          2609,
+          9456,
+          25,
+          0,
+          0,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 40,
+        "mean_actions": 114.3170731707317,
+        "mean_measurements": 7.2439024390243905,
+        "mean_tests": 3.8292682926829267,
+        "activity_counts": [
+          454,
+          1805,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 207.1,
+        "mean_measurements": 14.5,
+        "mean_tests": 6.4,
+        "activity_counts": [
+          418,
+          1672,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 236.15,
+        "mean_measurements": 13.95,
+        "mean_tests": 7.75,
+        "activity_counts": [
+          434,
+          1736,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 126.25,
+        "mean_measurements": 7.5,
+        "mean_tests": 4.318181818181818,
+        "activity_counts": [
+          520,
+          2060,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "learning_only_seed201": {
+      "all": {
+        "instances": 184,
+        "completed": 179,
+        "mean_actions": 197.125,
+        "mean_measurements": 11.554347826086957,
+        "mean_tests": 6.771739130434782,
+        "activity_counts": [
+          3372,
+          3794,
+          158,
+          0,
+          0,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 41,
+        "mean_actions": 196.5609756097561,
+        "mean_measurements": 12.170731707317072,
+        "mean_tests": 6.780487804878049,
+        "activity_counts": [
+          777,
+          852,
+          34,
+          0,
+          0,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 187.25,
+        "mean_measurements": 11.25,
+        "mean_tests": 6.3,
+        "activity_counts": [
+          351,
+          410,
+          12,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 212.95,
+        "mean_measurements": 11.65,
+        "mean_tests": 7.4,
+        "activity_counts": [
+          381,
+          440,
+          25,
+          0,
+          0,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 199.36363636363637,
+        "mean_measurements": 11.454545454545455,
+        "mean_tests": 6.818181818181818,
+        "activity_counts": [
+          804,
+          850,
+          28,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "full_seed202": {
+      "all": {
+        "instances": 184,
+        "completed": 174,
+        "mean_actions": 193.7554347826087,
+        "mean_measurements": 9.695652173913043,
+        "mean_tests": 6.625,
+        "activity_counts": [
+          3003,
+          7075,
+          0,
+          0,
+          4937,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 40,
+        "mean_actions": 157.5121951219512,
+        "mean_measurements": 8.073170731707316,
+        "mean_tests": 5.512195121951219,
+        "activity_counts": [
+          557,
+          1373,
+          0,
+          0,
+          855,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 234.95,
+        "mean_measurements": 14.3,
+        "mean_tests": 7.35,
+        "activity_counts": [
+          433,
+          916,
+          0,
+          0,
+          816,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 16,
+        "mean_actions": 248.85,
+        "mean_measurements": 13.15,
+        "mean_tests": 7.9,
+        "activity_counts": [
+          421,
+          981,
+          0,
+          0,
+          703,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 41,
+        "mean_actions": 193.9318181818182,
+        "mean_measurements": 8.772727272727273,
+        "mean_tests": 6.7727272727272725,
+        "activity_counts": [
+          684,
+          1785,
+          0,
+          0,
+          951,
+          0
+        ]
+      }
+    },
+    "reset_seed202": {
+      "all": {
+        "instances": 184,
+        "completed": 178,
+        "mean_actions": 201.34782608695653,
+        "mean_measurements": 11.809782608695652,
+        "mean_tests": 6.8478260869565215,
+        "activity_counts": [
+          3433,
+          4950,
+          0,
+          0,
+          8776,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 41,
+        "mean_actions": 199.390243902439,
+        "mean_measurements": 12.487804878048781,
+        "mean_tests": 6.7560975609756095,
+        "activity_counts": [
+          789,
+          1132,
+          0,
+          0,
+          2024,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 191.3,
+        "mean_measurements": 11.5,
+        "mean_tests": 6.4,
+        "activity_counts": [
+          358,
+          509,
+          0,
+          0,
+          920,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 18,
+        "mean_actions": 216.25,
+        "mean_measurements": 12.1,
+        "mean_tests": 7.35,
+        "activity_counts": [
+          389,
+          552,
+          0,
+          0,
+          1004,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 206.02272727272728,
+        "mean_measurements": 11.477272727272727,
+        "mean_tests": 7.113636363636363,
+        "activity_counts": [
+          818,
+          1163,
+          0,
+          0,
+          2106,
+          0
+        ]
+      }
+    },
+    "neural_only_seed202": {
+      "all": {
+        "instances": 184,
+        "completed": 174,
+        "mean_actions": 193.79891304347825,
+        "mean_measurements": 9.684782608695652,
+        "mean_tests": 6.625,
+        "activity_counts": [
+          3001,
+          7284,
+          0,
+          0,
+          4720,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 40,
+        "mean_actions": 157.5121951219512,
+        "mean_measurements": 8.073170731707316,
+        "mean_tests": 5.512195121951219,
+        "activity_counts": [
+          557,
+          1429,
+          0,
+          0,
+          799,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 19,
+        "mean_actions": 235.0,
+        "mean_measurements": 14.3,
+        "mean_tests": 7.35,
+        "activity_counts": [
+          433,
+          947,
+          0,
+          0,
+          785,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 16,
+        "mean_actions": 248.85,
+        "mean_measurements": 13.15,
+        "mean_tests": 7.9,
+        "activity_counts": [
+          421,
+          1006,
+          0,
+          0,
+          678,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 41,
+        "mean_actions": 194.20454545454547,
+        "mean_measurements": 8.75,
+        "mean_tests": 6.7727272727272725,
+        "activity_counts": [
+          683,
+          1836,
+          0,
+          0,
+          896,
+          0
+        ]
+      }
+    },
+    "learning_only_seed202": {
+      "all": {
+        "instances": 184,
+        "completed": 178,
+        "mean_actions": 201.34782608695653,
+        "mean_measurements": 11.809782608695652,
+        "mean_tests": 6.8478260869565215,
+        "activity_counts": [
+          3433,
+          4855,
+          0,
+          0,
+          8871,
+          0
+        ]
+      },
+      "initial_later": {
+        "instances": 41,
+        "completed": 41,
+        "mean_actions": 199.390243902439,
+        "mean_measurements": 12.487804878048781,
+        "mean_tests": 6.7560975609756095,
+        "activity_counts": [
+          789,
+          1110,
+          0,
+          0,
+          2046,
+          0
+        ]
+      },
+      "switch_first": {
+        "instances": 20,
+        "completed": 20,
+        "mean_actions": 191.3,
+        "mean_measurements": 11.5,
+        "mean_tests": 6.4,
+        "activity_counts": [
+          358,
+          500,
+          0,
+          0,
+          929,
+          0
+        ]
+      },
+      "return_first": {
+        "instances": 20,
+        "completed": 18,
+        "mean_actions": 216.25,
+        "mean_measurements": 12.1,
+        "mean_tests": 7.35,
+        "activity_counts": [
+          389,
+          540,
+          0,
+          0,
+          1016,
+          0
+        ]
+      },
+      "return_later": {
+        "instances": 44,
+        "completed": 42,
+        "mean_actions": 206.02272727272728,
+        "mean_measurements": 11.477272727272727,
+        "mean_tests": 7.113636363636363,
+        "activity_counts": [
+          818,
+          1148,
+          0,
+          0,
+          2121,
+          0
+        ]
+      }
+    }
+  },
+  "contrasts": {
+    "201": {
+      "neural_without_learning": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -48.53804347826087,
+          "action_interval_95": [
+            -63.03320836965998,
+            -34.39527712724434
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            -1.5706806282722512,
+            1.6574585635359116
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": -82.2439024390244,
+          "action_interval_95": [
+            -117.08929824561403,
+            -47.729264264264266
+          ],
+          "completion_difference_pp": -2.4390243902439024,
+          "completion_interval_95_pp": [
+            -7.6923076923076925,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 19.85,
+          "action_interval_95": [
+            -2.3,
+            47.05
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 23.2,
+          "action_interval_95": [
+            1.65,
+            47.9
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -73.11363636363636,
+          "action_interval_95": [
+            -104.43774671052631,
+            -42.4535984848485
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "learning_without_neural": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": 0.005434782608695652,
+          "action_interval_95": [
+            0.0,
+            0.017045454545454544
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "neural_with_learning": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -48.54347826086956,
+          "action_interval_95": [
+            -63.04162837910033,
+            -34.40101545834429
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            -1.5706806282722512,
+            1.6574585635359116
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": -82.2439024390244,
+          "action_interval_95": [
+            -117.08929824561403,
+            -47.729264264264266
+          ],
+          "completion_difference_pp": -2.4390243902439024,
+          "completion_interval_95_pp": [
+            -7.6923076923076925,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 19.85,
+          "action_interval_95": [
+            -2.3,
+            47.05
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 23.2,
+          "action_interval_95": [
+            1.65,
+            47.9
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -73.11363636363636,
+          "action_interval_95": [
+            -104.43774671052631,
+            -42.4535984848485
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "learning_with_neural": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "interaction": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -0.005434782608695652,
+          "action_interval_95": [
+            -0.017045454545454544,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "202": {
+      "neural_without_learning": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -7.548913043478261,
+          "action_interval_95": [
+            -18.111510128913444,
+            3.0226406926406866
+          ],
+          "completion_difference_pp": -2.1739130434782608,
+          "completion_interval_95_pp": [
+            -5.291005291005291,
+            0.5319148936170213
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": -41.8780487804878,
+          "action_interval_95": [
+            -58.173940217391305,
+            -24.65090936195588
+          ],
+          "completion_difference_pp": -2.4390243902439024,
+          "completion_interval_95_pp": [
+            -7.6923076923076925,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 43.7,
+          "action_interval_95": [
+            4.0,
+            85.75
+          ],
+          "completion_difference_pp": -5.0,
+          "completion_interval_95_pp": [
+            -15.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 32.6,
+          "action_interval_95": [
+            3.05,
+            66.75
+          ],
+          "completion_difference_pp": -10.0,
+          "completion_interval_95_pp": [
+            -25.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -11.818181818181818,
+          "action_interval_95": [
+            -26.755688405797102,
+            1.3268779852366428
+          ],
+          "completion_difference_pp": -2.272727272727273,
+          "completion_interval_95_pp": [
+            -7.504807692307687,
+            0.0
+          ]
+        }
+      },
+      "learning_without_neural": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "neural_with_learning": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -7.592391304347826,
+          "action_interval_95": [
+            -18.180377683180872,
+            3.0118073593073493
+          ],
+          "completion_difference_pp": -2.1739130434782608,
+          "completion_interval_95_pp": [
+            -5.291005291005291,
+            0.5319148936170213
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": -41.8780487804878,
+          "action_interval_95": [
+            -58.173940217391305,
+            -24.65090936195588
+          ],
+          "completion_difference_pp": -2.4390243902439024,
+          "completion_interval_95_pp": [
+            -7.6923076923076925,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 43.65,
+          "action_interval_95": [
+            3.998750000000001,
+            85.7
+          ],
+          "completion_difference_pp": -5.0,
+          "completion_interval_95_pp": [
+            -15.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 32.6,
+          "action_interval_95": [
+            3.05,
+            66.75
+          ],
+          "completion_difference_pp": -10.0,
+          "completion_interval_95_pp": [
+            -25.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -12.090909090909092,
+          "action_interval_95": [
+            -27.073382279741164,
+            1.1466302952503167
+          ],
+          "completion_difference_pp": -2.272727272727273,
+          "completion_interval_95_pp": [
+            -7.504807692307687,
+            0.0
+          ]
+        }
+      },
+      "learning_with_neural": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -0.043478260869565216,
+          "action_interval_95": [
+            -0.2033898305084746,
+            0.06879221546774725
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": -0.05,
+          "action_interval_95": [
+            -0.15,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -0.2727272727272727,
+          "action_interval_95": [
+            -0.8571428571428571,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "interaction": {
+        "all": {
+          "instances": 184,
+          "streams": 20,
+          "action_difference": -0.043478260869565216,
+          "action_interval_95": [
+            -0.2033898305084746,
+            0.06879221546774725
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "initial_later": {
+          "instances": 41,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "switch_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": -0.05,
+          "action_interval_95": [
+            -0.15,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_first": {
+          "instances": 20,
+          "streams": 20,
+          "action_difference": 0.0,
+          "action_interval_95": [
+            0.0,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        },
+        "return_later": {
+          "instances": 44,
+          "streams": 20,
+          "action_difference": -0.2727272727272727,
+          "action_interval_95": [
+            -0.8571428571428571,
+            0.0
+          ],
+          "completion_difference_pp": 0.0,
+          "completion_interval_95_pp": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "paired_totals": {
+    "201": {
+      "full_minus_neural_only": {
+        "total_action_difference": 0,
+        "changed_action_counts": 0,
+        "changed_completions": 0
+      },
+      "learning_only_minus_reset": {
+        "total_action_difference": 1,
+        "changed_action_counts": 1,
+        "changed_completions": 0
+      }
+    },
+    "202": {
+      "full_minus_neural_only": {
+        "total_action_difference": -8,
+        "changed_action_counts": 3,
+        "changed_completions": 0
+      },
+      "learning_only_minus_reset": {
+        "total_action_difference": 0,
+        "changed_action_counts": 0,
+        "changed_completions": 0
+      }
+    }
+  },
+  "first_episode_reproduction": {
+    "full_seed201": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "reset_seed201": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "neural_only_seed201": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "learning_only_seed201": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "full_seed202": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "reset_seed202": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "neural_only_seed202": {
+      "first_episodes": 20,
+      "mismatches": []
+    },
+    "learning_only_seed202": {
+      "first_episodes": 20,
+      "mismatches": []
+    }
+  },
+  "bootstrap": {
+    "unit": "entire ordered task stream",
+    "repetitions": 10000,
+    "seed": 42581,
+    "pairing": "Identical resampled streams for all contrasts within each repetition and phase"
+  },
+  "scope": "Post-hoc state-mechanism intervention on the original cohort; no retraining or model selection"
+}

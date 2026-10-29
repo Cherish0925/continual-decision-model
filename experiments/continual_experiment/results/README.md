@@ -3,6 +3,8 @@
 Each native condition follows the same ordered task instances. Training repetitions are reported separately.
 [Method and stage-level results](methods.csv) · [Data, paired intervals and training records](summary.json)
 
+[Task-boundary state controls](state_controls.md) separate the carried neural state from replay and online adapters on the same instances and checkpoints.
+
 | Condition | Completed | Actions / instance | Measurements / instance | CPU-evaluated elapsed s / instance |
 | --- | ---: | ---: | ---: | ---: |
 | `baseline_parent` | 179/184 | 135.95 | 9.71 | 6.22 |

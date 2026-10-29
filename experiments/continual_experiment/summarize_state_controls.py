@@ -77,7 +77,7 @@ def main():
                 'mean_tests': float(np.mean([r['test_requests'] for r in selected])),
                 'activity_counts': counts.sum(0).tolist()}
     # Reuse the actual complete-stream pairing for every contrast.
-    rng, contrasts = np.random.default_rng(42581), {}
+    contrasts = {}
     for seed in (201, 202):
         comparisons = {
             'neural_without_learning': {f'neural_only_seed{seed}': 1, f'reset_seed{seed}': -1},
@@ -86,8 +86,9 @@ def main():
             'learning_with_neural': {f'full_seed{seed}': 1, f'neural_only_seed{seed}': -1},
             'interaction': {f'full_seed{seed}': 1, f'neural_only_seed{seed}': -1,
                             f'learning_only_seed{seed}': -1, f'reset_seed{seed}': 1}}
-        contrasts[str(seed)] = {label: {group: contrast(methods, coefficients, predicate, rng)
-                                       for group, predicate in GROUPS.items()}
+        contrasts[str(seed)] = {label: {group: contrast(methods, coefficients, predicate,
+                                          np.random.default_rng(42581 + (seed - 201) * len(GROUPS) + index))
+                                       for index, (group, predicate) in enumerate(GROUPS.items())}
                                 for label, coefficients in comparisons.items()}
     # First episodes precede all boundary treatments and must reproduce exactly.
     invariance = {}
@@ -98,9 +99,21 @@ def main():
                         ('native_actions', 'measurement_requests', 'test_requests', 'completed_successfully'))]
         invariance[name] = {'first_episodes': sum(r['episode_index'] == 0 for r in rows.values()),
                             'mismatches': mismatch}
+    if any(row['mismatches'] for row in invariance.values()):
+        raise ValueError('An untreated first episode differs from the original execution')
+    paired_totals = {}
+    for seed in (201, 202):
+        paired_totals[str(seed)] = {}
+        for a, b in (('full', 'neural_only'), ('learning_only', 'reset')):
+            left, right = methods[f'{a}_seed{seed}'], methods[f'{b}_seed{seed}']
+            paired_totals[str(seed)][f'{a}_minus_{b}'] = {
+                'total_action_difference': sum(left[k]['native_actions'] - right[k]['native_actions'] for k in keys),
+                'changed_action_counts': sum(left[k]['native_actions'] != right[k]['native_actions'] for k in keys),
+                'changed_completions': sum(left[k]['completed_successfully'] != right[k]['completed_successfully'] for k in keys)}
     summary = {'source_release': 'v0.10.0', 'source': metadata, 'methods': grouped,
-               'contrasts': contrasts, 'first_episode_reproduction': invariance,
-               'bootstrap': {'unit': 'entire ordered task stream', 'repetitions': 10000, 'seed': 42581},
+               'contrasts': contrasts, 'paired_totals': paired_totals, 'first_episode_reproduction': invariance,
+               'bootstrap': {'unit': 'entire ordered task stream', 'repetitions': 10000, 'seed': 42581,
+                             'pairing': 'Identical resampled streams for all contrasts within each repetition and phase'},
                'scope': 'Post-hoc state-mechanism intervention on the original cohort; no retraining or model selection'}
     (args.output / 'state_controls_summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     fields = ('condition', 'stream', 'seed', 'episode_index', 'segment_role', 'position_in_segment',
@@ -120,7 +133,10 @@ def main():
                             ('learning_only', 'Carry replay and adapters only'), ('full', 'Carry all')]:
             row = grouped[f'{mode}_seed{seed}']; all_row, returned = row['all'], row['return_first']
             lines.append(f'| {seed} | {label} | {all_row["completed"]}/{all_row["instances"]} | {all_row["mean_actions"]:.2f} | {returned["completed"]}/{returned["instances"]} | {returned["mean_actions"]:.2f} |')
-    lines += ['', '## First-return contrasts', '',
+    lines += ['', 'Keeping only h/z reproduces the complete first-return penalty: +23.20 and +32.60 native actions per instance in repetitions 201 and 202. Carrying replay and adapters while resetting h/z produces no first-return difference from resetting everything. The additional carry effects and their interaction are exactly zero on these first-return outcomes.', '',
+        'Across all 184 instances, full carry and h/z-only have identical outcomes in repetition 201. In repetition 202, carrying replay and adapters in addition to h/z saves eight actions in total, without changing any completion. With h/z reset, carrying replay and adapters adds one action in repetition 201 and changes no action count in repetition 202. Thus these components do not explain the observed first-return penalty in this cohort.', '',
+        'The neural state also accounts for most of the benefit during continued work on a relation. Its effect depends on the task transition: useful recent state can coexist with costly return to an earlier relation. These interventions locate the effect in the carried h/z pathway. They do not distinguish recurrent state from workspace state, stale object bindings from other stored information, or the downstream computations that convert that information into actions. Those are separate hypotheses.', '',
+        '## First-return contrasts', '',
         'Differences are added state minus the corresponding reset control. Negative action differences mean fewer native operations. Intervals resample complete streams; the two training repetitions are reported separately.', '',
         '| Repetition | Added state and existing state | Action difference [95% interval] | Completion difference, pp [95% interval] |',
         '| --- | --- | ---: | ---: |']
@@ -134,7 +150,7 @@ def main():
             row = contrasts[str(seed)][comparison]['return_first']; low, high = row['action_interval_95']; cl, ch = row['completion_interval_95_pp']
             lines.append(f'| {seed} | {label} | {row["action_difference"]:+.2f} [{low:+.2f}, {high:+.2f}] | {row["completion_difference_pp"]:+.1f} [{cl:+.1f}, {ch:+.1f}] |')
     lines += ['', 'The interaction is full − neural-only − learning-only + reset. A group intervention measures its total effect through subsequent decisions and observations; it does not identify an individual hidden variable or internal computation.', '',
-        'Pending requests, terminal feedback, activity counts, and observation counts follow the original carry protocol. Only the stated neural tensors or replay/adaptation tensors are reset. Each task starts with a fresh public measurement ledger. The first episode in each stream precedes the intervention; its completion and action counts are checked against the original run.', '',
+        'Pending requests, terminal feedback, activity counts, and observation counts follow the original carry protocol. Only the stated neural tensors or replay/adaptation tensors are reset. Each task starts with a fresh public measurement ledger. All 20 untreated first episodes per condition reproduce the original completion, action, measurement and test counts. An unchanged-carry pilot also reproduced all seven episodes in the first stream for both models.', '',
         '[Per-instance data](state_controls_instances.csv) · [Phase summaries and paired intervals](state_controls_summary.json)', '',
         'Reproduce with `python -m experiments.continual_experiment.state_controls --output runs/continual-experiment/state_controls`, then `python -m experiments.continual_experiment.summarize_state_controls --input runs/continual-experiment/state_controls`. The original release checkpoints and initial RNG records are required.', '']
     (args.output / 'state_controls.md').write_text('\n'.join(lines))
