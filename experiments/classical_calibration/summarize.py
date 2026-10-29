@@ -29,7 +29,7 @@ def main():
     p.add_argument('--parent-root');a=p.parse_args();out=Path(a.output);out.mkdir(parents=True,exist_ok=True)
     expected={s for stream in json.loads(Path(a.manifest).read_text())['streams'] for s in stream['seeds']}
     groups={name:rows(path) for name,path in (('reset',a.reset),('forgetting',a.forgetting))}
-    result={'phase':a.phase,'conditions':{},'comparisons':{},'resampling_unit':'complete ordered six-task stream'}
+    result={'phase':a.phase,'conditions':{},'comparisons':{},'resampling_unit':'complete ordered six-task stream','segment_comparisons':{}}
     flat=[]
     for name,group in groups.items():
         if {r['seed'] for r in group}!=expected or len(group)!=len(expected):raise ValueError('Missing or duplicate instances')
@@ -39,10 +39,19 @@ def main():
             'first_return_mean_actions':float(np.mean([r['native_actions'] for r in group if r['segment_role']=='return' and r['first_in_segment']]))}
         for r in group:flat.append({'method':name,**{k:r[k] for k in ('stream','seed','segment_role','position_in_segment','completed_successfully','native_actions','seconds','inference_seconds','execution_seconds')}})
     result['comparisons']['forgetting:reset']=paired(groups['forgetting'],groups['reset'])
+    pairs=[('forgetting:reset',groups['forgetting'],groups['reset'])]
     if a.parent_root:
         for parent in ('parent_seed221','parent_seed222'):
             reference=rows(Path(a.parent_root)/parent)
-            for name,group in groups.items():result['comparisons'][f'{name}:{parent}']=paired(group,reference)
+            for name,group in groups.items():
+                key=f'{name}:{parent}'
+                result['comparisons'][key]=paired(group,reference)
+                pairs.append((key,group,reference))
+    for key,left,right in pairs:
+        result['segment_comparisons'][key]={}
+        for segment,position in (('initial',0),('switch',0),('return',0),('return',1)):
+            choose=lambda group:[r for r in group if r['segment_role']==segment and r['position_in_segment']==position]
+            result['segment_comparisons'][key][f'{segment}_{position}']=paired(choose(left),choose(right))
     (out/'summary.json').write_text(json.dumps(result,indent=2)+'\n')
     with (out/'instances.csv').open('w') as f:
         w=csv.DictWriter(f,fieldnames=list(flat[0]),lineterminator="\n");w.writeheader();w.writerows(flat)
