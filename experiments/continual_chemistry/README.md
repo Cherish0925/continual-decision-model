@@ -157,8 +157,8 @@ native chemical mechanism. Of 2,786 non-terminating trials, 214 visibly remove
 some rust; they are useful conditional feedback, not uniformly failed trials.
 
 Two runs initialize the chemical interfaces independently (seeds 741 and 742)
-from the same public recurrent core, and train for exactly 500 updates of eight
-transitions. Each episode's windows are traversed in seeded random order with
+from the same public recurrent core, and train for exactly 500 updates of up to
+eight transitions. Each episode's windows are traversed in seeded random order with
 the complete earlier observed prefix reconstructed before the trained window.
 `initial.pt` preserves each exact untrained interface; `last.pt` is the fixed
 endpoint. No development result selects an endpoint.

@@ -32,6 +32,14 @@ on the earlier joint model locate its cross-task benefits and return costs in
 GRU history; carrying its workspace does not change the measured task outcomes.
 These comparisons guide the ongoing model study and its next state-update experiment.
 
+A second native task, [Combinatorial Chemistry](experiments/continual_chemistry/README.md),
+now uses the same recurrent core with chemical observations and experimental
+feedback. Its first 150-execution comparison does not improve on recipe
+enumeration. The results identify inadequate conditional outcome learning and
+cost calibration; the next training study uses a wider range of actual
+experimental histories. This is a separate task adaptation, not yet a jointly
+trained model across both scientific tasks.
+
 ## Current results
 
 The scientific-task studies train the continuing core to choose what to measure
