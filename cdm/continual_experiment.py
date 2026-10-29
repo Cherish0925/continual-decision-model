@@ -219,7 +219,7 @@ class ContinualExperimentPolicy(nn.Module):
             fixed = torch.where(available, fixed, int(Activity.WAIT))
             mask &= F.one_hot(fixed, len(Activity)).bool()
         return {"logits": logits.masked_fill(~action_mask, -torch.inf), "features": x,
-                "predictions": predictions, "activity_mask": mask,
+                "outcomes": self.base.outcome(joint), "predictions": predictions, "activity_mask": mask,
                 "activity_logits": self.activity(activity_input).masked_fill(~mask, -torch.inf),
                 "value": self.base.value(f).squeeze(-1) + self.activity_value(activity_input).squeeze(-1)}
 

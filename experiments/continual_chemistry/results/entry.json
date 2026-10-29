@@ -1,0 +1,474 @@
+{
+  "dataset": {
+    "episodes": [
+      {
+        "directory": "train/seed7101",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7101,
+        "native_actions": 170,
+        "experiments": 14,
+        "task_completed": true,
+        "transitions": 14,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "train/seed7101/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7102",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7102,
+        "native_actions": 156,
+        "experiments": 13,
+        "task_completed": true,
+        "transitions": 13,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "train/seed7102/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7103",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7103,
+        "native_actions": 361,
+        "experiments": 28,
+        "task_completed": true,
+        "transitions": 28,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "train/seed7103/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7104",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7104,
+        "native_actions": 303,
+        "experiments": 24,
+        "task_completed": true,
+        "transitions": 24,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 1,
+        "source": "train/seed7104/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7105",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7105,
+        "native_actions": 170,
+        "experiments": 14,
+        "task_completed": true,
+        "transitions": 14,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "train/seed7105/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7106",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7106,
+        "native_actions": 71,
+        "experiments": 6,
+        "task_completed": true,
+        "transitions": 6,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 1,
+        "source": "train/seed7106/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7107",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7107,
+        "native_actions": 303,
+        "experiments": 24,
+        "task_completed": true,
+        "transitions": 24,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 1,
+        "source": "train/seed7107/experiments.jsonl"
+      },
+      {
+        "directory": "train/seed7108",
+        "difficulty": "Normal",
+        "split": "train",
+        "seed": 7108,
+        "native_actions": 221,
+        "experiments": 18,
+        "task_completed": true,
+        "transitions": 18,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "train/seed7108/experiments.jsonl"
+      },
+      {
+        "directory": "validation/seed7200",
+        "difficulty": "Normal",
+        "split": "validation",
+        "seed": 7200,
+        "native_actions": 183,
+        "experiments": 15,
+        "task_completed": true,
+        "transitions": 15,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "validation/seed7200/experiments.jsonl"
+      },
+      {
+        "directory": "validation/seed7201",
+        "difficulty": "Normal",
+        "split": "validation",
+        "seed": 7201,
+        "native_actions": 346,
+        "experiments": 27,
+        "task_completed": true,
+        "transitions": 27,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "validation/seed7201/experiments.jsonl"
+      },
+      {
+        "directory": "validation/seed7202",
+        "difficulty": "Normal",
+        "split": "validation",
+        "seed": 7202,
+        "native_actions": 183,
+        "experiments": 15,
+        "task_completed": true,
+        "transitions": 15,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "validation/seed7202/experiments.jsonl"
+      },
+      {
+        "directory": "validation/seed7203",
+        "difficulty": "Normal",
+        "split": "validation",
+        "seed": 7203,
+        "native_actions": 170,
+        "experiments": 14,
+        "task_completed": true,
+        "transitions": 14,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "validation/seed7203/experiments.jsonl"
+      },
+      {
+        "directory": "challenge_explored/seed7300",
+        "difficulty": "Challenge",
+        "split": "train",
+        "seed": 7300,
+        "native_actions": 188,
+        "experiments": 16,
+        "task_completed": true,
+        "transitions": 16,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C",
+          "Substance D"
+        ],
+        "candidate_count": 210,
+        "partial_improvements": 1,
+        "source": "challenge_explored/seed7300/experiments.jsonl"
+      },
+      {
+        "directory": "challenge_explored/seed7301",
+        "difficulty": "Challenge",
+        "split": "train",
+        "seed": 7301,
+        "native_actions": 241,
+        "experiments": 20,
+        "task_completed": true,
+        "transitions": 20,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C",
+          "Substance D"
+        ],
+        "candidate_count": 210,
+        "partial_improvements": 2,
+        "source": "challenge_explored/seed7301/experiments.jsonl"
+      },
+      {
+        "directory": "pilot/seed7100",
+        "difficulty": "Normal",
+        "split": "development",
+        "seed": 7100,
+        "native_actions": 170,
+        "experiments": 14,
+        "task_completed": true,
+        "transitions": 14,
+        "input_keys": [
+          "action_mask",
+          "candidates",
+          "event",
+          "evidence",
+          "evidence_mask"
+        ],
+        "components": [
+          "Substance A",
+          "Substance B",
+          "Substance C"
+        ],
+        "candidate_count": 84,
+        "partial_improvements": 2,
+        "source": "pilot/seed7100/experiments.jsonl"
+      }
+    ],
+    "total_transitions": 262,
+    "input_scope": "past returned recipes, public rust state, visible components and own action budget",
+    "excluded_inputs": [
+      "seed",
+      "hidden recipe",
+      "task score",
+      "future rust outcome"
+    ],
+    "labels": "next rust state, rust change, actual native cost; reference action is an exploratory behavior label"
+  },
+  "native_execution": [
+    {
+      "scenario": "Combinatorial Chemistry",
+      "difficulty": "Normal",
+      "seed": 7400,
+      "policy": "untrained_model",
+      "is_trained_chemistry_policy": false,
+      "native_actions": 54,
+      "experiments": 4,
+      "returned_rust": 2,
+      "completed_successfully": false,
+      "feedback_events": 4,
+      "observations": 5,
+      "final_h_change": 4.188446998596191,
+      "final_z_change": 90.48014068603516,
+      "error": null,
+      "seconds": 2.7153854742646217
+    },
+    {
+      "scenario": "Combinatorial Chemistry",
+      "difficulty": "Normal",
+      "seed": 7401,
+      "policy": "reference",
+      "is_trained_chemistry_policy": false,
+      "native_actions": 303,
+      "experiments": 24,
+      "returned_rust": 0,
+      "completed_successfully": true,
+      "feedback_events": 25,
+      "observations": 26,
+      "final_h_change": 16.501466751098633,
+      "final_z_change": 91.62163543701172,
+      "error": null,
+      "seconds": 10.572614466771483
+    },
+    {
+      "scenario": "Combinatorial Chemistry",
+      "difficulty": "Challenge",
+      "seed": 7501,
+      "policy": "reference",
+      "is_trained_chemistry_policy": false,
+      "native_actions": 346,
+      "experiments": 28,
+      "returned_rust": 0,
+      "completed_successfully": true,
+      "feedback_events": 29,
+      "observations": 30,
+      "final_h_change": 16.776742935180664,
+      "final_z_change": 91.63960266113281,
+      "error": null,
+      "seconds": 12.460956942290068
+    }
+  ],
+  "training_path": {
+    "updates": 2,
+    "seconds": 0.809625007212162,
+    "records": [
+      {
+        "update": 1,
+        "transitions": 4,
+        "loss": 2.470938205718994,
+        "gradient_norms": {
+          "gru": 0.5752377510070801,
+          "workspace": 0.23224976658821106,
+          "outcome": 1.0048857927322388
+        },
+        "seconds": 0.45609896071255207
+      },
+      {
+        "update": 2,
+        "transitions": 4,
+        "loss": 2.4244956970214844,
+        "gradient_norms": {
+          "gru": 0.5471391677856445,
+          "workspace": 0.24472670257091522,
+          "outcome": 0.7219126224517822
+        },
+        "seconds": 0.7088249754160643
+      }
+    ],
+    "scope": "training-path verification, not a learned task-performance comparison"
+  }
+}
