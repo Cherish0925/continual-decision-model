@@ -1,0 +1,853 @@
+{
+  "deployment_coverage": {
+    "initial_seed741": {
+      "trials": 1260,
+      "cost_floor_trials": 1260,
+      "total_parts": {
+        "1": 59,
+        "2": 112,
+        "3": 162,
+        "4": 233,
+        "5": 318,
+        "6": 376
+      }
+    },
+    "initial_seed742": {
+      "trials": 783,
+      "cost_floor_trials": 783,
+      "total_parts": {
+        "1": 96,
+        "2": 186,
+        "3": 233,
+        "4": 162,
+        "5": 73,
+        "6": 33
+      }
+    },
+    "trained_seed741": {
+      "trials": 1426,
+      "cost_floor_trials": 1426,
+      "total_parts": {
+        "1": 48,
+        "2": 103,
+        "3": 167,
+        "4": 253,
+        "5": 351,
+        "6": 504
+      }
+    },
+    "trained_seed742": {
+      "trials": 1401,
+      "cost_floor_trials": 1401,
+      "total_parts": {
+        "1": 51,
+        "2": 111,
+        "3": 170,
+        "4": 252,
+        "5": 347,
+        "6": 470
+      }
+    }
+  },
+  "predictive_frequency_reference": {
+    "summary": {
+      "all": {
+        "nll": 0.45655969147891934,
+        "accuracy": 0.8028928906942853,
+        "rust_persistence_accuracy": 0.7966549721624153
+      },
+      "untrained_recipe": {
+        "nll": 0.4894471270485108,
+        "accuracy": 0.7671611862289828,
+        "rust_persistence_accuracy": 0.7761965639084283
+      },
+      "seen_recipe_new_instance": {
+        "nll": 0.40722853812453236,
+        "accuracy": 0.8564904473922391,
+        "rust_persistence_accuracy": 0.8273425845433958
+      }
+    },
+    "scope": "Train-only frequency conditional on component count and pre-treatment rust; no native acting result"
+  },
+  "conditions": [
+    {
+      "condition": "reference",
+      "regime": "all",
+      "n": 30,
+      "completed": 30,
+      "mean_native_actions": 260.8333333333333,
+      "mean_experiments": 20.533333333333335,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.0013947779312729835,
+      "mean_execution_seconds": 8.776225474414726,
+      "mean_seconds": 10.164968557966253,
+      "execution_errors": 0
+    },
+    {
+      "condition": "reference",
+      "regime": "untrained_recipe",
+      "n": 18,
+      "completed": 18,
+      "mean_native_actions": 282.05555555555554,
+      "mean_experiments": 21.944444444444443,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.0015869481075141165,
+      "mean_execution_seconds": 9.7002878582312,
+      "mean_seconds": 11.170295172888371,
+      "execution_errors": 0
+    },
+    {
+      "condition": "reference",
+      "regime": "seen_recipe_new_instance",
+      "n": 12,
+      "completed": 12,
+      "mean_native_actions": 229.0,
+      "mean_experiments": 18.416666666666668,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.0011065226669112842,
+      "mean_execution_seconds": 7.390131898690015,
+      "mean_seconds": 8.656978635583073,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed741",
+      "regime": "all",
+      "n": 30,
+      "completed": 25,
+      "mean_native_actions": 613.0666666666667,
+      "mean_experiments": 42.0,
+      "mean_returned_rust": 0.16666666666666666,
+      "mean_inference_seconds": 1.446460149809718,
+      "mean_execution_seconds": 22.26329227903237,
+      "mean_seconds": 24.174853217167158,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed741",
+      "regime": "untrained_recipe",
+      "n": 18,
+      "completed": 15,
+      "mean_native_actions": 566.8888888888889,
+      "mean_experiments": 38.888888888888886,
+      "mean_returned_rust": 0.16666666666666666,
+      "mean_inference_seconds": 1.392124746615688,
+      "mean_execution_seconds": 20.59847874680741,
+      "mean_seconds": 22.455734197878176,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed741",
+      "regime": "seen_recipe_new_instance",
+      "n": 12,
+      "completed": 10,
+      "mean_native_actions": 682.3333333333334,
+      "mean_experiments": 46.666666666666664,
+      "mean_returned_rust": 0.16666666666666666,
+      "mean_inference_seconds": 1.5279632546007633,
+      "mean_execution_seconds": 24.76051257736981,
+      "mean_seconds": 26.753531746100634,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed742",
+      "regime": "all",
+      "n": 30,
+      "completed": 30,
+      "mean_native_actions": 338.06666666666666,
+      "mean_experiments": 26.1,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.827060898579657,
+      "mean_execution_seconds": 11.07923005701353,
+      "mean_seconds": 12.300789052993059,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed742",
+      "regime": "untrained_recipe",
+      "n": 18,
+      "completed": 18,
+      "mean_native_actions": 379.8333333333333,
+      "mean_experiments": 29.055555555555557,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.9537540342037877,
+      "mean_execution_seconds": 12.51380632020947,
+      "mean_seconds": 13.877424471597704,
+      "execution_errors": 0
+    },
+    {
+      "condition": "initial_seed742",
+      "regime": "seen_recipe_new_instance",
+      "n": 12,
+      "completed": 12,
+      "mean_native_actions": 275.4166666666667,
+      "mean_experiments": 21.666666666666668,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 0.6370211951434612,
+      "mean_execution_seconds": 8.927365662219623,
+      "mean_seconds": 9.93583592508609,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed741",
+      "regime": "all",
+      "n": 30,
+      "completed": 26,
+      "mean_native_actions": 702.5,
+      "mean_experiments": 47.53333333333333,
+      "mean_returned_rust": 0.13333333333333333,
+      "mean_inference_seconds": 1.4472735509897272,
+      "mean_execution_seconds": 23.418428177262346,
+      "mean_seconds": 25.287227503272394,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed741",
+      "regime": "untrained_recipe",
+      "n": 18,
+      "completed": 14,
+      "mean_native_actions": 814.3333333333334,
+      "mean_experiments": 54.833333333333336,
+      "mean_returned_rust": 0.2222222222222222,
+      "mean_inference_seconds": 1.7002664509539802,
+      "mean_execution_seconds": 27.362292485415107,
+      "mean_seconds": 29.48792646504525,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed741",
+      "regime": "seen_recipe_new_instance",
+      "n": 12,
+      "completed": 12,
+      "mean_native_actions": 534.75,
+      "mean_experiments": 36.583333333333336,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 1.0677842010433476,
+      "mean_execution_seconds": 17.502631715033203,
+      "mean_seconds": 18.986179060613114,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed742",
+      "regime": "all",
+      "n": 30,
+      "completed": 27,
+      "mean_native_actions": 688.6666666666666,
+      "mean_experiments": 46.7,
+      "mean_returned_rust": 0.1,
+      "mean_inference_seconds": 1.4568499528492491,
+      "mean_execution_seconds": 23.422130083541074,
+      "mean_seconds": 25.301806390658022,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed742",
+      "regime": "untrained_recipe",
+      "n": 18,
+      "completed": 15,
+      "mean_native_actions": 812.5555555555555,
+      "mean_experiments": 55.05555555555556,
+      "mean_returned_rust": 0.16666666666666666,
+      "mean_inference_seconds": 1.7465232036386926,
+      "mean_execution_seconds": 27.977176635008718,
+      "mean_seconds": 30.161437021257978,
+      "execution_errors": 0
+    },
+    {
+      "condition": "trained_seed742",
+      "regime": "seen_recipe_new_instance",
+      "n": 12,
+      "completed": 12,
+      "mean_native_actions": 502.8333333333333,
+      "mean_experiments": 34.166666666666664,
+      "mean_returned_rust": 0.0,
+      "mean_inference_seconds": 1.0223400766650836,
+      "mean_execution_seconds": 16.58956025633961,
+      "mean_seconds": 18.012360444758087,
+      "execution_errors": 0
+    }
+  ],
+  "paired_comparisons": {
+    "trained_seed741:reference:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 441.6666666666667,
+        "difference_95ci": [
+          159.0388157894737,
+          617.5341891891892
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.13333333333333333,
+        "difference_95ci": [
+          -0.39285714285714285,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 15.122258945306141,
+        "difference_95ci": [
+          5.158058667283407,
+          21.47600297016169
+        ]
+      }
+    },
+    "trained_seed741:reference:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 532.2777777777778,
+        "difference_95ci": [
+          33.55555555555556,
+          734.3448784722223
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.2222222222222222,
+        "difference_95ci": [
+          -0.7272727272727273,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 18.317631292156875,
+        "difference_95ci": [
+          0.4376432007799546,
+          25.720503262975917
+        ]
+      }
+    },
+    "trained_seed741:reference:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 305.75,
+        "difference_95ci": [
+          124.0,
+          410.42105263157896
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 10.329200425030043,
+        "difference_95ci": [
+          4.112200268384601,
+          13.818504955805839
+        ]
+      }
+    },
+    "trained_seed741:initial_seed741:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 89.43333333333334,
+        "difference_95ci": [
+          -262.2643914473684,
+          325.2244410569105
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.03333333333333333,
+        "difference_95ci": [
+          -0.2413793103448276,
+          0.34782608695652173
+        ]
+      },
+      "seconds": {
+        "mean_difference": 1.1123742861052355,
+        "difference_95ci": [
+          -12.291449143302025,
+          10.099843013501076
+        ]
+      }
+    },
+    "trained_seed741:initial_seed741:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 247.44444444444446,
+        "difference_95ci": [
+          -282.2857142857143,
+          588.3
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.05555555555555555,
+        "difference_95ci": [
+          -0.5333333333333333,
+          0.4444444444444444
+        ]
+      },
+      "seconds": {
+        "mean_difference": 7.032192267167072,
+        "difference_95ci": [
+          -13.811566979539665,
+          19.847976442868696
+        ]
+      }
+    },
+    "trained_seed741:initial_seed741:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": -147.58333333333334,
+        "difference_95ci": [
+          -510.0,
+          35.523809523809526
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.16666666666666666,
+        "difference_95ci": [
+          0.0,
+          0.5714285714285714
+        ]
+      },
+      "seconds": {
+        "mean_difference": -7.767352685487519,
+        "difference_95ci": [
+          -21.849369064771704,
+          -1.050099388230592
+        ]
+      }
+    },
+    "trained_seed742:reference:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 427.8333333333333,
+        "difference_95ci": [
+          186.58863636363637,
+          586.0274020807833
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.1,
+        "difference_95ci": [
+          -0.2631578947368421,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 15.13683783269177,
+        "difference_95ci": [
+          6.656665136213594,
+          20.766191962313403
+        ]
+      }
+    },
+    "trained_seed742:reference:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 530.5,
+        "difference_95ci": [
+          78.66915584415588,
+          692.8125
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.16666666666666666,
+        "difference_95ci": [
+          -0.5454545454545454,
+          -0.029411764705882353
+        ]
+      },
+      "seconds": {
+        "mean_difference": 18.991141848369605,
+        "difference_95ci": [
+          3.41121340536776,
+          24.665406989182035
+        ]
+      }
+    },
+    "trained_seed742:reference:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 273.8333333333333,
+        "difference_95ci": [
+          134.28571428571428,
+          345.73333333333335
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 9.355381809175014,
+        "difference_95ci": [
+          4.390968720561692,
+          12.075449127744816
+        ]
+      }
+    },
+    "trained_seed742:initial_seed742:all": {
+      "episodes": 30,
+      "recipe_groups": 14,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 350.6,
+        "difference_95ci": [
+          161.78815789473683,
+          497.91951530612243
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.1,
+        "difference_95ci": [
+          -0.2631578947368421,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 13.001017337664962,
+        "difference_95ci": [
+          6.103995471040253,
+          18.31598320753403
+        ]
+      }
+    },
+    "trained_seed742:initial_seed742:untrained_recipe": {
+      "episodes": 18,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 432.72222222222223,
+        "difference_95ci": [
+          93.77777777777777,
+          591.1428571428571
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": -0.16666666666666666,
+        "difference_95ci": [
+          -0.5454545454545454,
+          -0.029411764705882353
+        ]
+      },
+      "seconds": {
+        "mean_difference": 16.28401254966027,
+        "difference_95ci": [
+          4.295950962087283,
+          21.940616155497406
+        ]
+      }
+    },
+    "trained_seed742:initial_seed742:seen_recipe_new_instance": {
+      "episodes": 12,
+      "recipe_groups": 7,
+      "bootstrap_unit": "whole_recipe_parameter_group",
+      "native_actions": {
+        "mean_difference": 227.41666666666666,
+        "difference_95ci": [
+          102.66666666666667,
+          328.4
+        ]
+      },
+      "completion_fraction": {
+        "mean_difference": 0.0,
+        "difference_95ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "seconds": {
+        "mean_difference": 8.076524519671997,
+        "difference_95ci": [
+          3.578353214181132,
+          11.741906872865828
+        ]
+      }
+    }
+  },
+  "conditional_predictions": {
+    "initial_seed741": [
+      {
+        "regime": "all",
+        "episodes": 30,
+        "transitions": 616,
+        "episode_mean": {
+          "rust_nll": 1.3951940139404306,
+          "rust_correct": 0.013227203404516294,
+          "clean_brier": 0.1040430501413196,
+          "progress_absolute_error": 0.1345782724757859,
+          "log_cost_absolute_error": 2.6238786095889512,
+          "cost_absolute_error": 11.577058527532307
+        },
+        "transition_mean": {
+          "rust_nll": 1.3951462369847607,
+          "rust_correct": 0.016233766233766232,
+          "clean_brier": 0.08131337653264983,
+          "progress_absolute_error": 0.10254267933355136,
+          "log_cost_absolute_error": 2.6763388092641707,
+          "cost_absolute_error": 12.303571428571429
+        }
+      },
+      {
+        "regime": "untrained_recipe",
+        "episodes": 18,
+        "transitions": 395,
+        "episode_mean": {
+          "rust_nll": 1.3953130724847085,
+          "rust_correct": 0.009917211894613025,
+          "clean_brier": 0.11430435474899744,
+          "progress_absolute_error": 0.1512346061579321,
+          "log_cost_absolute_error": 2.613945219613251,
+          "cost_absolute_error": 11.418089569431377
+        },
+        "transition_mean": {
+          "rust_nll": 1.395122998575621,
+          "rust_correct": 0.017721518987341773,
+          "clean_brier": 0.07966109033249602,
+          "progress_absolute_error": 0.10219285763517211,
+          "log_cost_absolute_error": 2.69004696169986,
+          "cost_absolute_error": 12.475949367088608
+        }
+      },
+      {
+        "regime": "seen_recipe_new_instance",
+        "episodes": 12,
+        "transitions": 221,
+        "episode_mean": {
+          "rust_nll": 1.395015426124014,
+          "rust_correct": 0.018192190669371198,
+          "clean_brier": 0.08865109322980284,
+          "progress_absolute_error": 0.10959377195256659,
+          "log_cost_absolute_error": 2.638778694552503,
+          "cost_absolute_error": 11.815511964683703
+        },
+        "transition_mean": {
+          "rust_nll": 1.395187771697929,
+          "rust_correct": 0.013574660633484163,
+          "clean_brier": 0.08426655775011935,
+          "progress_absolute_error": 0.10316792626051881,
+          "log_cost_absolute_error": 2.651837812829341,
+          "cost_absolute_error": 11.995475113122172
+        }
+      }
+    ],
+    "initial_seed742": [
+      {
+        "regime": "all",
+        "episodes": 30,
+        "transitions": 616,
+        "episode_mean": {
+          "rust_nll": 1.4240327306867047,
+          "rust_correct": 0.0671671836039652,
+          "clean_brier": 0.10740293509368196,
+          "progress_absolute_error": 0.2042819436856772,
+          "log_cost_absolute_error": 2.5459001934684875,
+          "cost_absolute_error": 11.577058527532307
+        },
+        "transition_mean": {
+          "rust_nll": 1.429125269705599,
+          "rust_correct": 0.05844155844155844,
+          "clean_brier": 0.08607944145847063,
+          "progress_absolute_error": 0.1983133710969191,
+          "log_cost_absolute_error": 2.611643480790126,
+          "cost_absolute_error": 12.303571428571429
+        }
+      },
+      {
+        "regime": "untrained_recipe",
+        "episodes": 18,
+        "transitions": 395,
+        "episode_mean": {
+          "rust_nll": 1.4317403221073997,
+          "rust_correct": 0.001763668430335097,
+          "clean_brier": 0.11732285454879346,
+          "progress_absolute_error": 0.2168792947754427,
+          "log_cost_absolute_error": 2.531693393254427,
+          "cost_absolute_error": 11.418089569431377
+        },
+        "transition_mean": {
+          "rust_nll": 1.43669848834412,
+          "rust_correct": 0.005063291139240506,
+          "clean_brier": 0.08472419748012024,
+          "progress_absolute_error": 0.20534131594851046,
+          "log_cost_absolute_error": 2.627153852921498,
+          "cost_absolute_error": 12.475949367088608
+        }
+      },
+      {
+        "regime": "seen_recipe_new_instance",
+        "episodes": 12,
+        "transitions": 221,
+        "episode_mean": {
+          "rust_nll": 1.4124713435556622,
+          "rust_correct": 0.16527245636441038,
+          "clean_brier": 0.09252305591101469,
+          "progress_absolute_error": 0.185385917051029,
+          "log_cost_absolute_error": 2.5672103937895776,
+          "cost_absolute_error": 11.815511964683703
+        },
+        "transition_mean": {
+          "rust_nll": 1.415589426437654,
+          "rust_correct": 0.15384615384615385,
+          "clean_brier": 0.08850171010755846,
+          "progress_absolute_error": 0.18575211219927845,
+          "log_cost_absolute_error": 2.583921322455773,
+          "cost_absolute_error": 11.995475113122172
+        }
+      }
+    ],
+    "last_seed741": [
+      {
+        "regime": "all",
+        "episodes": 30,
+        "transitions": 616,
+        "episode_mean": {
+          "rust_nll": 0.609141184839282,
+          "rust_correct": 0.7789566090091812,
+          "clean_brier": 0.08780428879389689,
+          "progress_absolute_error": 0.10347133901759785,
+          "log_cost_absolute_error": 2.1015333241436682,
+          "cost_absolute_error": 11.055220771256893
+        },
+        "transition_mean": {
+          "rust_nll": 0.4432998659185968,
+          "rust_correct": 0.8717532467532467,
+          "clean_brier": 0.05851488908687221,
+          "progress_absolute_error": 0.06517222618031038,
+          "log_cost_absolute_error": 2.1591691318657493,
+          "cost_absolute_error": 11.781704118623042
+        }
+      },
+      {
+        "regime": "untrained_recipe",
+        "episodes": 18,
+        "transitions": 395,
+        "episode_mean": {
+          "rust_nll": 0.6123659451420348,
+          "rust_correct": 0.7835484399043721,
+          "clean_brier": 0.10849134650026128,
+          "progress_absolute_error": 0.12103557764663976,
+          "log_cost_absolute_error": 2.0876065088174203,
+          "cost_absolute_error": 10.896387160467288
+        },
+        "transition_mean": {
+          "rust_nll": 0.3725310075886642,
+          "rust_correct": 0.9164556962025316,
+          "clean_brier": 0.060775330978006574,
+          "progress_absolute_error": 0.06315562166745149,
+          "log_cost_absolute_error": 2.1718214605427995,
+          "cost_absolute_error": 11.954102206139074
+        }
+      },
+      {
+        "regime": "seen_recipe_new_instance",
+        "episodes": 12,
+        "transitions": 221,
+        "episode_mean": {
+          "rust_nll": 0.6043040443851527,
+          "rust_correct": 0.7720688626663949,
+          "clean_brier": 0.05677370223435032,
+          "progress_absolute_error": 0.07712498107403497,
+          "log_cost_absolute_error": 2.1224235471330397,
+          "cost_absolute_error": 11.293471187441298
+        },
+        "transition_mean": {
+          "rust_nll": 0.5697871918929108,
+          "rust_correct": 0.7918552036199095,
+          "clean_brier": 0.05447473276561396,
+          "progress_absolute_error": 0.06877656456302195,
+          "log_cost_absolute_error": 2.1365552412438715,
+          "cost_absolute_error": 11.473571790257285
+        }
+      }
+    ],
+    "last_seed742": [
+      {
+        "regime": "all",
+        "episodes": 30,
+        "transitions": 616,
+        "episode_mean": {
+          "rust_nll": 0.6221135245958284,
+          "rust_correct": 0.7867696003025646,
+          "clean_brier": 0.08661592265590863,
+          "progress_absolute_error": 0.1276617245555422,
+          "log_cost_absolute_error": 1.8522426858381509,
+          "cost_absolute_error": 10.62437043686699
+        },
+        "transition_mean": {
+          "rust_nll": 0.38958321861293793,
+          "rust_correct": 0.8782467532467533,
+          "clean_brier": 0.046117217923650755,
+          "progress_absolute_error": 0.10050687803463502,
+          "log_cost_absolute_error": 1.9092276158270898,
+          "cost_absolute_error": 11.349573319335407
+        }
+      },
+      {
+        "regime": "untrained_recipe",
+        "episodes": 18,
+        "transitions": 395,
+        "episode_mean": {
+          "rust_nll": 0.6095034601497455,
+          "rust_correct": 0.7771381834941157,
+          "clean_brier": 0.1060321445908011,
+          "progress_absolute_error": 0.14251033142516728,
+          "log_cost_absolute_error": 1.8385676353135538,
+          "cost_absolute_error": 10.466067067831075
+        },
+        "transition_mean": {
+          "rust_nll": 0.2791224106391774,
+          "rust_correct": 0.9088607594936708,
+          "clean_brier": 0.043912079454421014,
+          "progress_absolute_error": 0.10104252916725376,
+          "log_cost_absolute_error": 1.9218443279024922,
+          "cost_absolute_error": 11.521907297486406
+        }
+      },
+      {
+        "regime": "seen_recipe_new_instance",
+        "episodes": 12,
+        "transitions": 221,
+        "episode_mean": {
+          "rust_nll": 0.6410286212649524,
+          "rust_correct": 0.8012167255152379,
+          "clean_brier": 0.05749158975356992,
+          "progress_absolute_error": 0.10538881425110457,
+          "log_cost_absolute_error": 1.8727552616250465,
+          "cost_absolute_error": 10.86182549042086
+        },
+        "transition_mean": {
+          "rust_nll": 0.5870131695162657,
+          "rust_correct": 0.8235294117647058,
+          "clean_brier": 0.0500585287623193,
+          "progress_absolute_error": 0.09954949252610833,
+          "log_cost_absolute_error": 1.8866773838371174,
+          "cost_absolute_error": 11.04155557558136
+        }
+      }
+    ]
+  },
+  "interpretation_scope": {
+    "task": "native Combinatorial Chemistry",
+    "observations": "structured public history",
+    "learned_choice": "one-step outcome/cost ranking",
+    "cross_task": "shared initialized recurrent core with trained chemical interfaces",
+    "computation": "one assimilation per returned event; autonomous activity learning not evaluated",
+    "regimes": "untrained recipe parameters vs seen recipe new instances; same official chemical mechanism"
+  }
+}

@@ -190,3 +190,49 @@ This experiment concerns conditional learning and its effect on chemistry
 choices. It uses structured observations and a new task interface over the
 existing core; it does not demonstrate a jointly trained two-task model or
 learned autonomous computation scheduling.
+
+
+### Development result
+
+All 150 native executions completed without interface errors; actual recipe
+identities matched the frozen groups in every execution. Failures below used
+the common 1,000-operation budget.
+
+| Policy | All 30: completed / mean operations | Untrained recipes, 18 | Seen recipes, 12 |
+| --- | ---: | ---: | ---: |
+| Integer-recipe reference | 30 / 260.83 | 18 / 282.06 | 12 / 229.00 |
+| Initial heads, 741 | 25 / 613.07 | 15 / 566.89 | 10 / 682.33 |
+| Initial heads, 742 | 30 / 338.07 | 18 / 379.83 | 12 / 275.42 |
+| Trained, 741 | 26 / 702.50 | 14 / 814.33 | 12 / 534.75 |
+| Trained, 742 | 27 / 688.67 | 15 / 812.56 | 12 / 502.83 |
+
+The two trained models do not improve on the reference. Relative to their
+paired initial heads, neither delivers a consistent gain in completion and
+operation cost. These are development results for this fixed training run,
+not independent confirmation of a selected best model.
+
+On the recorded development histories, training reduces mean per-episode rust
+negative log likelihood from 1.395/1.424 to 0.609/0.622. A train-only frequency
+table conditioned just on component count and current rust achieves 0.457;
+its 80.3% class accuracy also exceeds the models' 77.9/78.7%. Predicting unchanged
+rust already gives 79.7%. Thus the neural loss reduction does not establish
+learned chemical relationship inference.
+
+Two deployment findings are directly recorded. All 1,426/1,401 returned trials
+from the trained policies have predicted costs below the scoring rule's
+one-operation floor, so the denominator does not discriminate their choices.
+The training split contains only one-to-four-part recipes; the models select
+five/six-part recipes in 855/817 trials, respectively. Their outcome forecasts
+are therefore used extensively outside the collected recipe-size range.
+These facts identify ineffective cost calibration and unsupported prediction
+use; they do not isolate their respective causal shares of the task deficit.
+
+The next learning design must cover the choices it will actually rank, make
+cost predictions numerically usable, and test relationship-sensitive prediction
+against the strong conditional frequency reference. The frozen models and
+results are preserved. Machine-readable [aggregate comparisons](results/development.json),
+[per-instance results](results/development_instances.csv) and
+[compact tables](results/development.csv) include both initializations and
+recipe-group paired uncertainty. Conditional prediction errors can be
+regenerated with `prediction.py`; `summarize.py` rebuilds these tables from the
+saved native records.
