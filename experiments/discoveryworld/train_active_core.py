@@ -130,10 +130,11 @@ def counterfactual_calibration(full_values, full_present, settings, supports, ta
 
 @torch.no_grad()
 def make_observation(values, counts, known_hz, known, query, failed, event, mixture,
-                     step, max_steps, acquire_mask=None):
+                     step, max_steps, acquire_mask=None, beliefs_override=None):
     n, device = len(values), values.device
     seen = counts > 0
-    beliefs = visible_beliefs(values, seen, known_hz, known, query, mixture)
+    beliefs = (visible_beliefs(values, seen, known_hz, known, query, mixture)
+               if beliefs_override is None else beliefs_override)
     labels = torch.where(known, (known_hz - mixture.y_mean.float()) / mixture.y_scale.float(), 0.)
     normalized = torch.where(seen, (values - mixture.x_mean.float()) / mixture.x_scale.float(), 0.)
     objects = torch.eye(4, device=device)[None, :, None].expand(n, -1, 9, -1)
@@ -325,7 +326,7 @@ class ActiveTableEnvironment:
         return scores.masked_fill(~mask, -1.)
 
     @torch.no_grad()
-    def step(self, action):
+    def step(self, action, beliefs=None):
         n, device = self.batch, self.device
         rows = torch.arange(n, device=device)
         reward = torch.zeros(n, device=device)
@@ -358,7 +359,9 @@ class ActiveTableEnvironment:
         test = self.alive & (action >= 20)
         if test.any():
             selected, hypothesis = rows[test], action[test] - 20
-            belief = visible_beliefs(self.values, self.counts > 0, self.known_hz, self.known, self.query, self.mixture)
+            belief = (visible_beliefs(self.values, self.counts > 0, self.known_hz,
+                                     self.known, self.query, self.mixture)
+                      if beliefs is None else beliefs)
             target = self.targets[selected, self.query[selected]]
             error = (belief["means"][selected, hypothesis] - target).abs()
             quality = torch.exp(-error / self.tolerance)

@@ -1,0 +1,85 @@
+{
+  "purpose": "Development comparison on new instances; not a final independent confirmation cohort.",
+  "streams": [
+    {
+      "name": "development_00",
+      "seeds": [
+        30000,
+        30005,
+        30011,
+        30016,
+        30020,
+        30025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_01",
+      "seeds": [
+        30101,
+        30106,
+        30112,
+        30117,
+        30121,
+        30126
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_02",
+      "seeds": [
+        30202,
+        30207,
+        30213,
+        30218,
+        30222,
+        30227
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_03",
+      "seeds": [
+        30303,
+        30308,
+        30314,
+        30319,
+        30323,
+        30328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "development_04",
+      "seeds": [
+        30404,
+        30409,
+        30410,
+        30415,
+        30424,
+        30429
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}

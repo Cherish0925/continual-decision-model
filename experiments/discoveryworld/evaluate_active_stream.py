@@ -35,7 +35,7 @@ from .train_active_core import make_observation, visible_beliefs
 NATIVE_RELATIONS = ("density", "temperature", "quantum_gap", "radiation", "spectrum_channel_5")
 
 
-def observation(episode, event, mixture, step, max_steps, device, *, close_completed_task=False):
+def observation(episode, event, mixture, step, max_steps, device, *, close_completed_task=False, belief_source=None):
     tensors = episode.tensors(device)
     if close_completed_task and bool(tensors["known"].all()) and len(episode.completed_targets) == 2:
         # The table environment's empty remaining-target set uses query zero.
@@ -45,11 +45,13 @@ def observation(episode, event, mixture, step, max_steps, device, *, close_compl
         event = event.clone()
         event[:, 32:36] = 0
         event[:, 32] = 1
+    beliefs = (visible_beliefs(tensors["values"], tensors["seen"], tensors["known_hz"],
+                              tensors["known"], tensors["query"], mixture)
+               if belief_source is None else belief_source(tensors))
+    override = {} if belief_source is None else {"beliefs_override": beliefs}
     obs = make_observation(tensors["values"], tensors["counts"], tensors["known_hz"],
                            tensors["known"], tensors["query"], tensors["failed"],
-                           event, mixture, step, max_steps)
-    beliefs = visible_beliefs(tensors["values"], tensors["seen"], tensors["known_hz"],
-                             tensors["known"], tensors["query"], mixture)
+                           event, mixture, step, max_steps, **override)
     obs["action_mask"][:, 20:] &= _public_test_mask(episode, beliefs)[None]
     return obs, beliefs
 
@@ -121,6 +123,11 @@ def run_stream(job):
         raise ValueError("A stream comparison requires a core that persists within each instance")
     mixture, _ = load_mixture_checkpoint(options["mixture_checkpoint"], device)
     mixture.eval()
+    belief_source = None
+    if options.get("belief_checkpoint"):
+        from experiments.physical_belief.native import PhysicalBelief
+        belief_source = PhysicalBelief(options["belief_checkpoint"], device,
+                                       mode=options.get("belief_mode", "carry"))
     root = Path(options["output"]) / stream["name"]
     root.mkdir(parents=True)
     state = model.initial(1, device)
@@ -131,6 +138,9 @@ def run_stream(job):
     for index, seed in enumerate(stream["seeds"]):
         if options["state_mode"] == "reset":
             state = model.initial(1, device)
+        if belief_source is not None:
+            belief_source.begin_episode()
+        entry_memory = None if belief_source is None else belief_source.summary()
         entry_state = copy_state(state)
         output = root / f"episode{index:03d}_seed{seed}"
         output.mkdir()
@@ -168,7 +178,11 @@ def run_stream(job):
                         "activity_seed": stream.get("activity_seed") if continual else None,
                         **({"prediction_target_order": ["test_success", "log1p_cost"]} if continual else {}),
                         "ledger": "fresh_for_each_instance",
-                        "numerical_posterior": "recomputed_from_current_instance_public_measurements",
+                        "numerical_posterior": ("recomputed_from_current_instance_public_measurements"
+                                                if belief_source is None else "public_ledger_conditioned_on_learned_cross_task_belief"),
+                        **({"physical_belief_checkpoint": options["belief_checkpoint"],
+                            "physical_belief_mode": options.get("belief_mode", "carry")}
+                           if belief_source is not None else {}),
                         "initial_rng_snapshot": {"path": "initial_rng.json.gz", **rng},
                         "action_descriptions": env.actions, "teleport_locations": env.teleports,
                         "checkpoint": options["checkpoint"],
@@ -191,7 +205,7 @@ def run_stream(job):
                             ending = "native_termination" if all(m["completed"] for m in env.metrics) else "native_action_budget"
                             break
                         obs, beliefs = observation(episode, event, mixture, step,
-                                                  options["max_decisions"], device)
+                                                  options["max_decisions"], device, belief_source=belief_source)
                         extra = {"feedback_targets": feedback, "activity_generator": activity_generator} if continual else {}
                         previous_activity = state["activity_counts"].clone() if continual else None
                         result = model(**obs, state=state, refinements=options["refinements"], **extra)
@@ -205,7 +219,13 @@ def run_stream(job):
                         mean = float(beliefs["means"][0, action - 20]) if action >= 20 else None
                         spread = float(beliefs["std"][0, action - 20]) if action >= 20 else None
                         prediction = selected_prediction(model, result, action, previous_activity) if continual else None
+                        belief_prediction = None
+                        if belief_source is not None:
+                            belief_prediction = {key: beliefs[key][0].tolist()
+                                                 for key in ("means", "std", "weights", "support_counts", "eligible")}
                         decision = episode.apply(action, mean_hz=mean, std_hz=spread)
+                        if belief_source is not None:
+                            decision["physical_prediction"] = belief_prediction
                         if continual:
                             decision["model_prediction"] = prediction
                         event = _event_from_result(decision, episode, mixture, step=step + 1,
@@ -218,7 +238,8 @@ def run_stream(job):
                             ending = "native_termination" if all(m["completed"] for m in env.metrics) else "native_action_budget"
                     if outcome_pending:
                         final_observation, _ = observation(episode, event, mixture, len(episode.decisions),
-                                                           options["max_decisions"], device, close_completed_task=True)
+                                                           options["max_decisions"], device, close_completed_task=True,
+                                                           belief_source=belief_source)
                         final_feedback_query = int(final_observation["event"][0, 32:36].argmax())
                         final_feedback_object = int(final_observation["event"][0, :4].argmax())
                         before_feedback = copy_state(state)
@@ -229,6 +250,8 @@ def run_stream(job):
                 except (ValueError, RuntimeError) as exc:
                     error = f"{type(exc).__name__}: {exc}"
                     ending = "execution_error"
+            if belief_source is not None and bootstrap_record is not None:
+                belief_source.end_episode(episode.tensors(device))
             final_state = copy_state(state)
             row = {"stream": stream["name"], "episode_index": index, "seed": seed,
                    "relation": NATIVE_RELATIONS[seed % 5], "state_mode": options["state_mode"],
@@ -241,6 +264,9 @@ def run_stream(job):
                                 "final_feedback_query": final_feedback_query,
                                 "final_feedback_object": final_feedback_object,
                                 "final_outcome_state_change": final_state_change}, **episode.summary()}
+            if belief_source is not None:
+                row["physical_belief"] = {"mode": options.get("belief_mode", "carry"),
+                                          "before": entry_memory, "after": belief_source.summary()}
             if continual:
                 row["internal_activity"] = {
                     "counts": (final_state["activity_counts"] - entry_state["activity_counts"]).sum(0).tolist(),
