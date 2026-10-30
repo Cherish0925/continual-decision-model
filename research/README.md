@@ -1,15 +1,25 @@
-# Continual computation
+# CDM research
 
-The current research asks how intermediate computation can remain useful while observations, goals, and the environment change. CDM combines a fresh recurrent context, persistent workspace, computation records, and learned reading and revision. The complete model and learning sequence are specified in [DESIGN.md](../DESIGN.md) and [TRAINING.md](../TRAINING.md).
+The research objective is a model that continues to observe, compute, act and
+learn while its environment changes. [RESEARCH.md](../RESEARCH.md) defines that
+objective and the [current execution priority](../RESEARCH.md#current-execution-priority).
+[HANDOFF.md](../HANDOFF.md) records completed results and running experiments.
 
 | Study | Contents |
 | --- | --- |
-| [Continual computation](CONTINUAL_COMPUTATION.md) | Central hypothesis, condition-factorized reading, operation values, and comparisons |
-| [Neural prototype](../cdm/model.py) | GRU context, shared Transformer workspace, bounded record memory, action/activity/value heads |
-| [Supervised pilot](../experiments/neural_pilot/README.md) | Sequential action learning with restart, carry, and memory reading; [five-seed results](../experiments/neural_pilot/results/REPORT.md) |
-| [Changing grid](../experiments/continual_grid/README.md) | Explicit planning-state reuse while the environment advances |
+| [Execution-aware physical learning](../experiments/continual_physics/EXECUTION.md) | Completed native-cost training and comparisons with recurrent and Bayesian policies |
+| [Shared-core training](../experiments/continual_experiment/SHARED_TRAINING.md) | Physical actions, recorded chemical feedback and cross-domain state continuation |
+| [Chemical response learning](../experiments/continual_chemistry/README.md) | History-conditioned predictions, actual experimental choices and planning |
+| [Physical prediction and action](../experiments/physical_belief/README.md) | Reusable uncertain relationships and jointly trained experimental decisions |
+| [Classical active calibration](../experiments/classical_calibration/RESULTS.md) | Bayesian measurement selection and relationship-memory reference |
+| [Recurrent state and workspace](../experiments/continual_experiment/results/neural_state_controls.md) | Separate effects of carrying recurrent state and workspace across tasks |
+| [Continual computation](CONTINUAL_COMPUTATION.md) | Earlier formulation of computation reuse, operation values and comparisons |
+| [Process lifetimes](../experiments/lifetime/README.md) | Structured control and training through deployed learning updates |
 | [Transport mechanism](COMPUTATION_TRANSPORT.md) | Earlier context-correction candidate and sensitivity derivations |
-| [Transport related work](TRANSPORT_PRIOR_ART.md) | Prediction-correction, latent planning, action correction, and recurrent derivatives |
-| [Transport results](../experiments/transport/RESULTS.md) | Completed quadratic solver comparisons and finite-step reconstruction |
+| [Transport related work](TRANSPORT_PRIOR_ART.md) | Prediction-correction, latent planning and recurrent derivatives |
+| [Transport results](../experiments/transport/RESULTS.md) | Completed quadratic solver comparisons |
+| [Phase review](PHASE_REVIEW.md) | Historical interpretation of the process-lifetime studies |
 
-The analytical grid comparison and supervised neural pilot address different questions. The next experiment trains the neural model inside the changing environment, followed by learned activity selection and continued parameter adaptation. [RUNNING.md](../RUNNING.md) contains the executable commands and current results.
+[DESIGN.md](../DESIGN.md) describes the architecture.
+[TRAINING.md](../TRAINING.md) describes the data, objectives and optimization.
+[RUNNING.md](../RUNNING.md) links executable studies.

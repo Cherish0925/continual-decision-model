@@ -76,13 +76,171 @@ The choice between sensing and computation depends on their achievable improveme
 
 ## Current execution priority
 
-Build and train one integrated CDM with a recurrent context, shared Transformer refinement, action-conditioned prediction, bounded memory, a fast action readout, and a policy that can choose learning as well as observation and inference. The architecture is specified in [DESIGN.md](DESIGN.md), its optimization in [TRAINING.md](TRAINING.md), and the main training campaign in [EXPERIMENTS.md](EXPERIMENTS.md#integrated-model-campaign).
+Updated 30 October 2026 against commit `504b750`. The current publication-scale
+question is whether a continuing model can learn **which acquired knowledge to
+reuse, which prediction to revise, and which operation to perform next**, so that
+experience improves later decisions while observations and tasks change.
 
-The shared model and timestamped event interface are implemented together. Learning choices, continuing action during slower work, and state retention across task changes belong in that implementation. Instrument and tool tasks connect to the same interface and weights; their construction can proceed while model training and GPU execution are developed. A further increase in maze score is not a prerequisite.
+### Starting point
 
-Use one reference recurrence initially and one matched matrix-recurrence comparison. Keep learned memory refinement and detailed channel interpretation subordinate to the main task-return experiment. Reuse existing planner checkpoints as comparisons and initialization sources where their observation and action interfaces apply.
+The [execution-aware study](experiments/continual_physics/EXECUTION.md#completed-native-comparison)
+restores competitive task performance. On its 120-instance cohort, the two full
+models complete 115 and 117 tasks at 103.61 and 101.58 actions; the corresponding
+recurrent references complete 114 and 119 at 103.69 and 100.72 actions.
+Retaining all task state improves on clearing it, but neither learned physical
+updates nor the full activity mechanism has a stable independent advantage.
+These observations supersede the earlier scalar-cost failures as the current
+performance starting point; the cohorts differ, so their difference is not an
+isolated estimate of the execution-cost correction.
 
-The next deliverable is a trainable model with the full activity set, a long-lifetime trainer, independent-time execution, and measured acquisition and retention. Proposed features and training allocations below are specifications, not completed capabilities. [STATUS.md](STATUS.md) records completed results.
+Finish the four already specified [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
+and their fixed comparison. They train physical decisions and recorded chemical
+responses through a common core. Chemistry does not yet learn activity choice,
+and its replay pauses the physical scheduler. This study measures cross-domain
+state interference and reuse. It does not train the complete proactive process.
+
+### Architecture decision
+
+Keep the current recurrent core, shared Transformer workspace, pretrained
+perception interfaces and native tools as the reference implementation. The
+next architectural decision concerns the **organization and use of state**:
+
+| Representation | Meaning and use |
+| --- | --- |
+| Current context | Current objects, goal, received results and pending requests; updated when new observations arrive. |
+| Active workspace | Unfinished predictions and candidate actions for the current investigation; refinement must affect subsequent predictions or actions. |
+| Retrieved knowledge | Bounded summaries of previously observed relationships, their applicability and uncertainty; read and revised from available observations. |
+| Adaptive parameters | Updates trained to improve future received-outcome predictions and decisions, including after intervening tasks. |
+
+These are semantic responsibilities, not four mandatory new networks. Reuse
+existing storage and interfaces before adding capacity. A shared model may
+keep separately addressable investigation states and use one learned update
+rule over them. Mixing unrelated task content into one undifferentiated h/z
+is an experimental choice, not a definition of general intelligence. If
+separated state wins the current study, use that result to improve state
+addressing rather than forcing cross-domain interference.
+
+The existing [workspace-to-recurrence connection](cdm/recurrent_feedback.py)
+is an available candidate for making completed internal work affect the next
+received-event update. Its zero-initialized projection preserves that local
+computation before training. Whole-policy equivalence also depends on input
+meaning, action masks, task resets and pending-result handling; the
+[inherited-interface implementation](experiments/continual_physics/INITIALIZATION.md)
+makes those choices explicit. Neither connection alone establishes a new
+learning principle.
+
+### Next integrated training
+
+Train both task interfaces on **their own selected experiments and actual
+returned outcomes**, using the same observation, prediction, activity and
+learning semantics. Recorded chemistry trajectories remain useful pretraining
+and replay data. They cannot by themselves teach the return of actions absent
+from those trajectories. New chemical choices must receive outcomes from the
+environment before becoming supervised response targets.
+
+Use complete continuing investigations as the data unit. Include familiar
+relations with new objects, changed coefficients, returns after intervening
+tasks, and new relation or composition families where the environment supports
+them. Split these forms of generalization explicitly. Alternate variable-length
+segments and vary return delays; the fixed A-B-A schedule remains one interpretable
+comparison, not the entire training distribution. Neither task identities
+hidden by the environment nor future outcomes become policy inputs.
+
+Train three connected quantities in this same stream:
+
+1. **Predictive knowledge:** outcome distributions conditioned on the received
+   history and proposed action. Include failures and partial outcomes. Track
+   prediction quality on histories selected by the current policy, since a
+   planner can repeatedly select an overestimated experiment.
+2. **Useful memory and updates:** prediction and task return on later
+   investigations, including the first return after interference. Bootstrap
+   across nonterminal training windows and sample later-use examples; a long
+   running process with only immediate losses does not train long-term utility.
+3. **Operation value:** the expected change in subsequent task return from
+   observing, refining, retrieving or learning, including its elapsed time and
+   cost. On a sampled subset of simulator prefixes, compare continuations from
+   identical received history, model state and pending operations. Reuse the
+   branch-value machinery in [TRAINING.md](TRAINING.md#3-value-of-the-next-operation).
+   Allocate additional samples where estimated differences are noisy rather
+   than treating one stochastic continuation as an exact target.
+
+Prediction, action and activity losses update the same representation. Online
+updates must change the predictive quantities used by the action policy.
+Train replay and slow consolidation on subsequent received outcomes and
+behavior, so quiet-period computation can become useful future capability.
+Model-generated outcomes remain predictions, not independent observations.
+
+Difficulty alone should not determine compute. Missing information may call
+for measurement; a short deadline may call for immediate action; a useful
+retrieved result may remove the need to recompute. The learned choice is which
+operation improves the remaining investigation under its actual time budget.
+
+### Continuous-time application and comparison
+
+Keep official DiscoveryWorld results under their original protocol. Add a
+separately named timing extension in which the digital process, pending
+operations and task deadlines advance during inference. The fast action path
+remains available while slower reasoning or learning runs. Carry observation
+capture/arrival time and action application time through the same interfaces.
+Artificial receipt ticks in an otherwise paused environment do not establish
+responsiveness to a changing world.
+
+Use one integrated candidate and a small, informative comparison set:
+
+- The strongest inherited policy.
+- A separately trained recurrent or addressed-memory model with fixed
+  computation and the same observations, tools and training exposure.
+- Fixed-schedule learning versus learned operation choice.
+- The existing Bayesian references, with their known function-family
+  assumptions reported separately.
+
+Use same-weight memory/update interventions to locate a gain after the
+complete method is competitive; do not replace independently trained reference
+methods with reset interventions. Report completion and actual operation cost,
+first-return behavior, learning on new relations, and capture-to-action delay
+separately. Report uncertainty across task streams and training repetitions.
+Select development configurations without using the final task cohort.
+
+The whole model need not beat a correctly specified Bayesian method in every
+known-family task. A useful result may instead be comparable quality with lower
+decision cost, adaptation beyond that function family, or better decisions
+under changing timing and computation budgets. Match information access and
+show the relevant tradeoff rather than weakening a reference.
+
+### Execution and scaling
+
+The next implementation endpoint is one checkpoint that selects experiments
+and internal activities in both domains, learns from its own returns, preserves
+useful knowledge through interference, and runs in the independently timed
+setting. Each mechanism should have a stated contribution to that endpoint.
+
+Use the two H100s for the integrated learner and its strongest matched
+reference. Batch environment streams and use CPU workers for native execution;
+cache frozen perception only when the input and encoder version are unchanged.
+Measure environment, feature encoding, model forward/backward and transfer time
+before choosing additional concurrency. Low allocated memory alone does not
+show that a GPU has spare compute.
+
+Keep one short implementation/throughput check, then run the full declared
+training schedule and automatic evaluations. Evaluate learning curves on
+development streams while keeping the final comparison separate. Extend data,
+training duration and model width as controlled scale comparisons, retaining
+task cost and inference latency. If the additional A100s are available, use
+them for independent repetitions, trajectory production and matched reference
+runs; introduce heterogeneous synchronous training only after measuring its
+throughput.
+
+Completed task returns, reusable capability and time to reach a given
+performance level are the progress measures. File count, releases, GPU
+occupancy and numbers of repeated executions are supporting engineering
+information.
+
+The mechanism remains a research proposal. Learned internal planning already
+appears in [Imagination-based Planner](https://arxiv.org/abs/1707.06170), and
+amortized experiment choice in [Deep Adaptive Design](https://proceedings.mlr.press/v139/foster21a.html).
+The proposed contribution must identify the state/update/training difference
+that improves continuing investigations, not claim either established idea
+as new.
 
 ## Learning across timescales
 
