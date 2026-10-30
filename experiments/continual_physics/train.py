@@ -18,7 +18,7 @@ import torch
 import torch.nn.functional as F
 
 from cdm.continual_experiment import Activity, ContinualExperimentConfig, detach_state, select_rows
-from cdm.continual_physics import load_continual_physics_checkpoint
+from cdm.continual_physics import ContinualPhysicsConfig, load_continual_physics_checkpoint
 from cdm.recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 from experiments.discoveryworld.calibration_mixture import load_mixture_checkpoint
 from experiments.discoveryworld.train_active_lifetime import CalibrationTaskPool
@@ -246,6 +246,8 @@ def training_parser():
                    help="Candidate GRU context input; omitted keeps the parent architecture")
     p.add_argument("--condition-failure-weights", action="store_true",
                    help="Condition decision relation weights on all observed failed-setting intervals")
+    p.add_argument("--inherit-parent-interface", action="store_true",
+                   help="Initialize the inherited candidate/mask contract and WAIT while feedback is pending")
     p.add_argument("--updates", type=int, default=200)
     p.add_argument("--batch", type=int, default=32)
     p.add_argument("--external-per-stream", type=int, default=32)
@@ -297,7 +299,8 @@ def initialize_experiment(args):
         belief_checkpoint=args.belief_checkpoint,
         config=ContinualExperimentConfig(memory_size=args.memory_size,
             max_internal_steps=args.max_internal_steps, activity_mode=activity_mode,
-            fixed_refinements=0 if recurrent else 1))
+            fixed_refinements=0 if recurrent else 1),
+        physics_config=ContinualPhysicsConfig(inherit_parent_interface=args.inherit_parent_interface))
     if args.initial_state is not None:
         initial = torch.load(args.initial_state, map_location=args.device, weights_only=True)
         if initial.get("update") != 0:
