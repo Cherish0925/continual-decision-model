@@ -58,16 +58,23 @@ differ substantially, and the additional benefit of the recurrent-state readout
 remains uncertain. [Complete comparisons](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
 include both runs, interventions and recipe-group uncertainty. Chemistry and
 physical control have separately trained task adaptations in these completed
-results. Four new [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
+results. Four completed [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
 interleave physical action learning and chemical response learning in one
-gradient sequence, comparing continuing and per-interface state. Their fixed
-new mixed-task evaluation is in progress.
+gradient sequence, comparing continuing and per-interface state. All 1,920 fixed native executions are complete. Continuing a single h/z has
+no consistent advantage over separate task states with shared parameters;
+the linked table retains every endpoint and paired stream comparison.
 An additional [Bayesian reference](experiments/continual_chemistry/BAYESIAN_REFERENCE.md),
 given the public reaction-function family, completes the same 60 tasks in
 98.60 mean operations. This stronger prior and the learned models' different
 information requirements are explicit in the comparison.
 The [v0.12.0 release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)
 provides all 320 training instances and four fixed chemical checkpoints.
+
+The next [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md)
+is running on both task interfaces. The model selects experiments, learns from
+their returned outcomes, and trains chemical response updates for subsequent
+predictions and decisions. Fixed-computation and same-weight retention
+comparisons are scheduled on new native task streams; results are pending.
 
 ## Current results
 

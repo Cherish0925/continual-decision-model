@@ -14,15 +14,31 @@ still have no stable benefit. The [full table](experiments/continual_physics/EXE
 keeps all 1,320 executions, return-task results and timing conditions.
 
 Four [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
-now interleave physical action learning, chemical response learning and a return
-to physical action in each gradient window. Two paired continuations compare
-one continuing h/z with separate per-interface h/z under the same shared
-weights and task budgets. Each final endpoint receives 102,400 physical
-requests and 25,600 recorded chemical returns. Chemistry supplies observed
-response and cost losses; it does not yet learn its own activity scheduler.
-The full-sized path has completed two updates and a native four-task path
-check. Formal training and the fixed new mixed-task evaluation are running;
-no performance improvement is claimed for this candidate yet.
+and all eight mixed-task comparisons have completed: 1,920 native executions.
+Each training uses 102,400 physical requests and 25,600 recorded chemical
+returns. One continuing h/z has no consistent advantage over separate task
+states with shared weights. Repetition 831 favors separate state for physics;
+repetition 832 favors continuing state for chemistry. All endpoints and paired
+stream intervals are preserved in the linked results. Chemistry still learns
+from recorded actions rather than its own selected experiments; closing that
+training gap is the next implementation.
+
+## Active physical and chemical feedback training
+
+The [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md)
+now runs four paired trainings on two H100s. Both task interfaces choose actual
+experiments. Chemical updates change the response distributions used in the
+next decision, and later returns train the representation and update rates.
+Each run is fixed at 200 windows: 102,400 physical and 51,200 chemical requests.
+Two continuations compare learned chemical activity against fixed computation.
+The native queue evaluates all final endpoints, initial references, discarded
+response updates and task-reset chemical state on twenty new A–B–A streams.
+No final capability gain is established while that comparison is running.
+
+Commands, input requirements and the model/gradient path are in the linked
+study. Live outputs are `runs/continual_physics/active_feedback_joint_20261030`
+and `runs/continual_physics/active_feedback_confirmation_20261030`. The completed
+shared-state study remains unchanged and is the basis for separate task states.
 
 ## Continuing physical learning and activity selection
 
@@ -155,7 +171,7 @@ interface uses the new runtime whose initialization is examined above. One updat
 measurement and a recorded chemical experiment sends gradients from both tasks
 into that same core. Checkpoint reconstruction preserves every task head and
 stores the core once. This established the joint training entry; the four
-longer mixed-task trainings described above are now running. A shared learned
+longer mixed-task trainings described above are complete. A shared learned
 activity policy across both domains remains to be developed.
 
 ## Physical prediction and experimental decisions

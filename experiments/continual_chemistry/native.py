@@ -38,6 +38,10 @@ def run(options, *, model=None, state=None, return_state=False):
     primitive_candidates=getattr(args,'primitive_candidates',False) or bool(model and hasattr(model,'response'))
     initial_h=None if state is None else state['h'].clone()
     initial_z=None if state is None else state['z'].clone()
+    adaptive_response = bool(model is not None and getattr(model, 'response_adaptation', None) is not None)
+    if adaptive_response:
+        model.retain_response_adaptation = not getattr(args, 'discard_response_updates', False)
+    internal_activities = 0
     started=perf_counter();error=None;ending='experiment_budget';inference_seconds=execution_seconds=0.
     with (args.output/'native.log').open('w') as log,redirect_stdout(log),torch.no_grad():
         env=StructuredDiscoveryWorldEnv(args.output,args.max_actions)
@@ -73,10 +77,15 @@ def run(options, *, model=None, state=None, return_state=False):
                     if public['rust_level']>0 and index>=args.max_experiments:break
                     start=perf_counter()
                     if not bool(obs['action_mask'].any()):ending='no_untried_recipe';break
+                    if adaptive_response:
+                        from .active_training import choose_activity
+                        state, _, _, computations, _ = choose_activity(model, state, obs, sample=False)
+                        internal_activities += int(computations.sum())
                     out=None if model is None else model.readout(state,obs['candidates'],obs['action_mask'])
                     planning=None
                     if public['rust_level']==0:selected=len(choices)-1
                     elif model is None:selected=int(obs['action_mask'][0].nonzero()[0])
+                    elif adaptive_response:selected=int(model.experiment_logits(out,obs)[0].argmax())
                     elif getattr(args,'planning_mode','progress')!='progress':
                         from .foresight import choose_experiment,ForesightConfig
                         selected,planning=choose_experiment(model,state,public,obs,choices,out,
@@ -100,6 +109,9 @@ def run(options, *, model=None, state=None, return_state=False):
                         result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
                         start=perf_counter();state=model.feedback(state,feedback(result))
+                        if adaptive_response and any(choices[selected]):
+                            state = model.record_response(state, out, torch.tensor([selected]),
+                                torch.tensor([result['rust_before']]), torch.tensor([result['rust_after']]))
                     public=executor.state();obs,choices=observe(public,max_actions=args.max_actions,elapsed_actions=env.steps)
                     if primitive_candidates:obs=primitive_observation_mask(obs)
                     if model:
@@ -121,6 +133,10 @@ def run(options, *, model=None, state=None, return_state=False):
             'final_z_change':None if state is None else float((state['z']-initial_z).norm()),
             'inference_seconds':inference_seconds,'execution_seconds':execution_seconds,
             'planning_mode':getattr(args,'planning_mode','progress'),
+            'internal_activities':internal_activities,
+            'activity_counts':None if state is None else state['activity_counts'][0].tolist(),
+            'response_adaptation_norm':None if not adaptive_response else
+                float((state['response_fast'] + state['response_slow']).norm()),
             'ending':ending,'error':error,'seconds':perf_counter()-started}
         (args.output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     return (summary,state) if return_state else summary
@@ -137,6 +153,7 @@ def main():
     p.add_argument('--primitive-candidates',action='store_true',help='Use the same unique proportions for reference and learned policies')
     p.add_argument('--disable-direct-history',action='store_true')
     p.add_argument('--disable-response-core',action='store_true')
+    p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--planning-mode',choices=['progress','completion','two_step'],default='progress')
     p.add_argument('--planning-topk',type=int,default=6)
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))

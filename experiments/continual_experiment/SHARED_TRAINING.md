@@ -92,9 +92,40 @@ PYTHONHASHSEED=0 python -m experiments.continual_experiment.shared_confirmation 
   --output runs/continual_physics/shared_tasks_confirmation
 ```
 
-The queue evaluates initial references immediately, then waits for each fixed
-200-update endpoint. It does not select intermediate checkpoints or replace a
-failed training with another model. The separate two-update implementation
-check completed with finite gradients, and a single loaded model executed two
-physical and two chemical training instances successfully. Formal training and
-the new-instance comparison are in progress; no task gain is established yet.
+## Completed comparison
+
+All four 200-update trainings and all 1,920 native executions completed. The
+following costs include failed tasks. Each row contains the same 120 physical
+and 120 chemical instances, interleaved in twenty ordered streams.
+
+| Initialization | Training / execution state | Physics completed | Physics actions | Chemistry completed | Chemistry actions |
+|---|---|---:|---:|---:|---:|
+| 831 | Initial / separated | 119/120 | 105.40 | 120/120 | 110.33 |
+| 831 | Continuing / continuing | 119/120 | 107.61 | 120/120 | 115.28 |
+| 831 | Separated / separated | 120/120 | 89.25 | 120/120 | 109.51 |
+| 831 | Continuing / separated | 119/120 | 110.00 | 120/120 | 104.68 |
+| 832 | Initial / separated | 119/120 | 105.40 | 120/120 | 183.38 |
+| 832 | Continuing / continuing | 119/120 | 101.08 | 120/120 | 150.46 |
+| 832 | Separated / separated | 119/120 | 106.12 | 118/120 | 198.23 |
+| 832 | Continuing / separated | 119/120 | 101.83 | 120/120 | 152.96 |
+
+Continuing one h/z has no consistent advantage. In repetition 831 it costs
+18.36 more physical operations than separately maintained state (paired
+whole-stream 95% interval 9.49 to 27.99). In repetition 832 it saves 47.78
+chemical operations (14.33 to 84.17). At unchanged weights, separating state
+saves 10.61 chemical operations for model 831 (1.21 to 20.76), while the other
+same-weight differences include zero. These are domain- and
+initialization-dependent effects, not a general preference for either state
+layout. Shared parameters do not require a single undifferentiated task state.
+
+The result also leaves the principal learning gap visible: chemical predictions
+were trained on recorded behavior, while deployment chooses experiments using
+those predictions. Learning on the policy's own returned experiments is the
+next training change. State organization alone does not address that shift.
+
+The [machine-readable summary](results/shared_tasks.json) and
+[all instance results](results/shared_tasks_instances.csv) retain every endpoint,
+paired intervals and timing. These intervals resample twenty complete streams;
+they do not measure uncertainty across a population of pretrained models.
+Training took 2,837–2,969 seconds per run on one H100. The final endpoints were
+fixed at update 200; no favorable intermediate checkpoint replaced them.

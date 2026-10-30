@@ -1,0 +1,971 @@
+{
+  "purpose": "Fixed native comparisons after joint active-feedback training",
+  "scope": "new instances of known physical and chemical simulator families",
+  "chemical_schedule": "two A, two B, two A tasks; distinct seeds; evaluator-only recipe identity",
+  "budgets": {
+    "physics": 400,
+    "chemistry": 1000
+  },
+  "streams": [
+    {
+      "name": "active_00",
+      "seeds": [
+        270000,
+        270005,
+        270011,
+        270016,
+        270020,
+        270025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230012,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230028,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230008,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230019,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230036,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230041,
+          "recipe_group": "Substance A:1|Substance B:1"
+        }
+      ]
+    },
+    {
+      "name": "active_01",
+      "seeds": [
+        270100,
+        270105,
+        270112,
+        270117,
+        270120,
+        270125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230003,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230006,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230060,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230103,
+          "recipe_group": "Substance A:1|Substance B:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230024,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230060,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_02",
+      "seeds": [
+        270200,
+        270205,
+        270213,
+        270218,
+        270220,
+        270225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230001,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230002,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230084,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230098,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230003,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230005,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_03",
+      "seeds": [
+        270300,
+        270305,
+        270314,
+        270319,
+        270320,
+        270325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230013,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230146,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230006,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230015,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230148,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230181,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        }
+      ]
+    },
+    {
+      "name": "active_04",
+      "seeds": [
+        270401,
+        270406,
+        270410,
+        270415,
+        270421,
+        270426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230026,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230052,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230002,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230005,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230074,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230085,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        }
+      ]
+    },
+    {
+      "name": "active_05",
+      "seeds": [
+        270501,
+        270506,
+        270512,
+        270517,
+        270521,
+        270526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230067,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230144,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230106,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230108,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230217,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230229,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2"
+        }
+      ]
+    },
+    {
+      "name": "active_06",
+      "seeds": [
+        270601,
+        270606,
+        270613,
+        270618,
+        270621,
+        270626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230007,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230016,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230156,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230209,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230038,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230098,
+          "recipe_group": "Substance A:1|Substance B:2"
+        }
+      ]
+    },
+    {
+      "name": "active_07",
+      "seeds": [
+        270701,
+        270706,
+        270714,
+        270719,
+        270721,
+        270726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230047,
+          "recipe_group": "Substance A:1|Substance B:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230068,
+          "recipe_group": "Substance A:1|Substance B:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230112,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230159,
+          "recipe_group": "Substance A:1|Substance B:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230115,
+          "recipe_group": "Substance A:1|Substance B:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230142,
+          "recipe_group": "Substance A:1|Substance B:3"
+        }
+      ]
+    },
+    {
+      "name": "active_08",
+      "seeds": [
+        270802,
+        270807,
+        270810,
+        270815,
+        270822,
+        270827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230008,
+          "recipe_group": "Substance A:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230020,
+          "recipe_group": "Substance A:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230036,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230046,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230037,
+          "recipe_group": "Substance A:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230105,
+          "recipe_group": "Substance A:1|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_09",
+      "seeds": [
+        270902,
+        270907,
+        270911,
+        270916,
+        270922,
+        270927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230011,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230022,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230023,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230034,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230043,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230054,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        }
+      ]
+    },
+    {
+      "name": "active_10",
+      "seeds": [
+        271002,
+        271007,
+        271013,
+        271018,
+        271022,
+        271027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230004,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230042,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230039,
+          "recipe_group": "Substance A:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230116,
+          "recipe_group": "Substance A:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230058,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230089,
+          "recipe_group": "Substance A:1|Substance C:2"
+        }
+      ]
+    },
+    {
+      "name": "active_11",
+      "seeds": [
+        271102,
+        271107,
+        271114,
+        271119,
+        271122,
+        271127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230018,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230095,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230059,
+          "recipe_group": "Substance A:1|Substance B:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230090,
+          "recipe_group": "Substance A:1|Substance B:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230194,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230205,
+          "recipe_group": "Substance A:1|Substance C:2"
+        }
+      ]
+    },
+    {
+      "name": "active_12",
+      "seeds": [
+        271203,
+        271208,
+        271210,
+        271215,
+        271223,
+        271228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230032,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230047,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230063,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230069,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230100,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230115,
+          "recipe_group": "Substance A:1|Substance C:3"
+        }
+      ]
+    },
+    {
+      "name": "active_13",
+      "seeds": [
+        271303,
+        271308,
+        271311,
+        271316,
+        271323,
+        271328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230032,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230038,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230107,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230138,
+          "recipe_group": "Substance A:1|Substance C:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230056,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230062,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_14",
+      "seeds": [
+        271403,
+        271408,
+        271412,
+        271417,
+        271423,
+        271428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230011,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230021,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230075,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230128,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230024,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230057,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_15",
+      "seeds": [
+        271503,
+        271508,
+        271514,
+        271519,
+        271523,
+        271528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230023,
+          "recipe_group": "Substance A:2|Substance B:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230057,
+          "recipe_group": "Substance A:2|Substance B:1|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230142,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230167,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230077,
+          "recipe_group": "Substance A:2|Substance B:1|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230100,
+          "recipe_group": "Substance A:2|Substance B:1|Substance D:1"
+        }
+      ]
+    },
+    {
+      "name": "active_16",
+      "seeds": [
+        271604,
+        271609,
+        271610,
+        271615,
+        271624,
+        271629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230009,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230010,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230015,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230169,
+          "recipe_group": "Substance A:1|Substance C:3"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230018,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230027,
+          "recipe_group": "Substance A:2|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_17",
+      "seeds": [
+        271704,
+        271709,
+        271711,
+        271716,
+        271724,
+        271729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230014,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230064,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230062,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230080,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230085,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230110,
+          "recipe_group": "Substance A:2|Substance C:1"
+        }
+      ]
+    },
+    {
+      "name": "active_18",
+      "seeds": [
+        271804,
+        271809,
+        271812,
+        271817,
+        271824,
+        271829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 230131,
+          "recipe_group": "Substance A:3|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230133,
+          "recipe_group": "Substance A:3|Substance B:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230010,
+          "recipe_group": "Substance A:1|Substance D:2"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230017,
+          "recipe_group": "Substance A:1|Substance D:2"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230222,
+          "recipe_group": "Substance A:3|Substance B:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230223,
+          "recipe_group": "Substance A:3|Substance B:1"
+        }
+      ]
+    },
+    {
+      "name": "active_19",
+      "seeds": [
+        271904,
+        271909,
+        271913,
+        271918,
+        271924,
+        271929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 230033,
+          "recipe_group": "Substance A:2|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230035,
+          "recipe_group": "Substance A:2|Substance D:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230033,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 230040,
+          "recipe_group": "Substance A:2|Substance C:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230072,
+          "recipe_group": "Substance A:2|Substance D:1"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 230112,
+          "recipe_group": "Substance A:2|Substance D:1"
+        }
+      ]
+    }
+  ]
+}

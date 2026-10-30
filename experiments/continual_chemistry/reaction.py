@@ -5,25 +5,36 @@ from dataclasses import asdict
 import torch
 
 from cdm.active_experiment import ActiveExperimentPolicy, ActiveExperimentConfig
-from cdm.continual_experiment import ContinualExperimentPolicy, ContinualExperimentConfig, select_rows
-from cdm.conditional_response import ConditionalResponse, ConditionalResponseConfig
+from cdm.continual_experiment import Activity, ContinualExperimentPolicy, ContinualExperimentConfig, select_rows
+from cdm.conditional_response import ConditionalResponse, ConditionalResponseConfig, observable_log_probabilities
+from cdm.adaptive_response import AdaptiveResponse, ResponseAdaptationConfig
 from cdm.core import ContinualCore, CoreConfig
 from .observations import model_from_core_checkpoint
 from .recipes import primitive_recipes
 
 
 class ReactionExperimentPolicy(ContinualExperimentPolicy):
-    def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig()):
+    def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig(),
+                 adaptation_config=None):
         super().__init__(base, config)
         self.response = ConditionalResponse(2 * self.core.config.width, response_config)
         self.direct_history = True
         self.core_response = True
+        self.response_adaptation = (None if adaptation_config is None else
+            AdaptiveResponse(response_config.width, response_config.levels, adaptation_config))
+        self.retain_response_adaptation = True
+        if adaptation_config is not None:
+            self.experiment_residual = torch.nn.Linear(config.adapter_width + 5, 1)
+            torch.nn.init.zeros_(self.experiment_residual.weight)
+            torch.nn.init.zeros_(self.experiment_residual.bias)
 
     def initial(self, batch, device):
         state = super().initial(batch, device)
         c = self.response.config
         state.update(reaction_history=torch.zeros(batch, c.history_capacity, 20, device=device),
                      reaction_mask=torch.zeros(batch, c.history_capacity, dtype=torch.bool, device=device))
+        if self.response_adaptation is not None:
+            state.update(self.response_adaptation.initial(batch, device))
         return state
 
     def receive(self, state, observation, selected=None):
@@ -57,11 +68,47 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         prediction = self.response(proportions, component_mask, current, history_q,
                                    (history[..., 16] * 3).round().long(),
                                    (history[..., 17] * 3).round().long(), history_mask, features)
-        return {**out, 'outcomes': prediction['log_probabilities'],
+        extra = {}
+        if self.response_adaptation is not None:
+            features = self.response_adaptation.features(prediction['hidden'])
+            logits = self.response_adaptation.predict(state, prediction['latent_logits'], features)
+            prediction['log_probabilities'] = observable_log_probabilities(logits, current)
+            extra = {'response_features': features, 'response_base_logits': prediction['latent_logits']}
+            prediction['latent_logits'] = logits
+        return {**out, **extra, 'outcomes': prediction['log_probabilities'],
                 'latent_response_logits': prediction['latent_logits']}
 
+    def experiment_logits(self, out, observation):
+        from .observations import outcome_action_scores
+        score = outcome_action_scores(out, observation)
+        probability = out['outcomes'].softmax(-1).detach()
+        residual = self.experiment_residual(torch.cat((out['features'], probability,
+            out['predictions'][..., 1:].detach()), -1)).squeeze(-1)
+        # Start with the inherited progress/cost ranking. The learned residual
+        # is trained from subsequent task return, including nonterminal tests.
+        return (4 * score.clamp_min(1e-8).log().detach() + residual).masked_fill(
+            ~observation['action_mask'], -torch.inf)
+
+    def record_response(self, state, out, actions, before, after):
+        row = torch.arange(len(actions), device=actions.device)
+        return self.response_adaptation.record(state, out['response_features'][row, actions],
+            out['response_base_logits'][row, actions], before, after)
+
+    def internal(self, state, activity, observation):
+        revised = super().internal(state, activity, observation)
+        if self.response_adaptation is not None:
+            for kind, name in ((Activity.LEARN, 'fast'), (Activity.CONSOLIDATE, 'slow')):
+                selected = activity == kind
+                if selected.any():
+                    revised = self.response_adaptation.update(revised, name, selected,
+                        retain=self.retain_response_adaptation)
+        return revised
+
     def configuration(self):
-        return {**super().configuration(), 'response_config': asdict(self.response.config)}
+        result = {**super().configuration(), 'response_config': asdict(self.response.config)}
+        if self.response_adaptation is not None:
+            result['response_adaptation_config'] = asdict(self.response_adaptation.config)
+        return result
 
 
 def reaction_from_core_checkpoint(path, *, device='cpu', initialization_seed=750, response_config=ConditionalResponseConfig()):
@@ -76,7 +123,9 @@ def load_reaction_checkpoint(path, device='cpu'):
     core = ContinualCore(CoreConfig(**saved['core_config']), saved['model']['base.core.action_values'])
     base = ActiveExperimentPolicy(ActiveExperimentConfig(**saved['active_config']), core)
     model = ReactionExperimentPolicy(base, ContinualExperimentConfig(**saved['continual_config']),
-                                    ConditionalResponseConfig(**saved['response_config']))
+                                    ConditionalResponseConfig(**saved['response_config']),
+                                    ResponseAdaptationConfig(**saved['response_adaptation_config'])
+                                    if 'response_adaptation_config' in saved else None)
     model.load_state_dict(saved['model'])
     return model.to(device), saved
 

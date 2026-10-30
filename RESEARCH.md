@@ -93,8 +93,9 @@ These observations supersede the earlier scalar-cost failures as the current
 performance starting point; the cohorts differ, so their difference is not an
 isolated estimate of the execution-cost correction.
 
-Finish the four already specified [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
-and their fixed comparison. They train physical decisions and recorded chemical
+The four [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
+and their fixed comparison are complete. No single state layout wins
+consistently across both continuations and domains. They train physical decisions and recorded chemical
 responses through a common core. Chemistry does not yet learn activity choice,
 and its replay pauses the physical scheduler. This study measures cross-domain
 state interference and reuse. It does not train the complete proactive process.

@@ -76,7 +76,7 @@ class ConditionalResponse(nn.Module):
         response = self.returned(torch.cat((F.one_hot(before, cfg.levels),
                                            F.one_hot(after, cfg.levels)), -1).float())
         groups = F.one_hot(category, 2 * cfg.levels).bool() & history_mask[..., None]
-        pieces = []
+        pieces, hidden_pieces = [], []
         for start in range(0, proportions.shape[1], cfg.candidate_chunk):
             q = proportions[:, start:start + cfg.candidate_chunk]
             active = component_mask[:, None].expand_as(q)
@@ -99,8 +99,11 @@ class ConditionalResponse(nn.Module):
             counts = groups.sum(1).float().log1p()[:, None, :, None].expand(*pooled.shape[:-1], 1)
             context = self.pool(torch.cat((pooled, counts), -1).flatten(-2))
             core_q = core[:, None].expand_as(context)
-            residual = self.output(torch.cat((own, context, core_q, context * core_q), -1))
+            hidden = self.output[:2](torch.cat((own, context, core_q, context * core_q), -1))
+            residual = self.output[2](hidden)
             prior = self.prior[n[:, None], current[:, start:start + len(q[0])]]
             pieces.append(prior + residual)
+            hidden_pieces.append(hidden)
         logits = torch.cat(pieces, 1)
-        return {'latent_logits': logits, 'log_probabilities': observable_log_probabilities(logits, current)}
+        return {'latent_logits': logits, 'hidden': torch.cat(hidden_pieces, 1),
+                'log_probabilities': observable_log_probabilities(logits, current)}

@@ -105,6 +105,8 @@ def main():
     parser.add_argument('--chemical-lr', type=float, default=1e-4)
     parser.add_argument('--chemical-weight', type=float, default=1.)
     parser.add_argument('--state-sharing', choices=('continuing', 'separated'), default='continuing')
+    parser.add_argument('--chemical-mode', choices=('recorded', 'active'), default='recorded')
+    parser.add_argument('--chemical-activity', choices=('learned', 'fixed'), default='learned')
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -115,10 +117,18 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     physical, _, plan, environment, delayed = initialize_experiment(args)
     chemical, chemical_saved = load_reaction_checkpoint(args.chemistry_checkpoint, args.device)
+    if args.chemical_mode == 'active':
+        from experiments.continual_chemistry.active_training import enable_response_learning
+        chemical = enable_response_learning(chemical, args.chemical_activity)
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
     reference = deepcopy(physical.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
-    streams = ChemicalStreams(args.chemical_data, args.batch, args.seed)
+    if args.chemical_mode == 'active':
+        from experiments.continual_chemistry.active_environment import ActiveChemicalEnvironment
+        from experiments.continual_chemistry.active_training import active_chemical_window
+        streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device)
+    else:
+        streams = ChemicalStreams(args.chemical_data, args.batch, args.seed)
     statistics = chemical_saved['training']['feedback_statistics']
     # Keep the effective rates of each inherited task. A shared parameter is
     # listed exactly once; chemistry cannot create another optimizer for it.
@@ -151,6 +161,14 @@ def main():
                    else 'one persistent h/z per interface, with one shared trainable core',
         truncation='detach only between optimizer windows; backpropagate across both domain switches',
         inherited_interface='original physical candidates/masks; zero-initialized physical action residual; pending WAIT')
+    if args.chemical_mode == 'active':
+        metadata.update(chemical_training='selected chemical experiments, received-response likelihood and native-cost actor-critic',
+            chemical_activity=args.chemical_activity,
+            chemical_environment='training-split recipes, exact cosine/persistent-rust transition and native operation cost',
+            chemical_sequence='A A B B A A; current evidence/fast weights reset, h/z and slow response weights continue',
+            chemical_update='censored categorical gradient; subsequent received predictions train through chosen updates',
+            chemical_counterfactuals='No response labels for unexecuted alternatives',
+            timing='physical scheduler pauses during chemical segments; no independent-clock claim')
     (args.output / 'config.json').write_text(json.dumps(metadata, indent=2) + '\n')
     save_shared_checkpoint(args.output / 'initial.pt', model, training={**metadata, 'updates': 0})
     physical_state, chemical_state = physical.initial(args.batch, args.device), chemical.initial(args.batch, args.device)
@@ -174,8 +192,14 @@ def main():
                 physical, delayed, physical_state, reference_state=reference_state, **options)
             if args.state_sharing == 'continuing':
                 chemical_state = {**chemical_state, 'h': physical_state['h'], 'z': physical_state['z']}
-            chemical_loss, chemical_state, nll = chemical_window(
-                chemical, chemical_state, streams, args.chemical_steps, statistics)
+            chemical_metrics = {}
+            if args.chemical_mode == 'active':
+                chemical_loss, chemical_state, chemical_metrics = active_chemical_window(
+                    chemical, chemical_state, streams, args.chemical_steps, statistics)
+                nll = chemical_metrics['response_nll']
+            else:
+                chemical_loss, chemical_state, nll = chemical_window(
+                    chemical, chemical_state, streams, args.chemical_steps, statistics)
             if args.state_sharing == 'continuing':
                 physical_state = {**physical_state, 'h': chemical_state['h'], 'z': chemical_state['z']}
             second, physical_state, reference_state, after = train_window(
@@ -187,6 +211,7 @@ def main():
             row = {'update': update, 'loss': float(loss.detach()),
                    'physical_loss': float(((first + second) / 2).detach()),
                    'chemical_loss': float(chemical_loss.detach()), 'chemical_nll': nll,
+                   'chemical_activity_learning': chemical_metrics,
                    'gradient_norm': float(gradient), 'physical_before': before, 'physical_after': after,
                    'physical_requests': int(delayed.dispatched.sum()), 'chemical_returns': streams.returned,
                    'chemical_episodes_ended': streams.ended,
@@ -198,6 +223,11 @@ def main():
             for record in environment.task_rows:
                 tasks.write(json.dumps(record) + '\n')
             tasks.flush(); environment.task_rows.clear()
+            if args.chemical_mode == 'active':
+                with (args.output / 'chemical_tasks.jsonl').open('a') as chemical_tasks:
+                    for record in streams.task_rows:
+                        chemical_tasks.write(json.dumps(record) + '\n')
+                streams.task_rows.clear()
             if update == 1 or update % 10 == 0:
                 print(json.dumps({k: v for k, v in row.items() if not isinstance(v, dict)}), flush=True)
             if update % args.save_every == 0 or update == args.updates:

@@ -37,12 +37,19 @@ def summarize(root, plan):
                 'mean_seconds': sum(r['seconds'] for r in values) / len(values)}
             flat.extend({'condition': name, 'task': task, **{k: r[k] for k in
                 ('stream', 'episode_index', 'seed', 'completed_successfully', 'native_actions', 'seconds')}} for r in values)
+    pairs = plan.get('pairs')
+    if pairs is None:
+        pairs = [(f'continuing_seed{seed}', f'{control}_seed{seed}')
+                 for seed in (831, 832) for control in ('separated', 'initial_separated', 'continuing_separated_runtime')]
+        pairs += [(f'separated_seed{seed}', f'initial_separated_seed{seed}') for seed in (831, 832)]
     comparisons = {}
-    for seed in (831, 832):
-        full = f'continuing_seed{seed}'
-        for control in (f'separated_seed{seed}', f'initial_separated_seed{seed}', f'continuing_separated_runtime_seed{seed}'):
-            comparisons[full + ':' + control] = {task: paired(rows[full][task], rows[control][task])
-                                                for task in ('physics', 'chemistry')}
+    for left, right in pairs:
+        comparison = {task: paired(rows[left][task], rows[right][task]) for task in ('physics', 'chemistry')}
+        if plan.get('study') == 'active':
+            comparison['first_return'] = {task: paired(
+                [r for r in rows[left][task] if r['episode_index'] == 4],
+                [r for r in rows[right][task] if r['episode_index'] == 4]) for task in ('physics', 'chemistry')}
+        comparisons[left + ':' + right] = comparison
     result = {'protocol': plan, 'conditions': conditions, 'comparisons': comparisons}
     (root / 'comparisons.json').write_text(json.dumps(result, indent=2) + '\n')
     with (root / 'instances.csv').open('w') as file:
@@ -55,21 +62,32 @@ def main():
     p.add_argument('--output', required=True, type=Path)
     p.add_argument('--manifest', type=Path, default=Path('experiments/continual_experiment/shared_confirmation.json'))
     p.add_argument('--workers', type=int, default=6)
+    p.add_argument('--study', choices=('shared', 'active'), default='shared')
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     jobs = []
-    for seed in (831, 832):
-        for label, source, endpoint, state in (
+    for seed in ((831, 832) if args.study == 'shared' else (911, 912)):
+        definitions = (
             ('initial_separated', 'continuing', 'initial.pt', 'separated'),
             ('continuing', 'continuing', 'last.pt', 'continuing'),
             ('separated', 'separated', 'last.pt', 'separated'),
-            ('continuing_separated_runtime', 'continuing', 'last.pt', 'separated')):
+            ('continuing_separated_runtime', 'continuing', 'last.pt', 'separated')) if args.study == 'shared' else (
+            ('initial', 'learned', 'initial.pt', 'separated'),
+            ('learned', 'learned', 'last.pt', 'separated'),
+            ('fixed', 'fixed', 'last.pt', 'separated'),
+            ('discard_response', 'learned', 'last.pt', 'separated'),
+            ('reset_chemical', 'learned', 'last.pt', 'separated'))
+        for label, source, endpoint, state in definitions:
             directory = args.training_root / f'{source}_seed{seed}'
             name = f'{label}_seed{seed}'
             command = ['-m', 'experiments.continual_experiment.evaluate_shared_tasks',
                 '--checkpoint', str(directory / endpoint), '--manifest', str(args.manifest),
                 '--output', str(args.output / name), '--initial-rng-root', str(args.output / 'initial_rng'),
                 '--state-sharing', state, '--workers', str(args.workers)]
+            if label == 'discard_response':
+                command += ['--discard-response-updates']
+            if label == 'reset_chemical':
+                command += ['--reset-chemical-state']
             jobs.append({'name': name, 'training_directory': str(directory), 'endpoint': endpoint,
                          'arguments': command})
     plan = {'jobs': jobs, 'manifest': str(args.manifest), 'training_updates': 200,
@@ -80,6 +98,14 @@ def main():
             'timing': 'sequential tasks; physical delivery is delayed two internal ticks; world clocks do not advance asynchronously',
             'bootstrap_unit': 'whole ordered six-physical/six-chemical task stream',
             'training_seed_scope': 'two continuations of the same physical parent and two chemical interface warmups'}
+    if args.study == 'active':
+        plan.update(study='active',
+            training_seed_scope='two continuations of the same physical parent and chemical warmup753',
+            tasks='six physical and six chemical tasks per stream, both A A B B A A',
+            selection='all four fixed final endpoints, initial references and same-weight chemical update/state interventions',
+            pairs=[(f'learned_seed{seed}', f'{control}_seed{seed}')
+                   for seed in (911, 912) for control in ('initial', 'fixed', 'discard_response', 'reset_chemical')]
+                + [(f'fixed_seed{seed}', f'initial_seed{seed}') for seed in (911, 912)])
     (args.output / 'plan.json').write_text(json.dumps(plan, indent=2) + '\n')
     pending, running, completed = list(jobs), [], []
     while pending or running:

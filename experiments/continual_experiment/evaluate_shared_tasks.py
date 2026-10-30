@@ -32,11 +32,15 @@ def run_stream(job):
         nonlocal chemical_state
         task = stream['chemistry'][index]
         prior_h, prior_z = chemical_state['h'], chemical_state['z']
+        prior_slow = chemical_state.get('response_slow')
         # New apparatus, fresh numerical ledger. The hidden process continues.
         chemical_state = chemical.initial(1, 'cpu')
+        reset_chemical = options.get('reset_chemical_state', False)
+        if prior_slow is not None and not reset_chemical:
+            chemical_state['response_slow'] = prior_slow
         if mode == 'continuing':
             chemical_state.update(h=physical_session.state['h'], z=physical_session.state['z'])
-        else:
+        elif not reset_chemical:
             chemical_state.update(h=prior_h, z=prior_z)
         start = {k: chemical_state[k].clone() for k in ('h', 'z')}
         summary, chemical_state = run_chemistry({
@@ -45,13 +49,14 @@ def run_stream(job):
             'output': str(output / stream['name'] / f"chemistry{index:03d}_seed{task['seed']}"),
             'max_actions': 1000, 'max_experiments': 209, 'threads': options['threads'],
             'initial_rng_root': options['initial_rng_root'], 'primitive_candidates': True,
+            'discard_response_updates': options.get('discard_response_updates', False),
         }, model=chemical, state=chemical_state, return_state=True)
         if mode == 'continuing':
             physical_session.state = {**physical_session.state,
                                       'h': chemical_state['h'], 'z': chemical_state['z']}
         row = {**summary, 'stream': stream['name'], 'episode_index': index,
                'state_sharing': mode,
-               'cross_domain_state_change': {k: float((chemical_state[k] - start[k]).norm()) for k in start}}
+               'cross_domain_state_change': {k: float((chemical_state[k] - start[k]).detach().norm()) for k in start}}
         rows.append(row)
         (output / stream['name'] / 'chemistry_summary.json').write_text(json.dumps(rows, indent=2) + '\n')
         if summary['error']:
@@ -77,6 +82,8 @@ def main():
     p.add_argument('--state-sharing', choices=('continuing', 'separated'))
     p.add_argument('--workers', type=int, default=6)
     p.add_argument('--threads', type=int, default=1)
+    p.add_argument('--discard-response-updates', action='store_true')
+    p.add_argument('--reset-chemical-state', action='store_true')
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}

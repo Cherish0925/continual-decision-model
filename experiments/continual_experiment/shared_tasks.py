@@ -9,6 +9,7 @@ from cdm.continual_physics import ContinualPhysicsConfig, ContinualPhysicsPolicy
 from cdm.core import CoreConfig, ContinualCore
 from cdm.experimental_belief import ExperimentalBelief
 from cdm.conditional_response import ConditionalResponseConfig
+from cdm.adaptive_response import ResponseAdaptationConfig
 from cdm.recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 from cdm.shared_core import SharedCorePolicies
 from experiments.continual_chemistry.reaction import ReactionExperimentPolicy, load_reaction_checkpoint
@@ -44,7 +45,9 @@ def load_shared_checkpoint(path, device='cpu'):
             belief = ExperimentalBelief(c['normalization'], memory_slots=c['memory_slots'], noise_floor_hz=c['noise_floor_hz'])
             policy = ContinualPhysicsPolicy(base, belief, continual, ContinualPhysicsConfig(**config['physics_config']))
         elif name == 'chemistry':
-            policy = ReactionExperimentPolicy(base, continual, ConditionalResponseConfig(**config['response_config']))
+            policy = ReactionExperimentPolicy(base, continual, ConditionalResponseConfig(**config['response_config']),
+                ResponseAdaptationConfig(**config['response_adaptation_config'])
+                if 'response_adaptation_config' in config else None)
         else:
             raise ValueError(f'Unknown task interface {name}')
         if 'recurrent_feedback_config' in config:
