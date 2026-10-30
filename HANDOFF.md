@@ -1,5 +1,29 @@
 # Research progress
 
+## Completed execution-aware study and shared-core training
+
+The four execution-aware trainings and all eleven native comparisons are
+complete. On their new 120-instance cohort, full models finish 115/120 and
+117/120 at 103.61 and 101.58 mean actions; parents finish 116/120 and 117/120
+at 105.02 and 97.98. Matched recurrent models use 103.69 and 100.72 actions.
+The complete models have no established advantage over those references.
+Retaining all task state saves 25.42 and 27.33 actions over resetting it;
+both whole-stream intervals exclude zero. Numerical memory, neural state and
+adapters change together in that comparison. Physical online updates alone
+still have no stable benefit. The [full table](experiments/continual_physics/EXECUTION.md#completed-native-comparison)
+keeps all 1,320 executions, return-task results and timing conditions.
+
+Four [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
+now interleave physical action learning, chemical response learning and a return
+to physical action in each gradient window. Two paired continuations compare
+one continuing h/z with separate per-interface h/z under the same shared
+weights and task budgets. Each final endpoint receives 102,400 physical
+requests and 25,600 recorded chemical returns. Chemistry supplies observed
+response and cost losses; it does not yet learn its own activity scheduler.
+The full-sized path has completed two updates and a native four-task path
+check. Formal training and the fixed new mixed-task evaluation are running;
+no performance improvement is claimed for this candidate yet.
+
 ## Continuing physical learning and activity selection
 
 The [unified study](experiments/continual_physics/README.md) is now training
@@ -36,9 +60,9 @@ activation and operation costs. It trains with a 400-operation task budget and
 charges the actual operations in each experimental request. Formal training
 exposed a boundary case where consistent threshold observations identify an
 exact frequency. The corrected likelihood preserves that point, and both full
-models have restarted from their original initialization and passed their first
-complete training windows. Two matched recurrent references continue. Each run
-has a fixed 200-window endpoint; model performance is still pending.
+models restarted from their original initialization and completed all 200
+training windows, as did both matched recurrent references. The completed
+native comparison appears at the top of this record.
 [Execution details](experiments/continual_physics/EXECUTION.md) record the first
 failed attempts, corrected commands and the exact four checkpoint locations.
 
@@ -49,7 +73,7 @@ native evaluation queues are separate from the primary eight trainings. Both
 are complete: 92/120 at 166.07 actions and 84/120 at 176.55. The first full
 model has no clear advantage over its recurrent reference; the second full
 model is worse. These are the original scalar-training repetitions 231/232,
-distinct from the four execution-aware trainings 241/242 now running.
+distinct from the four completed execution-aware trainings 241/242.
 
 The separate initial-checkpoint comparison also finished. Before continuation,
 the new runtime/module combinations complete only 63/120 and 74/120. Training
@@ -66,7 +90,7 @@ action contract learned by the parent. A separately selectable inherited-interfa
 candidate preserves the parent's logits and masks on all 27 replayed decisions,
 while keeping task-boundary state reset separate. It changes the available retry
 actions as well as initialization, and has no new task-performance result. The
-four already running trainings retain their frozen source and protocol.
+four execution-aware trainings retained their frozen source and protocol.
 
 An independent [Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
 has completed both new cohorts. On the 120 confirmation instances, its
@@ -75,7 +99,7 @@ its task-reset version completes 117 with 133.34. The frozen neural parents
 complete 117 and 119 with 106.68 and 102.84 actions. This reference uses the same
 public measurement returns and numerical execution tools, with its own
 uncertainty model and measurement-planning rule. It provides a strong comparison
-for the joint models currently training.
+for the completed joint models.
 
 ## Learning from chemical experiments
 
@@ -130,8 +154,9 @@ their outputs relative to running those same interfaces separately; the physical
 interface uses the new runtime whose initialization is examined above. One update using an actual physical
 measurement and a recorded chemical experiment sends gradients from both tasks
 into that same core. Checkpoint reconstruction preserves every task head and
-stores the core once. This establishes the joint training entry; long task-stream
-training and common activity selection remain to be completed.
+stores the core once. This established the joint training entry; the four
+longer mixed-task trainings described above are now running. A shared learned
+activity policy across both domains remains to be developed.
 
 ## Physical prediction and experimental decisions
 

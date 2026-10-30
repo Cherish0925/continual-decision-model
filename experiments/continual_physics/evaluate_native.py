@@ -94,13 +94,14 @@ def next_request(session):
     raise RuntimeError("The internal activity budget ended without ACT or WAIT")
 
 
-def run_stream(job):
+def run_stream(job, *, model=None, session=None, after_episode=None):
     from cdm.continual_physics import load_continual_physics_checkpoint
 
     options, stream = job
     torch.set_num_threads(options["threads"])
     device = torch.device(options["device"])
-    model, _ = load_continual_physics_checkpoint(options["checkpoint"], device)
+    if model is None:
+        model, _ = load_continual_physics_checkpoint(options["checkpoint"], device)
     model.eval()
     if options.get("condition_failure_weights", False):
         model.physics_config = replace(model.physics_config, condition_failure_weights=True)
@@ -110,7 +111,7 @@ def run_stream(job):
         model.recurrent_feedback.enabled = False
     if options["discard_physical_updates"]:
         model.retain_physical_adaptation = False
-    session = ContinualPhysicsSession(model, device)
+    session = ContinualPhysicsSession(model, device) if session is None else session
     initial = copy_state(session.state)
     root = Path(options["output"]) / stream["name"]
     root.mkdir(parents=True)
@@ -256,6 +257,8 @@ def run_stream(job):
         gc.collect()
         if error is not None:
             break
+        if after_episode is not None:
+            after_episode(index, session)
     return {"stream": stream["name"], "instances": len(rows),
             "completed": sum(row["completed_successfully"] for row in rows),
             "native_actions": sum(row["native_actions"] for row in rows),

@@ -22,11 +22,15 @@ class BoundedChemistryExperiments(ChemistryExperiments):
         return super()._action(*args,**kwargs)
 
 
-def run(options):
+def run(options, *, model=None, state=None, return_state=False):
     args=argparse.Namespace(**options);args.output=Path(args.output)
     torch.set_num_threads(args.threads);args.output.mkdir(parents=True)
-    model=state=None;trained_heads=False
-    if args.policy!='reference':
+    trained_heads=False
+    if model is not None:
+        model.eval()
+        state=model.initial(1,'cpu') if state is None else state
+        trained_heads=True
+    elif args.policy!='reference':
         model,record=load_chemistry_policy(args.checkpoint);model.eval();state=model.initial(1,'cpu')
         if getattr(args,'disable_direct_history',False):model.direct_history=False
         if getattr(args,'disable_response_core',False):model.core_response=False
@@ -119,7 +123,7 @@ def run(options):
             'planning_mode':getattr(args,'planning_mode','progress'),
             'ending':ending,'error':error,'seconds':perf_counter()-started}
         (args.output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    return summary
+    return (summary,state) if return_state else summary
 
 
 def main():

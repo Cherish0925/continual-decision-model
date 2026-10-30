@@ -86,7 +86,7 @@ performance.
 
 ## Fixed-endpoint training
 
-Four matched runs are in progress. Each trains for 200 windows of 32 streams ×
+All four matched runs are complete. Each trained for 200 windows of 32 streams ×
 32 external requests: 204,800 requests per run. The two repetitions start from
 parent policies 221 and 222, using initialization seeds 241 and 242. All four
 use the same task-plan construction, failure-conditioned decision weights,
@@ -109,10 +109,9 @@ A valid sequence of strict-threshold outcomes could identify an exact frequency
 The correction uses the conditional-density limit only for an identified point;
 ordinary interval events retain their probability measure. It adds no noise or
 probability floor. Both full models restarted from update zero in the `_point`
-directory and have passed their initial complete training windows with finite
-gradients. The original full, recurrent and restarted full checkpoints have
+directory and completed all 200 windows with finite gradients. The original full, recurrent and restarted full checkpoints have
 identical values for all 135 initial parameter tensors within each repetition.
-The unaffected recurrent runs continue in their original locations.
+The unaffected recurrent runs completed in their original locations.
 
 A fresh reproduction uses the corrected source and one new output directory:
 
@@ -132,7 +131,7 @@ The actual full-model restart used this same command with
 with the first four-condition command and its original output directory.
 Evaluation waits for `finished.json`, which is written only after update 200;
 intermediate checkpoints are not selected by task performance. Final native
-results are pending.
+results are reported below.
 
 The [independent native comparison](execution_confirmation.json) fixes 120 new
 instances in twenty six-task streams. It compares both parents, both trained
@@ -147,3 +146,39 @@ policies. That distinction remains explicit in timing results.
 ```bash
 python -m experiments.continual_physics.execution_confirmation
 ```
+
+## Completed native comparison
+
+All eleven conditions completed their fixed 120-instance cohort, with no
+execution errors. These instances differ from the earlier scalar-cost study;
+changes across the two tables cannot isolate a training-cost effect.
+
+| Method | Repetition 1 completed | Mean actions | Repetition 2 completed | Mean actions |
+|---|---:|---:|---:|---:|
+| Frozen parent | 116/120 | 105.02 | 117/120 | 97.98 |
+| Full continual model | 115/120 | 103.61 | 117/120 | 101.58 |
+| Matched recurrent training | 114/120 | 103.69 | 119/120 | 100.72 |
+| Full weights, discard physical updates | 117/120 | 98.80 | 118/120 | 103.33 |
+| Full weights, reset all task state | 111/120 | 129.03 | 107/120 | 128.90 |
+| Bayesian relationship-memory reference | 119/120 | 99.57 | Same reference | Same reference |
+
+Carrying the full state saves 25.42 and 27.33 actions relative to resetting
+it at every task, with whole-stream 95% bootstrap intervals of
+[-44.36, -9.36] and [-43.74, -12.14] for carried minus reset. This intervention
+removes numerical memory, neural state and adapters together; it does not
+attribute the benefit to the recurrent core alone. On the first return to an
+earlier relation the corresponding intervals still include zero.
+
+Full minus recurrent mean costs are -0.08 and +0.86 actions; neither establishes
+an advantage. Retaining rather than discarding physical updates changes cost
+by +4.81 and -1.76 actions, with both intervals including zero. The full models
+use 39.70 and 44.80 more actions than the Bayesian reference on the first return
+to an earlier relation; both intervals exclude zero. Reliable context recovery
+and beneficial online neural updates remain unresolved.
+
+The [machine-readable comparisons](results/execution_confirmation.json),
+[condition table](results/execution_confirmation.csv) and
+[all 1,320 instances](results/execution_instances.csv) retain both repetitions,
+failures, phase comparisons and actual runtime. Parent and classical runs are
+synchronous, while the new models use a two-tick artificial feedback delay;
+wall-time comparisons therefore include different internal runtime protocols.

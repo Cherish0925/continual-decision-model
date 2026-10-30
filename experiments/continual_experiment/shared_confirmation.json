@@ -1,0 +1,846 @@
+{
+  "purpose": "Fixed new native sequences for shared physical/chemical core training",
+  "scope": "Familiar native physical and chemical families; new instances, not novel-law transfer",
+  "streams": [
+    {
+      "name": "shared_00",
+      "seeds": [
+        160000,
+        160005,
+        160011,
+        160016,
+        160020,
+        160025
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 220000
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220001
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220002
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220003
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220004
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220005
+        }
+      ]
+    },
+    {
+      "name": "shared_01",
+      "seeds": [
+        160100,
+        160105,
+        160112,
+        160117,
+        160120,
+        160125
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 220100
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220101
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220102
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220103
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220104
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220105
+        }
+      ]
+    },
+    {
+      "name": "shared_02",
+      "seeds": [
+        160200,
+        160205,
+        160213,
+        160218,
+        160220,
+        160225
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 220200
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220201
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220202
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220203
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220204
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220205
+        }
+      ]
+    },
+    {
+      "name": "shared_03",
+      "seeds": [
+        160300,
+        160305,
+        160314,
+        160319,
+        160320,
+        160325
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 220300
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220301
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220302
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220303
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220304
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220305
+        }
+      ]
+    },
+    {
+      "name": "shared_04",
+      "seeds": [
+        160401,
+        160406,
+        160410,
+        160415,
+        160421,
+        160426
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 220400
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220401
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220402
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220403
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220404
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220405
+        }
+      ]
+    },
+    {
+      "name": "shared_05",
+      "seeds": [
+        160501,
+        160506,
+        160512,
+        160517,
+        160521,
+        160526
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 220500
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220501
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220502
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220503
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220504
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220505
+        }
+      ]
+    },
+    {
+      "name": "shared_06",
+      "seeds": [
+        160601,
+        160606,
+        160613,
+        160618,
+        160621,
+        160626
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 220600
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220601
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220602
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220603
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220604
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220605
+        }
+      ]
+    },
+    {
+      "name": "shared_07",
+      "seeds": [
+        160701,
+        160706,
+        160714,
+        160719,
+        160721,
+        160726
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 220700
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220701
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220702
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220703
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220704
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220705
+        }
+      ]
+    },
+    {
+      "name": "shared_08",
+      "seeds": [
+        160802,
+        160807,
+        160810,
+        160815,
+        160822,
+        160827
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 220800
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220801
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220802
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220803
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220804
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220805
+        }
+      ]
+    },
+    {
+      "name": "shared_09",
+      "seeds": [
+        160902,
+        160907,
+        160911,
+        160916,
+        160922,
+        160927
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 220900
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220901
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220902
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220903
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 220904
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 220905
+        }
+      ]
+    },
+    {
+      "name": "shared_10",
+      "seeds": [
+        161002,
+        161007,
+        161013,
+        161018,
+        161022,
+        161027
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 221000
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221001
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221002
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221003
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221004
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221005
+        }
+      ]
+    },
+    {
+      "name": "shared_11",
+      "seeds": [
+        161102,
+        161107,
+        161114,
+        161119,
+        161122,
+        161127
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 221100
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221101
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221102
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221103
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221104
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221105
+        }
+      ]
+    },
+    {
+      "name": "shared_12",
+      "seeds": [
+        161203,
+        161208,
+        161210,
+        161215,
+        161223,
+        161228
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 221200
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221201
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221202
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221203
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221204
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221205
+        }
+      ]
+    },
+    {
+      "name": "shared_13",
+      "seeds": [
+        161303,
+        161308,
+        161311,
+        161316,
+        161323,
+        161328
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 221300
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221301
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221302
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221303
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221304
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221305
+        }
+      ]
+    },
+    {
+      "name": "shared_14",
+      "seeds": [
+        161403,
+        161408,
+        161412,
+        161417,
+        161423,
+        161428
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 221400
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221401
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221402
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221403
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221404
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221405
+        }
+      ]
+    },
+    {
+      "name": "shared_15",
+      "seeds": [
+        161503,
+        161508,
+        161514,
+        161519,
+        161523,
+        161528
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 221500
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221501
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221502
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221503
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221504
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221505
+        }
+      ]
+    },
+    {
+      "name": "shared_16",
+      "seeds": [
+        161604,
+        161609,
+        161610,
+        161615,
+        161624,
+        161629
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 221600
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221601
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221602
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221603
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221604
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221605
+        }
+      ]
+    },
+    {
+      "name": "shared_17",
+      "seeds": [
+        161704,
+        161709,
+        161711,
+        161716,
+        161724,
+        161729
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 221700
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221701
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221702
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221703
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221704
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221705
+        }
+      ]
+    },
+    {
+      "name": "shared_18",
+      "seeds": [
+        161804,
+        161809,
+        161812,
+        161817,
+        161824,
+        161829
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 221800
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221801
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221802
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221803
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221804
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221805
+        }
+      ]
+    },
+    {
+      "name": "shared_19",
+      "seeds": [
+        161904,
+        161909,
+        161913,
+        161918,
+        161924,
+        161929
+      ],
+      "segment_lengths": [
+        2,
+        2,
+        2
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 221900
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221901
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221902
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221903
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 221904
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 221905
+        }
+      ]
+    }
+  ]
+}

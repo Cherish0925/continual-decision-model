@@ -377,8 +377,10 @@ Switching interfaces carries h/z forward and leaves the other task's numeric
 memories intact. Optimizer groups deduplicate parameter objects. The checkpoint
 stores the core once, plus every non-core task tensor and its configuration;
 `shared_tasks.py` reconstructs the same shared object on load. Activity heads
-remain task-specific in this entry point. Long multi-task activity training has
-not yet been performed.
+remain task-specific in this entry point. The subsequent
+[shared-core training study](SHARED_TRAINING.md) now runs four paired
+continuations through physical actions and chemical response learning, with a
+fixed native mixed-task comparison. Chemical activity selection is still fixed.
 
 `verify_shared_tasks.py` executes one real measurement in a physical training
 world and loads one recorded chemical training return. It checks unchanged

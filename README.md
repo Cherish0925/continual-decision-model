@@ -26,8 +26,14 @@ They reveal mismatched training/execution costs
 and a failure-feedback gap in decision confidence. Correcting the latter
 raises one fixed model from 83/120 to 105/120 on new instances; its strong
 parent still reaches 119/120. Both additional recurrent references are complete
-and also fall below their parents. Four new trainings use a [native execution model](experiments/continual_physics/EXECUTION.md)
-that reproduces device adjustment, feedback and actual operation costs.
+and also fall below their parents. Four new trainings using a [native execution model](experiments/continual_physics/EXECUTION.md)
+have now completed their separate 120-instance comparison. Full models finish
+**115/120 and 117/120**, with **103.61 and 101.58** mean native actions; matched
+parents finish **116/120 and 117/120**, with **105.02 and 97.98** actions. Carrying
+all task state saves **25.42 and 27.33 actions** over resetting it, while online
+physical updates and learned activity selection still lack a stable advantage
+over their corresponding controls. [All eleven conditions and 1,320 executions](experiments/continual_physics/EXECUTION.md#completed-native-comparison)
+are retained.
 The [initial-checkpoint and matched-prefix comparisons](experiments/continual_physics/INITIALIZATION.md)
 show that substantial regression precedes
 continued training, so the original and revised execution paths are compared
@@ -51,7 +57,11 @@ learning useful relationships from earlier experiments. The two training runs
 differ substantially, and the additional benefit of the recurrent-state readout
 remains uncertain. [Complete comparisons](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
 include both runs, interventions and recipe-group uncertainty. Chemistry and
-physical control currently use separately trained task adaptations.
+physical control have separately trained task adaptations in these completed
+results. Four new [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
+interleave physical action learning and chemical response learning in one
+gradient sequence, comparing continuing and per-interface state. Their fixed
+new mixed-task evaluation is in progress.
 An additional [Bayesian reference](experiments/continual_chemistry/BAYESIAN_REFERENCE.md),
 given the public reaction-function family, completes the same 60 tasks in
 98.60 mean operations. This stronger prior and the learned models' different

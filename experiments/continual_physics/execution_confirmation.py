@@ -36,7 +36,18 @@ def jobs():
 
 def summarize(plan):
     expected={(s['name'],i,seed) for s in json.loads(MANIFEST.read_text())['streams'] for i,seed in enumerate(s['seeds'])}
-    rows={j['name']:load_rows(ROOT/j['name']) for j in plan['jobs']}
+    rows={}
+    for job in plan['jobs']:
+        name=job['name']
+        if name=='classical_memory':
+            streams=json.loads((ROOT/name/'summary.json').read_text())
+            values=[{**r,'episode_index':r['index'],
+                     'timing':{k:r[k] for k in ('inference_seconds','execution_seconds')}}
+                    for stream in streams for r in stream['rows']]
+            if any(r.get('error') for r in values):raise ValueError('Classical execution error')
+        else:
+            values=load_rows(ROOT/name)
+        rows[name]=values
     result={'protocol':plan,'conditions':{},'comparisons':{}}
     for name,values in rows.items():
         if len(values)!=120 or {(r['stream'],r['episode_index'],r['seed']) for r in values}!=expected:raise ValueError(name)

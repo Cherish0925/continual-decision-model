@@ -1,0 +1,1555 @@
+{
+  "protocol": {
+    "manifest": "experiments/continual_physics/execution_confirmation.json",
+    "jobs": [
+      {
+        "name": "parent_seed221",
+        "ready": null,
+        "command": [
+          "python",
+          "-m",
+          "experiments.physical_belief.evaluate_native",
+          "--checkpoint",
+          "runs/physical_belief/joint_20261029/carry_seed221/policy.pt",
+          "--belief-checkpoint",
+          "runs/physical_belief/joint_20261029/carry_seed221/belief.pt",
+          "--belief-mode",
+          "carry",
+          "--state-mode",
+          "reset",
+          "--mixture-checkpoint",
+          "runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/parent_seed221"
+        ]
+      },
+      {
+        "name": "full_seed241",
+        "training_condition": "full_seed241",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed241"
+        ]
+      },
+      {
+        "name": "full_seed241_discard_physical",
+        "training_condition": "full_seed241",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--discard-physical-updates",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed241_discard_physical"
+        ]
+      },
+      {
+        "name": "full_seed241_task_reset",
+        "training_condition": "full_seed241",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed241/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--state-mode",
+          "reset",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed241_task_reset"
+        ]
+      },
+      {
+        "name": "recurrent_reference_seed241",
+        "training_condition": "recurrent_reference_seed241",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030",
+        "ready": "runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed241/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed241/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/recurrent_reference_seed241"
+        ]
+      },
+      {
+        "name": "parent_seed222",
+        "ready": null,
+        "command": [
+          "python",
+          "-m",
+          "experiments.physical_belief.evaluate_native",
+          "--checkpoint",
+          "runs/physical_belief/joint_repeat_20261029/carry_seed222/policy.pt",
+          "--belief-checkpoint",
+          "runs/physical_belief/joint_repeat_20261029/carry_seed222/belief.pt",
+          "--belief-mode",
+          "carry",
+          "--state-mode",
+          "reset",
+          "--mixture-checkpoint",
+          "runs/discoveryworld/calibration/mixture/shared_train_only_seed31/last.pt",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/parent_seed222"
+        ]
+      },
+      {
+        "name": "full_seed242",
+        "training_condition": "full_seed242",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed242"
+        ]
+      },
+      {
+        "name": "full_seed242_discard_physical",
+        "training_condition": "full_seed242",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--discard-physical-updates",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed242_discard_physical"
+        ]
+      },
+      {
+        "name": "full_seed242_task_reset",
+        "training_condition": "full_seed242",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030_point",
+        "ready": "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030_point/full_seed242/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--state-mode",
+          "reset",
+          "--output",
+          "runs/continual_physics/execution_confirmation/full_seed242_task_reset"
+        ]
+      },
+      {
+        "name": "recurrent_reference_seed242",
+        "training_condition": "recurrent_reference_seed242",
+        "training_root": "runs/continual_physics/native_execution_joint_20261030",
+        "ready": "runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed242/finished.json",
+        "command": [
+          "python",
+          "-m",
+          "experiments.continual_physics.evaluate_native",
+          "--checkpoint",
+          "runs/continual_physics/native_execution_joint_20261030/recurrent_reference_seed242/last.pt",
+          "--feedback-delay-ticks",
+          "2",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--threads",
+          "1",
+          "--device",
+          "cpu",
+          "--output",
+          "runs/continual_physics/execution_confirmation/recurrent_reference_seed242"
+        ]
+      },
+      {
+        "name": "classical_memory",
+        "ready": null,
+        "command": [
+          "python",
+          "-m",
+          "experiments.classical_calibration.evaluate_native",
+          "--mode",
+          "forgetting",
+          "--samples",
+          "8",
+          "--iterations",
+          "3",
+          "--manifest",
+          "experiments/continual_physics/execution_confirmation.json",
+          "--initial-rng-root",
+          "runs/continual_physics/execution_confirmation/initial_rng",
+          "--max-actions",
+          "400",
+          "--max-decisions",
+          "160",
+          "--workers",
+          "6",
+          "--output",
+          "runs/continual_physics/execution_confirmation/classical_memory"
+        ]
+      }
+    ],
+    "instances_per_condition": 120,
+    "native_executions": 1320,
+    "maximum_workers": 18,
+    "training_updates": 200,
+    "selection": "All fixed endpoints and declared interventions; no new-confirmation checkpoint selection",
+    "discard_physical": "Discard only physical fast/slow corrections; retain numerical memory and cost adaptation",
+    "task_reset": "Reset all model state at task boundaries, including h/z, numerical memory, both adapters and replay; normal within-task updates",
+    "feedback_delay_ticks": 2,
+    "timing_scope": "Parents and classical policy are synchronous; native operation costs match, artificial internal delays do not",
+    "new_instances": "No overlaps with earlier experiment JSON seeds; familiar five native relation families",
+    "bootstrap_unit": "whole six-instance A2B2A2 stream",
+    "source": "execution-aware training with exact native probes/cost and open-interval point feedback"
+  },
+  "conditions": {
+    "parent_seed221": {
+      "instances": 120,
+      "completed": 116,
+      "mean_actions": 105.01666666666667,
+      "mean_seconds": 5.232322877723103,
+      "execution_errors": 0
+    },
+    "full_seed241": {
+      "instances": 120,
+      "completed": 115,
+      "mean_actions": 103.60833333333333,
+      "mean_seconds": 5.383032451927041,
+      "execution_errors": 0
+    },
+    "full_seed241_discard_physical": {
+      "instances": 120,
+      "completed": 117,
+      "mean_actions": 98.8,
+      "mean_seconds": 5.140650454489514,
+      "execution_errors": 0
+    },
+    "full_seed241_task_reset": {
+      "instances": 120,
+      "completed": 111,
+      "mean_actions": 129.025,
+      "mean_seconds": 6.274332181240122,
+      "execution_errors": 0
+    },
+    "recurrent_reference_seed241": {
+      "instances": 120,
+      "completed": 114,
+      "mean_actions": 103.69166666666666,
+      "mean_seconds": 4.763626354498168,
+      "execution_errors": 0
+    },
+    "parent_seed222": {
+      "instances": 120,
+      "completed": 117,
+      "mean_actions": 97.975,
+      "mean_seconds": 5.117696389680107,
+      "execution_errors": 0
+    },
+    "full_seed242": {
+      "instances": 120,
+      "completed": 117,
+      "mean_actions": 101.575,
+      "mean_seconds": 5.343522171396762,
+      "execution_errors": 0
+    },
+    "full_seed242_discard_physical": {
+      "instances": 120,
+      "completed": 118,
+      "mean_actions": 103.33333333333333,
+      "mean_seconds": 5.340930785580228,
+      "execution_errors": 0
+    },
+    "full_seed242_task_reset": {
+      "instances": 120,
+      "completed": 107,
+      "mean_actions": 128.9,
+      "mean_seconds": 6.33352790948314,
+      "execution_errors": 0
+    },
+    "recurrent_reference_seed242": {
+      "instances": 120,
+      "completed": 119,
+      "mean_actions": 100.71666666666667,
+      "mean_seconds": 4.612608439040681,
+      "execution_errors": 0
+    },
+    "classical_memory": {
+      "instances": 120,
+      "completed": 119,
+      "mean_actions": 99.56666666666666,
+      "mean_seconds": 5.185694522084669,
+      "execution_errors": 0
+    }
+  },
+  "comparisons": {
+    "full_seed241:parent_seed221": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -1.4083333333333334,
+        "mean_action_difference_95ci": [
+          -18.39270833333333,
+          16.941874999999996
+        ],
+        "completion_fraction_difference": -0.008333333333333333,
+        "completion_fraction_difference_95ci": [
+          -0.058333333333333334,
+          0.041666666666666664
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 16.8,
+        "mean_action_difference_95ci": [
+          -25.75,
+          61.25
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 26.3,
+        "mean_action_difference_95ci": [
+          -17.701249999999998,
+          75.7
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.2
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -2.05,
+        "mean_action_difference_95ci": [
+          -47.25125,
+          42.15124999999998
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -21.8,
+        "mean_action_difference_95ci": [
+          -56.85,
+          21.60374999999995
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.15070957420393824,
+          "difference_95ci_seconds": [
+            -0.6460874072070388,
+            1.0083924736947902
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": null,
+        "execution_seconds": null,
+        "feedback_seconds": null
+      }
+    },
+    "full_seed241:recurrent_reference_seed241": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -0.08333333333333333,
+        "mean_action_difference_95ci": [
+          -24.375,
+          19.016874999999995
+        ],
+        "completion_fraction_difference": 0.008333333333333333,
+        "completion_fraction_difference_95ci": [
+          -0.058333333333333334,
+          0.09166666666666666
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -8.65,
+        "mean_action_difference_95ci": [
+          -42.25,
+          14.95
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 14.9,
+        "mean_action_difference_95ci": [
+          -26.7,
+          56.05
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.1
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 0.1,
+        "mean_action_difference_95ci": [
+          -41.40125,
+          45.101249999999986
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -0.5,
+        "mean_action_difference_95ci": [
+          -7.1,
+          6.05
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.6194060974288732,
+          "difference_95ci_seconds": [
+            -0.35598653306292055,
+            1.4369403072023608
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": 0.0027500392869114878,
+          "difference_95ci_seconds": [
+            -0.00780913040197144,
+            0.012823975414115311
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": 0.29931636711892984,
+          "difference_95ci_seconds": [
+            -0.6242513896482221,
+            1.046778304481412
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.261945419292897,
+          "difference_95ci_seconds": [
+            0.19429214865163277,
+            0.33810039869354414
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed241:full_seed241_discard_physical": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 4.808333333333334,
+        "mean_action_difference_95ci": [
+          -4.2,
+          16.83374999999999
+        ],
+        "completion_fraction_difference": -0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.058333333333333334,
+          0.016666666666666666
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 0.1,
+        "mean_action_difference_95ci": [
+          0.0,
+          0.3
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 13.1,
+        "mean_action_difference_95ci": [
+          -11.65,
+          50.30124999999998
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 4.0,
+        "mean_action_difference_95ci": [
+          -17.3,
+          35.95
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 11.75,
+        "mean_action_difference_95ci": [
+          -6.8,
+          42.7
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.24238199743752678,
+          "difference_95ci_seconds": [
+            -0.14957109285945383,
+            0.8084469246037768
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": 0.005021881218999625,
+          "difference_95ci_seconds": [
+            0.0003157970864170542,
+            0.011241149890314163
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": 0.21909011548074583,
+          "difference_95ci_seconds": [
+            -0.13885214250224334,
+            0.7328376877831759
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.038069089765970905,
+          "difference_95ci_seconds": [
+            0.003834756456005077,
+            0.08434148473354676
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed241:full_seed241_task_reset": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -25.416666666666668,
+        "mean_action_difference_95ci": [
+          -44.358333333333334,
+          -9.358333333333333
+        ],
+        "completion_fraction_difference": 0.03333333333333333,
+        "completion_fraction_difference_95ci": [
+          -0.008333333333333333,
+          0.08333333333333333
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 0.0,
+        "mean_action_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 28.65,
+        "mean_action_difference_95ci": [
+          -4.65,
+          69.15124999999999
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -15.75,
+        "mean_action_difference_95ci": [
+          -51.301249999999996,
+          18.00124999999998
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -55.35,
+        "mean_action_difference_95ci": [
+          -113.35125,
+          1.6012499999999819
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          -0.1,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": -0.8912997293130805,
+          "difference_95ci_seconds": [
+            -1.7101750330770544,
+            -0.18254181911742015
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": -0.0015941728837788106,
+          "difference_95ci_seconds": [
+            -0.010176535511466984,
+            0.0070287314748081
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": -0.9123298643001666,
+          "difference_95ci_seconds": [
+            -1.6760816207559157,
+            -0.26048665070285415
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.016561240935698152,
+          "difference_95ci_seconds": [
+            -0.04361056837408493,
+            0.07798876440734602
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed241:classical_memory": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 4.041666666666667,
+        "mean_action_difference_95ci": [
+          -15.033333333333333,
+          25.041874999999997
+        ],
+        "completion_fraction_difference": -0.03333333333333333,
+        "completion_fraction_difference_95ci": [
+          -0.08333333333333333,
+          0.008333333333333333
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -37.65,
+        "mean_action_difference_95ci": [
+          -93.60249999999999,
+          18.2
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -1.2,
+        "mean_action_difference_95ci": [
+          -47.0025,
+          52.65249999999996
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 39.7,
+        "mean_action_difference_95ci": [
+          15.248750000000001,
+          77.70124999999999
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 30.7,
+        "mean_action_difference_95ci": [
+          9.6,
+          64.35124999999998
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.19733792984237272,
+          "difference_95ci_seconds": [
+            -0.6327430451661349,
+            1.1159089260040005
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": -0.343376913961644,
+          "difference_95ci_seconds": [
+            -0.391372641933461,
+            -0.298936958971899
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": 0.2299959524379422,
+          "difference_95ci_seconds": [
+            -0.5364253469261651,
+            1.0692416194046381
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": null
+      }
+    },
+    "full_seed242:parent_seed222": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 3.6,
+        "mean_action_difference_95ci": [
+          -13.042291666666666,
+          19.65083333333332
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.041666666666666664,
+          0.041666666666666664
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 0.25,
+        "mean_action_difference_95ci": [
+          -34.45,
+          32.851249999999986
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 45.15,
+        "mean_action_difference_95ci": [
+          -7.501249999999999,
+          98.0
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.2,
+          0.1
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 7.9,
+        "mean_action_difference_95ci": [
+          -33.70125,
+          51.15
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -23.75,
+        "mean_action_difference_95ci": [
+          -50.95125,
+          -4.698750000000018
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.2258257817166547,
+          "difference_95ci_seconds": [
+            -0.48361710137493596,
+            0.9329106969153506
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": null,
+        "execution_seconds": null,
+        "feedback_seconds": null
+      }
+    },
+    "full_seed242:recurrent_reference_seed242": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 0.8583333333333333,
+        "mean_action_difference_95ci": [
+          -7.6502083333333335,
+          10.05020833333333
+        ],
+        "completion_fraction_difference": -0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.041666666666666664,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -11.85,
+        "mean_action_difference_95ci": [
+          -42.5,
+          12.65
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 20.7,
+        "mean_action_difference_95ci": [
+          4.4,
+          41.351249999999986
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 2.8,
+        "mean_action_difference_95ci": [
+          -19.45,
+          30.2
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -5.25,
+        "mean_action_difference_95ci": [
+          -14.75,
+          2.85
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.7309137323560814,
+          "difference_95ci_seconds": [
+            0.36379399442928845,
+            1.1276805898729554
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": 0.004489075361440579,
+          "difference_95ci_seconds": [
+            -0.000536987332549567,
+            0.00957522806401054
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": 0.37317007716434697,
+          "difference_95ci_seconds": [
+            0.035801334443579746,
+            0.7322437315802865
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.26216860657247404,
+          "difference_95ci_seconds": [
+            0.22597259677713738,
+            0.30335221523419026
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed242:full_seed242_discard_physical": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -1.7583333333333333,
+        "mean_action_difference_95ci": [
+          -5.466666666666667,
+          1.7666666666666666
+        ],
+        "completion_fraction_difference": -0.008333333333333333,
+        "completion_fraction_difference_95ci": [
+          -0.025,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -0.05,
+        "mean_action_difference_95ci": [
+          -0.3,
+          0.15
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 3.3,
+        "mean_action_difference_95ci": [
+          -3.85,
+          13.051249999999982
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -9.2,
+        "mean_action_difference_95ci": [
+          -25.25,
+          1.6
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -0.75,
+        "mean_action_difference_95ci": [
+          -4.05,
+          2.8
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.0025913858165343604,
+          "difference_95ci_seconds": [
+            -0.17949383472868552,
+            0.17082996291806918
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": 0.002177779624859492,
+          "difference_95ci_seconds": [
+            -0.00048567476177898544,
+            0.004366618422015259
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": -0.03446927022499343,
+          "difference_95ci_seconds": [
+            -0.19295516552519984,
+            0.1166349001349105
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.012329249503090977,
+          "difference_95ci_seconds": [
+            -0.005831163556625445,
+            0.02767690910104041
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed242:full_seed242_task_reset": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": -27.325,
+        "mean_action_difference_95ci": [
+          -43.74208333333333,
+          -12.141458333333338
+        ],
+        "completion_fraction_difference": 0.08333333333333333,
+        "completion_fraction_difference_95ci": [
+          0.03333333333333333,
+          0.14166666666666666
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 0.0,
+        "mean_action_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -18.3,
+        "mean_action_difference_95ci": [
+          -58.8,
+          15.8
+        ],
+        "completion_fraction_difference": 0.15,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.3
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -16.75,
+        "mean_action_difference_95ci": [
+          -52.15125,
+          5.85
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -41.85,
+        "mean_action_difference_95ci": [
+          -85.65,
+          -7.298750000000018
+        ],
+        "completion_fraction_difference": 0.1,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.25
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": -0.9900057380863776,
+          "difference_95ci_seconds": [
+            -1.6767479933464589,
+            -0.3263168703760798
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": -0.0003530914584795634,
+          "difference_95ci_seconds": [
+            -0.007539120179135352,
+            0.006442866213619707
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": -1.0465878559431683,
+          "difference_95ci_seconds": [
+            -1.6909115819664051,
+            -0.42489198607276196
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": {
+          "mean_difference_seconds": 0.05312134699585537,
+          "difference_95ci_seconds": [
+            0.00601215843576938,
+            0.09799067476027022
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        }
+      }
+    },
+    "full_seed242:classical_memory": {
+      "all": {
+        "instances": 120,
+        "streams": 20,
+        "mean_action_difference": 2.0083333333333333,
+        "mean_action_difference_95ci": [
+          -14.608541666666666,
+          19.50020833333333
+        ],
+        "completion_fraction_difference": -0.016666666666666666,
+        "completion_fraction_difference_95ci": [
+          -0.05,
+          0.016666666666666666
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_initial": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -43.5,
+        "mean_action_difference_95ci": [
+          -91.7,
+          -1.1987500000000182
+        ],
+        "completion_fraction_difference": 0.05,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.15
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_switch": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": -5.5,
+        "mean_action_difference_95ci": [
+          -58.45375,
+          57.05249999999996
+        ],
+        "completion_fraction_difference": -0.1,
+        "completion_fraction_difference_95ci": [
+          -0.25,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "first_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 44.8,
+        "mean_action_difference_95ci": [
+          21.0,
+          78.00124999999998
+        ],
+        "completion_fraction_difference": -0.05,
+        "completion_fraction_difference_95ci": [
+          -0.15,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "second_return": {
+        "instances": 20,
+        "streams": 20,
+        "mean_action_difference": 16.0,
+        "mean_action_difference_95ci": [
+          7.848750000000001,
+          24.65
+        ],
+        "completion_fraction_difference": 0.0,
+        "completion_fraction_difference_95ci": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_unit": "whole_ordered_stream",
+        "bootstrap_samples": 10000
+      },
+      "timing": {
+        "episode_seconds": {
+          "mean_difference_seconds": 0.15782764931209387,
+          "difference_95ci_seconds": [
+            -0.5835994274906503,
+            0.891286583734909
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "inference_seconds": {
+          "mean_difference_seconds": -0.3423851415514946,
+          "difference_95ci_seconds": [
+            -0.39051275570411237,
+            -0.2982337101975766
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "execution_seconds": {
+          "mean_difference_seconds": 0.16763293533585966,
+          "difference_95ci_seconds": [
+            -0.515839828000559,
+            0.8534554762598902
+          ],
+          "bootstrap_unit": "whole_six_instance_stream"
+        },
+        "feedback_seconds": null
+      }
+    }
+  }
+}
