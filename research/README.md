@@ -7,7 +7,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 
 | Study | Contents |
 | --- | --- |
-| [Active physical and chemical learning](../experiments/continual_experiment/ACTIVE_TRAINING.md) | Policy-selected experiments and action-relevant online response updates; paired training running |
+| [Active physical and chemical learning](../experiments/continual_experiment/ACTIVE_TRAINING.md) | Completed joint active-feedback training; response updates did not establish a task advantage |
 | [Execution-aware physical learning](../experiments/continual_physics/EXECUTION.md) | Completed native-cost training and comparisons with recurrent and Bayesian policies |
 | [Shared-core training](../experiments/continual_experiment/SHARED_TRAINING.md) | Physical actions, recorded chemical feedback and cross-domain state continuation |
 | [Chemical response learning](../experiments/continual_chemistry/README.md) | History-conditioned predictions, actual experimental choices and planning |

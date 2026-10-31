@@ -128,10 +128,70 @@ PYTHONHASHSEED=0 python -m experiments.continual_experiment.shared_confirmation 
   --output runs/continual_physics/active_feedback_confirmation
 ```
 
-The training path and a four-task native execution check passed. Formal paired
-training and the fixed native comparison are running; final task benefits are
-not yet available. Two early implementation checks caught mutable masks and
-returned-target tensors being reused by autograd. Their outputs remain local;
-the formal runs use separate immutable returned targets. Physics still pauses
-while chemical segments execute, and this study uses structured observations.
-The independently timed, multimodal application remains a separate extension.
+## Completed native comparison
+
+All four trainings completed their fixed 200-window budget. Each dispatched
+102,400 physical and 51,200 chemical requests; 47,521–47,611 chemical experiments
+per run returned a response. The ten native conditions completed all 2,400
+executions without execution errors. They reuse the same 120 physical and
+120 chemical instances, rather than representing 2,400 distinct instances.
+
+Mean operation counts include failed tasks. All chemical conditions completed
+120/120 tasks.
+
+| Condition | Physics completed | Physics operations | Chemistry operations |
+|---|---:|---:|---:|
+| Initial model, either continuation | 119/120 | 112.11 | 100.28 |
+| Learned activity, 911 | 118/120 | 113.55 | 97.83 |
+| Fixed computation, 911 | 114/120 | 109.65 | 97.41 |
+| Discard response updates, 911 | 118/120 | 113.55 | 96.92 |
+| Reset chemical state, 911 | 118/120 | 113.55 | 102.62 |
+| Learned activity, 912 | 119/120 | 105.03 | 96.56 |
+| Fixed computation, 912 | 118/120 | 109.68 | 101.93 |
+| Discard response updates, 912 | 119/120 | 105.03 | 93.10 |
+| Reset chemical state, 912 | 119/120 | 105.03 | 104.63 |
+
+The complete method has no established overall advantage. Its chemical
+operation differences from the fixed-computation reference are +0.43
+(whole-stream 95% interval −7.41 to +8.46) and −5.38 (−14.75 to +2.99).
+Relative to the initial model, all full-model operation intervals also include
+zero. Physical completion and cost must be read together: the first full
+model finishes four more tasks than its fixed reference while using more
+operations; the second finishes one more with lower average cost.
+
+Retaining response updates costs +0.92 and +3.46 chemical operations compared
+with discarding them at the same weights. Both intervals include zero, so
+neither a reliable benefit nor a reliable harm is established. Clearing task
+state costs +4.78 and +8.08 operations on average; those intervals also include
+zero. At the first chemical return to relationship A, full versus reset costs
++2.20 and −13.40 operations respectively, again without a stable effect.
+
+### What the model actually chose
+
+The two learned policies execute **1,588 and 1,616 LEARN activities**, and
+**zero CONSOLIDATE activities**. The first performs no extra REFINE; the second
+performs 200. Neither uses RETRIEVE. The response corrections are nonzero and
+alter subsequent predictions and some actions. Nevertheless, the acting
+comparison does not establish a benefit from retaining them. In particular,
+this run does not demonstrate cross-task consolidation of acquired knowledge.
+
+Prediction loss on each model's own selected chemical experiments changes
+from 1.050 nats initially to 0.749 and 0.748 for the learned models. The fixed
+references reach 0.713 and 0.699. These use different selected histories;
+they are descriptive losses, not a same-prefix estimate of predictive gains.
+All 54 initial predictions assigning more than 90% probability to complete
+rust removal include 25 actual clean outcomes; the four trained policies make
+no predictions above that threshold. Removing extreme confidence alone does
+not establish useful experimental planning or calibrated uncertainty.
+
+The next analysis compares retained and zero response corrections at identical
+received histories and selected experiments. It separates a predictive update
+from the downstream effects of changing experimental choices. This is a
+post-result analysis of these fixed trajectories, not another performance test.
+
+[Complete paired results](results/active_feedback.json),
+[all instance outcomes](results/active_feedback_instances.csv), and
+[activity and prediction records](results/active_feedback_activity.json) retain
+both repetitions and every control. Physics pauses during chemical segments,
+and this study uses structured observations. Independently timed multimodal
+operation remains a separate extension.

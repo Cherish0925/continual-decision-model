@@ -1,0 +1,175 @@
+{
+  "scope": "Actual deployed choices on each model's own trajectory; prediction losses are not same-prefix causal comparisons",
+  "conditions": {
+    "initial_seed911": {
+      "instances": 120,
+      "returned_experiments": 820,
+      "activities": {
+        "act": 940,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 1.04988331226703,
+      "confident_clean_predictions": 54,
+      "confident_clean_successes": 25,
+      "mean_confident_clean_prediction": 0.9601580214192157
+    },
+    "learned_seed911": {
+      "instances": 120,
+      "returned_experiments": 815,
+      "activities": {
+        "act": 935,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1588,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 1.3643111037711302,
+      "selected_return_nll": 0.7487568055468103,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "fixed_seed911": {
+      "instances": 120,
+      "returned_experiments": 817,
+      "activities": {
+        "act": 937,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7126908170622449,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "discard_response_seed911": {
+      "instances": 120,
+      "returned_experiments": 807,
+      "activities": {
+        "act": 927,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1574,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7291139045907957,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "reset_chemical_seed911": {
+      "instances": 120,
+      "returned_experiments": 850,
+      "activities": {
+        "act": 970,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1492,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 1.2801633576552074,
+      "selected_return_nll": 0.7201113600240034,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "initial_seed912": {
+      "instances": 120,
+      "returned_experiments": 820,
+      "activities": {
+        "act": 940,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 1.04988331226703,
+      "confident_clean_predictions": 54,
+      "confident_clean_successes": 25,
+      "mean_confident_clean_prediction": 0.9601580214192157
+    },
+    "learned_seed912": {
+      "instances": 120,
+      "returned_experiments": 808,
+      "activities": {
+        "act": 928,
+        "refine": 200,
+        "retrieve": 0,
+        "learn": 1616,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 1.3910959581534068,
+      "selected_return_nll": 0.7483411204291157,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "fixed_seed912": {
+      "instances": 120,
+      "returned_experiments": 848,
+      "activities": {
+        "act": 968,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.6989584588357862,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "discard_response_seed912": {
+      "instances": 120,
+      "returned_experiments": 781,
+      "activities": {
+        "act": 901,
+        "refine": 200,
+        "retrieve": 0,
+        "learn": 1562,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7436579869208659,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "reset_chemical_seed912": {
+      "instances": 120,
+      "returned_experiments": 868,
+      "activities": {
+        "act": 988,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1736,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 1.3888432542483011,
+      "selected_return_nll": 0.709995562751447,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    }
+  }
+}

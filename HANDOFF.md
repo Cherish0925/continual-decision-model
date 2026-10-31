@@ -23,22 +23,27 @@ stream intervals are preserved in the linked results. Chemistry still learns
 from recorded actions rather than its own selected experiments; closing that
 training gap is the next implementation.
 
-## Active physical and chemical feedback training
+## Completed active-feedback training
 
-The [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md)
-now runs four paired trainings on two H100s. Both task interfaces choose actual
-experiments. Chemical updates change the response distributions used in the
-next decision, and later returns train the representation and update rates.
-Each run is fixed at 200 windows: 102,400 physical and 51,200 chemical requests.
-Two continuations compare learned chemical activity against fixed computation.
-The native queue evaluates all final endpoints, initial references, discarded
-response updates and task-reset chemical state on twenty new A–B–A streams.
-No final capability gain is established while that comparison is running.
+All four [active-feedback trainings](experiments/continual_experiment/ACTIVE_TRAINING.md#completed-native-comparison)
+and ten native conditions are complete. The full models finish 118/120 and
+119/120 physical tasks at 113.55 and 105.03 operations, and both finish every
+chemical task at 97.83 and 96.56 operations. The fixed-computation references
+use 97.41 and 101.93 chemical operations. No stable overall advantage is
+established. Discarding response updates uses fewer operations in both
+repetitions (96.92 and 93.10); the paired intervals include zero.
 
-Commands, input requirements and the model/gradient path are in the linked
-study. Live outputs are `runs/continual_physics/active_feedback_joint_20261030`
-and `runs/continual_physics/active_feedback_confirmation_20261030`. The completed
-shared-state study remains unchanged and is the basis for separate task states.
+The deployed models execute 1,588 and 1,616 chemical learning updates, but no
+consolidation or retrieval. Retaining chemical task state has no stable
+first-return benefit. Current evidence supports a working joint training path
+and actual response updates, while their desired task advantages remain unmet.
+The follow-up compares predictions with and without corrections at identical
+received histories, using the already completed trajectories.
+
+The full results and all 2,400 executions are linked from the study. Local raw
+outputs remain `runs/continual_physics/active_feedback_joint_20261030` and
+`runs/continual_physics/active_feedback_confirmation_20261030`. The completed
+shared-state study remains the basis for separate task states.
 
 ## Continuing physical learning and activity selection
 

@@ -70,11 +70,15 @@ information requirements are explicit in the comparison.
 The [v0.12.0 release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)
 provides all 320 training instances and four fixed chemical checkpoints.
 
-The next [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md)
-is running on both task interfaces. The model selects experiments, learns from
-their returned outcomes, and trains chemical response updates for subsequent
-predictions and decisions. Fixed-computation and same-weight retention
-comparisons are scheduled on new native task streams; results are pending.
+The [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md#completed-native-comparison)
+completed four joint trainings and ten native comparisons. Both full models
+finish all 120 chemical tasks, using 97.83 and 96.56 operations versus the
+initial model's 100.28. Neither has an established advantage over its trained
+fixed-computation reference. Discarding online response updates uses 96.92 and
+93.10 operations; the paired differences include zero. The models perform
+learning updates but no consolidation, so useful continuing adaptation and
+long-term knowledge recovery remain open research objectives. All endpoints,
+activity counts and individual task outcomes are available in the study.
 
 ## Current results
 
