@@ -28,9 +28,18 @@ reading, and neural-state resets preserve the return benefit.
 include new/return effects, physical outcomes, direct recipe retrieval and the
 known-family Bayesian reference.
 
-The next paired training connects action-return credit to the memory reader,
-so future task costs can train when old knowledge should be used. Its four
-continuations and fresh native comparison are running.
+Four further joint continuations and 2,400 native executions test direct
+action-return training of the memory reader. That change does not establish
+an improvement over prediction-only continuation or the memory parents.
+[Complete follow-up](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md#learning-applicability-from-action-returns).
+
+Archive retention is a separate, effective intervention. Expanding six task
+ledgers to twelve preserves relationships that were previously evicted before
+their return. Both continuations need fewer operations on long returns, with
+the same weights and evidence rule; short returns incur a small extra cost.
+[Capacity comparisons](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md#retention-across-longer-interruptions)
+report the initial cohort and new instances separately. New relationships
+remain the main source of inappropriate reuse.
 
 This follows the completed [response-learning comparison](experiments/continual_experiment/RESPONSE_LEARNING.md).
 A learned relation-conditioned update makes an experiment improve predictions
@@ -84,15 +93,16 @@ measures experience carried between instances. The subsequent
 selection and parameter learning to the same policy. Useful adaptive computation,
 rapid recovery after interference and learning that improves later experimental
 decisions are now studied through the [physical-belief comparison](experiments/physical_belief/README.md).
-Useful autonomous computation and reliable recovery after interference remain open.
+Useful autonomous computation and recovery across broader task families remain open.
 
 ## Model
 
 The current shared scientific-task checkpoint stores **47.82 million parameters**;
 **32.71 million** are trainable in the joint continuation. It shares core weights
 between physical control and chemistry and retains a separate neural state for
-each interface. Its experimental archive holds six task ledgers, with up to 32
-returned observations per ledger. The applicability reader adds 228 parameters.
+each interface. Its trained experimental archive holds six task ledgers, with
+up to 32 returned observations per ledger; execution comparisons also use twelve.
+The applicability reader adds 228 parameters.
 This path uses structured public measurements and numerical tools. The earlier
 image/text model is a separate experimental configuration described below.
 

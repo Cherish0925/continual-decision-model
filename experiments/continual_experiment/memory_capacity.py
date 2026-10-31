@@ -13,11 +13,14 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--fresh-cohort', type=Path,
                    help='Repeat both capacities on a different fixed cohort, instead of reusing primary references')
+    p.add_argument('--initial-rng-root', type=Path,
+                   help='Reuse the exact saved environment initialization of the reference conditions')
     p.add_argument('--workers', type=int, default=8)
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     jobs, references, pairs = [], [], []
     manifest = args.fresh_cohort or args.input / 'cohort/manifest.json'
+    initial_rng = args.initial_rng_root or args.input / 'native/initial_rng'
     for seed in (911, 912):
         name, ref = f'capacity12_{seed}', f'capacity6_{seed}'
         directory = args.input / 'train' / f'memory{seed}'
@@ -25,7 +28,7 @@ def main():
             '--checkpoint', str(directory / 'last.pt'),
             '--manifest', str(manifest),
             '--output', str(args.output / name),
-            '--initial-rng-root', str(args.input / 'native/initial_rng'),
+            '--initial-rng-root', str(initial_rng),
             '--state-sharing', 'separated', '--memory-mode', 'evidence', '--memory-slots', '12',
             '--chemistry-only', '--workers', str(args.workers)]
         jobs.append(dict(name=name, directory=str(directory), endpoint='last.pt', arguments=command))
@@ -41,7 +44,7 @@ def main():
             references.append(dict(name=ref, reused_summary=str(source)))
         pairs.append((name, ref))
     plan = dict(jobs=jobs, references=references, paired_conditions=pairs,
-        training_updates=200, manifest=str(manifest),
+        training_updates=200, manifest=str(manifest), initial_rng_root=str(initial_rng),
         motivation='Six intervening tasks evict an earlier relationship from a six-task ring',
         scope=('Different fixed native cohort; same simulator families and frozen primary weights'
                if args.fresh_cohort else

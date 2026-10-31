@@ -36,7 +36,6 @@ def main():
             finished = json.loads((root / 'finished.json').read_text())
             last = json.loads((root / 'training.jsonl').read_text().splitlines()[-1])
             training.append(dict(condition=name, **finished,
-                chemical_returns=last['chemical_activity_learning']['returned'],
                 chemical_tasks_ended=last['chemical_activity_learning']['episodes_ended']))
     description = dict(
         method='Each policy: cached forecasts before the actual scored return; unchanged chosen history',

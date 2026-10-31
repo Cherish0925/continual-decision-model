@@ -11,6 +11,27 @@ after interference, while adapting promptly when a relationship is new.
 Returning tasks and new tasks are measured separately: rapid reuse can coexist
 with expensive commitment to an inappropriate memory.
 
+## Research object
+
+A task presents an apparatus and public measurements, while its response
+relationship is unknown to the policy. The policy chooses an experiment, pays
+the native navigation and execution cost, and receives its actual outcome.
+Relationships can recur after other tasks. The agent receives the task boundary
+but does not receive a relationship identifier or a label announcing a return.
+
+The persistent experimental state consists of the current ledger, archived
+ledgers, the evidence accumulated for their predictors, and the continuing
+neural state. Shared parameters define how observations become predictions and
+actions. A completed task writes observations to an archive; a new observation
+changes the evidence for reusing each archive. These are distinct from updates
+to the shared neural weights, which occur during training here.
+
+The comparison measures native operations per task, including unsuccessful
+attempts, together with task completion. It reports new relationships and
+return intervals separately. This makes the central tradeoff observable:
+earlier experience can save reacquisition while also making a genuinely new
+task more expensive. A lower prediction loss alone does not settle that tradeoff.
+
 ## Model and learning
 
 One set of shared core weights serves physical control and chemistry, with
@@ -198,6 +219,52 @@ old relationships can be evicted. This capacity limit is preserved in the
 [Prediction summaries](results/memory_predictions.json) use forecasts cached
 before their scored return, without changing the model's chosen history.
 
+### Retention across longer interruptions
+
+In the fixed twelve-task order, the six-task ring has already overwritten the
+relevant ledger when a relationship returns after six intervening tasks.
+This suggested a capacity intervention: retain twelve task ledgers, leaving
+weights, four-step fitting and the fixed evidence reader unchanged. Total prior
+mass on old contexts remains fixed. More records also change the mixture of old
+forecasts; the intervention does not isolate eviction from every mixture effect.
+
+The initial capacity comparison reused the completed primary cohort. A second
+comparison then used the ten-stream cohort with new native seeds, fixed before
+capacity evaluation. Each condition completes every chemical task:
+
+| Cohort and condition | All, 1 | Return, 1 | All, 2 | Return, 2 |
+|---|---:|---:|---:|---:|
+| Initial 240 tasks, 6 ledgers | 77.65 | 58.73 | 81.98 | 63.17 |
+| Initial 240 tasks, 12 ledgers | 69.77 | 43.55 | 72.43 | 44.12 |
+| New 120 tasks, 6 ledgers | 78.02 | 61.15 | 85.38 | 65.47 |
+| New 120 tasks, 12 ledgers | 69.97 | 45.00 | 75.02 | 44.48 |
+
+On the new cohort, twelve ledgers save 8.05 [3.94, 14.03] and 10.37
+[5.38, 16.25] operations overall. Returns after six intervening tasks save
+46.90 [22.45, 83.30] and 51.10 [22.30, 89.20] operations. The opposite effect
+appears after only two intervening tasks: costs increase by 5.25 [1.95, 9.30]
+and 5.05 [2.00, 8.35]. Additional old records improve retention but can make
+selection more expensive when the useful recent record was already available.
+
+![Archive capacity and return interval](results/memory_capacity.svg)
+
+Intervals resample whole streams; both continuations use the same task cohorts.
+The twelve-ledger configuration uses more forecast computation and is an
+execution change, with no additional parameter training.
+
+Against the separately trained no-memory references on the new cohort, its
+overall differences are −20.74 [−29.72, −12.54] and −3.12 [−13.68, +6.51].
+Both returning-task comparisons improve, but the second continuation still
+has a substantial new-task cost. Retention addresses a concrete limit on
+recovery without resolving when a historical relationship should be rejected.
+
+[Initial comparison](results/memory_capacity_native.json) and
+[new-instance comparison](results/memory_capacity_confirmation.json) include
+all conditions, lag-specific effects and references. Their instance tables
+([initial](results/memory_capacity_native_instances.csv),
+[new](results/memory_capacity_confirmation_instances.csv)) identify reused
+reference executions separately through the comparison plans.
+
 ## Reproduction
 
 From the repository root, with the published parent assets restored under their
@@ -234,6 +301,22 @@ python -m experiments.continual_experiment.memory_controls \
 python -m experiments.continual_experiment.export_memory_results \
   --input runs/experimental_memory
 ```
+
+The capacity intervention can be selected with `--memory-slots 12 --memory-mode
+evidence` in `evaluate_shared_tasks`. To reproduce both capacity comparisons:
+
+```bash
+python -m experiments.continual_experiment.memory_capacity \
+  --input runs/experimental_memory --output runs/experimental_memory/capacity_native --workers 8
+python -m experiments.continual_experiment.memory_capacity \
+  --input runs/experimental_memory --output runs/experimental_memory/capacity_confirmation_matched \
+  --fresh-cohort runs/experimental_memory/decision_cohort/manifest.json \
+  --initial-rng-root runs/experimental_memory/decision_native/initial_rng --workers 8
+python -m experiments.continual_experiment.export_memory_capacity --input runs/experimental_memory
+```
+
+Generate `decision_cohort` with the command in the action-return comparison
+below. The exporter also reads its completed no-memory reference executions.
 
 ## Development comparison: retaining exact observations
 
@@ -303,11 +386,50 @@ interface retains its existing training. Before any optimizer update, enabling
 the gradient path leaves action scores exactly unchanged. This separates an
 effect of learning from a changed execution rule.
 
-The evaluation queue uses ten new twelve-task streams: 120 physical and 120
+The completed evaluation uses ten new twelve-task streams: 120 physical and 120
 chemical instances, including 60 chemical returns. It compares both final
 endpoints with their memory parents, the earlier no-memory reference, and
 same-weight archive/evidence interventions. The simulator families remain the
-same. Results are pending; this modification is not yet an established gain.
+same. All four 100-window trainings and twelve execution conditions completed,
+giving 2,400 executions on the same 240 distinct task instances.
+
+| Chemical condition | All, 1 | New, 1 | Return, 1 | All, 2 | New, 2 | Return, 2 |
+|---|---:|---:|---:|---:|---:|---:|
+| Memory parent, before extra training | 78.13 | 95.28 | 60.98 | 84.37 | 103.58 | 65.15 |
+| Additional prediction-only training | 82.04 | 101.00 | 63.08 | 82.67 | 104.18 | 61.15 |
+| Additional action-return credit | 78.42 | 95.70 | 61.13 | 83.23 | 103.47 | 63.00 |
+| Action-trained weights, archive disabled | 86.01 | 85.90 | 86.12 | 93.00 | 93.20 | 92.80 |
+| Action-trained weights, fixed evidence reader | 78.38 | 96.58 | 60.18 | 88.51 | 110.00 | 67.02 |
+| Earlier separately trained no-memory | 90.71 | 89.98 | 91.43 | 78.13 | 79.75 | 76.52 |
+
+Every condition completes 120/120 chemical tasks. Action-return credit changes
+overall cost by −3.63 [−8.45, +0.25] and +0.57 [−4.37, +5.93] operations relative
+to prediction-only continuation. Neither difference is established. Relative
+to the memory parents, differences are +0.28 [−5.23, +5.63] and
+−1.13 [−5.98, +3.21]. This additional training does not establish an overall
+improvement or remove the new-task penalty.
+
+Both newly trained conditions complete 119/120 physical tasks in each
+continuation. Prediction-only physical costs are 107.15 and 97.05; action-credit
+costs are 105.19 and 101.61. The memory parents complete 119/120 and 118/120,
+at 105.37 and 102.72 operations. Chemical improvements are therefore reported
+alongside the actual other-domain results.
+
+Same-history forecasts show that historical predictions still help returned
+relationships. For action-trained weights they worsen new-task NLL relative
+to the fresh predictor by 0.0673 [0.0584, 0.0780] and
+0.0676 [0.0589, 0.0788]. The learned mixture also has worse overall NLL than
+fixed evidence weighting on those histories. Direct task-return training of
+the reader has not resolved inappropriate reuse. No extra-compute or
+autonomous-learning advantage is inferred from having connected that gradient.
+
+[Complete comparisons](results/memory_decisions.json),
+[all executions](results/memory_decisions_instances.csv),
+[same-history forecasts](results/memory_decisions_predictions.json),
+[individual predictions](results/memory_decisions_predictions.csv), and
+[training exposure](results/memory_decisions_training.json) retain both
+continuations and every fixed endpoint. The capacity comparison above uses
+the original 200-window memory models, not a selected continuation endpoint.
 
 ```bash
 python -m experiments.continual_experiment.train_memory_decisions \
@@ -324,6 +446,8 @@ python -m experiments.continual_experiment.evaluate_memory_decisions \
   --parent-root runs/experimental_memory/train \
   --manifest runs/experimental_memory/decision_cohort/manifest.json \
   --output runs/experimental_memory/decision_native --workers 8
+
+python -m experiments.continual_experiment.export_memory_decisions --input runs/experimental_memory
 ```
 
 ## Relation to prior work

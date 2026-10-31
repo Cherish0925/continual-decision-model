@@ -15,7 +15,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     results = {}
     for name in ('capacity_native', 'capacity_confirmation'):
-        root = args.input / name
+        root = args.input / ('capacity_confirmation_matched' if name == 'capacity_confirmation' else name)
         result = json.loads((root / 'comparisons.json').read_text())
         references = ('initial', 'no_memory') if name == 'capacity_native' else ('reference',)
         reference_root = args.input / ('native' if name == 'capacity_native' else 'decision_native')

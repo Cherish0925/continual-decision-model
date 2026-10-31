@@ -63,7 +63,7 @@ def portable(value, root):
     return value
 
 
-def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld"):
+def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld", exclude=()):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
@@ -75,6 +75,8 @@ def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/disco
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
             for path in files(root, runs, base):
+                if any(path.relative_to(root).match(pattern) for pattern in exclude):
+                    continue
                 checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update|checkpoint)\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
                 compressed_text = path.name.endswith((".json.gz", ".jsonl.gz"))
@@ -164,5 +166,7 @@ if __name__ == "__main__":
     parser.add_argument("--base", type=Path, default=Path("runs/discoveryworld"), help="Project-relative selection root")
     parser.add_argument("--run", action="append", default=[], help="Run directory or file relative to --base; repeat for selected release contents")
     parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
+    parser.add_argument("--exclude", action="append", default=[],
+                        help="Omit a repository-relative pattern when the same asset is supplied separately")
     args = parser.parse_args()
-    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base)
+    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base, args.exclude)

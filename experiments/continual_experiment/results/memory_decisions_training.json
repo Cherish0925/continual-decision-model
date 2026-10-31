@@ -1,0 +1,34 @@
+[
+  {
+    "condition": "decision911",
+    "updates": 100,
+    "physical_requests": 51200,
+    "chemical_returns": 45763,
+    "seconds": 1785.416294356808,
+    "chemical_tasks_ended": 5439
+  },
+  {
+    "condition": "prediction911",
+    "updates": 100,
+    "physical_requests": 51200,
+    "chemical_returns": 45717,
+    "seconds": 1762.78510633111,
+    "chemical_tasks_ended": 5485
+  },
+  {
+    "condition": "decision912",
+    "updates": 100,
+    "physical_requests": 51200,
+    "chemical_returns": 45615,
+    "seconds": 1553.247190600261,
+    "chemical_tasks_ended": 5587
+  },
+  {
+    "condition": "prediction912",
+    "updates": 100,
+    "physical_requests": 51200,
+    "chemical_returns": 45563,
+    "seconds": 1580.7981445677578,
+    "chemical_tasks_ended": 5637
+  }
+]

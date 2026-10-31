@@ -8,7 +8,8 @@
 · [Changes under review](https://github.com/Cherish0925/continual-decision-model/pull/8)
 
 The draft release packages the shared response-learning parents, the four
-experimental-memory endpoints, training inputs, and complete native records.
+experimental-memory endpoints, four action-credit comparison endpoints,
+training inputs, and complete native records.
 It is not yet a public release. The download commands below become available
 when v0.14.0 is published.
 
@@ -20,6 +21,8 @@ when v0.14.0 is published.
 | `cdm-experimental-memory-records.tar.zst.part*` | All four training records, fixed cohort, native executions, Bayesian references and development comparisons |
 | `cdm-memory-development-inference.tar.zst` | The two fixed intermediate models used for the exact-observation and planning comparisons |
 | `cdm-memory-training-inference.tar.zst`, `cdm-memory-training-records.tar.zst` | Physical initializer and numerical prior, measured training inputs, chemical experience and environment geometry |
+| `cdm-memory-decisions-seed911-inference.tar.zst`, `cdm-memory-decisions-seed912-inference.tar.zst` | Both action-credit and prediction-only final models for each paired continuation |
+| `cdm-memory-decisions-records.tar.zst*` | Four follow-up training histories, all native conditions, the capacity comparisons and their shared environment initializations |
 
 Shared checkpoints contain both task interfaces and their common core. Native
 inference needs no weights from earlier releases and no image or language
@@ -30,6 +33,7 @@ from the saved parent weights, as in the reported comparison.
 To repeat the first memory condition after publication:
 
 ```bash
+git checkout v0.14.0
 python -m pip install -e '.[neural,discoveryworld]'
 gh release download v0.14.0 --repo Cherish0925/continual-decision-model \
   --pattern 'cdm-memory-seed911-inference.tar.zst' \
@@ -51,6 +55,15 @@ Set `--memory-mode disabled` for the same-weight archive intervention or
 directory for each run. The second archive supplies the corresponding 912
 models. For the independently trained no-memory comparison, select its
 `no_memory911/last.pt` or `no_memory912/last.pt` and use disabled mode.
+The twelve-ledger capacity comparison uses these same memory weights with
+`--memory-mode evidence --memory-slots 12`; it needs no new model archive.
+
+Follow-up records store one copy of each shared initial environment under
+`decision_native/initial_rng`, rather than repeating that file inside every
+execution directory. Their recorded commands point to this shared source.
+The first-cohort capacity comparison uses the initializations in the primary
+memory records. Inference archives were extracted and loaded to verify both
+task interfaces and the saved action-credit setting.
 
 To repeat training, also download and extract `cdm-shared-response-inference`
 and the two `cdm-memory-training` archives, then use the commands in the
