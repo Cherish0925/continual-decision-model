@@ -24,13 +24,7 @@ def enable_response_learning(parent, activity_mode='learned', max_internal_steps
 
 
 def start_apparatus(model, state, task_boundary, lifetime_boundary):
-    fresh = model.initial(len(task_boundary), task_boundary.device)
-    # h/z and consolidated response corrections remain available after other
-    # tasks. Current-apparatus evidence and its fast correction start empty.
-    continued = {**fresh, 'h': state['h'], 'z': state['z'],
-                 'response_slow': state['response_slow']}
-    state = select_rows(state, continued, task_boundary)
-    return select_rows(state, fresh, lifetime_boundary)
+    return model.next_apparatus(state, task_boundary, lifetime_boundary)
 
 
 def choose_activity(model, state, obs, *, sample, retain_grad=True):
@@ -110,7 +104,7 @@ def active_chemical_window(model, state, env, count, statistics, *, compute_cost
         entropies.append(distribution.entropy() + activity_entropy)
         counts.append(computations.detach())
         end_lifetime = result['terminal'] & torch.tensor(
-            [i % 6 == 0 for i in env.task_index], device=action.device)
+            [i % env.lifetime_length == 0 for i in env.task_index], device=action.device)
         continuing.append(~end_lifetime)
     # Bootstrap the next received observation, including task boundaries, using
     # a copied environment state so the continuing rollout is not advanced twice.

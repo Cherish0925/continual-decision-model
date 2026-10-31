@@ -111,6 +111,8 @@ def main():
     parser.add_argument('--response-replay-checkpoint', type=Path)
     parser.add_argument('--response-replay-control', action='store_true',
                         help='Keep the fitted temperature/bias but omit within-task response updates')
+    parser.add_argument('--experimental-memory', choices=('learned', 'disabled', 'evidence', 'recent'))
+    parser.add_argument('--chemical-schedule', choices=('paired', 'mixed'), default='paired')
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -137,13 +139,17 @@ def main():
             config['mode'] = 'calibration'
         chemical.response_replay = ResponseReplay(config=ResponseReplayConfig(**config)).to(args.device)
         chemical.response_replay.load_state_dict(update['model'])
+    if args.experimental_memory is not None:
+        from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
+        chemical.experimental_memory = ExperimentalMemory(ExperimentalMemoryConfig(mode=args.experimental_memory)).to(args.device)
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
     reference = deepcopy(physical.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
     if args.chemical_mode == 'active':
         from experiments.continual_chemistry.active_environment import ActiveChemicalEnvironment
         from experiments.continual_chemistry.active_training import active_chemical_window
-        streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device)
+        streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device,
+                                             schedule=args.chemical_schedule)
     else:
         streams = ChemicalStreams(args.chemical_data, args.batch, args.seed)
     statistics = chemical_saved['training']['feedback_statistics']
@@ -191,6 +197,12 @@ def main():
             chemical_update_control='same fitted calibration without response fitting' if args.response_replay_control else None,
             chemical_update_initial=str(args.response_replay_checkpoint),
             chemical_update_schedule='fixed before each response readout; no learned response-compute allocation')
+    if args.experimental_memory is not None:
+        metadata.update(chemical_memory=chemical.experimental_memory.config.__dict__,
+            chemical_sequence=args.chemical_schedule,
+            chemical_memory_evidence='prequential log likelihood of returned observations; no environment task identities',
+            chemical_memory_write='archive actual returned ledgers at task boundaries; no learned write selection',
+            chemical_memory_read='fresh-task expert competes with archived predictors; future response and action losses')
     (args.output / 'config.json').write_text(json.dumps(metadata, indent=2) + '\n')
     save_shared_checkpoint(args.output / 'initial.pt', model, training={**metadata, 'updates': 0})
     physical_state, chemical_state = physical.initial(args.batch, args.device), chemical.initial(args.batch, args.device)

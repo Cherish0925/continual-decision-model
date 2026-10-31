@@ -24,6 +24,8 @@ def run_stream(job):
     physical, chemical = model.tasks['physics'], model.tasks['chemistry']
     if options.get('disable_response_replay', False):
         chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
+    if options.get('memory_mode'):
+        chemical.experimental_memory.config = replace(chemical.experimental_memory.config, mode=options['memory_mode'])
     assert physical.core is chemical.core
     session = ContinualPhysicsSession(physical)
     chemical_state = chemical.initial(1, 'cpu')
@@ -35,12 +37,9 @@ def run_stream(job):
         nonlocal chemical_state
         task = stream['chemistry'][index]
         prior_h, prior_z = chemical_state['h'], chemical_state['z']
-        prior_slow = chemical_state.get('response_slow')
-        # New apparatus, fresh numerical ledger. The hidden process continues.
-        chemical_state = chemical.initial(1, 'cpu')
         reset_chemical = options.get('reset_chemical_state', False)
-        if prior_slow is not None and not reset_chemical:
-            chemical_state['response_slow'] = prior_slow
+        chemical_state = chemical.next_apparatus(chemical_state, torch.ones(1, dtype=torch.bool),
+            torch.tensor([index == 0 or reset_chemical]))
         if mode == 'continuing':
             chemical_state.update(h=physical_session.state['h'], z=physical_session.state['z'])
         elif not reset_chemical:
@@ -88,6 +87,7 @@ def main():
     p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
+    p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
