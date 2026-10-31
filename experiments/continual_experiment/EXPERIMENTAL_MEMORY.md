@@ -146,7 +146,39 @@ python -m experiments.continual_experiment.memory_controls \
   --training-root runs/experimental_memory/train \
   --manifest runs/experimental_memory/cohort/manifest.json \
   --output runs/experimental_memory/native --workers 8
+
+python -m experiments.continual_experiment.export_memory_results \
+  --input runs/experimental_memory
 ```
+
+## Development comparison: retaining exact observations
+
+An additional comparison asks whether re-fitting an archived ledger loses
+important precision at already measured inputs. Within a candidate context,
+an improving observation fixes the latent response; a non-improving observation
+places a lower bound on it. The optional observed-response constraint applies
+these facts to matching proportions, leaving other predictions unchanged.
+Context selection still uses current experimental evidence.
+
+This comparison uses eight six-task development streams, including instances
+evaluated in earlier work. Each continuation uses one fixed intermediate
+checkpoint for every condition (window 50 for continuation 1 and 100 for
+continuation 2). These endpoints are not selected for the final comparison.
+
+| Development condition | Operations, continuation 1 | Operations, continuation 2 |
+|---|---:|---:|
+| Experimental memory | 62.08 | 62.40 |
+| Preserve exact observed responses | 62.08 | 62.40 |
+| Same weights, archives disabled | 85.38 | 93.42 |
+| Same weights, fixed evidence reader | 62.08 | 62.67 |
+
+All 48 tasks complete in every condition. The exact-observation intervention
+changes the tails of archived forecasts on repeated inputs, but neither the
+chosen experiments nor their predicted actual outcomes change. The existing
+functional fit already preserves these observations sufficiently for this
+development comparison. More exact storage alone gives no additional task
+benefit here. The complete comparison uses separately trained references,
+new instances and the fixed final window-200 endpoints.
 
 ## Relation to prior work
 
@@ -154,7 +186,7 @@ python -m experiments.continual_experiment.memory_controls \
 functional updates. [Episodic recall in meta-learning](https://proceedings.mlr.press/v80/ritter18a.html)
 addresses repeated tasks and recovery of previous solutions.
 [VariBAD](https://www.jmlr.org/papers/v22/21-0657.html) connects inferred task
-uncertainty to experimental action, and
+uncertainty to action selection, and
 [CN-DPM](https://openreview.net/forum?id=SJxSOJStPr) develops expert mixtures
 for continual learning. Kernel adaptation, episodic recall, and task inference
 are established ideas. This study asks whether a shared experimental model can

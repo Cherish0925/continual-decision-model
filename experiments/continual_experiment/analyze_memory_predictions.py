@@ -3,9 +3,16 @@ import argparse
 from collections import defaultdict
 import csv
 import json
+from math import gcd
 from pathlib import Path
 
 import numpy as np
+
+
+def proportions(counts):
+    """Identify the same mixture independently of total quantity."""
+    divisor = gcd(*map(int, counts))
+    return tuple(int(x) // divisor for x in counts)
 
 
 def interval(rows, key, samples=10000):
@@ -15,6 +22,9 @@ def interval(rows, key, samples=10000):
     names = sorted(groups)
     totals = np.array([sum(groups[n]) for n in names])
     counts = np.array([len(groups[n]) for n in names])
+    if len(names) < 2:
+        return dict(predictions=len(rows), streams=len(names), mean=float(totals.sum() / counts.sum()),
+                    interval95=None)
     draw = np.random.default_rng(591).integers(len(names), size=(samples, len(names)))
     means = totals[draw].sum(1) / counts[draw].sum(1)
     return dict(predictions=len(rows), streams=len(names), mean=float(totals.sum() / counts.sum()),
@@ -43,19 +53,26 @@ def predictions(root, manifest):
                     evidence[1:] - evidence[0] - np.log(max(1, valid.sum())), -np.inf)]
                 scores = scores - np.logaddexp.reduce(scores)
                 fixed = -np.logaddexp.reduce(lp + scores)
-                relevant = np.array([a == task['recipe_group'] for a in archives])
+                relevant = np.array([a is not None and a['group'] == task['recipe_group'] for a in archives])
+                query = proportions(trial['component_counts'])
+                seen_old = any(a is not None and query in a['queries'] for a in archives)
+                seen_relevant = any(a is not None and a['group'] == task['recipe_group']
+                                    and query in a['queries'] for a in archives)
                 rows.append(dict(stream=stream['name'], episode_index=index, seed=task['seed'],
                     exposure=task['exposure'], training_regime=task['training_regime'],
                     prior_observations=len(returned), archives=int(valid.sum()),
                     applicable_archive_available=bool(relevant.any()),
+                    query_seen_current=query in returned,
+                    query_seen_archive=seen_old,
+                    query_seen_applicable_archive=seen_relevant,
                     old_weight=float(weights[1:].sum()),
                     relevant_old_weight=float(weights[1:][relevant].sum()),
                     full_nll=float(full), fresh_nll=float(fresh), fixed_evidence_nll=float(fixed),
                     memory_minus_fresh=float(full-fresh), memory_minus_fixed=float(full-fixed)))
                 evidence += lp
-                returned.append(trial)
+                returned.append(query)
             if returned:
-                archives[cursor % 6] = task['recipe_group']
+                archives[cursor % 6] = {'group': task['recipe_group'], 'queries': set(returned[-32:])}
                 cursor += 1
     return rows
 
@@ -64,6 +81,9 @@ def summarize(rows):
     groups = dict(all=rows, new=[r for r in rows if r['exposure'] == 'new'],
         returned=[r for r in rows if r['exposure'] == 'return'],
         supported_return=[r for r in rows if r['applicable_archive_available']],
+        untested_query=[r for r in rows if not r['query_seen_current'] and not r['query_seen_archive']],
+        return_untested_query=[r for r in rows if r['applicable_archive_available']
+                              and not r['query_seen_current'] and not r['query_seen_archive']],
         first_observation=[r for r in rows if r['prior_observations'] == 0],
         after_observations=[r for r in rows if r['prior_observations'] > 0])
     result = {}
