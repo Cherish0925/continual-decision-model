@@ -51,7 +51,14 @@ retention limit. Learned applicability, persistent h/z, and extra planning have
 not shown a repeatable additional advantage in these comparisons. The next
 scientific problem is how a policy acquires evidence that distinguishes an old
 relationship from a new one, while avoiding expensive attempts based on the
-wrong archive. General multimodal operation and autonomous consolidation
+wrong archive. The action reader currently receives mixed outcome predictions;
+the individual archived hypotheses and their disagreement are not explicit
+action features. The two-experiment planner does propagate hypothetical
+evidence, but has not surpassed the learned policy. A useful next comparison
+would train experiment choice from the consequences of distinguishing those
+hypotheses, preserving the current execution behavior at initialization.
+This representation issue is a candidate explanation, not an established cause
+of the new-task penalty. General multimodal operation and autonomous consolidation
 remain broader project goals.
 
 ## Response learning: completed update and joint-training comparisons
