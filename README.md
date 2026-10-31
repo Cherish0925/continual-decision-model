@@ -8,7 +8,18 @@
 
 An observation can become outdated while inference is still running. The research question is how to preserve useful computation, incorporate new observations, and spend additional computation where it improves subsequent decisions.
 
-The latest [physical-learning study](experiments/physical_belief/README.md)
+The latest [response-learning comparison](experiments/continual_experiment/RESPONSE_LEARNING.md)
+learns how an experiment should change predictions for related experiments.
+Across two continuations, retaining this fitted correction improves subsequent
+prediction and reduces native operations by **6.3% and 6.8%** against removing
+it from the same weights; all 40 tasks complete in each condition. The prediction
+gain includes previously untested mixtures within the current task. It has no
+established advantage over independently trained probability calibration.
+Sixteen update trainings and all 1,040 task executions are public. Full shared-core
+continuation is running; autonomous compute and long-term consolidation remain
+open objectives.
+
+The earlier [physical-learning study](experiments/physical_belief/README.md)
 connects accumulated knowledge to the predictions used for measurement and
 control. Six joint trainings from two independent parents complete **117/120
 and 116/120** new native tasks, against **115/120** for each parent, with **9.9%

@@ -8,6 +8,7 @@ from cdm.active_experiment import ActiveExperimentPolicy, ActiveExperimentConfig
 from cdm.continual_experiment import Activity, ContinualExperimentPolicy, ContinualExperimentConfig, select_rows
 from cdm.conditional_response import ConditionalResponse, ConditionalResponseConfig, observable_log_probabilities
 from cdm.adaptive_response import AdaptiveResponse, ResponseAdaptationConfig
+from cdm.response_replay import ResponseReplay, ResponseReplayConfig, recent_support
 from cdm.core import ContinualCore, CoreConfig
 from .observations import model_from_core_checkpoint
 from .recipes import primitive_recipes
@@ -15,7 +16,7 @@ from .recipes import primitive_recipes
 
 class ReactionExperimentPolicy(ContinualExperimentPolicy):
     def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig(),
-                 adaptation_config=None):
+                 adaptation_config=None, replay_config=None):
         super().__init__(base, config)
         self.response = ConditionalResponse(2 * self.core.config.width, response_config)
         self.direct_history = True
@@ -23,6 +24,7 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         self.response_adaptation = (None if adaptation_config is None else
             AdaptiveResponse(response_config.width, response_config.levels, adaptation_config))
         self.retain_response_adaptation = True
+        self.response_replay = None if replay_config is None else ResponseReplay(response_config.levels, replay_config)
         if adaptation_config is not None:
             self.experiment_residual = torch.nn.Linear(config.adapter_width + 5, 1)
             torch.nn.init.zeros_(self.experiment_residual.weight)
@@ -71,12 +73,37 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         extra = {}
         if self.response_adaptation is not None:
             features = self.response_adaptation.features(prediction['hidden'])
-            logits = self.response_adaptation.predict(state, prediction['latent_logits'], features)
+            if self.response_replay is None:
+                logits = self.response_adaptation.predict(state, prediction['latent_logits'], features)
+            else:
+                support = recent_support(self.replay_context(state, candidates), self.response_adaptation.config.memory_size)
+                n = support['x'].shape[1]
+                if self.response_replay.config.mode == 'stored':
+                    size = self.response_adaptation.config.memory_size
+                    index = (torch.arange(n, device=features.device)[None] +
+                             (state['response_cursor'] - size).clamp_min(0)[:, None]) % size
+                    support['x'] = state['response_x'].gather(1, index[..., None].expand(-1, -1, features.shape[-1]))
+                    support['base'] = state['response_base'].gather(1, index[..., None].expand(-1, -1, self.response.config.levels))
+                    support['valid'] = state['response_valid'].gather(1, index)
+                logits = self.response_replay(prediction['latent_logits'], features, proportions,
+                    support['base'], support['x'], support['inputs'], support['before'], support['after'], support['valid'])
             prediction['log_probabilities'] = observable_log_probabilities(logits, current)
             extra = {'response_features': features, 'response_base_logits': prediction['latent_logits']}
             prediction['latent_logits'] = logits
         return {**out, **extra, 'outcomes': prediction['log_probabilities'],
                 'latent_response_logits': prediction['latent_logits']}
+
+    def replay_context(self, state, candidates):
+        valid = state['reaction_mask']
+        used = max(1, int(valid.any(0).nonzero()[-1]) + 1) if valid.any() else 1
+        history = state['reaction_history'][:, :used]
+        proportions = history[..., :8] / history[..., :8].sum(-1, keepdim=True).clamp_min(1e-8)
+        before, after = (history[..., 16] * 3).round().long(), (history[..., 17] * 3).round().long()
+        f = self.core.state_features(state['h'], state['z'])
+        prediction = self.response(proportions, candidates[:, 0, 16:24].bool(), before,
+            proportions, before, after, valid[:, :used], f)
+        return dict(base=prediction['latent_logits'], x=self.response_adaptation.features(prediction['hidden']),
+                    inputs=proportions, before=before, after=after, valid=valid[:, :used])
 
     def experiment_logits(self, out, observation):
         from .observations import outcome_action_scores
@@ -96,7 +123,7 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
 
     def internal(self, state, activity, observation):
         revised = super().internal(state, activity, observation)
-        if self.response_adaptation is not None:
+        if self.response_adaptation is not None and self.response_replay is None:
             for kind, name in ((Activity.LEARN, 'fast'), (Activity.CONSOLIDATE, 'slow')):
                 selected = activity == kind
                 if selected.any():
@@ -108,6 +135,8 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         result = {**super().configuration(), 'response_config': asdict(self.response.config)}
         if self.response_adaptation is not None:
             result['response_adaptation_config'] = asdict(self.response_adaptation.config)
+        if self.response_replay is not None:
+            result['response_replay_config'] = asdict(self.response_replay.config)
         return result
 
 
@@ -125,7 +154,9 @@ def load_reaction_checkpoint(path, device='cpu'):
     model = ReactionExperimentPolicy(base, ContinualExperimentConfig(**saved['continual_config']),
                                     ConditionalResponseConfig(**saved['response_config']),
                                     ResponseAdaptationConfig(**saved['response_adaptation_config'])
-                                    if 'response_adaptation_config' in saved else None)
+                                    if 'response_adaptation_config' in saved else None,
+                                    ResponseReplayConfig(**saved['response_replay_config'])
+                                    if 'response_replay_config' in saved else None)
     model.load_state_dict(saved['model'])
     return model.to(device), saved
 

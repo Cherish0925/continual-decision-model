@@ -27,7 +27,7 @@ from experiments.continual_chemistry.warmup_reaction import batch_observations, 
 from experiments.continual_physics.train import (
     initialize_experiment, observe, reference_receive, training_parser, train_window,
 )
-from .shared_tasks import save_shared_checkpoint
+from .shared_tasks import save_shared_checkpoint, load_shared_checkpoint
 
 
 class ChemicalStreams:
@@ -107,6 +107,10 @@ def main():
     parser.add_argument('--state-sharing', choices=('continuing', 'separated'), default='continuing')
     parser.add_argument('--chemical-mode', choices=('recorded', 'active'), default='recorded')
     parser.add_argument('--chemical-activity', choices=('learned', 'fixed'), default='learned')
+    parser.add_argument('--shared-initial', type=Path)
+    parser.add_argument('--response-replay-checkpoint', type=Path)
+    parser.add_argument('--response-replay-control', action='store_true',
+                        help='Keep the fitted temperature/bias but omit within-task response updates')
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -116,10 +120,23 @@ def main():
         parser.error('Shared training requires actual native physical execution')
     args.output.mkdir(parents=True, exist_ok=False)
     physical, _, plan, environment, delayed = initialize_experiment(args)
-    chemical, chemical_saved = load_reaction_checkpoint(args.chemistry_checkpoint, args.device)
-    if args.chemical_mode == 'active':
+    if args.shared_initial is not None:
+        model, inherited = load_shared_checkpoint(args.shared_initial, args.device)
+        physical, chemical = model.tasks['physics'], model.tasks['chemistry']
+        chemical_saved = {'training': {'feedback_statistics': inherited['training']['chemical_feedback_statistics']}}
+    else:
+        chemical, chemical_saved = load_reaction_checkpoint(args.chemistry_checkpoint, args.device)
+    if args.chemical_mode == 'active' and args.shared_initial is None:
         from experiments.continual_chemistry.active_training import enable_response_learning
         chemical = enable_response_learning(chemical, args.chemical_activity)
+    if args.response_replay_checkpoint is not None:
+        from cdm.response_replay import ResponseReplay, ResponseReplayConfig
+        update = torch.load(args.response_replay_checkpoint, map_location=args.device, weights_only=True)
+        config = dict(update['config'])
+        if args.response_replay_control:
+            config['mode'] = 'calibration'
+        chemical.response_replay = ResponseReplay(config=ResponseReplayConfig(**config)).to(args.device)
+        chemical.response_replay.load_state_dict(update['model'])
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
     reference = deepcopy(physical.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
@@ -169,6 +186,11 @@ def main():
             chemical_update='censored categorical gradient; subsequent received predictions train through chosen updates',
             chemical_counterfactuals='No response labels for unexecuted alternatives',
             timing='physical scheduler pauses during chemical segments; no independent-clock claim')
+    if args.response_replay_checkpoint is not None:
+        metadata.update(chemical_update='four current-history functional response updates, separate from cost LEARN',
+            chemical_update_control='same fitted calibration without response fitting' if args.response_replay_control else None,
+            chemical_update_initial=str(args.response_replay_checkpoint),
+            chemical_update_schedule='fixed before each response readout; no learned response-compute allocation')
     (args.output / 'config.json').write_text(json.dumps(metadata, indent=2) + '\n')
     save_shared_checkpoint(args.output / 'initial.pt', model, training={**metadata, 'updates': 0})
     physical_state, chemical_state = physical.initial(args.batch, args.device), chemical.initial(args.batch, args.device)

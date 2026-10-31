@@ -1,5 +1,28 @@
 # Research progress
 
+## Response learning: completed comparison and continuing joint training
+
+The [response-learning study](experiments/continual_experiment/RESPONSE_LEARNING.md)
+completes 16 update trainings and 1,040 native executions. Re-fitting old hidden
+features or refreshing them offers little beyond probability calibration.
+Training a relation-conditioned correction on currently selected experiments
+produces a useful same-weight update: subsequent NLL drops from 0.7441 to
+0.7241 and from 0.7689 to 0.7602. On 40 new native tasks per condition, keeping
+that correction reduces operations from 117.38 to 109.95 and from 119.93 to
+111.75; all tasks complete and both paired operation intervals exclude zero.
+The predictive gains include 2,167 and 2,098 queries whose mixtures differ
+from every earlier support experiment, with negative recipe-group intervals.
+There is still no established advantage over independently trained calibration.
+
+Four full physical/chemical joint trainings are now running on both H100s,
+with ten native conditions automatically queued. They compare the relation
+update with the same initial calibration without response fitting. The run
+root is `runs/continual_physics/response_replay_20261031`; `joint/` contains
+training and `joint_native/` the continuing native evaluation. Both existing
+parents, all controls and fixed final endpoints remain part of the comparison.
+The study document records the completed cases, new method, relation to prior
+work and the distinction from autonomous compute and long-term consolidation.
+
 ## Completed execution-aware study and shared-core training
 
 The four execution-aware trainings and all eleven native comparisons are
@@ -42,7 +65,8 @@ corrections worsens next-outcome NLL from 0.7105 to 0.7488 and from 0.7036 to
 0.7483. Both whole-stream difference intervals exclude zero. One additional
 update worsens prediction further. The study links replay code and all 1,623
 paired predictions. This identifies an ineffective predictive update under
-the tested histories; its cause and a useful replacement remain unresolved.
+the tested histories. The response-learning study above follows this result
+with explicit update comparisons and new native execution results.
 
 The full results and all 2,400 executions are linked from the study. Local raw
 outputs remain `runs/continual_physics/active_feedback_joint_20261030` and

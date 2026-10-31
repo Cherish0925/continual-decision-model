@@ -45,7 +45,7 @@ def summarize(root, plan):
     comparisons = {}
     for left, right in pairs:
         comparison = {task: paired(rows[left][task], rows[right][task]) for task in ('physics', 'chemistry')}
-        if plan.get('study') == 'active':
+        if plan.get('study') in ('active', 'response'):
             comparison['first_return'] = {task: paired(
                 [r for r in rows[left][task] if r['episode_index'] == 4],
                 [r for r in rows[right][task] if r['episode_index'] == 4]) for task in ('physics', 'chemistry')}
@@ -62,7 +62,7 @@ def main():
     p.add_argument('--output', required=True, type=Path)
     p.add_argument('--manifest', type=Path, default=Path('experiments/continual_experiment/shared_confirmation.json'))
     p.add_argument('--workers', type=int, default=6)
-    p.add_argument('--study', choices=('shared', 'active'), default='shared')
+    p.add_argument('--study', choices=('shared', 'active', 'response'), default='shared')
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     jobs = []
@@ -77,8 +77,15 @@ def main():
             ('fixed', 'fixed', 'last.pt', 'separated'),
             ('discard_response', 'learned', 'last.pt', 'separated'),
             ('reset_chemical', 'learned', 'last.pt', 'separated'))
+        if args.study == 'response':
+            definitions = (
+                ('initial', 'relation', 'initial.pt', 'separated'),
+                ('relation', 'relation', 'last.pt', 'separated'),
+                ('calibration', 'calibration', 'last.pt', 'separated'),
+                ('response_disabled', 'relation', 'last.pt', 'separated'),
+                ('reset_chemical', 'relation', 'last.pt', 'separated'))
         for label, source, endpoint, state in definitions:
-            directory = args.training_root / f'{source}_seed{seed}'
+            directory = args.training_root / (f'{source}{seed}' if args.study == 'response' else f'{source}_seed{seed}')
             name = f'{label}_seed{seed}'
             command = ['-m', 'experiments.continual_experiment.evaluate_shared_tasks',
                 '--checkpoint', str(directory / endpoint), '--manifest', str(args.manifest),
@@ -88,6 +95,8 @@ def main():
                 command += ['--discard-response-updates']
             if label == 'reset_chemical':
                 command += ['--reset-chemical-state']
+            if label == 'response_disabled':
+                command += ['--disable-response-replay']
             jobs.append({'name': name, 'training_directory': str(directory), 'endpoint': endpoint,
                          'arguments': command})
     plan = {'jobs': jobs, 'manifest': str(args.manifest), 'training_updates': 200,
@@ -106,6 +115,14 @@ def main():
             pairs=[(f'learned_seed{seed}', f'{control}_seed{seed}')
                    for seed in (911, 912) for control in ('initial', 'fixed', 'discard_response', 'reset_chemical')]
                 + [(f'fixed_seed{seed}', f'initial_seed{seed}') for seed in (911, 912)])
+    if args.study == 'response':
+        plan.update(study='response',
+            training_seed_scope='continuations of two existing shared-core endpoints; not independent pretraining',
+            scope='replication on the existing frozen active-feedback benchmark; known relation families',
+            tasks='six physical and six chemical tasks per stream, both A A B B A A',
+            selection='all four fixed final endpoints, both initial references and same-weight update/state controls',
+            pairs=[(f'relation_seed{seed}', f'{control}_seed{seed}')
+                   for seed in (911, 912) for control in ('initial', 'calibration', 'response_disabled', 'reset_chemical')])
     (args.output / 'plan.json').write_text(json.dumps(plan, indent=2) + '\n')
     pending, running, completed = list(jobs), [], []
     while pending or running:

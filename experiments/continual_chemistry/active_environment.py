@@ -17,11 +17,11 @@ from .recipes import primitive_recipes
 
 
 class ActiveChemicalEnvironment:
-    def __init__(self, root, batch, seed, device, budget=1000):
+    def __init__(self, root, batch, seed, device, budget=1000, split='train'):
         self.device, self.batch, self.budget = torch.device(device), batch, budget
         self.rng = random.Random(seed)
         manifest = json.loads((Path(root) / 'manifest.json').read_text())
-        self.entries = [r for r in manifest['episodes'] if r['split'] == 'train']
+        self.entries = [r for r in manifest['episodes'] if r['split'] == split]
         for entry in self.entries:
             with (Path(root) / entry['directory'] / 'experiments.jsonl').open() as stream:
                 entry['prepare_actions'] = json.loads(next(stream))['transition_start']

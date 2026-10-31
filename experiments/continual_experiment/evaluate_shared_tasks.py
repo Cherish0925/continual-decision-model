@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import json
 import multiprocessing
@@ -21,6 +22,8 @@ def run_stream(job):
     model, saved = load_shared_checkpoint(options['checkpoint'])
     model.eval()
     physical, chemical = model.tasks['physics'], model.tasks['chemistry']
+    if options.get('disable_response_replay', False):
+        chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
     assert physical.core is chemical.core
     session = ContinualPhysicsSession(physical)
     chemical_state = chemical.initial(1, 'cpu')
@@ -83,6 +86,7 @@ def main():
     p.add_argument('--workers', type=int, default=6)
     p.add_argument('--threads', type=int, default=1)
     p.add_argument('--discard-response-updates', action='store_true')
+    p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']

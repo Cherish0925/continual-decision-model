@@ -1,0 +1,3314 @@
+{
+  "recorded": {
+    "training": {
+      "calibration911": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.19617392879823078,
+          "base": 0.21213230107874645,
+          "original": 0.2281228880150026
+        },
+        "update_minus_base_95ci": [
+          -0.03874347685789935,
+          0.002371763296828989
+        ],
+        "config": {
+          "mode": "calibration",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 10.094746261835098,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071
+          ],
+          "log_penalty": -4.0,
+          "log_length": -1.0,
+          "log_temperature": -0.39634788036346436,
+          "bias": [
+            0.5674825310707092,
+            -0.5971480011940002,
+            -0.17588436603546143,
+            0.3141828179359436
+          ]
+        }
+      },
+      "calibration912": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.20164025440014968,
+          "base": 0.2148838619453615,
+          "original": 0.2373662470982035
+        },
+        "update_minus_base_95ci": [
+          -0.03458955111166085,
+          0.004811575220135675
+        ],
+        "config": {
+          "mode": "calibration",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 10.330172998830676,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071
+          ],
+          "log_penalty": -4.0,
+          "log_length": -1.0,
+          "log_temperature": -0.45625820755958557,
+          "bias": [
+            0.6301470398902893,
+            -0.5952202081680298,
+            -0.22681096196174622,
+            0.23359017074108124
+          ]
+        }
+      },
+      "refreshed911": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.19604253431845625,
+          "base": 0.21213230107874645,
+          "original": 0.2281228880150026
+        },
+        "update_minus_base_95ci": [
+          -0.039387694724077806,
+          0.0028508342964407587
+        ],
+        "config": {
+          "mode": "refreshed",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 16.20284468308091,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -2.2203216552734375,
+            -2.217275857925415,
+            -2.2162089347839355,
+            -2.2165889739990234
+          ],
+          "log_penalty": -2.6791036128997803,
+          "log_length": -1.0,
+          "log_temperature": -0.4082346260547638,
+          "bias": [
+            0.587051510810852,
+            -0.6023754477500916,
+            -0.20098493993282318,
+            0.26521679759025574
+          ]
+        }
+      },
+      "refreshed912": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.20175164684826394,
+          "base": 0.2148838619453615,
+          "original": 0.2373662470982035
+        },
+        "update_minus_base_95ci": [
+          -0.03434096657374889,
+          0.004955542340383564
+        ],
+        "config": {
+          "mode": "refreshed",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 16.61700593866408,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -2.8006742000579834,
+            -2.792891263961792,
+            -2.7878024578094482,
+            -2.7854385375976562
+          ],
+          "log_penalty": -2.219756603240967,
+          "log_length": -1.0,
+          "log_temperature": -0.4623960852622986,
+          "bias": [
+            0.6452955603599548,
+            -0.6006899476051331,
+            -0.23502571880817413,
+            0.22411447763442993
+          ]
+        }
+      },
+      "relation911": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.19421579150517784,
+          "base": 0.21213230107874645,
+          "original": 0.2281228880150026
+        },
+        "update_minus_base_95ci": [
+          -0.04066061150899203,
+          0.0007243348079683331
+        ],
+        "config": {
+          "mode": "relation",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 18.68276604823768,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            1.2486916780471802,
+            1.4219260215759277,
+            1.4594334363937378,
+            1.4720042943954468
+          ],
+          "log_penalty": -5.871500015258789,
+          "log_length": -1.7401829957962036,
+          "log_temperature": -0.40480124950408936,
+          "bias": [
+            0.6484190821647644,
+            -0.617962121963501,
+            -0.20158037543296814,
+            0.26884925365448
+          ]
+        }
+      },
+      "relation912": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.19618004480087786,
+          "base": 0.2148838619453615,
+          "original": 0.2373662470982035
+        },
+        "update_minus_base_95ci": [
+          -0.04136861320352219,
+          0.00012201328278038156
+        ],
+        "config": {
+          "mode": "relation",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 18.928897686302662,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            2.273233413696289,
+            4.296961784362793,
+            4.665447235107422,
+            4.532901287078857
+          ],
+          "log_penalty": -8.584074974060059,
+          "log_length": -2.4092190265655518,
+          "log_temperature": -0.45792049169540405,
+          "bias": [
+            0.7580968141555786,
+            -0.628792405128479,
+            -0.26956650614738464,
+            0.17777016758918762
+          ]
+        }
+      },
+      "stored911": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.19640639528946638,
+          "base": 0.21213230107874645,
+          "original": 0.2281228880150026
+        },
+        "update_minus_base_95ci": [
+          -0.03986496368532336,
+          0.004107055393026532
+        ],
+        "config": {
+          "mode": "stored",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 16.68821918591857,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -1.9627048969268799,
+            -1.9584574699401855,
+            -1.9554908275604248,
+            -1.9533432722091675
+          ],
+          "log_penalty": -2.8374223709106445,
+          "log_length": -1.0,
+          "log_temperature": -0.42522919178009033,
+          "bias": [
+            0.60868901014328,
+            -0.588708221912384,
+            -0.21775931119918823,
+            0.20418992638587952
+          ]
+        }
+      },
+      "stored912": {
+        "transitions": 616,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.20190812999877003,
+          "base": 0.2148838619453615,
+          "original": 0.2373662470982035
+        },
+        "update_minus_base_95ci": [
+          -0.03544471130910235,
+          0.006235782215976064
+        ],
+        "config": {
+          "mode": "stored",
+          "updates": 4
+        },
+        "train_transitions": 10610,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 16.987015524879098,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -2.3730337619781494,
+            -2.369384288787842,
+            -2.366840124130249,
+            -2.365236759185791
+          ],
+          "log_penalty": -2.4934213161468506,
+          "log_length": -1.0,
+          "log_temperature": -0.4746539890766144,
+          "bias": [
+            0.6423869729042053,
+            -0.6095181703567505,
+            -0.2656625509262085,
+            0.1448860466480255
+          ]
+        }
+      }
+    },
+    "prediction_pairs": {
+      "stored911:calibration911": {
+        "mean_difference": 0.00023246649123558944,
+        "interval95": [
+          -0.002374457824716027,
+          0.0029064987215236897
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      },
+      "refreshed911:calibration911": {
+        "mean_difference": -0.00013139447977451922,
+        "interval95": [
+          -0.0012669353796725814,
+          0.0008496351762496655
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      },
+      "relation911:calibration911": {
+        "mean_difference": -0.00195813729305292,
+        "interval95": [
+          -0.00544635125800837,
+          -4.808540538470644e-05
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      },
+      "stored912:calibration912": {
+        "mean_difference": 0.0002678755986203391,
+        "interval95": [
+          -0.001402776958520275,
+          0.002095535161762104
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      },
+      "refreshed912:calibration912": {
+        "mean_difference": 0.00011139244811424937,
+        "interval95": [
+          -0.0004064869150042203,
+          0.0005680825200433262
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      },
+      "relation912:calibration912": {
+        "mean_difference": -0.005460209599271826,
+        "interval95": [
+          -0.011555289093722752,
+          -0.0022189876188906396
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 616,
+        "groups": 14
+      }
+    },
+    "same_weight_without_update": {},
+    "native_conditions": [
+      {
+        "condition": "calibration911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 93.9,
+        "mean_experiments": 6.475,
+        "mean_inference_seconds": 0.49078829642385247,
+        "mean_execution_seconds": 3.2310239050537346,
+        "mean_seconds": 4.317544507747516
+      },
+      {
+        "condition": "calibration912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 96.9,
+        "mean_experiments": 6.725,
+        "mean_inference_seconds": 0.4039183006156236,
+        "mean_execution_seconds": 3.4612912165001033,
+        "mean_seconds": 4.281534429360181
+      },
+      {
+        "condition": "original911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 87.95,
+        "mean_experiments": 6.125,
+        "mean_inference_seconds": 0.44775852938182653,
+        "mean_execution_seconds": 2.9531868149992078,
+        "mean_seconds": 4.660656452039257
+      },
+      {
+        "condition": "original912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 83.875,
+        "mean_experiments": 5.95,
+        "mean_inference_seconds": 0.3513205480296165,
+        "mean_execution_seconds": 2.990399436559528,
+        "mean_seconds": 3.7768028845079242
+      },
+      {
+        "condition": "refreshed911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 93.875,
+        "mean_experiments": 6.475,
+        "mean_inference_seconds": 0.38981521311216055,
+        "mean_execution_seconds": 3.4232812735717744,
+        "mean_seconds": 4.245488098822534
+      },
+      {
+        "condition": "refreshed912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 96.9,
+        "mean_experiments": 6.725,
+        "mean_inference_seconds": 0.38461034642532466,
+        "mean_execution_seconds": 3.362323971046135,
+        "mean_seconds": 4.152223263401538
+      },
+      {
+        "condition": "relation911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 90.275,
+        "mean_experiments": 6.25,
+        "mean_inference_seconds": 0.3744812689255923,
+        "mean_execution_seconds": 3.220654177060351,
+        "mean_seconds": 4.008403836516663
+      },
+      {
+        "condition": "relation912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 88.825,
+        "mean_experiments": 6.175,
+        "mean_inference_seconds": 0.3599755046889186,
+        "mean_execution_seconds": 3.05017038108781,
+        "mean_seconds": 3.823078432213515
+      },
+      {
+        "condition": "stored911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 93.875,
+        "mean_experiments": 6.475,
+        "mean_inference_seconds": 0.4062355139758438,
+        "mean_execution_seconds": 3.429587328946218,
+        "mean_seconds": 4.248931406112388
+      },
+      {
+        "condition": "stored912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 96.125,
+        "mean_experiments": 6.675,
+        "mean_inference_seconds": 0.38927452750504016,
+        "mean_execution_seconds": 3.3503139426466078,
+        "mean_seconds": 4.166681793471798
+      },
+      {
+        "condition": "zero911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 84.05,
+        "mean_experiments": 5.9,
+        "mean_inference_seconds": 0.3400617923121899,
+        "mean_execution_seconds": 2.893058552686125,
+        "mean_seconds": 3.6414847208652645
+      },
+      {
+        "condition": "zero912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 82.85,
+        "mean_experiments": 5.9,
+        "mean_inference_seconds": 0.3276741949375719,
+        "mean_execution_seconds": 2.823774834070355,
+        "mean_seconds": 3.5592901253607123
+      }
+    ],
+    "native_pairs": {
+      "calibration911:original911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 5.95,
+          "difference_95ci": [
+            1.275,
+            14.395423976608178
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.34311194429174063,
+          "difference_95ci": [
+            -0.5538629228636872,
+            0.027298071931969974
+          ]
+        }
+      },
+      "calibration911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 9.85,
+          "difference_95ci": [
+            0.8665909090909092,
+            22.655221674876845
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.6760597868822515,
+          "difference_95ci": [
+            0.3317641384858168,
+            1.185067668811648
+          ]
+        }
+      },
+      "calibration912:original912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 13.025,
+          "difference_95ci": [
+            2.2940817790530845,
+            29.889743589743578
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.5047315448522568,
+          "difference_95ci": [
+            0.034326640694052925,
+            1.2790456278754085
+          ]
+        }
+      },
+      "calibration912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 14.05,
+          "difference_95ci": [
+            1.2824583718778908,
+            33.34374517374516
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.7222443039994687,
+          "difference_95ci": [
+            0.15449919794922917,
+            1.5912727063426961
+          ]
+        }
+      },
+      "original911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 3.9,
+          "difference_95ci": [
+            -2.6512102515424774,
+            13.529886148007582
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 1.019171731173992,
+          "difference_95ci": [
+            0.7737862308564044,
+            1.3857200641899594
+          ]
+        }
+      },
+      "original911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -5.95,
+          "difference_95ci": [
+            -14.500378787878788,
+            -1.2142857142857142
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.34311194429174063,
+          "difference_95ci": [
+            -0.030710768823822336,
+            0.5545074272053078
+          ]
+        }
+      },
+      "original912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 1.025,
+          "difference_95ci": [
+            -5.322849462365591,
+            10.53351351351351
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.2175127591472119,
+          "difference_95ci": [
+            -0.028929585270428403,
+            0.5696922517974355
+          ]
+        }
+      },
+      "original912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -13.025,
+          "difference_95ci": [
+            -29.323529411764707,
+            -2.316904962153072
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.5047315448522568,
+          "difference_95ci": [
+            -1.2581611880690189,
+            -0.03446066448181548
+          ]
+        }
+      },
+      "refreshed911:original911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 5.925,
+          "difference_95ci": [
+            1.2,
+            14.529969574036503
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.41516835321672263,
+          "difference_95ci": [
+            -0.6967583821247053,
+            0.03371861660172644
+          ]
+        }
+      },
+      "refreshed911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 9.825,
+          "difference_95ci": [
+            0.9032061369000787,
+            23.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.6040033779572695,
+          "difference_95ci": [
+            0.19079643259161536,
+            1.208890002669799
+          ]
+        }
+      },
+      "refreshed911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -0.025,
+          "difference_95ci": [
+            -0.09375,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.07205640892498195,
+          "difference_95ci": [
+            -0.19215533934568274,
+            0.08667341798943061
+          ]
+        }
+      },
+      "refreshed912:original912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 13.025,
+          "difference_95ci": [
+            2.2380252100840337,
+            29.69719251336898
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.3754203788936138,
+          "difference_95ci": [
+            -0.04115393965231679,
+            1.0239246817042866
+          ]
+        }
+      },
+      "refreshed912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 14.05,
+          "difference_95ci": [
+            1.295290404040404,
+            32.76193609022556
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.5929331380408257,
+          "difference_95ci": [
+            0.09483511986311625,
+            1.3268161849944733
+          ]
+        }
+      },
+      "refreshed912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.12931116595864295,
+          "difference_95ci": [
+            -0.2605648772976083,
+            -0.04804461593746226
+          ]
+        }
+      },
+      "relation911:original911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 2.325,
+          "difference_95ci": [
+            -3.8057655038759686,
+            10.967834101382486
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.6522526155225933,
+          "difference_95ci": [
+            -0.9569341268927297,
+            -0.20628491460870355
+          ]
+        }
+      },
+      "relation911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 6.225,
+          "difference_95ci": [
+            -2.7587027914614124,
+            19.44143738140417
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.3669191156513989,
+          "difference_95ci": [
+            -0.021799976314170525,
+            0.9319189709730636
+          ]
+        }
+      },
+      "relation911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.625,
+          "difference_95ci": [
+            -8.162887596899225,
+            -0.47368421052631576
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.3091406712308526,
+          "difference_95ci": [
+            -0.5128684019804599,
+            -0.09490245318661704
+          ]
+        }
+      },
+      "relation912:original912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 4.95,
+          "difference_95ci": [
+            -6.812582236842105,
+            20.900714285714272
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.046275547705590725,
+          "difference_95ci": [
+            -0.3843180810456489,
+            0.5976448659641452
+          ]
+        }
+      },
+      "relation912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 5.975,
+          "difference_95ci": [
+            -6.6391507703595005,
+            24.432454954954952
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.26378830685280263,
+          "difference_95ci": [
+            -0.167129464052768,
+            0.8984206064493625
+          ]
+        }
+      },
+      "relation912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -8.075,
+          "difference_95ci": [
+            -16.4838954056696,
+            -2.0936789772727282
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.45845599714666607,
+          "difference_95ci": [
+            -0.825403229013367,
+            -0.1790733637510808
+          ]
+        }
+      },
+      "stored911:original911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 5.925,
+          "difference_95ci": [
+            1.2190243902439029,
+            14.424533799533794
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.4117250459268689,
+          "difference_95ci": [
+            -0.699671724315088,
+            0.006336955911080689
+          ]
+        }
+      },
+      "stored911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 9.825,
+          "difference_95ci": [
+            0.9331707317073172,
+            22.333593749999995
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.6074466852471232,
+          "difference_95ci": [
+            0.196071223095736,
+            1.1573632005233654
+          ]
+        }
+      },
+      "stored911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -0.025,
+          "difference_95ci": [
+            -0.09375,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.06861310163512827,
+          "difference_95ci": [
+            -0.21986706629395483,
+            0.12983918466523064
+          ]
+        }
+      },
+      "stored912:original912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 12.25,
+          "difference_95ci": [
+            1.8330882352941178,
+            28.04395380434782
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.389878908963874,
+          "difference_95ci": [
+            -0.00865563247939257,
+            1.0472921698528876
+          ]
+        }
+      },
+      "stored912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 13.275,
+          "difference_95ci": [
+            0.9317045454545455,
+            31.709904233870965
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.6073916681110859,
+          "difference_95ci": [
+            0.11185299890646495,
+            1.3556963480445023
+          ]
+        }
+      },
+      "stored912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -0.775,
+          "difference_95ci": [
+            -2.8181818181818183,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.11485263588838279,
+          "difference_95ci": [
+            -0.23433446577242154,
+            -0.0206314601650876
+          ]
+        }
+      },
+      "zero911:original911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.9,
+          "difference_95ci": [
+            -13.52988614800759,
+            2.6512102515424765
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.019171731173992,
+          "difference_95ci": [
+            -1.3857200641899594,
+            -0.7737862308564045
+          ]
+        }
+      },
+      "zero911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -9.85,
+          "difference_95ci": [
+            -22.710731907894736,
+            -0.8634740259740283
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.6760597868822515,
+          "difference_95ci": [
+            -1.1836413191542248,
+            -0.33110720989632747
+          ]
+        }
+      },
+      "zero912:original912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -1.025,
+          "difference_95ci": [
+            -10.533513513513514,
+            5.322849462365587
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.2175127591472119,
+          "difference_95ci": [
+            -0.5696922517974357,
+            0.0289295852704283
+          ]
+        }
+      },
+      "zero912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 27,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -14.05,
+          "difference_95ci": [
+            -33.05274436090226,
+            -1.479092261904763
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.7222443039994687,
+          "difference_95ci": [
+            -1.5689541867299175,
+            -0.16308568717465718
+          ]
+        }
+      }
+    },
+    "protocol": {
+      "episodes": [
+        {
+          "difficulty": "Normal",
+          "seed": 241000,
+          "directory": "normal/seed241000"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241007,
+          "directory": "normal/seed241007"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241014,
+          "directory": "normal/seed241014"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241021,
+          "directory": "normal/seed241021"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241028,
+          "directory": "normal/seed241028"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241035,
+          "directory": "normal/seed241035"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241042,
+          "directory": "normal/seed241042"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241049,
+          "directory": "normal/seed241049"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241056,
+          "directory": "normal/seed241056"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241063,
+          "directory": "normal/seed241063"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241070,
+          "directory": "normal/seed241070"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241077,
+          "directory": "normal/seed241077"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241084,
+          "directory": "normal/seed241084"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241091,
+          "directory": "normal/seed241091"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241098,
+          "directory": "normal/seed241098"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241105,
+          "directory": "normal/seed241105"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241112,
+          "directory": "normal/seed241112"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241119,
+          "directory": "normal/seed241119"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241126,
+          "directory": "normal/seed241126"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 241133,
+          "directory": "normal/seed241133"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241000,
+          "directory": "challenge/seed241000"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241007,
+          "directory": "challenge/seed241007"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241014,
+          "directory": "challenge/seed241014"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241021,
+          "directory": "challenge/seed241021"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241028,
+          "directory": "challenge/seed241028"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241035,
+          "directory": "challenge/seed241035"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241042,
+          "directory": "challenge/seed241042"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241049,
+          "directory": "challenge/seed241049"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241056,
+          "directory": "challenge/seed241056"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241063,
+          "directory": "challenge/seed241063"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241070,
+          "directory": "challenge/seed241070"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241077,
+          "directory": "challenge/seed241077"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241084,
+          "directory": "challenge/seed241084"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241091,
+          "directory": "challenge/seed241091"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241098,
+          "directory": "challenge/seed241098"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241105,
+          "directory": "challenge/seed241105"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241112,
+          "directory": "challenge/seed241112"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241119,
+          "directory": "challenge/seed241119"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241126,
+          "directory": "challenge/seed241126"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 241133,
+          "directory": "challenge/seed241133"
+        }
+      ],
+      "conditions": [
+        "original",
+        "zero",
+        "calibration",
+        "stored",
+        "refreshed",
+        "relation"
+      ],
+      "parents": [
+        911,
+        912
+      ],
+      "selection": "new seeds fixed before response-update results; all four fitted methods included",
+      "compute": "actual inference time includes response re-encoding and four inner updates; not equal compute",
+      "training": "original core, action head and cost activity policy remain frozen",
+      "state": "reset at each apparatus; this experiment does not evaluate long-term consolidation",
+      "max_native_actions": 1000,
+      "bootstrap_unit": "named recipe parameter group"
+    }
+  },
+  "selected": {
+    "training": {
+      "calibration911": {
+        "transitions": 2632,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.74559748460366,
+          "base": 0.7949490772848977,
+          "original": 0.8213171914112287
+        },
+        "update_minus_base_95ci": [
+          -0.0892671157809937,
+          -0.008746742501369205
+        ],
+        "config": {
+          "mode": "calibration",
+          "updates": 4
+        },
+        "train_transitions": 14705,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 13.907833138480783,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071
+          ],
+          "log_penalty": -4.0,
+          "log_length": -1.0,
+          "log_temperature": 0.43677690625190735,
+          "bias": [
+            -0.02896890416741371,
+            -0.017517035827040672,
+            0.07370505481958389,
+            0.13291320204734802
+          ]
+        }
+      },
+      "calibration912": {
+        "transitions": 2596,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7735466585826065,
+          "base": 0.8217712796661997,
+          "original": 0.852026398048287
+        },
+        "update_minus_base_95ci": [
+          -0.1026164641704238,
+          -0.005449524025193199
+        ],
+        "config": {
+          "mode": "calibration",
+          "updates": 4
+        },
+        "train_transitions": 14639,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 13.731386033818126,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071,
+            -0.699999988079071
+          ],
+          "log_penalty": -4.0,
+          "log_length": -1.0,
+          "log_temperature": 0.41739583015441895,
+          "bias": [
+            0.0714048519730568,
+            -0.12613235414028168,
+            0.1019865870475769,
+            0.03536534309387207
+          ]
+        }
+      },
+      "refreshed911": {
+        "transitions": 2632,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.745640129032106,
+          "base": 0.7949490772848977,
+          "original": 0.8213171914112287
+        },
+        "update_minus_base_95ci": [
+          -0.08919508113486312,
+          -0.008542357891855984
+        ],
+        "config": {
+          "mode": "refreshed",
+          "updates": 4
+        },
+        "train_transitions": 14705,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 22.666762849316,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -4.326107501983643,
+            -4.3229193687438965,
+            -4.3212432861328125,
+            -4.321340560913086
+          ],
+          "log_penalty": -1.0838850736618042,
+          "log_length": -1.0,
+          "log_temperature": 0.43060117959976196,
+          "bias": [
+            -0.04132587090134621,
+            -0.04076007008552551,
+            0.04823834076523781,
+            0.11136019229888916
+          ]
+        }
+      },
+      "refreshed912": {
+        "transitions": 2596,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7732531942989683,
+          "base": 0.8217712796661997,
+          "original": 0.852026398048287
+        },
+        "update_minus_base_95ci": [
+          -0.10355378506718699,
+          -0.005029914213909094
+        ],
+        "config": {
+          "mode": "refreshed",
+          "updates": 4
+        },
+        "train_transitions": 14639,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 22.55109721235931,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -3.5485448837280273,
+            -3.5469908714294434,
+            -3.5458106994628906,
+            -3.5459513664245605
+          ],
+          "log_penalty": -1.5385806560516357,
+          "log_length": -1.0,
+          "log_temperature": 0.40442323684692383,
+          "bias": [
+            0.06770521402359009,
+            -0.1535567194223404,
+            0.06870672851800919,
+            0.00940901692956686
+          ]
+        }
+      },
+      "relation911": {
+        "transitions": 2632,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7240869864753495,
+          "base": 0.7949490772848977,
+          "original": 0.8213171914112287
+        },
+        "update_minus_base_95ci": [
+          -0.11793481940250851,
+          -0.02368262904721732
+        ],
+        "config": {
+          "mode": "relation",
+          "updates": 4
+        },
+        "train_transitions": 14705,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 25.47981138341129,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            2.3677291870117188,
+            9.594498634338379,
+            3.6872000694274902,
+            3.6567726135253906
+          ],
+          "log_penalty": -10.104628562927246,
+          "log_length": -3.3059237003326416,
+          "log_temperature": 0.3598409593105316,
+          "bias": [
+            0.09531904011964798,
+            -0.10190153121948242,
+            0.01884329691529274,
+            0.10840437561273575
+          ]
+        }
+      },
+      "relation912": {
+        "transitions": 2596,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7601637984173967,
+          "base": 0.8217712796661997,
+          "original": 0.852026398048287
+        },
+        "update_minus_base_95ci": [
+          -0.1316319776029328,
+          -0.009199606515626766
+        ],
+        "config": {
+          "mode": "relation",
+          "updates": 4
+        },
+        "train_transitions": 14639,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 24.860668629407883,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            0.8686481714248657,
+            8.915575981140137,
+            2.956291437149048,
+            2.861992597579956
+          ],
+          "log_penalty": -9.751380920410156,
+          "log_length": -3.2383155822753906,
+          "log_temperature": 0.32567232847213745,
+          "bias": [
+            0.2192980945110321,
+            -0.2155437469482422,
+            0.0475909523665905,
+            0.006895533762872219
+          ]
+        }
+      },
+      "stored911": {
+        "transitions": 2632,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7455732851971427,
+          "base": 0.7949490772848977,
+          "original": 0.8213171914112287
+        },
+        "update_minus_base_95ci": [
+          -0.08954764486433622,
+          -0.008931922699938696
+        ],
+        "config": {
+          "mode": "stored",
+          "updates": 4
+        },
+        "train_transitions": 14705,
+        "epochs": 30,
+        "seed": 1031,
+        "seconds": 22.854582162573934,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -4.202394962310791,
+            -4.197935581207275,
+            -4.1960978507995605,
+            -4.19631814956665
+          ],
+          "log_penalty": -1.3925753831863403,
+          "log_length": -1.0,
+          "log_temperature": 0.42470991611480713,
+          "bias": [
+            -0.05294846370816231,
+            -0.05475609377026558,
+            0.03193181753158569,
+            0.08689703047275543
+          ]
+        }
+      },
+      "stored912": {
+        "transitions": 2596,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7737847411623354,
+          "base": 0.8217712796661997,
+          "original": 0.852026398048287
+        },
+        "update_minus_base_95ci": [
+          -0.10286494875175482,
+          -0.005170632624469708
+        ],
+        "config": {
+          "mode": "stored",
+          "updates": 4
+        },
+        "train_transitions": 14639,
+        "epochs": 30,
+        "seed": 1032,
+        "seconds": 22.319153107702732,
+        "selection": "fixed final epoch; development predictions only",
+        "learned": {
+          "log_rates": [
+            -4.134650707244873,
+            -4.130823135375977,
+            -4.1294169425964355,
+            -4.129826545715332
+          ],
+          "log_penalty": -1.3755635023117065,
+          "log_length": -1.0,
+          "log_temperature": 0.4052918553352356,
+          "bias": [
+            0.051715243607759476,
+            -0.159800723195076,
+            0.06354545056819916,
+            -0.009892254136502743
+          ]
+        }
+      }
+    },
+    "prediction_pairs": {
+      "stored911:calibration911": {
+        "mean_difference": -2.419940651731288e-05,
+        "interval95": [
+          -0.0013713020186006003,
+          0.0010655739609160692
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2632,
+        "groups": 14
+      },
+      "refreshed911:calibration911": {
+        "mean_difference": 4.2644428445937786e-05,
+        "interval95": [
+          -0.0007145672144680962,
+          0.0008129307248475621
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2632,
+        "groups": 14
+      },
+      "relation911:calibration911": {
+        "mean_difference": -0.021510498128310525,
+        "interval95": [
+          -0.0330254823683302,
+          -0.010182798303637478
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2632,
+        "groups": 14
+      },
+      "stored912:calibration912": {
+        "mean_difference": 0.00023808257972881864,
+        "interval95": [
+          -0.0013310970024404164,
+          0.0018860265768494062
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2596,
+        "groups": 14
+      },
+      "refreshed912:calibration912": {
+        "mean_difference": -0.000293464283638265,
+        "interval95": [
+          -0.001410224597274186,
+          0.0008378186745186681
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2596,
+        "groups": 14
+      },
+      "relation912:calibration912": {
+        "mean_difference": -0.01338286016520991,
+        "interval95": [
+          -0.0318898200598192,
+          0.0016234499215682957
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2596,
+        "groups": 14
+      },
+      "relation911:same_weights_no_update": {
+        "mean_difference": -0.01996981674142884,
+        "interval95": [
+          -0.03370657501708769,
+          -0.00042222298080738863
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2632,
+        "groups": 14
+      },
+      "relation912:same_weights_no_update": {
+        "mean_difference": -0.008730425104751425,
+        "interval95": [
+          -0.0209977292720859,
+          -0.00016514043181398562
+        ],
+        "bootstrap_unit": "named recipe group",
+        "predictions": 2596,
+        "groups": 14
+      }
+    },
+    "same_weight_without_update": {
+      "911": {
+        "transitions": 2632,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7440568032167784,
+          "base": 0.7949490747485298,
+          "original": 0.8213171914112287
+        },
+        "update_minus_base_95ci": [
+          -0.1031615874757951,
+          -0.004206172534782428
+        ]
+      },
+      "912": {
+        "transitions": 2596,
+        "recipe_groups": 14,
+        "mean_nll": {
+          "updated": 0.7688942235221481,
+          "base": 0.8217712714120126,
+          "original": 0.852026398048287
+        },
+        "update_minus_base_95ci": [
+          -0.12638438979987654,
+          0.0021602286753735177
+        ]
+      }
+    },
+    "native_conditions": [
+      {
+        "condition": "calibration911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 113.65,
+        "mean_experiments": 8.0,
+        "mean_inference_seconds": 0.4668098256923258,
+        "mean_execution_seconds": 3.9717534794006495,
+        "mean_seconds": 4.862767177028582
+      },
+      {
+        "condition": "calibration912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 110.5,
+        "mean_experiments": 7.825,
+        "mean_inference_seconds": 0.45307571911253036,
+        "mean_execution_seconds": 3.9168431803118438,
+        "mean_seconds": 4.782379441149533
+      },
+      {
+        "condition": "original911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 117.15,
+        "mean_experiments": 8.2,
+        "mean_inference_seconds": 0.6234804029576481,
+        "mean_execution_seconds": 4.059342841710896,
+        "mean_seconds": 6.005888825235888
+      },
+      {
+        "condition": "original912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 121.325,
+        "mean_experiments": 8.5,
+        "mean_inference_seconds": 0.47812666683457794,
+        "mean_execution_seconds": 4.283353133732453,
+        "mean_seconds": 5.184708941075951
+      },
+      {
+        "condition": "refreshed911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 113.65,
+        "mean_experiments": 8.0,
+        "mean_inference_seconds": 0.46518414113670586,
+        "mean_execution_seconds": 4.000999856600538,
+        "mean_seconds": 4.866800887603313
+      },
+      {
+        "condition": "refreshed912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 117.075,
+        "mean_experiments": 8.25,
+        "mean_inference_seconds": 0.47623626473359765,
+        "mean_execution_seconds": 4.065596127603203,
+        "mean_seconds": 4.950244353618473
+      },
+      {
+        "condition": "relation911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 109.95,
+        "mean_experiments": 7.7,
+        "mean_inference_seconds": 0.44164995951578023,
+        "mean_execution_seconds": 3.8411527461372317,
+        "mean_seconds": 4.690970588615164
+      },
+      {
+        "condition": "relation912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 111.75,
+        "mean_experiments": 7.85,
+        "mean_inference_seconds": 0.45838372483849527,
+        "mean_execution_seconds": 3.783577921055257,
+        "mean_seconds": 4.686840373510495
+      },
+      {
+        "condition": "relation_no_update911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 117.375,
+        "mean_experiments": 8.225,
+        "mean_inference_seconds": 0.6353829830419272,
+        "mean_execution_seconds": 4.067601392557845,
+        "mean_seconds": 5.31302374843508
+      },
+      {
+        "condition": "relation_no_update912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 119.925,
+        "mean_experiments": 8.425,
+        "mean_inference_seconds": 0.4962407546583563,
+        "mean_execution_seconds": 3.957989701908082,
+        "mean_seconds": 4.883811912732199
+      },
+      {
+        "condition": "stored911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 115.35,
+        "mean_experiments": 8.1,
+        "mean_inference_seconds": 0.4600885503925383,
+        "mean_execution_seconds": 4.013236291659996,
+        "mean_seconds": 4.875201493036002
+      },
+      {
+        "condition": "stored912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 117.075,
+        "mean_experiments": 8.25,
+        "mean_inference_seconds": 0.48510167384520175,
+        "mean_execution_seconds": 4.120687783276662,
+        "mean_seconds": 5.023853061860427
+      },
+      {
+        "condition": "zero911",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 114.85,
+        "mean_experiments": 8.05,
+        "mean_inference_seconds": 0.4690348811913282,
+        "mean_execution_seconds": 3.9688253892119976,
+        "mean_seconds": 4.868001058232039
+      },
+      {
+        "condition": "zero912",
+        "instances": 40,
+        "completed": 40,
+        "errors": 0,
+        "mean_native_actions": 120.75,
+        "mean_experiments": 8.45,
+        "mean_inference_seconds": 0.477158992504701,
+        "mean_execution_seconds": 4.234194136736915,
+        "mean_seconds": 5.127905857469886
+      }
+    ],
+    "native_pairs": {
+      "calibration911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.5,
+          "difference_95ci": [
+            -6.88,
+            -0.5
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.1431216482073068,
+          "difference_95ci": [
+            -1.338522130508977,
+            -0.9204978902377303
+          ]
+        }
+      },
+      "calibration911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -1.2,
+          "difference_95ci": [
+            -15.135328185328184,
+            12.125164473684208
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.0052338812034577135,
+          "difference_95ci": [
+            -0.6029039308276936,
+            0.5374909367713432
+          ]
+        }
+      },
+      "calibration912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -10.825,
+          "difference_95ci": [
+            -27.3147619047619,
+            2.7242777260018616
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.4023294999264181,
+          "difference_95ci": [
+            -1.0405225384672923,
+            0.1379266626926824
+          ]
+        }
+      },
+      "calibration912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -10.25,
+          "difference_95ci": [
+            -20.08347222222222,
+            -1.6497756410256441
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.34552641632035375,
+          "difference_95ci": [
+            -0.7399812302239344,
+            -0.0007283916602846577
+          ]
+        }
+      },
+      "original911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 2.3,
+          "difference_95ci": [
+            -11.621778755499685,
+            14.871951219512193
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 1.1378877670038492,
+          "difference_95ci": [
+            0.5005151372368666,
+            1.7022419100577928
+          ]
+        }
+      },
+      "original911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 3.5,
+          "difference_95ci": [
+            0.5,
+            6.88
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 1.1431216482073068,
+          "difference_95ci": [
+            0.9204978902377303,
+            1.3385221305089767
+          ]
+        }
+      },
+      "original912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 0.575,
+          "difference_95ci": [
+            -12.860828488372093,
+            15.579858299595129
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.05680308360606432,
+          "difference_95ci": [
+            -0.4534429973001695,
+            0.6305370818471183
+          ]
+        }
+      },
+      "original912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 10.825,
+          "difference_95ci": [
+            -2.724277726001864,
+            27.314761904761898
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.4023294999264181,
+          "difference_95ci": [
+            -0.13792666269268242,
+            1.040522538467292
+          ]
+        }
+      },
+      "refreshed911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.5,
+          "difference_95ci": [
+            -6.88,
+            -0.5
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.1390879376325755,
+          "difference_95ci": [
+            -1.374838381408918,
+            -0.8725797295398663
+          ]
+        }
+      },
+      "refreshed911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -1.2,
+          "difference_95ci": [
+            -15.135328185328184,
+            12.125164473684208
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.0012001706287264823,
+          "difference_95ci": [
+            -0.5173943951921094,
+            0.500196722029803
+          ]
+        }
+      },
+      "refreshed911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.004033710574731231,
+          "difference_95ci": [
+            -0.09654643310607917,
+            0.13370991549715017
+          ]
+        }
+      },
+      "refreshed912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -4.25,
+          "difference_95ci": [
+            -18.10592105263158,
+            5.268403547671839
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.23446458745747806,
+          "difference_95ci": [
+            -0.8499188106728383,
+            0.16023828148421254
+          ]
+        }
+      },
+      "refreshed912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.675,
+          "difference_95ci": [
+            -17.354967741935486,
+            11.305608974358973
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.17766150385141372,
+          "difference_95ci": [
+            -0.7623501055758777,
+            0.4185986582721365
+          ]
+        }
+      },
+      "refreshed912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 6.575,
+          "difference_95ci": [
+            -0.6842105263157895,
+            17.171830357142852
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.16786491246894003,
+          "difference_95ci": [
+            -0.14232788219829967,
+            0.5887186069359504
+          ]
+        }
+      },
+      "relation911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -7.2,
+          "difference_95ci": [
+            -15.300058139534885,
+            1.0477106227106214
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.3149182366207242,
+          "difference_95ci": [
+            -1.6644183230444063,
+            -0.9079543169445566
+          ]
+        }
+      },
+      "relation911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -4.9,
+          "difference_95ci": [
+            -14.77878787878788,
+            4.2368421052631575
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.17703046961687505,
+          "difference_95ci": [
+            -0.5334791140670871,
+            0.15772377014426248
+          ]
+        }
+      },
+      "relation911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.7,
+          "difference_95ci": [
+            -12.36695945945946,
+            4.651383720930229
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.17179658841341733,
+          "difference_95ci": [
+            -0.5372511851854885,
+            0.1926651682444692
+          ]
+        }
+      },
+      "relation912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -9.575,
+          "difference_95ci": [
+            -21.36866998577525,
+            -0.34208921694480127
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.49786856756545605,
+          "difference_95ci": [
+            -1.0658242393821669,
+            -0.1046113738480923
+          ]
+        }
+      },
+      "relation912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -9.0,
+          "difference_95ci": [
+            -20.055797101449276,
+            2.6052830940988834
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.4410654839593917,
+          "difference_95ci": [
+            -0.977346532363262,
+            0.06436178032134333
+          ]
+        }
+      },
+      "relation912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 1.25,
+          "difference_95ci": [
+            -6.79078317373461,
+            9.837707641196006
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.09553906763903797,
+          "difference_95ci": [
+            -0.45563614123734614,
+            0.25147381265880503
+          ]
+        }
+      },
+      "relation_no_update911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 0.225,
+          "difference_95ci": [
+            -4.25,
+            6.466666666666667
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.6928650768008083,
+          "difference_95ci": [
+            -0.9003731024433843,
+            -0.41960708257083046
+          ]
+        }
+      },
+      "relation_no_update911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 2.525,
+          "difference_95ci": [
+            -7.353145424836601,
+            13.135328185328182
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.44502269020304086,
+          "difference_95ci": [
+            -0.05021226349715077,
+            0.9222153703239052
+          ]
+        }
+      },
+      "relation_no_update911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 3.725,
+          "difference_95ci": [
+            -0.6842105263157895,
+            9.628571428571428
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.45025657140649855,
+          "difference_95ci": [
+            0.21928155587864698,
+            0.688364961423445
+          ]
+        }
+      },
+      "relation_no_update912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -1.4,
+          "difference_95ci": [
+            -12.325581395348838,
+            8.119360902255634
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.30089702834375204,
+          "difference_95ci": [
+            -0.8488668944641586,
+            0.08182734774480403
+          ]
+        }
+      },
+      "relation_no_update912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -0.825,
+          "difference_95ci": [
+            -12.225624999999999,
+            12.461585365853658
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.2440939447376877,
+          "difference_95ci": [
+            -0.7908114946118735,
+            0.32838207547485754
+          ]
+        }
+      },
+      "relation_no_update912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 9.425,
+          "difference_95ci": [
+            1.1428571428571428,
+            20.47263888888888
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.10143247158266604,
+          "difference_95ci": [
+            -0.23605411305971857,
+            0.5411505828278936
+          ]
+        }
+      },
+      "stored911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -1.8,
+          "difference_95ci": [
+            -4.25,
+            0.0
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.1306873321998865,
+          "difference_95ci": [
+            -1.3025036041418914,
+            -0.9371026288342471
+          ]
+        }
+      },
+      "stored911:zero911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 0.5,
+          "difference_95ci": [
+            -13.450555555555555,
+            12.975134803921566
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.0072004348039627075,
+          "difference_95ci": [
+            -0.5624593915406149,
+            0.5028586568008174
+          ]
+        }
+      },
+      "stored911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 1.7,
+          "difference_95ci": [
+            0.0,
+            4.636363636363637
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.012434316007420421,
+          "difference_95ci": [
+            -0.10134999081226331,
+            0.12412185105324045
+          ]
+        }
+      },
+      "stored912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -4.25,
+          "difference_95ci": [
+            -18.10592105263158,
+            5.268403547671839
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.1608558792155236,
+          "difference_95ci": [
+            -0.7617413335176979,
+            0.2717687469470546
+          ]
+        }
+      },
+      "stored912:zero912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -3.675,
+          "difference_95ci": [
+            -17.354967741935486,
+            11.305608974358973
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.10405279560945928,
+          "difference_95ci": [
+            -0.6562570096599311,
+            0.4816577195746629
+          ]
+        }
+      },
+      "stored912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 6.575,
+          "difference_95ci": [
+            -0.6842105263157895,
+            17.171830357142852
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.24147362071089445,
+          "difference_95ci": [
+            -0.0807228140664363,
+            0.6735779822589824
+          ]
+        }
+      },
+      "zero911:original911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -2.3,
+          "difference_95ci": [
+            -14.871951219512196,
+            11.621778755499683
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -1.1378877670038492,
+          "difference_95ci": [
+            -1.7022419100577932,
+            -0.5005151372368667
+          ]
+        }
+      },
+      "zero911:calibration911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 1.2,
+          "difference_95ci": [
+            -12.12516447368421,
+            15.135328185328182
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.0052338812034577135,
+          "difference_95ci": [
+            -0.5374909367713433,
+            0.6029039308276933
+          ]
+        }
+      },
+      "zero912:original912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -0.575,
+          "difference_95ci": [
+            -15.579858299595141,
+            12.860828488372087
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.05680308360606432,
+          "difference_95ci": [
+            -0.6305370818471183,
+            0.4534429973001689
+          ]
+        }
+      },
+      "zero912:calibration912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": 10.25,
+          "difference_95ci": [
+            1.6497756410256412,
+            20.08347222222222
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": 0.34552641632035375,
+          "difference_95ci": [
+            0.000728391660284649,
+            0.7399812302239342
+          ]
+        }
+      },
+      "relation911:relation_no_update911": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -7.425,
+          "difference_95ci": [
+            -13.516350806451612,
+            -2.5348095002474036
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.6220531598199159,
+          "difference_95ci": [
+            -0.953943730968361,
+            -0.3380539480790211
+          ]
+        }
+      },
+      "relation912:relation_no_update912": {
+        "episodes": 40,
+        "recipe_groups": 23,
+        "bootstrap_unit": "whole_recipe_parameter_group",
+        "native_actions": {
+          "mean_difference": -8.175,
+          "difference_95ci": [
+            -14.147170231729055,
+            -3.368139097744365
+          ]
+        },
+        "completion_fraction": {
+          "mean_difference": 0.0,
+          "difference_95ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "seconds": {
+          "mean_difference": -0.19697153922170402,
+          "difference_95ci": [
+            -0.4274715976022931,
+            -0.011359878301320403
+          ]
+        }
+      }
+    },
+    "protocol": {
+      "episodes": [
+        {
+          "difficulty": "Normal",
+          "seed": 242000,
+          "directory": "normal/seed242000"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242007,
+          "directory": "normal/seed242007"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242014,
+          "directory": "normal/seed242014"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242021,
+          "directory": "normal/seed242021"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242028,
+          "directory": "normal/seed242028"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242035,
+          "directory": "normal/seed242035"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242042,
+          "directory": "normal/seed242042"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242049,
+          "directory": "normal/seed242049"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242056,
+          "directory": "normal/seed242056"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242063,
+          "directory": "normal/seed242063"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242070,
+          "directory": "normal/seed242070"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242077,
+          "directory": "normal/seed242077"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242084,
+          "directory": "normal/seed242084"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242091,
+          "directory": "normal/seed242091"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242098,
+          "directory": "normal/seed242098"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242105,
+          "directory": "normal/seed242105"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242112,
+          "directory": "normal/seed242112"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242119,
+          "directory": "normal/seed242119"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242126,
+          "directory": "normal/seed242126"
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 242133,
+          "directory": "normal/seed242133"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242000,
+          "directory": "challenge/seed242000"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242007,
+          "directory": "challenge/seed242007"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242014,
+          "directory": "challenge/seed242014"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242021,
+          "directory": "challenge/seed242021"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242028,
+          "directory": "challenge/seed242028"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242035,
+          "directory": "challenge/seed242035"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242042,
+          "directory": "challenge/seed242042"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242049,
+          "directory": "challenge/seed242049"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242056,
+          "directory": "challenge/seed242056"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242063,
+          "directory": "challenge/seed242063"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242070,
+          "directory": "challenge/seed242070"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242077,
+          "directory": "challenge/seed242077"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242084,
+          "directory": "challenge/seed242084"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242091,
+          "directory": "challenge/seed242091"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242098,
+          "directory": "challenge/seed242098"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242105,
+          "directory": "challenge/seed242105"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242112,
+          "directory": "challenge/seed242112"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242119,
+          "directory": "challenge/seed242119"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242126,
+          "directory": "challenge/seed242126"
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 242133,
+          "directory": "challenge/seed242133"
+        }
+      ],
+      "conditions": [
+        "original",
+        "zero",
+        "calibration",
+        "stored",
+        "refreshed",
+        "relation",
+        "relation_no_update"
+      ],
+      "parents": [
+        911,
+        912
+      ],
+      "selection": "new seeds fixed before response-update results; all four fitted methods included",
+      "compute": "actual inference time includes response re-encoding and four inner updates; not equal compute",
+      "training": "original core, action head and cost activity policy remain frozen",
+      "state": "reset at each apparatus; this experiment does not evaluate long-term consolidation",
+      "max_native_actions": 1000,
+      "bootstrap_unit": "named recipe parameter group"
+    }
+  }
+}

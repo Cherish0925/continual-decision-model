@@ -1,0 +1,194 @@
+{
+  "comparison": "same fitted weights, response fitting present versus removed",
+  "scope": "existing development histories; no new model selection",
+  "uncertainty": "10000 bootstrap resamples of whole named recipe groups",
+  "distance": "Euclidean distance between L2-normalized mixture proportions",
+  "repetitions": {
+    "911": {
+      "by_history": {
+        "no_previous_return": {
+          "predictions": 465,
+          "recipe_groups": 14,
+          "with_update_nll": 1.3616962762289149,
+          "without_update_nll": 1.3616962496952345,
+          "mean_difference": 2.6533680577431957e-08,
+          "interval95": [
+            1.5137334537573883e-08,
+            4.310889437629728e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 465
+        },
+        "previously_tested_mixture": {
+          "predictions": 0
+        },
+        "different_mixture": {
+          "predictions": 2167,
+          "recipe_groups": 14,
+          "with_update_nll": 0.5872672727072794,
+          "without_update_nll": 0.6115222657860068,
+          "mean_difference": -0.024254993078727353,
+          "interval95": [
+            -0.03874342526746105,
+            -0.0005766651510498344
+          ],
+          "improved": 675,
+          "worsened": 99,
+          "unchanged_within_1e_6": 1393
+        }
+      },
+      "by_nearest_distance": {
+        "[0,0.1)": {
+          "predictions": 58,
+          "recipe_groups": 2,
+          "with_update_nll": 0.0,
+          "without_update_nll": 0.24086414791386704,
+          "mean_difference": -0.24086414791386704,
+          "interval95": [
+            -0.27917951345443726,
+            -0.2286728952418674
+          ],
+          "improved": 58,
+          "worsened": 0,
+          "unchanged_within_1e_6": 0
+        },
+        "[0.1,0.25)": {
+          "predictions": 719,
+          "recipe_groups": 8,
+          "with_update_nll": 0.4249792726547231,
+          "without_update_nll": 0.478651675461728,
+          "mean_difference": -0.05367240280700493,
+          "interval95": [
+            -0.08936054226897035,
+            -0.016471947463665513
+          ],
+          "improved": 617,
+          "worsened": 99,
+          "unchanged_within_1e_6": 3
+        },
+        "[0.25,0.5)": {
+          "predictions": 310,
+          "recipe_groups": 9,
+          "with_update_nll": 0.36761405439146105,
+          "without_update_nll": 0.3676140519880479,
+          "mean_difference": 2.40341309578188e-09,
+          "interval95": [
+            -3.034418279474432e-09,
+            1.0375402136278179e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 310
+        },
+        "[0.5,2)": {
+          "predictions": 1080,
+          "recipe_groups": 14,
+          "with_update_nll": 0.7898960426449776,
+          "without_update_nll": 0.7898960357462919,
+          "mean_difference": 6.8986857378924335e-09,
+          "interval95": [
+            -3.0626802331837605e-10,
+            1.4175790449021997e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 1080
+        }
+      }
+    },
+    "912": {
+      "by_history": {
+        "no_previous_return": {
+          "predictions": 498,
+          "recipe_groups": 14,
+          "with_update_nll": 1.3641485138590557,
+          "without_update_nll": 1.3641484907592636,
+          "mean_difference": 2.3099792051506808e-08,
+          "interval95": [
+            5.936290651392301e-09,
+            3.651714860703651e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 498
+        },
+        "previously_tested_mixture": {
+          "predictions": 0
+        },
+        "different_mixture": {
+          "predictions": 2098,
+          "recipe_groups": 14,
+          "with_update_nll": 0.6167965971352488,
+          "without_update_nll": 0.6275993593257307,
+          "mean_difference": -0.010802762190481955,
+          "interval95": [
+            -0.02518081897024377,
+            -0.0002247186725921302
+          ],
+          "improved": 538,
+          "worsened": 116,
+          "unchanged_within_1e_6": 1444
+        }
+      },
+      "by_nearest_distance": {
+        "[0,0.1)": {
+          "predictions": 18,
+          "recipe_groups": 2,
+          "with_update_nll": 0.0,
+          "without_update_nll": 0.29188095529874164,
+          "mean_difference": -0.29188095529874164,
+          "interval95": [
+            -0.3827526122331619,
+            -0.26591762474605013
+          ],
+          "improved": 18,
+          "worsened": 0,
+          "unchanged_within_1e_6": 0
+        },
+        "[0.1,0.25)": {
+          "predictions": 636,
+          "recipe_groups": 9,
+          "with_update_nll": 0.48005543056430305,
+          "without_update_nll": 0.5074301794077616,
+          "mean_difference": -0.027374748843458464,
+          "interval95": [
+            -0.08854542183758411,
+            0.010117594716025562
+          ],
+          "improved": 520,
+          "worsened": 116,
+          "unchanged_within_1e_6": 0
+        },
+        "[0.25,0.5)": {
+          "predictions": 307,
+          "recipe_groups": 9,
+          "with_update_nll": 0.36843969689906614,
+          "without_update_nll": 0.36843969651076225,
+          "mean_difference": 3.8830387475824513e-10,
+          "interval95": [
+            -1.672077493699077e-08,
+            2.1343248756537083e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 307
+        },
+        "[0.5,2)": {
+          "predictions": 1137,
+          "recipe_groups": 14,
+          "with_update_nll": 0.7701081970121741,
+          "without_update_nll": 0.7701081950201103,
+          "mean_difference": 1.9920637655803375e-09,
+          "interval95": [
+            -6.816728624067953e-09,
+            1.0976718787929075e-08
+          ],
+          "improved": 0,
+          "worsened": 0,
+          "unchanged_within_1e_6": 1137
+        }
+      }
+    }
+  }
+}
