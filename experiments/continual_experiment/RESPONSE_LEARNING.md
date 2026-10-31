@@ -126,9 +126,9 @@ The [reference model archive](https://github.com/Cherish0925/continual-decision-
 contains both shared-core parents and all sixteen response rules. It contains
 no unfinished joint-training endpoint.
 
-## Joint training in progress
+## Completed joint training
 
-The response update is now connected to full physical/chemical core training.
+The response update is connected to full physical/chemical core training.
 Two continuations each compare relation fitting with the identical fitted
 calibration but no within-task response fit. Both train the core, action
 interfaces and prediction models on the same external-request budget: 200
@@ -141,7 +141,44 @@ computation or introduce a new long-term memory mechanism.
 The automatic native comparison includes both initial models, all four final
 models, same-weight disabled-response controls and chemical-state resets. It
 reuses the existing frozen A–A–B–B–A–A stream benchmark and reports first-return
-performance. Joint training and these final evaluations are still running.
+performance. All four trainings reached update 200; all ten native conditions
+finished without execution errors on 31 October 2026. Each condition includes
+120 physical and 120 chemical tasks, giving 2,400 executions on the same fixed
+instances. Each training took 50–56 minutes with two jobs on each H100.
+
+| Condition | Physics completed, 911 / 912 | Physics operations, 911 / 912 | Chemistry operations, 911 / 912 |
+|---|---:|---:|---:|
+| Initial fitted model | 119 / 117 | 111.27 / 108.99 | 92.43 / 90.48 |
+| Joint relation model | 117 / 117 | 107.33 / 105.13 | 75.22 / 78.99 |
+| Joint calibration reference | 116 / 118 | 106.12 / 108.58 | 81.18 / 80.41 |
+| Same relation weights, response fitting disabled | 117 / 117 | 107.33 / 105.13 | 82.18 / 87.54 |
+| Same relation weights, chemical state reset | 117 / 117 | 107.33 / 105.13 | 75.73 / 80.23 |
+
+Every chemical condition completes 120/120 tasks. Response fitting saves 6.97
+and 8.55 operations against its same-weight disabled control: reductions of
+8.5% and 9.8%, with whole-stream 95% intervals [−13.62, −1.49] and
+[−15.53, −3.11]. The useful update therefore survives full shared-core training.
+
+The independently continued calibration references remain strong. Differences
+against them are −5.96 [−13.02, +0.12] and −1.42 [−11.93, +9.69] chemical
+operations. Neither interval excludes zero. Physical task completion changes
+from 119 to 117 and from 117 to 117 relative to the initial models; these
+results do not establish an overall improvement across both domains.
+
+Carrying chemical state saves 0.52 and 1.24 operations on average, with intervals
+that include zero. On the first task after the original relationship returns,
+carrying state changes cost by +1.80 [−9.50, +13.70] and −3.20 [−15.75, +10.90]
+operations relative to resetting it. Long-term recovery is still unestablished.
+The response fit remains four fixed iterations. Recorded LEARN and CONSOLIDATE
+choices update the separate progress/cost model; they do not demonstrate
+autonomous scheduling or consolidation of the new response rule.
+
+[All joint comparisons](results/response_joint.json),
+[2,400 individual outcomes](results/response_joint_instances.csv) and
+[deployed activities](results/response_joint_activity.json) retain every final
+endpoint and control. The next substantive question is whether useful
+experimental knowledge can survive task changes and improve returning tasks,
+while outperforming independently trained references at comparable resources.
 
 A short initial attempt was stopped to correct per-stream truncation when
 histories in a batch have unequal lengths. Its partial logs are retained but

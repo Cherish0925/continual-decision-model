@@ -15,9 +15,13 @@ prediction and reduces native operations by **6.3% and 6.8%** against removing
 it from the same weights; all 40 tasks complete in each condition. The prediction
 gain includes previously untested mixtures within the current task. It has no
 established advantage over independently trained probability calibration.
-Sixteen update trainings and all 1,040 task executions are public. Full shared-core
-continuation is running; autonomous compute and long-term consolidation remain
-open objectives.
+Sixteen update trainings and all 1,040 task executions are public. Four completed
+shared-core continuations add 2,400 native executions. Their response updates
+reduce chemical operations by **8.5% and 9.8%** against same-weight removal,
+with all 120 tasks completed in each condition. They still have no established
+advantage over the separately trained calibration reference; autonomous compute
+and long-term recovery remain open objectives. [Full joint comparisons](experiments/continual_experiment/RESPONSE_LEARNING.md#completed-joint-training)
+include physical outcomes, task returns and all controls.
 
 The earlier [physical-learning study](experiments/physical_belief/README.md)
 connects accumulated knowledge to the predictions used for measurement and

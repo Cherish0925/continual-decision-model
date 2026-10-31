@@ -7,7 +7,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 
 | Study | Contents |
 | --- | --- |
-| [Response updates and later experiments](../experiments/continual_experiment/RESPONSE_LEARNING.md) | Completed update comparison; relation fitting improves same-weight predictions and native operations; full joint continuation running |
+| [Response updates and later experiments](../experiments/continual_experiment/RESPONSE_LEARNING.md) | Update and full joint comparisons complete; useful response fitting survives core training; strong-reference and long-term gains remain unresolved |
 | [Active physical and chemical learning](../experiments/continual_experiment/ACTIVE_TRAINING.md) | Completed joint active-feedback training; response updates did not establish a task advantage |
 | [Execution-aware physical learning](../experiments/continual_physics/EXECUTION.md) | Completed native-cost training and comparisons with recurrent and Bayesian policies |
 | [Shared-core training](../experiments/continual_experiment/SHARED_TRAINING.md) | Physical actions, recorded chemical feedback and cross-domain state continuation |

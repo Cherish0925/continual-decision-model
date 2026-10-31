@@ -1,0 +1,176 @@
+{
+  "scope": "Actual deployed choices on each model's own trajectory; prediction losses are not same-prefix causal comparisons",
+  "conditions": {
+    "initial_seed911": {
+      "instances": 120,
+      "returned_experiments": 771,
+      "activities": {
+        "act": 891,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1500,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7000435733764243,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "relation_seed911": {
+      "instances": 120,
+      "returned_experiments": 649,
+      "activities": {
+        "act": 769,
+        "refine": 64,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 1224,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.8368435208161917,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "calibration_seed911": {
+      "instances": 120,
+      "returned_experiments": 700,
+      "activities": {
+        "act": 820,
+        "refine": 71,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 832,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.808211783851896,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "response_disabled_seed911": {
+      "instances": 120,
+      "returned_experiments": 707,
+      "activities": {
+        "act": 827,
+        "refine": 66,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 1336,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7855750383042547,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "reset_chemical_seed911": {
+      "instances": 120,
+      "returned_experiments": 650,
+      "activities": {
+        "act": 770,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 1084,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.8349683512174166,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "initial_seed912": {
+      "instances": 120,
+      "returned_experiments": 758,
+      "activities": {
+        "act": 878,
+        "refine": 200,
+        "retrieve": 0,
+        "learn": 1516,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7036595140094808,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "relation_seed912": {
+      "instances": 120,
+      "returned_experiments": 677,
+      "activities": {
+        "act": 797,
+        "refine": 156,
+        "retrieve": 0,
+        "learn": 1354,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.814507661136954,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "calibration_seed912": {
+      "instances": 120,
+      "returned_experiments": 692,
+      "activities": {
+        "act": 812,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 0,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.8188218835719748,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "response_disabled_seed912": {
+      "instances": 120,
+      "returned_experiments": 748,
+      "activities": {
+        "act": 868,
+        "refine": 158,
+        "retrieve": 0,
+        "learn": 1496,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.7534312564421465,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    },
+    "reset_chemical_seed912": {
+      "instances": 120,
+      "returned_experiments": 688,
+      "activities": {
+        "act": 808,
+        "refine": 0,
+        "retrieve": 0,
+        "learn": 1376,
+        "consolidate": 0,
+        "wait": 0
+      },
+      "mean_response_update_norm": 0.0,
+      "selected_return_nll": 0.8079000758223756,
+      "confident_clean_predictions": 0,
+      "confident_clean_successes": 0,
+      "mean_confident_clean_prediction": null
+    }
+  },
+  "response_update_schedule": "Four fixed response-fit iterations at each prediction readout; LEARN and CONSOLIDATE counts refer to the separate progress/cost update, not response fitting."
+}

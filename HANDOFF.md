@@ -1,6 +1,6 @@
 # Research progress
 
-## Response learning: completed comparison and continuing joint training
+## Response learning: completed update and joint-training comparisons
 
 The [response-learning study](experiments/continual_experiment/RESPONSE_LEARNING.md)
 completes 16 update trainings and 1,040 native executions. Re-fitting old hidden
@@ -14,14 +14,23 @@ The predictive gains include 2,167 and 2,098 queries whose mixtures differ
 from every earlier support experiment, with negative recipe-group intervals.
 There is still no established advantage over independently trained calibration.
 
-Four full physical/chemical joint trainings are now running on both H100s,
-with ten native conditions automatically queued. They compare the relation
-update with the same initial calibration without response fitting. The run
-root is `runs/continual_physics/response_replay_20261031`; `joint/` contains
-training and `joint_native/` the continuing native evaluation. Both existing
-parents, all controls and fixed final endpoints remain part of the comparison.
-The study document records the completed cases, new method, relation to prior
-work and the distinction from autonomous compute and long-term consolidation.
+All four full physical/chemical joint trainings and ten native conditions are
+complete: 2,400 executions on the fixed interleaved task cohort. The two joint
+relation models finish all 120 chemical tasks at 75.22 and 78.99 operations.
+Disabling response fitting in the same weights raises cost to 82.18 and 87.54;
+both paired intervals exclude zero. Independently trained calibration uses
+81.18 and 80.41 operations, and superiority over it remains unestablished.
+Physical completion is 117/120 in both repetitions, versus initial 119/120
+and 117/120. Returning-task gains from carrying chemical state remain unclear.
+
+The run root is `runs/continual_physics/response_replay_20261031`; `joint/`
+contains training and `joint_native/` the finished native evaluation. Training
+finished at 18:20 and evaluation at 18:26 on 31 October (local time). No further
+training is queued by these launchers. Both existing parents, all controls and
+fixed final endpoints remain part of the comparison. The next research target
+is useful knowledge retained across task changes and its advantage over strong
+separately trained references. Fixed response fitting is established here;
+autonomous response-compute allocation and consolidation remain open.
 
 ## Completed execution-aware study and shared-core training
 
