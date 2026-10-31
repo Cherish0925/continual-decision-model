@@ -95,6 +95,8 @@ selecting outcomes. Budget is 400 physical or 1,000 chemical native operations.
 | Learned experimental memory | Response predictors and applicability reader jointly trained |
 | Same weights, archive disabled | Removes historical predictions from the trained memory model |
 | Same weights, fixed evidence reader | Replaces the learned reader by its initialized evidence-weighting rule, including the same initial prior |
+| Direct recipe retrieval | Tries recent observed-successful recipes still legal in this task, then uses the independently trained no-memory model |
+| Same weights, neural state reset | Clears chemistry h/z at task boundaries, retaining its experimental archives |
 | Bayesian memory / reset | Known reaction-family reference, with or without six archived task posteriors |
 
 The fixed reader starts with current-task log prior 1 and total archived log
@@ -139,6 +141,11 @@ python -m experiments.continual_experiment.analyze_memory_predictions \
   --native-root runs/experimental_memory/native \
   --manifest runs/experimental_memory/cohort/manifest.json \
   --output runs/experimental_memory/analysis
+
+python -m experiments.continual_experiment.memory_controls \
+  --training-root runs/experimental_memory/train \
+  --manifest runs/experimental_memory/cohort/manifest.json \
+  --output runs/experimental_memory/native --workers 8
 ```
 
 ## Relation to prior work

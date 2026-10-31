@@ -92,6 +92,12 @@ def run(options, *, model=None, state=None, return_state=False):
                             elapsed_actions=env.steps,max_actions=args.max_actions,mode=args.planning_mode,
                             config=ForesightConfig(topk=getattr(args,'planning_topk',6)))
                     else:selected=int(outcome_action_scores(out,obs)[0].argmax())
+                    retrieved = None
+                    if getattr(args, 'direct_retrieval', False) and public['rust_level'] > 0:
+                        from .episodic_retrieval import previous_success
+                        retrieved = previous_success(state, obs['candidates'], obs['action_mask'])
+                        if retrieved is not None:
+                            selected = retrieved
                     if model:
                         action=torch.tensor([selected]);state=model.begin_action(state,out['features'],action)
                         before_h=state['h'].clone();before_z=state['z'].clone()
@@ -104,6 +110,8 @@ def run(options, *, model=None, state=None, return_state=False):
                         else:result=executor.experiment(choices[selected])
                     finally:execution_seconds+=perf_counter()-start
                     if model:
+                        if getattr(args, 'direct_retrieval', False):
+                            result['directly_retrieved_recipe'] = retrieved is not None
                         if planning is not None:result['planning']=planning
                         result['model_outcome_logits']=out['outcomes'][0,selected].tolist()
                         result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])

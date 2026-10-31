@@ -14,8 +14,10 @@ from experiments.physical_belief.summarize_native import paired
 
 def summarize(root, plan):
     manifest = json.loads(Path(plan['manifest']).read_text())
-    expected = {(s['name'], i, t['seed']) for s in manifest['streams']
-                for i, t in enumerate(s['chemistry'])}
+    expected = {
+        'chemistry': {(s['name'], i, t['seed']) for s in manifest['streams']
+                      for i, t in enumerate(s['chemistry'])},
+        'physics': {(s['name'], i, seed) for s in manifest['streams'] for i, seed in enumerate(s['seeds'])}}
     records, conditions, flat = {}, {}, []
     for job in plan['jobs']:
         name = job['name']
@@ -25,8 +27,8 @@ def summarize(root, plan):
             rows = [r for stream in streams for r in stream[domain]]
             if not rows:
                 continue
-            if domain == 'chemistry' and {(r['stream'], r['episode_index'], r['seed']) for r in rows} != expected:
-                raise ValueError(f'Incomplete chemistry cohort: {name}')
+            if len(rows) != len(expected[domain]) or {(r['stream'], r['episode_index'], r['seed']) for r in rows} != expected[domain]:
+                raise ValueError(f'Incomplete {domain} cohort: {name}')
             if any(r['error'] for r in rows):
                 raise ValueError(f'Execution error: {name}/{domain}')
             records[name][domain] = rows
@@ -48,7 +50,10 @@ def summarize(root, plan):
     comparisons = {}
     for seed in (911, 912):
         left = f'memory{seed}'
-        for right in (f'no_memory{seed}', f'disabled{seed}', f'evidence{seed}', f'initial{seed}'):
+        for right in (f'no_memory{seed}', f'disabled{seed}', f'evidence{seed}', f'initial{seed}',
+                      f'direct{seed}', f'reset_neural{seed}'):
+            if right not in records:
+                continue
             comparisons[left + ':' + right] = {}
             for domain in records[left].keys() & records[right].keys():
                 a, b = records[left][domain], records[right][domain]

@@ -44,6 +44,9 @@ def run_stream(job):
             chemical_state.update(h=physical_session.state['h'], z=physical_session.state['z'])
         elif not reset_chemical:
             chemical_state.update(h=prior_h, z=prior_z)
+        if options.get('reset_chemical_neural_state', False):
+            fresh = chemical.initial(1, 'cpu')
+            chemical_state.update(h=fresh['h'], z=fresh['z'])
         start = {k: chemical_state[k].clone() for k in ('h', 'z')}
         summary, chemical_state = run_chemistry({
             'checkpoint': options['checkpoint'], 'seed': task['seed'],
@@ -52,6 +55,7 @@ def run_stream(job):
             'max_actions': 1000, 'max_experiments': 209, 'threads': options['threads'],
             'initial_rng_root': options['initial_rng_root'], 'primitive_candidates': True,
             'discard_response_updates': options.get('discard_response_updates', False),
+            'direct_retrieval': options.get('direct_retrieval', False),
         }, model=chemical, state=chemical_state, return_state=True)
         if mode == 'continuing':
             physical_session.state = {**physical_session.state,
@@ -100,6 +104,8 @@ def main():
     p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
     p.add_argument('--chemistry-only', action='store_true',
                    help='For same-weight memory controls with separated domain states')
+    p.add_argument('--reset-chemical-neural-state', action='store_true')
+    p.add_argument('--direct-retrieval', action='store_true')
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
