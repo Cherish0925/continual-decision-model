@@ -83,7 +83,9 @@ class ExperimentalMemory(nn.Module):
             new = self.new_log_prior.expand(len(evidence), 1)
         elif mode == 'evidence':
             score = relative
-            new = torch.zeros_like(evidence[:, :1])
+            # Match the initialized learned reader exactly. This comparison
+            # removes learned scoring, without changing the initial prior.
+            new = torch.ones_like(evidence[:, :1])
         else:
             raise ValueError(mode)
         # A fixed total mass for the old-context branch avoids changing its

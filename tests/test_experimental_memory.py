@@ -1,4 +1,5 @@
 import torch
+from dataclasses import replace
 
 from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
 
@@ -49,3 +50,14 @@ def test_future_prediction_trains_memory_read_and_empty_bank_is_identity():
     loss.backward()
     assert model.compatibility[-1].weight.grad.abs().sum() > 0
     assert torch.isfinite(model.log_evidence_scale.grad)
+
+
+def test_fixed_evidence_reader_matches_initial_learned_reader():
+    model, state = fixture()
+    state = model.archive(state, torch.tensor([True, True]))
+    state['archive_evidence'] = torch.tensor([[-2., -1., -3.], [-1., -4., -5.]])
+    state['archive_returns'] += 2
+    components = state['archive_components'][:, 0]
+    expected = model.weights(state, components)
+    model.config = replace(model.config, mode='evidence')
+    torch.testing.assert_close(model.weights(state, components), expected)
