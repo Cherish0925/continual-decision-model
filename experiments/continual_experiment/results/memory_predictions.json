@@ -1,0 +1,459 @@
+{
+  "method": "same chosen experiments; cached predictions precede the scored return",
+  "uncertainty": "whole-stream paired bootstrap; current policies determine query distribution",
+  "fixed_reference": "initialized reader: current log prior 1, old total log prior 0; preceding log likelihood weights",
+  "results": {
+    "911": {
+      "all": {
+        "memory_minus_fresh": {
+          "predictions": 1322,
+          "streams": 20,
+          "mean": -0.026128708165133324,
+          "interval95": [
+            -0.040897653962493626,
+            -0.010866561346266146
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 1322,
+          "streams": 20,
+          "mean": 0.0006388719541666912,
+          "interval95": [
+            -0.00023126164009319128,
+            0.0016227986664864896
+          ]
+        },
+        "full_nll": 0.7226512552944889,
+        "fresh_nll": 0.7487799634596223,
+        "fixed_evidence_nll": 0.7220123833403223,
+        "old_weight": 0.1422857776935937,
+        "relevant_old_weight": 0.027660145163296547,
+        "improved": 297,
+        "worsened": 370,
+        "unchanged": 655
+      },
+      "new": {
+        "memory_minus_fresh": {
+          "predictions": 822,
+          "streams": 20,
+          "mean": 0.04335888353722519,
+          "interval95": [
+            0.03823016863304297,
+            0.04926883936975163
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 822,
+          "streams": 20,
+          "mean": 0.006299202873412617,
+          "interval95": [
+            0.00563960911579663,
+            0.007088073266250488
+          ]
+        },
+        "full_nll": 0.6968558698602546,
+        "fresh_nll": 0.6534969863230294,
+        "fixed_evidence_nll": 0.690556666986842,
+        "old_weight": 0.09157514235239955,
+        "relevant_old_weight": 0.0,
+        "improved": 101,
+        "worsened": 183,
+        "unchanged": 538
+      },
+      "returned": {
+        "memory_minus_fresh": {
+          "predictions": 500,
+          "streams": 20,
+          "mean": -0.14036630892381072,
+          "interval95": [
+            -0.18601266932876423,
+            -0.09662398895442809
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 500,
+          "streams": 20,
+          "mean": -0.008666712077073611,
+          "interval95": [
+            -0.011552587844190877,
+            -0.005829008086285231
+          ]
+        },
+        "full_nll": 0.7650588689483702,
+        "fresh_nll": 0.9054251778721809,
+        "fixed_evidence_nll": 0.7737255810254438,
+        "old_weight": 0.2256540621945169,
+        "relevant_old_weight": 0.07313342381175607,
+        "improved": 196,
+        "worsened": 187,
+        "unchanged": 117
+      },
+      "supported_return": {
+        "memory_minus_fresh": {
+          "predictions": 242,
+          "streams": 20,
+          "mean": -0.35183061794031506,
+          "interval95": [
+            -0.4545158509279693,
+            -0.25534788640391215
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 242,
+          "streams": 20,
+          "mean": -0.027945406992129898,
+          "interval95": [
+            -0.034680863034679536,
+            -0.02141307825863827
+          ]
+        },
+        "full_nll": 0.8671128860759464,
+        "fresh_nll": 1.2189435040162615,
+        "fixed_evidence_nll": 0.8950582930680764,
+        "old_weight": 0.3218748471791055,
+        "relevant_old_weight": 0.15110211531354562,
+        "improved": 157,
+        "worsened": 85,
+        "unchanged": 0
+      },
+      "untested_query": {
+        "memory_minus_fresh": {
+          "predictions": 639,
+          "streams": 20,
+          "mean": -0.007066054957596722,
+          "interval95": [
+            -0.018432388718575218,
+            0.0035874480589684907
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 639,
+          "streams": 20,
+          "mean": -5.7454428087700626e-05,
+          "interval95": [
+            -0.0012092419451739862,
+            0.0011076361623504768
+          ]
+        },
+        "full_nll": 0.5990448559901105,
+        "fresh_nll": 0.6061109109477072,
+        "fixed_evidence_nll": 0.5991023104181981,
+        "old_weight": 0.031413691635598914,
+        "relevant_old_weight": 0.0062887533910350995,
+        "improved": 60,
+        "worsened": 40,
+        "unchanged": 539
+      },
+      "return_untested_query": {
+        "memory_minus_fresh": {
+          "predictions": 19,
+          "streams": 14,
+          "mean": -0.2782702890077704,
+          "interval95": [
+            -0.7124529646975654,
+            0.0061509789355719486
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 19,
+          "streams": 14,
+          "mean": -0.013043088757238756,
+          "interval95": [
+            -0.044343688235298793,
+            0.008536872200633316
+          ]
+        },
+        "full_nll": 0.5914420417853092,
+        "fresh_nll": 0.8697123307930795,
+        "fixed_evidence_nll": 0.604485130542548,
+        "old_weight": 0.32588292508827227,
+        "relevant_old_weight": 0.21150070615112782,
+        "improved": 11,
+        "worsened": 8,
+        "unchanged": 0
+      },
+      "first_observation": {
+        "memory_minus_fresh": {
+          "predictions": 240,
+          "streams": 20,
+          "mean": 0.015937621891498565,
+          "interval95": [
+            -0.005676954177518686,
+            0.03658893381555875
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 240,
+          "streams": 20,
+          "mean": 0.0028389067901211868,
+          "interval95": [
+            0.0010030545009076638,
+            0.004695626057570012
+          ]
+        },
+        "full_nll": 1.189429185539484,
+        "fresh_nll": 1.1734915636479855,
+        "fixed_evidence_nll": 1.186590278749363,
+        "old_weight": 0.2758578109399726,
+        "relevant_old_weight": 0.021164043309787908,
+        "improved": 106,
+        "worsened": 114,
+        "unchanged": 20
+      },
+      "after_observations": {
+        "memory_minus_fresh": {
+          "predictions": 1082,
+          "streams": 20,
+          "mean": -0.03545950226272265,
+          "interval95": [
+            -0.05348345136041622,
+            -0.01667035794835288
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 1082,
+          "streams": 20,
+          "mean": 0.00015087901458343884,
+          "interval95": [
+            -0.0010584597090408715,
+            0.001540328145123692
+          ]
+        },
+        "full_nll": 0.6191145609702756,
+        "fresh_nll": 0.6545740632329983,
+        "fixed_evidence_nll": 0.6189636819556922,
+        "old_weight": 0.11265796994948009,
+        "relevant_old_weight": 0.029101055001413068,
+        "improved": 191,
+        "worsened": 256,
+        "unchanged": 635
+      }
+    },
+    "912": {
+      "all": {
+        "memory_minus_fresh": {
+          "predictions": 1378,
+          "streams": 20,
+          "mean": -0.02031534052141692,
+          "interval95": [
+            -0.031119282299492675,
+            -0.009188359902329385
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 1378,
+          "streams": 20,
+          "mean": 0.0007033010601678704,
+          "interval95": [
+            -3.638481780070168e-05,
+            0.0015702510984225723
+          ]
+        },
+        "full_nll": 0.7100368089519755,
+        "fresh_nll": 0.7303521494733924,
+        "fixed_evidence_nll": 0.7093335078918076,
+        "old_weight": 0.12932793193711856,
+        "relevant_old_weight": 0.025407435133558507,
+        "improved": 269,
+        "worsened": 368,
+        "unchanged": 741
+      },
+      "new": {
+        "memory_minus_fresh": {
+          "predictions": 839,
+          "streams": 20,
+          "mean": 0.04299919159818747,
+          "interval95": [
+            0.03825338137414969,
+            0.04798462498095764
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 839,
+          "streams": 20,
+          "mean": 0.0060008663940428015,
+          "interval95": [
+            0.005344966812924545,
+            0.006740584918694405
+          ]
+        },
+        "full_nll": 0.6940307741867061,
+        "fresh_nll": 0.6510315825885186,
+        "fixed_evidence_nll": 0.6880299077926633,
+        "old_weight": 0.0810957053916911,
+        "relevant_old_weight": 0.0,
+        "improved": 63,
+        "worsened": 173,
+        "unchanged": 603
+      },
+      "returned": {
+        "memory_minus_fresh": {
+          "predictions": 539,
+          "streams": 20,
+          "mean": -0.11886987196547645,
+          "interval95": [
+            -0.1486018945478323,
+            -0.08937801333450954
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 539,
+          "streams": 20,
+          "mean": -0.007542816407589213,
+          "interval95": [
+            -0.009516773960044588,
+            -0.005473949732327389
+          ]
+        },
+        "full_nll": 0.7349515829186934,
+        "fresh_nll": 0.8538214548841699,
+        "fixed_evidence_nll": 0.7424943993262827,
+        "old_weight": 0.20440555359131826,
+        "relevant_old_weight": 0.0649562998405262,
+        "improved": 206,
+        "worsened": 195,
+        "unchanged": 138
+      },
+      "supported_return": {
+        "memory_minus_fresh": {
+          "predictions": 260,
+          "streams": 20,
+          "mean": -0.3035075824134625,
+          "interval95": [
+            -0.39154468254429,
+            -0.22815687765355477
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 260,
+          "streams": 20,
+          "mean": -0.024787975113316756,
+          "interval95": [
+            -0.030756902444647027,
+            -0.019442169287740764
+          ]
+        },
+        "full_nll": 0.8363491759563868,
+        "fresh_nll": 1.1398567583698493,
+        "fixed_evidence_nll": 0.8611371510697036,
+        "old_weight": 0.2897413473171431,
+        "relevant_old_weight": 0.1346594062078601,
+        "improved": 166,
+        "worsened": 94,
+        "unchanged": 0
+      },
+      "untested_query": {
+        "memory_minus_fresh": {
+          "predictions": 663,
+          "streams": 20,
+          "mean": -0.002308141457009639,
+          "interval95": [
+            -0.015114792758220915,
+            0.010565261527585091
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 663,
+          "streams": 20,
+          "mean": 0.0008202970544296237,
+          "interval95": [
+            -0.000261870809242622,
+            0.002115136458686387
+          ]
+        },
+        "full_nll": 0.6045597869436485,
+        "fresh_nll": 0.6068679284006582,
+        "fixed_evidence_nll": 0.6037394898892189,
+        "old_weight": 0.024190053387063117,
+        "relevant_old_weight": 0.008112877804356126,
+        "improved": 35,
+        "worsened": 52,
+        "unchanged": 576
+      },
+      "return_untested_query": {
+        "memory_minus_fresh": {
+          "predictions": 39,
+          "streams": 14,
+          "mean": -0.2012443244457245,
+          "interval95": [
+            -0.47317715805799415,
+            -0.020469295601974174
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 39,
+          "streams": 14,
+          "mean": -0.010402409492770801,
+          "interval95": [
+            -0.02756959383399658,
+            0.0018582051812528967
+          ]
+        },
+        "full_nll": 0.5870980200095054,
+        "fresh_nll": 0.7883423444552299,
+        "fixed_evidence_nll": 0.5975004295022762,
+        "old_weight": 0.19758320835912557,
+        "relevant_old_weight": 0.13791892267405415,
+        "improved": 22,
+        "worsened": 17,
+        "unchanged": 0
+      },
+      "first_observation": {
+        "memory_minus_fresh": {
+          "predictions": 240,
+          "streams": 20,
+          "mean": 0.0069852268944183985,
+          "interval95": [
+            -0.028139908580730358,
+            0.037990937254702054
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 240,
+          "streams": 20,
+          "mean": 0.0015064544311161104,
+          "interval95": [
+            -0.0014884482405537619,
+            0.004215697666906887
+          ]
+        },
+        "full_nll": 1.1640238216767709,
+        "fresh_nll": 1.1570385947823525,
+        "fixed_evidence_nll": 1.162517367245655,
+        "old_weight": 0.27515510849965114,
+        "relevant_old_weight": 0.021217349963262678,
+        "improved": 110,
+        "worsened": 110,
+        "unchanged": 20
+      },
+      "after_observations": {
+        "memory_minus_fresh": {
+          "predictions": 1138,
+          "streams": 20,
+          "mean": -0.026072929431610662,
+          "interval95": [
+            -0.04044936027552989,
+            -0.010941530841299106
+          ]
+        },
+        "memory_minus_fixed": {
+          "predictions": 1138,
+          "streams": 20,
+          "mean": 0.000533918978421317,
+          "interval95": [
+            -0.0006523174075585895,
+            0.0019514021945584588
+          ]
+        },
+        "full_nll": 0.6142926234915617,
+        "fresh_nll": 0.6403655529231723,
+        "fixed_evidence_nll": 0.6137587045131403,
+        "old_weight": 0.09857351860231378,
+        "relevant_old_weight": 0.026291108631687682,
+        "improved": 159,
+        "worsened": 258,
+        "unchanged": 721
+      }
+    }
+  }
+}

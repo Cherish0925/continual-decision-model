@@ -22,6 +22,7 @@ class ForesightConfig:
     topk: int = 6
     maximum_iterations: int = 24
     terminal_reserve: float = 5.  # Public executor uses at most approach+open+3 moves.
+    update_memory_evidence: bool = True
 
 
 def predicted_cost(out):
@@ -61,11 +62,12 @@ def two_experiment_values(first_probability, first_cost, parent, branch_probabil
     return finish, cost, best_next
 
 
-def forecast_state(model, actual, observation):
+def forecast_state(model, actual, observation, *, expert_log_probabilities=None, outcomes=None):
     """Apply the learned observation transition to isolated predicted branches.
 
-    No receive()/feedback() call is made. Counters and real replay records remain
-    unchanged. h/z here describe an imagined future, not another actual reading.
+    No receive()/feedback() call is made. Real replay and received-event counters
+    remain unchanged. A hypothetical outcome may update context evidence only
+    inside this branch. h/z describe an imagined future, not an actual reading.
     """
     batch = len(observation['event'])
     imagined = {key: value.expand(batch, *value.shape[1:]).clone() for key, value in actual.items()}
@@ -80,6 +82,8 @@ def forecast_state(model, actual, observation):
     imagined['reaction_history'][:, :history.shape[1]] = history
     imagined['reaction_mask'][:, :mask.shape[1]] = mask
     imagined['fast'] = imagined['fast'] * model.continual_config.fast_decay
+    if expert_log_probabilities is not None:
+        imagined = model.experimental_memory.record(imagined, expert_log_probabilities, outcomes)
     return imagined
 
 
@@ -116,7 +120,7 @@ def choose_experiment(model, state, public, observation, choices, out, *, elapse
             if len(selected) >= min(quota, int(feasible.sum())):
                 break
     selected = selected[:config.topk]
-    observations, parent, weights = [], [], []
+    observations, parent, weights, expert_returns, outcomes = [], [], [], [], []
     current = int(public['rust_level'])
     for position, action in enumerate(selected):
         for returned in range(1, current + 1):
@@ -130,10 +134,15 @@ def choose_experiment(model, state, public, observation, choices, out, *, elapse
             obs, _ = observe(imagined, elapsed_actions=elapsed_actions + float(cost[action]), max_actions=max_actions)
             observations.append(primitive_observation_mask(obs))
             parent.append(position); weights.append(weight)
+            if config.update_memory_evidence and 'memory_experts' in out:
+                expert_returns.append(out['memory_experts'][0, action])
+                outcomes.append(returned)
     ids = torch.tensor(selected)
     if observations:
         obs = batch_observations(observations)
-        imagined = forecast_state(model, state, obs)
+        imagined = forecast_state(model, state, obs,
+            expert_log_probabilities=torch.stack(expert_returns) if expert_returns else None,
+            outcomes=torch.tensor(outcomes) if outcomes else None)
         future = model.readout(imagined, obs['candidates'], obs['action_mask'])
         next_p = future['outcomes'].softmax(-1)[..., 0]
         next_c = predicted_cost(future)
@@ -152,6 +161,7 @@ def choose_experiment(model, state, public, observation, choices, out, *, elapse
         finish, expected_cost = probability[ids, 0], cost[ids]
         followups = []
     return chosen, {'mode': mode, 'shortlist': selected, 'imagined_branches': len(observations),
+                    'updates_memory_evidence': bool(expert_returns),
                     'predicted_completion': float(finish[chosen_position]),
                     'predicted_experiment_operations': float(expected_cost[chosen_position]),
                     'first_return_probability': probability[chosen].tolist(), 'conditional_followups': followups,

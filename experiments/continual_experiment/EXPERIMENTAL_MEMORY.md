@@ -114,6 +114,90 @@ resample whole twelve-task streams, preserving dependence between task returns.
 Same-history prediction analysis compares cached forecasts before each actual
 return, separating memory's predictive effect from changed experiment choice.
 
+## Completed native comparison
+
+All four window-200 trainings and all sixteen native conditions have completed.
+The 5,280 executions compare methods on the same 480 distinct task instances;
+they are not 5,280 independent tasks. Every neural chemical condition completes
+240/240 except direct recipe retrieval, which completes 238/240 in each
+continuation. Bayesian memory and reset both complete 240/240.
+
+Mean native operations include unsuccessful attempts and failures:
+
+| Chemical condition | All, 1 | New, 1 | Return, 1 | All, 2 | New, 2 | Return, 2 |
+|---|---:|---:|---:|---:|---:|---:|
+| Initial parent | 78.22 | 79.17 | 77.28 | 84.30 | 84.80 | 83.79 |
+| Trained no-memory | 91.26 | 93.85 | 88.67 | 83.90 | 84.74 | 83.07 |
+| Learned experimental memory | 78.67 | 98.00 | 59.33 | 82.31 | 100.38 | 64.23 |
+| Same weights, archive disabled | 89.12 | 88.60 | 89.63 | 89.21 | 91.10 | 87.32 |
+| Fixed evidence reader | 77.65 | 96.58 | 58.73 | 81.98 | 100.80 | 63.17 |
+| Direct successful-recipe retrieval | 132.70 | 171.56 | 93.83 | 126.58 | 161.23 | 91.92 |
+| Neural state reset; archives retained | 77.62 | 96.30 | 58.93 | 81.13 | 103.43 | 58.83 |
+
+Returning tasks use **33.1% and 22.7% fewer operations** than the independently
+trained no-memory references. The paired differences are −29.33 [−36.18, −21.88]
+and −18.83 [−28.25, −10.21]. Overall differences are −12.59 [−19.24, −5.63]
+and −1.60 [−10.33, +7.52]; only the first continuation establishes an overall
+advantage in this comparison. Against the frozen initial parents, both new-task
+costs increase and neither overall difference is established. New-task transfer
+cost therefore matters alongside successful recovery.
+
+![New-task cost and returning-task benefit](results/experimental_memory.svg)
+
+Intervals resample complete twelve-task streams. Each neural row compares with
+its independently trained no-memory model; the Bayesian row compares with its
+reset version. Negative differences mean fewer native operations.
+
+The known-family Bayesian reference uses 90.47 operations overall, versus 94.25
+for reset. Memory saves 29.10 [18.21, 40.83] operations on returns but adds
+21.53 [14.63, 28.67] on new relations. The neural memory models use fewer
+operations overall than this reference in both continuations; only the first
+paired interval excludes zero. These methods have different learned and
+explicit priors, as specified above.
+
+The learned applicability reader does not outperform its initialized evidence
+rule. Resetting chemical h/z while retaining the archive also does not remove
+the return benefit. The established gain belongs to using experimental records
+and predictive evidence; this study does not establish an additional gain from
+learned reading or persistent neural state.
+
+| Physical condition | Completed, 1 | Operations, 1 | Completed, 2 | Operations, 2 |
+|---|---:|---:|---:|---:|
+| Initial parent | 233/240 | 115.40 | 229/240 | 107.17 |
+| Trained no-memory | 231/240 | 115.53 | 232/240 | 114.36 |
+| Experimental memory | 232/240 | 113.59 | 234/240 | 104.44 |
+
+These physical results retain the other task's actual outcomes; they do not
+establish a uniform cross-domain improvement. Timing in the machine-readable
+table includes concurrent CPU execution. The no-memory comparison still
+computes and discards archive forecasts, so its runtime is not an optimized
+no-memory deployment benchmark.
+
+[All conditions and paired intervals](results/experimental_memory.json),
+[every native execution](results/experimental_memory_instances.csv), and
+[the fixed cohort](results/experimental_memory_cohort.json) preserve the full
+comparison.
+
+### Predictions on the same experiments
+
+On the 1,322 and 1,378 actually chosen chemical experiments, historical
+predictions lower next-return NLL from 0.7488 to 0.7227 and 0.7304 to 0.7100.
+Both whole-stream difference intervals exclude zero. The effect separates
+clearly by context: return NLL improves from 0.9054 to 0.7651 and 0.8538 to
+0.7350, while new-task NLL worsens by approximately 0.043 in each continuation.
+
+There are only 19 and 39 return queries absent from both current and archived
+measurements when an applicable archive is present. Their mean improvements
+are 0.2783 and 0.2012 nats; only the second interval excludes zero. This small
+subset supports further investigation of prediction transfer, not a broad
+claim that every reused benefit comes from generalizing to unmeasured recipes.
+The six slots retain the latest six tasks, including duplicates; sufficiently
+old relationships can be evicted. This capacity limit is preserved in the
+[per-prediction analysis](results/memory_predictions.csv).
+
+[Prediction summaries](results/memory_predictions.json) use forecasts cached
+before their scored return, without changing the model's chosen history.
+
 ## Reproduction
 
 From the repository root, with the published parent assets restored under their
@@ -179,6 +263,68 @@ functional fit already preserves these observations sufficiently for this
 development comparison. More exact storage alone gives no additional task
 benefit here. The complete comparison uses separately trained references,
 new instances and the fixed final window-200 endpoints.
+
+## Development: prediction inside an experimental plan
+
+The two-experiment planner now conditions its hypothetical memory weights on
+each predicted return. Previously it updated the hypothetical ledger and neural
+state but left archive evidence unchanged. Imagined branches are isolated from
+the actual experimental record. Explicit planning can also be selected when
+the learned action policy is active.
+
+The same development checkpoints and 48-task cohort give:
+
+| Selection | Operations, 1 | Operations, 2 |
+|---|---:|---:|
+| Learned action policy | 62.08 | 62.40 |
+| One-experiment completion/cost | 94.15 | 77.17 |
+| Two experiments, frozen memory evidence | 74.46 | 79.52 |
+| Two experiments, updated memory evidence | 70.81 | 78.48 |
+
+Every condition completes 48/48. Accounting for memory evidence changes choices
+and improves the two-experiment mean in both continuations, but neither planned
+policy surpasses the existing learned policy. More forecast computation is not
+adopted as the default from these results. These are development measurements,
+not an additional independent confirmation set.
+
+## Learning applicability from action returns
+
+The completed comparison motivates a second paired training: can subsequent
+task cost train better use of old knowledge? Four continuations start from the
+two window-200 memory models. Each pair receives the same additional 100 joint
+windows and request budget. Both use a reader learning rate of 0.001; one keeps
+prediction-only supervision and the other also receives action-return credit.
+The other parameter rates and objectives remain unchanged.
+
+The action path uses detached expert forecasts and detached accumulated evidence.
+Only the applicability reader receives the new gradient. Expert response models
+continue to learn from actual outcome likelihood, and the shared core/action
+interface retains its existing training. Before any optimizer update, enabling
+the gradient path leaves action scores exactly unchanged. This separates an
+effect of learning from a changed execution rule.
+
+The evaluation queue uses ten new twelve-task streams: 120 physical and 120
+chemical instances, including 60 chemical returns. It compares both final
+endpoints with their memory parents, the earlier no-memory reference, and
+same-weight archive/evidence interventions. The simulator families remain the
+same. Results are pending; this modification is not yet an established gain.
+
+```bash
+python -m experiments.continual_experiment.train_memory_decisions \
+  --initial-root runs/experimental_memory/train \
+  --output runs/experimental_memory/decision_train --updates 100 --batch 32
+
+PYTHONHASHSEED=0 python -m experiments.continual_experiment.memory_manifest \
+  --output runs/experimental_memory/decision_cohort --streams 10 \
+  --instances-per-difficulty 400 --chemical-seed-start 410000 \
+  --physical-seed-start 490000 --workers 20
+
+python -m experiments.continual_experiment.evaluate_memory_decisions \
+  --training-root runs/experimental_memory/decision_train \
+  --parent-root runs/experimental_memory/train \
+  --manifest runs/experimental_memory/decision_cohort/manifest.json \
+  --output runs/experimental_memory/decision_native --workers 8
+```
 
 ## Relation to prior work
 

@@ -48,29 +48,70 @@ def summarize(root, plan):
                 'training_regime', 'completed_successfully', 'native_actions', 'seconds', 'inference_seconds')}}
                 for r in rows)
     comparisons = {}
-    for seed in (911, 912):
-        left = f'memory{seed}'
-        for right in (f'no_memory{seed}', f'disabled{seed}', f'evidence{seed}', f'initial{seed}',
-                      f'direct{seed}', f'reset_neural{seed}'):
-            if right not in records:
-                continue
-            comparisons[left + ':' + right] = {}
-            for domain in records[left].keys() & records[right].keys():
-                a, b = records[left][domain], records[right][domain]
-                result = {'all': paired(a, b)}
-                if domain == 'chemistry':
-                    for label, predicate in (
-                        ('new', lambda r: r['exposure'] == 'new'),
-                        ('return', lambda r: r['exposure'] == 'return'),
-                        ('long_return', lambda r: (r['intervening_tasks'] or 0) >= 4),
-                        ('untrained_composition', lambda r: r['training_regime'] == 'untrained_named_composition')):
-                        result[label] = paired([r for r in a if predicate(r)], [r for r in b if predicate(r)])
-                comparisons[left + ':' + right][domain] = result
+    pairs = plan.get('paired_conditions') or [
+        (f'memory{seed}', f'{name}{seed}') for seed in (911, 912)
+        for name in ('no_memory', 'disabled', 'evidence', 'initial', 'direct', 'reset_neural')]
+    for left, right in pairs:
+        if right not in records:
+            continue
+        comparisons[left + ':' + right] = {}
+        for domain in records[left].keys() & records[right].keys():
+            a, b = records[left][domain], records[right][domain]
+            result = {'all': paired(a, b)}
+            if domain == 'chemistry':
+                for label, predicate in (
+                    ('new', lambda r: r['exposure'] == 'new'),
+                    ('return', lambda r: r['exposure'] == 'return'),
+                    ('long_return', lambda r: (r['intervening_tasks'] or 0) >= 4),
+                    ('untrained_composition', lambda r: r['training_regime'] == 'untrained_named_composition')):
+                    result[label] = paired([r for r in a if predicate(r)], [r for r in b if predicate(r)])
+            comparisons[left + ':' + right][domain] = result
     result = dict(protocol=plan, conditions=conditions, comparisons=comparisons)
     (root / 'comparisons.json').write_text(json.dumps(result, indent=2) + '\n')
     with (root / 'instances.csv').open('w') as file:
         writer = csv.DictWriter(file, fieldnames=list(flat[0])); writer.writeheader(); writer.writerows(flat)
     return result
+
+
+def execute(plan, output, training_root, parallel_conditions=3):
+    pending, running, completed = list(plan['jobs']), [], []
+    while pending or running:
+        statuses = training_root / 'completed.json'
+        statuses = json.loads(statuses.read_text()) if statuses.exists() else []
+        for job in list(pending):
+            if len(running) >= parallel_conditions:
+                break
+            directory = Path(job['directory'])
+            failed = next((r for r in statuses if r['name'] == directory.name and r['exit_code']), None)
+            if failed:
+                completed.append(dict(name=job['name'], exit_code=failed['exit_code'], reason='training_failed'))
+                pending.remove(job); continue
+            if job['endpoint'] == 'last.pt':
+                marker = directory / 'finished.json'
+                if not marker.exists():
+                    continue
+                if json.loads(marker.read_text())['updates'] != job.get('required_updates', plan['training_updates']):
+                    raise ValueError('Training endpoint differs from declared update count')
+            elif not (directory / job['endpoint']).exists():
+                continue
+            log = (output / (job['name'] + '.log')).open('w')
+            process = subprocess.Popen([sys.executable, *job['arguments']], stdout=log, stderr=subprocess.STDOUT,
+                env={**os.environ, 'CUDA_VISIBLE_DEVICES': '', 'PYTHONHASHSEED': '0',
+                     'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1'})
+            running.append((job, process, log)); pending.remove(job)
+        for entry in list(running):
+            job, process, log = entry
+            code = process.poll()
+            if code is None:
+                continue
+            log.close(); running.remove(entry)
+            row = dict(name=job['name'], exit_code=code); completed.append(row)
+            print(json.dumps(row), flush=True)
+        (output / 'completed.json').write_text(json.dumps(completed, indent=2) + '\n')
+        if pending or running:
+            time.sleep(5)
+    if any(r['exit_code'] for r in completed):
+        raise SystemExit(1)
 
 
 def main():
@@ -108,44 +149,7 @@ def main():
         endpoint='all fixed final training endpoints; no outcome-based selection')
     with (args.output / 'plan.json').open('x') as file:
         file.write(json.dumps(plan, indent=2) + '\n')
-    pending, running, completed = list(jobs), [], []
-    while pending or running:
-        statuses = args.training_root / 'completed.json'
-        statuses = json.loads(statuses.read_text()) if statuses.exists() else []
-        for job in list(pending):
-            if len(running) >= args.parallel_conditions:
-                break
-            directory = Path(job['directory'])
-            failed = next((r for r in statuses if r['name'] == directory.name and r['exit_code']), None)
-            if failed:
-                completed.append(dict(name=job['name'], exit_code=failed['exit_code'], reason='training_failed'))
-                pending.remove(job); continue
-            if job['endpoint'] == 'last.pt':
-                marker = directory / 'finished.json'
-                if not marker.exists():
-                    continue
-                if json.loads(marker.read_text())['updates'] != plan['training_updates']:
-                    raise ValueError('Training endpoint differs from declared update count')
-            elif not (directory / job['endpoint']).exists():
-                continue
-            log = (args.output / (job['name'] + '.log')).open('w')
-            process = subprocess.Popen([sys.executable, *job['arguments']], stdout=log, stderr=subprocess.STDOUT,
-                env={**os.environ, 'CUDA_VISIBLE_DEVICES': '', 'PYTHONHASHSEED': '0',
-                     'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1'})
-            running.append((job, process, log)); pending.remove(job)
-        for entry in list(running):
-            job, process, log = entry
-            code = process.poll()
-            if code is None:
-                continue
-            log.close(); running.remove(entry)
-            row = dict(name=job['name'], exit_code=code); completed.append(row)
-            print(json.dumps(row), flush=True)
-        (args.output / 'completed.json').write_text(json.dumps(completed, indent=2) + '\n')
-        if pending or running:
-            time.sleep(5)
-    if any(r['exit_code'] for r in completed):
-        raise SystemExit(1)
+    execute(plan, args.output, args.training_root, args.parallel_conditions)
     summarize(args.output, plan)
 
 

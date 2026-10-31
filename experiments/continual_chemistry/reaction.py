@@ -155,13 +155,18 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
 
     def experiment_logits(self, out, observation):
         from .observations import outcome_action_scores
-        score = outcome_action_scores(out, observation)
+        action_credit = 'action_memory_outcomes' in out
+        score = outcome_action_scores({**out, 'outcomes': out['action_memory_outcomes'],
+            'predictions': out['predictions'].detach()} if action_credit else out, observation)
         probability = out['outcomes'].softmax(-1).detach()
         residual = self.experiment_residual(torch.cat((out['features'], probability,
             out['predictions'][..., 1:].detach()), -1)).squeeze(-1)
         # Start with the inherited progress/cost ranking. The learned residual
         # is trained from subsequent task return, including nonterminal tests.
-        return (4 * score.clamp_min(1e-8).log().detach() + residual).masked_fill(
+        log_score = score.clamp_min(1e-8).log()
+        if not action_credit:
+            log_score = log_score.detach()
+        return (4 * log_score + residual).masked_fill(
             ~observation['action_mask'], -torch.inf)
 
     def record_response(self, state, out, actions, before, after):

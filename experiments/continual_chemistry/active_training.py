@@ -59,6 +59,15 @@ def proposed_experiments(model, state, obs):
     # receives an outcome target. The response loss below supplies its gradient.
     with torch.no_grad():
         prediction = model.readout(state, obs['candidates'], obs['action_mask'])
+    if getattr(model, 'memory_action_credit', False):
+        evidence_state = {**state, 'archive_evidence': state['archive_evidence'].detach()}
+        weights = model.experimental_memory.weights(evidence_state,
+            obs['candidates'][:, 0, 16:24].bool()).exp()
+        mixture = (prediction['memory_experts'].exp() * weights[:, None, :, None]).sum(2)
+        mixture = mixture.clamp_min(1e-30).log()
+        # Censoring and mixture commute. Preserve the existing forecast's
+        # exact numerical values, adding only the reader's action gradient.
+        prediction['action_memory_outcomes'] = prediction['outcomes'] + (mixture - mixture.detach())
     base = ContinualExperimentPolicy.readout(model, state, obs['candidates'], obs['action_mask'])
     out = {**prediction, 'features': base['features']}
     return model.experiment_logits(out, obs)

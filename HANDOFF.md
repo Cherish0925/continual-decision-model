@@ -1,28 +1,33 @@
 # Research progress
 
-## Experimental memory: training and native evaluation in progress
+## Experimental memory: completed comparison and action-credit training
 
-The [experimental-memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
-adds an archive of actual experimental records and learns its applicability
-from subsequent returns. Four joint continuations are running to update 200:
-memory and independently trained no-memory conditions for both existing parents.
-The native queue evaluates all fixed endpoints on twenty new twelve-task
-streams, with 240 chemical and 240 physical instances per full condition.
-Half of the chemical tasks return to an earlier relationship after interference.
+The [memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+completed four 200-window joint trainings and 5,280 native executions. Both
+continuations recover old chemical relationships more efficiently: 59.33 and
+64.23 operations, versus 88.67 and 83.07 for separately trained no-memory
+references. All 240 chemical tasks complete in each condition. New-task costs
+increase, and only the first continuation establishes an overall gain. Fixed
+evidence weighting is competitive; resetting h/z does not remove the archive
+benefit. Physics completes 232/240 and 234/240, versus initial 233/240 and
+229/240. All conditions, predictions and paired intervals are in the study.
 
-The original parents and both Bayesian references have finished this cohort.
-Bayesian memory completes all 240 chemical tasks, as does its reset comparison.
-It reduces mean return-task cost by 29.1 actions (whole-stream interval
-−40.83 to −18.21), but new-task costs offset much of this gain: the overall
-change is −3.79 actions (−10.62 to +2.73). Candidate model results are pending.
+Two development checks are complete. Retaining exact observed responses adds
+no task gain. Updating memory evidence inside a two-experiment forecast helps
+that planner's mean but still does not surpass the trained action policy.
 
-Local outputs are under `runs/continual_physics/experimental_memory_20261101`:
-`train/`, `native/`, `references/` and the fixed `cohort/manifest.json`.
-The main evaluation and additional direct-retrieval/neural-state comparisons
-continue automatically after each training completes. A separate development
-comparison tests preserving deterministic observed values inside an archived
-context. It uses previously evaluated instances and matched intermediate
-weights within each repetition, without changing the primary endpoints.
+Four new 100-window continuations are running: prediction-only applicability
+learning versus additional action-return credit, paired from the same memory
+parents with the same reader rate and request budget. A fresh 120+120 native
+cohort and automatic evaluation queue are ready. The action gradient reaches
+the reader while expert predictions remain detached on this path. Its task
+benefit is not yet measured.
+
+Outputs: `runs/continual_physics/experimental_memory_20261101`. The completed
+primary study is in `train/`, `native/`, `references/` and `cohort/`; the active
+follow-up uses `decision_train/`, `decision_native/` and `decision_cohort/`.
+All primary endpoints remain fixed; development comparisons use their separate
+recorded intermediate checkpoints.
 
 ## Response learning: completed update and joint-training comparisons
 

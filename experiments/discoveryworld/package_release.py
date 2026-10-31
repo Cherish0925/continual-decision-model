@@ -75,7 +75,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/disco
         compressor = subprocess.Popen(["zstd", "-q", "-T4", "-6", "--long=30", "-c"], stdin=subprocess.PIPE, stdout=target)
         with tarfile.open(fileobj=compressor.stdin, mode="w|") as tar:
             for path in files(root, runs, base):
-                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update)\d+\.pt", path.name))
+                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update|checkpoint)\d+\.pt", path.name))
                 image = path.suffix.lower() in IMAGES
                 compressed_text = path.name.endswith((".json.gz", ".jsonl.gz"))
                 record = path.suffix in TEXT or compressed_text or path.suffix in {".svg", ".pdf", ".npz"}

@@ -113,6 +113,8 @@ def main():
                         help='Keep the fitted temperature/bias but omit within-task response updates')
     parser.add_argument('--experimental-memory', choices=('learned', 'disabled', 'evidence', 'recent'))
     parser.add_argument('--chemical-schedule', choices=('paired', 'mixed'), default='paired')
+    parser.add_argument('--memory-action-credit', action='store_true')
+    parser.add_argument('--memory-lr', type=float)
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -143,6 +145,7 @@ def main():
         from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
         chemical.experimental_memory = ExperimentalMemory(ExperimentalMemoryConfig(mode=args.experimental_memory)).to(args.device)
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
+    chemical.memory_action_credit = args.memory_action_credit
     reference = deepcopy(physical.base).eval().requires_grad_(False)
     reference.core.gru.flatten_parameters()
     if args.chemical_mode == 'active':
@@ -156,11 +159,14 @@ def main():
     # Keep the effective rates of each inherited task. A shared parameter is
     # listed exactly once; chemistry cannot create another optimizer for it.
     groups, seen = [], set()
-    for module, prefix, rate in [(model.core, '', args.core_lr),
+    rates = [(model.core, '', args.core_lr),
                                   (physical, 'base.', args.head_lr),
                                   (physical, 'belief.', args.belief_lr),
-                                  (physical, '', args.new_lr),
-                                  (chemical, '', args.chemical_lr)]:
+                                  (physical, '', args.new_lr)]
+    if args.memory_lr is not None:
+        rates.append((chemical.experimental_memory, '', args.memory_lr))
+    rates.append((chemical, '', args.chemical_lr))
+    for module, prefix, rate in rates:
         parameters = [p for name, p in module.named_parameters()
                       if name.startswith(prefix) and p.requires_grad and id(p) not in seen]
         seen.update(id(p) for p in parameters)
@@ -188,7 +194,7 @@ def main():
         metadata.update(chemical_training='selected chemical experiments, received-response likelihood and native-cost actor-critic',
             chemical_activity=args.chemical_activity,
             chemical_environment='training-split recipes, exact cosine/persistent-rust transition and native operation cost',
-            chemical_sequence='A A B B A A; current evidence/fast weights reset, h/z and slow response weights continue',
+            chemical_sequence=args.chemical_schedule,
             chemical_update='censored categorical gradient; subsequent received predictions train through chosen updates',
             chemical_counterfactuals='No response labels for unexecuted alternatives',
             timing='physical scheduler pauses during chemical segments; no independent-clock claim')
@@ -197,12 +203,14 @@ def main():
             chemical_update_control='same fitted calibration without response fitting' if args.response_replay_control else None,
             chemical_update_initial=str(args.response_replay_checkpoint),
             chemical_update_schedule='fixed before each response readout; no learned response-compute allocation')
-    if args.experimental_memory is not None:
+    if chemical.experimental_memory is not None:
         metadata.update(chemical_memory=chemical.experimental_memory.config.__dict__,
             chemical_sequence=args.chemical_schedule,
             chemical_memory_evidence='prequential log likelihood of returned observations; no environment task identities',
             chemical_memory_write='archive actual returned ledgers at task boundaries; no learned write selection',
-            chemical_memory_read='fresh-task expert competes with archived predictors; future response and action losses')
+            chemical_memory_read='fresh-task expert competes with archived predictors; proper response likelihood',
+            chemical_memory_action_credit='direct action-return gradient into reader, with expert predictions detached'
+                if args.memory_action_credit else 'prediction loss only; policy gradient does not enter reader')
     (args.output / 'config.json').write_text(json.dumps(metadata, indent=2) + '\n')
     save_shared_checkpoint(args.output / 'initial.pt', model, training={**metadata, 'updates': 0})
     physical_state, chemical_state = physical.initial(args.batch, args.device), chemical.initial(args.batch, args.device)

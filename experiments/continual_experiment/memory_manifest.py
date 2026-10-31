@@ -22,6 +22,8 @@ def main():
     p.add_argument('--workers', type=int, default=20)
     p.add_argument('--instances-per-difficulty', type=int, default=600)
     p.add_argument('--streams', type=int, default=20)
+    p.add_argument('--chemical-seed-start', type=int, default=310000)
+    p.add_argument('--physical-seed-start', type=int, default=390000)
     args = p.parse_args()
     if os.environ.get('PYTHONHASHSEED') != '0':
         raise ValueError('Use PYTHONHASHSEED=0')
@@ -31,7 +33,7 @@ def main():
     known_structures = {proportion_structure(group) for group in known}
     jobs = [(difficulty, seed, str(args.output / 'generation'))
             for difficulty in ('Normal', 'Challenge')
-            for seed in range(310000, 310000 + args.instances_per_difficulty)]
+            for seed in range(args.chemical_seed_start, args.chemical_seed_start + args.instances_per_difficulty)]
     with ProcessPoolExecutor(args.workers, mp_context=multiprocessing.get_context('spawn')) as pool:
         identified = list(pool.map(identify, jobs, chunksize=4))
     (args.output / 'identified.json').write_text(json.dumps(identified, indent=2) + '\n')
@@ -71,7 +73,7 @@ def main():
                 'untrained_proportion_structure': proportion_structure(group) not in known_structures})
             last[group_index] = position
         streams.append(dict(name=f'memory_{index:02d}',
-            seeds=[390000 + index * 1000 + position * 5 + group % 5
+            seeds=[args.physical_seed_start + index * 1000 + position * 5 + group % 5
                    for position, group in enumerate(order)], chemistry=chemistry))
     manifest = dict(
         purpose='Future experiment utility after variable interference and recurrence',

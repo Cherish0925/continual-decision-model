@@ -50,12 +50,12 @@ def plot(result, output):
             ax.errorbar(mean, 2-y, xerr=[[mean-lo], [hi-mean]], fmt='o', markersize=5,
                         color=color, capsize=3, linewidth=1.4)
         ax.set_title(title, loc='left', fontweight='bold', pad=12)
-        ax.set_xlabel('Change in native operations\n(relative to the trained or Bayesian no-memory reference)')
         ax.set_yticks([2, 1, 0], names)
         ax.tick_params(axis='y', length=0)
         ax.grid(axis='x', color='#E6E8EB', linewidth=.6)
         ax.set_axisbelow(True)
         ax.set_ylim(-.6, 2.6)
+    fig.supxlabel('Change in native operations (memory − matched no-memory reference)', fontsize=9)
     for extension in ('pdf', 'svg', 'png'):
         fig.savefig(output / f'experimental_memory.{extension}', dpi=180)
     plt.close(fig)

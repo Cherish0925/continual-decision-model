@@ -85,12 +85,13 @@ def run(options, *, model=None, state=None, return_state=False):
                     planning=None
                     if public['rust_level']==0:selected=len(choices)-1
                     elif model is None:selected=int(obs['action_mask'][0].nonzero()[0])
-                    elif adaptive_response:selected=int(model.experiment_logits(out,obs)[0].argmax())
                     elif getattr(args,'planning_mode','progress')!='progress':
                         from .foresight import choose_experiment,ForesightConfig
                         selected,planning=choose_experiment(model,state,public,obs,choices,out,
                             elapsed_actions=env.steps,max_actions=args.max_actions,mode=args.planning_mode,
-                            config=ForesightConfig(topk=getattr(args,'planning_topk',6)))
+                            config=ForesightConfig(topk=getattr(args,'planning_topk',6),
+                                update_memory_evidence=not getattr(args,'freeze_forecast_memory',False)))
+                    elif adaptive_response:selected=int(model.experiment_logits(out,obs)[0].argmax())
                     else:selected=int(outcome_action_scores(out,obs)[0].argmax())
                     retrieved = None
                     if getattr(args, 'direct_retrieval', False) and public['rust_level'] > 0:
@@ -170,6 +171,7 @@ def main():
     p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--planning-mode',choices=['progress','completion','two_step'],default='progress')
     p.add_argument('--planning-topk',type=int,default=6)
+    p.add_argument('--freeze-forecast-memory',action='store_true')
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))
     if summary['error']:raise SystemExit(1)
 

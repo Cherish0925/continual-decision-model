@@ -86,3 +86,27 @@ def test_no_feasible_followup_keeps_one_step_completion():
     torch.testing.assert_close(finish, p)
     torch.testing.assert_close(cost, c)
     assert (next_action == -1).all()
+
+
+def test_imagined_evidence_can_select_different_memories_without_changing_real_evidence():
+    from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
+    from experiments.continual_chemistry.warmup_reaction import batch_observations
+    torch.set_num_threads(1)
+    m = model().eval()
+    m.experimental_memory = ExperimentalMemory(ExperimentalMemoryConfig(slots=2))
+    state = m.initial(1, 'cpu')
+    state['archive_mask'][0, 0, 0] = True
+    state['archive_components'][0, 0, :3] = True
+    probabilities = torch.tensor([[[.25, .25, .25, .25], [.01, .97, .01, .01], [.25, .25, .25, .25]]]*2)
+    observations = [observe({'components': ['A','B','C'], 'rust_level': outcome, 'history': [
+        {'component_counts': [1,0,0], 'rust_before':3,'rust_after':outcome,'native_actions':8}]})[0]
+        for outcome in (1, 3)]
+    future = forecast_state(m, state, batch_observations(observations),
+        expert_log_probabilities=probabilities.log(), outcomes=torch.tensor([1, 3]))
+    components = torch.tensor([[True,True,True,False,False,False,False,False]]*2)
+    weights = m.experimental_memory.weights(future, components).exp()
+    assert weights[0,1] > weights[1,1]
+    assert state['archive_evidence'].eq(0).all()
+    assert state['archive_returns'].eq(0).all()
+    assert future['archive_returns'].eq(1).all()
+    torch.testing.assert_close(future['archive_history'], state['archive_history'].expand_as(future['archive_history']))

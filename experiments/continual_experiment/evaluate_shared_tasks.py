@@ -57,6 +57,8 @@ def run_stream(job):
             'initial_rng_root': options['initial_rng_root'], 'primitive_candidates': True,
             'discard_response_updates': options.get('discard_response_updates', False),
             'direct_retrieval': options.get('direct_retrieval', False),
+            'planning_mode': options.get('planning_mode', 'progress'),
+            'freeze_forecast_memory': options.get('freeze_forecast_memory', False),
         }, model=chemical, state=chemical_state, return_state=True)
         if mode == 'continuing':
             physical_session.state = {**physical_session.state,
@@ -107,6 +109,8 @@ def main():
                    help='For same-weight memory controls with separated domain states')
     p.add_argument('--reset-chemical-neural-state', action='store_true')
     p.add_argument('--direct-retrieval', action='store_true')
+    p.add_argument('--planning-mode', choices=('progress', 'completion', 'two_step'), default='progress')
+    p.add_argument('--freeze-forecast-memory', action='store_true')
     p.add_argument('--retain-observed-responses', action='store_true',
                    help='Development comparison: retain deterministic observations inside each archived context')
     args = p.parse_args()

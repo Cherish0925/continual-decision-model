@@ -1,15 +1,14 @@
 # CDM: objective, implementation, and results
 
-**Latest completed comparison:** [physical prediction and experimental control](experiments/physical_belief/README.md)
-jointly train the continuing neural core and a reusable physical belief. Six
-trainings and thirteen native conditions are complete. On 120 new instances,
-the two complete models finish 117 and 116 tasks, against 115 for each parent,
-and reduce mean actions by 9.9% and 15.1%. Ordinary continuation does not produce
-this improvement. Retaining the same trained memory has a completion–cost
-tradeoff and does not improve the first task when a previous relationship returns.
-The study uses Bayesian task updates, structured inputs and one fixed workspace
-refinement; learned activity scheduling and general cross-domain deployment
-remain separate objectives.
+**Latest completed comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+completes four joint trainings and 5,280 native executions. Returning chemical
+tasks need 33.1% and 22.7% fewer operations than separately trained no-memory
+references, with all 240 chemical tasks completed in each condition. New-task
+costs rise; an overall advantage is established only in the first continuation.
+The gain persists with fixed evidence reading and neural-state resets. Useful
+cross-task experimental records are established here; an extra contribution
+from learned reading or persistent neural state is not. Four paired follow-up
+trainings now test action-return credit into applicability.
 
 The preceding [joint activity and learning comparison](experiments/continual_experiment/results/README.md)
 finished 179/184 and 174/184 tasks without surpassing its strongest reference.
