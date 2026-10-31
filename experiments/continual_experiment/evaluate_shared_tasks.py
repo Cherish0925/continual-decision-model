@@ -59,6 +59,8 @@ def run_stream(job):
         row = {**summary, 'stream': stream['name'], 'episode_index': index,
                'state_sharing': mode,
                'cross_domain_state_change': {k: float((chemical_state[k] - start[k]).detach().norm()) for k in start}}
+        row.update({k: task[k] for k in ('exposure', 'intervening_tasks', 'training_regime',
+                   'untrained_proportion_structure') if k in task})
         rows.append(row)
         (output / stream['name'] / 'chemistry_summary.json').write_text(json.dumps(rows, indent=2) + '\n')
         if summary['error']:
@@ -67,8 +69,16 @@ def run_stream(job):
     physical_options = {**options, 'state_mode': 'carry', 'discard_physical_updates': False,
         'discard_physical_memory': False, 'feedback_delay_ticks': 2, 'tolerance_hz': 2.,
         'max_actions': 400, 'max_decisions': 160, 'device': 'cpu'}
-    result = run_physics((physical_options, stream), model=physical,
-                         session=session, after_episode=after_physics)
+    if options.get('chemistry_only', False):
+        if mode != 'separated':
+            raise ValueError('Skipping physical executions requires separate domain states')
+        (output / stream['name']).mkdir(parents=True)
+        for index in range(len(stream['chemistry'])):
+            after_physics(index, session)
+        result = {'episodes': []}
+    else:
+        result = run_physics((physical_options, stream), model=physical,
+                             session=session, after_episode=after_physics)
     if any(row['error'] for row in result['episodes']):
         raise RuntimeError('Physical execution error')
     return {'stream': stream['name'], 'state_sharing': mode,
@@ -88,6 +98,8 @@ def main():
     p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
     p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
+    p.add_argument('--chemistry-only', action='store_true',
+                   help='For same-weight memory controls with separated domain states')
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}

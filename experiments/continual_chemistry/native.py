@@ -108,6 +108,12 @@ def run(options, *, model=None, state=None, return_state=False):
                         result['model_outcome_logits']=out['outcomes'][0,selected].tolist()
                         result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
+                        if 'memory_experts' in out:
+                            memory = model.experimental_memory
+                            result['experimental_memory'] = {
+                                'weights': memory.weights(state, obs['candidates'][:, 0, 16:24].bool()).exp()[0].tolist(),
+                                'expert_return_log_probabilities': out['memory_experts'][0, selected].tolist(),
+                                'archived_tasks': int(state['archive_mask'][0].any(-1).sum())}
                         start=perf_counter();state=model.feedback(state,feedback(result))
                         if adaptive_response and any(choices[selected]):
                             state = model.record_response(state, out, torch.tensor([selected]),
