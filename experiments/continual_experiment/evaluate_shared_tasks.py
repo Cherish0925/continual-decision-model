@@ -27,6 +27,8 @@ def run_stream(job):
         chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
     if options.get('memory_mode'):
         chemical.experimental_memory.config = replace(chemical.experimental_memory.config, mode=options['memory_mode'])
+    if options.get('memory_slots'):
+        chemical.experimental_memory.config = replace(chemical.experimental_memory.config, slots=options['memory_slots'])
     assert physical.core is chemical.core
     session = ContinualPhysicsSession(physical)
     chemical_state = chemical.initial(1, 'cpu')
@@ -105,6 +107,8 @@ def main():
     p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
     p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
+    p.add_argument('--memory-slots', type=int,
+                   help='Change archive capacity at execution; model weights remain unchanged')
     p.add_argument('--chemistry-only', action='store_true',
                    help='For same-weight memory controls with separated domain states')
     p.add_argument('--reset-chemical-neural-state', action='store_true')
@@ -114,6 +118,8 @@ def main():
     p.add_argument('--retain-observed-responses', action='store_true',
                    help='Development comparison: retain deterministic observations inside each archived context')
     args = p.parse_args()
+    if args.memory_slots is not None and args.memory_slots < 1:
+        p.error('memory-slots must be positive')
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
     args.output.mkdir(parents=True, exist_ok=False)

@@ -2,6 +2,64 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Experimental memory: v0.14.0 preparation
+
+[Method and complete comparison](../continual_experiment/EXPERIMENTAL_MEMORY.md)
+· [Changes under review](https://github.com/Cherish0925/continual-decision-model/pull/8)
+
+The draft release packages the shared response-learning parents, the four
+experimental-memory endpoints, training inputs, and complete native records.
+It is not yet a public release. The download commands below become available
+when v0.14.0 is published.
+
+| Archive | Contents |
+|---|---|
+| `cdm-shared-response-inference.tar.zst` | Four joint response-learning endpoints used by the preceding study and this initialization |
+| `cdm-shared-response-records.tar.zst` | Their training curves and complete native comparison |
+| `cdm-memory-seed911-inference.tar.zst`, `cdm-memory-seed912-inference.tar.zst` | Each parent, final memory model and separately trained no-memory control |
+| `cdm-experimental-memory-records.tar.zst.part*` | All four training records, fixed cohort, native executions, Bayesian references and development comparisons |
+| `cdm-memory-development-inference.tar.zst` | The two fixed intermediate models used for the exact-observation and planning comparisons |
+| `cdm-memory-training-inference.tar.zst`, `cdm-memory-training-records.tar.zst` | Physical initializer and numerical prior, measured training inputs, chemical experience and environment geometry |
+
+Shared checkpoints contain both task interfaces and their common core. Native
+inference needs no weights from earlier releases and no image or language
+backbone. Archives restore repository-relative paths; optimizer state is
+omitted from inference packages. The packaged training starts a fresh optimizer
+from the saved parent weights, as in the reported comparison.
+
+To repeat the first memory condition after publication:
+
+```bash
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.14.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-memory-seed911-inference.tar.zst' \
+  --pattern 'cdm-experimental-memory-records.tar.zst*' \
+  --pattern 'DiscoveryWorld-LICENSE.txt' --dir artifacts/v0.14.0
+zstd -dc --long=30 artifacts/v0.14.0/cdm-memory-seed911-inference.tar.zst | tar -x
+cat artifacts/v0.14.0/cdm-experimental-memory-records.tar.zst.part* | zstd -dc --long=30 | tar -x
+PYTHONHASHSEED=0 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_shared_tasks \
+  --checkpoint runs/continual_physics/experimental_memory_20261101/train/memory911/last.pt \
+  --manifest experiments/continual_experiment/results/experimental_memory_cohort.json \
+  --initial-rng-root runs/continual_physics/experimental_memory_20261101/native/initial_rng \
+  --state-sharing separated --memory-mode learned --workers 8 --threads 1 \
+  --output runs/reproduced-memory-911
+```
+
+Set `--memory-mode disabled` for the same-weight archive intervention or
+`--memory-mode evidence` for fixed evidence reading. Use a separate output
+directory for each run. The second archive supplies the corresponding 912
+models. For the independently trained no-memory comparison, select its
+`no_memory911/last.pt` or `no_memory912/last.pt` and use disabled mode.
+
+To repeat training, also download and extract `cdm-shared-response-inference`
+and the two `cdm-memory-training` archives, then use the commands in the
+[method](../continual_experiment/EXPERIMENTAL_MEMORY.md#reproduction).
+The launchers run four jobs across two GPUs; the 200-window memory trainings
+used approximately 30–32 GiB per job. A single-device run can invoke the same
+`train_shared_tasks` command one condition at a time. DiscoveryWorld's upstream
+license is included with its derived task records.
+
 ## Learning chemical experiment responses: v0.12.0
 
 [Release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)

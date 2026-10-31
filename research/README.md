@@ -7,6 +7,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 
 | Study | Contents |
 | --- | --- |
+| [Experimental knowledge across task changes](../experiments/continual_experiment/EXPERIMENTAL_MEMORY.md) | Completed joint training and native comparisons: return-task savings, new-task cost, fixed and learned applicability, direct retrieval and Bayesian memory |
 | [Response updates and later experiments](../experiments/continual_experiment/RESPONSE_LEARNING.md) | Update and full joint comparisons complete; useful response fitting survives core training; strong-reference and long-term gains remain unresolved |
 | [Active physical and chemical learning](../experiments/continual_experiment/ACTIVE_TRAINING.md) | Completed joint active-feedback training; response updates did not establish a task advantage |
 | [Execution-aware physical learning](../experiments/continual_physics/EXECUTION.md) | Completed native-cost training and comparisons with recurrent and Bayesian policies |
