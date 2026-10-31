@@ -208,6 +208,45 @@ before attributing it to planning. It does not isolate the cause within the
 update rule or establish a task-performance effect: these are post-result
 readout interventions on fixed trajectories, not new acting policies.
 
+### How the correction changes individual predictions
+
+Recomputing the 1,623 public prediction rows separates improvements from
+deteriorations. Differences below are retained NLL minus zero-correction NLL;
+absolute differences at most 1e-9 are counted as unchanged. These are
+descriptive counts on the same trajectories, not additional independent tasks.
+
+| Continuation | Improved | Worsened | Unchanged | Mean NLL reduction among improvements | Mean NLL increase among deteriorations |
+|---|---:|---:|---:|---:|---:|
+| 911 | 484 | 206 | 125 | 0.0959 | 0.3764 |
+| 912 | 486 | 202 | 120 | 0.0873 | 0.3891 |
+
+More predictions improve than deteriorate, but the mean deterioration is
+approximately four times as large. This accounts for the adverse aggregate
+NLL without implying that every update or every predicted experiment gets
+worse. All 120 first-experiment predictions per continuation are unchanged,
+consistent with empty fast corrections at apparatus initialization and no
+selected consolidation. Outcome-specific analysis requires joining the saved
+native outcomes; these loss rows alone do not identify which chemical outcome
+classes cause the larger errors.
+
+Two implementation properties guide the next comparison. A LEARN activity
+updates both the progress/cost predictor and the response correction, while
+the activity input directly exposes progress/cost replay error rather than
+response replay error. A selected learning activity therefore does not by
+itself establish that the response update is useful. Separately,
+`AdaptiveResponse.record` stores features and base logits from each past
+prediction, whereas subsequent query features depend on the new history and
+recurrent state. Learning a residual on those stored features does not
+guarantee beneficial transfer to the next query.
+
+These properties are present in the code; their contribution to the measured
+prediction loss has not been isolated. Compare update targets separately and
+train the response correction for subsequent selected experiments. For retained
+knowledge, include later tasks after interference in the learning objective:
+fast corrections reset at each apparatus, and the current unselected slow
+correction cannot supply cross-task parameter acquisition. Keep the present
+fixed-trajectory results separate from new training and acting comparisons.
+
 [Replay code](../continual_chemistry/compare_response_updates.py) and the
 complete predictions for [911](results/active_feedback_predictions_911.json)
 and [912](results/active_feedback_predictions_912.json) preserve the comparison.
