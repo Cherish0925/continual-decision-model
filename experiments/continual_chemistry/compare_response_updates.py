@@ -19,6 +19,24 @@ from .active_training import choose_activity
 from .observations import observe, feedback
 
 
+def prediction_effects(rows, tolerance=1e-9):
+    """Descriptive paired loss effects; uncertainty is computed over streams."""
+    differences = np.asarray([r['retained_nll'] - r['zero_nll'] for r in rows],
+                             dtype=np.float64)
+    improved = differences < -tolerance
+    worsened = differences > tolerance
+    unchanged = ~(improved | worsened)
+    return {
+        'predictions': len(rows),
+        'improved': int(improved.sum()),
+        'worsened': int(worsened.sum()),
+        'unchanged': int(unchanged.sum()),
+        'mean_improvement_nats': float(-differences[improved].mean()) if improved.any() else None,
+        'mean_deterioration_nats': float(differences[worsened].mean()) if worsened.any() else None,
+        'equality_tolerance': tolerance,
+    }
+
+
 def evaluate(checkpoint, root, output, device):
     torch.set_num_threads(1)
     shared, saved = load_shared_checkpoint(checkpoint, device)
@@ -88,6 +106,7 @@ def evaluate(checkpoint, root, output, device):
         mean_nll=dict(zip(('retained', 'zero', 'extra_update'), (totals.sum(0) / counts.sum()).tolist())),
         retained_minus_zero_95ci=np.quantile(means[:, 0] - means[:, 1], [.025, .975]).tolist(),
         extra_minus_retained_95ci=np.quantile(means[:, 2] - means[:, 0], [.025, .975]).tolist(),
+        paired_prediction_effects=prediction_effects(rows),
         maximum_replay_log_probability_error=max(r['replay_log_probability_error'] for r in rows))
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(dict(scope='same-state prediction interventions; post-result analysis on fixed native trajectories',
