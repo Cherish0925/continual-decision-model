@@ -184,10 +184,33 @@ rust removal include 25 actual clean outcomes; the four trained policies make
 no predictions above that threshold. Removing extreme confidence alone does
 not establish useful experimental planning or calibrated uncertainty.
 
-The next analysis compares retained and zero response corrections at identical
-received histories and selected experiments. It separates a predictive update
-from the downstream effects of changing experimental choices. This is a
-post-result analysis of these fixed trajectories, not another performance test.
+### Predictions at identical histories
+
+A completed replay compares response corrections at the same neural state,
+received history and selected experiment. Each prediction is scored against
+the same next actual outcome. Removing corrections changes only the response
+readout; an additional learning update uses only earlier returned outcomes.
+The retained branch alone advances the replay. Its log probabilities reproduce
+the original native records to within 1.1e-6.
+
+| Continuation | Returned experiments | Zero correction NLL | Retained correction NLL | One additional update NLL |
+|---|---:|---:|---:|---:|
+| 911 | 815 | 0.7105 | 0.7488 | 0.7555 |
+| 912 | 808 | 0.7036 | 0.7483 | 0.7563 |
+
+Lower negative log likelihood (NLL) means a better prediction of the received
+outcome. Retaining the correction increases NLL by 0.0382 nats (whole-stream
+95% interval 0.0241–0.0506) and 0.0448 (0.0340–0.0549). An additional update
+increases it again by 0.0067 (0.0026–0.0119) and 0.0080 (0.0034–0.0136).
+Thus the current online correction worsens subsequent response prediction on
+these histories. This narrows the unresolved problem to the update itself
+before attributing it to planning. It does not isolate the cause within the
+update rule or establish a task-performance effect: these are post-result
+readout interventions on fixed trajectories, not new acting policies.
+
+[Replay code](../continual_chemistry/compare_response_updates.py) and the
+complete predictions for [911](results/active_feedback_predictions_911.json)
+and [912](results/active_feedback_predictions_912.json) preserve the comparison.
 
 [Complete paired results](results/active_feedback.json),
 [all instance outcomes](results/active_feedback_instances.csv), and

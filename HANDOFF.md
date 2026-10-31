@@ -19,9 +19,9 @@ Each training uses 102,400 physical requests and 25,600 recorded chemical
 returns. One continuing h/z has no consistent advantage over separate task
 states with shared weights. Repetition 831 favors separate state for physics;
 repetition 832 favors continuing state for chemistry. All endpoints and paired
-stream intervals are preserved in the linked results. Chemistry still learns
-from recorded actions rather than its own selected experiments; closing that
-training gap is the next implementation.
+stream intervals are preserved in the linked results. Chemistry in that study
+learns from recorded actions. The completed active-feedback study below
+replaces them with the model's own selected experiments.
 
 ## Completed active-feedback training
 
@@ -37,8 +37,12 @@ The deployed models execute 1,588 and 1,616 chemical learning updates, but no
 consolidation or retrieval. Retaining chemical task state has no stable
 first-return benefit. Current evidence supports a working joint training path
 and actual response updates, while their desired task advantages remain unmet.
-The follow-up compares predictions with and without corrections at identical
-received histories, using the already completed trajectories.
+A completed same-history replay finds that retaining online response
+corrections worsens next-outcome NLL from 0.7105 to 0.7488 and from 0.7036 to
+0.7483. Both whole-stream difference intervals exclude zero. One additional
+update worsens prediction further. The study links replay code and all 1,623
+paired predictions. This identifies an ineffective predictive update under
+the tested histories; its cause and a useful replacement remain unresolved.
 
 The full results and all 2,400 executions are linked from the study. Local raw
 outputs remain `runs/continual_physics/active_feedback_joint_20261030` and

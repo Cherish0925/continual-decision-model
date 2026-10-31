@@ -79,6 +79,9 @@ fixed-computation reference. Discarding online response updates uses 96.92 and
 learning updates but no consolidation, so useful continuing adaptation and
 long-term knowledge recovery remain open research objectives. All endpoints,
 activity counts and individual task outcomes are available in the study.
+A same-history replay also finds that retained online corrections worsen
+next-outcome prediction in both continuations. The study includes the paired
+predictions and intervals; the cause within the update rule remains unresolved.
 
 ## Current results
 
@@ -124,10 +127,11 @@ Useful autonomous computation and reliable recovery after interference remain op
 ## Model
 
 A [shared-core implementation](experiments/continual_experiment/README.md#a-single-core-for-physical-and-chemical-experiments)
-now connects the physical and chemical interfaces to one set of core weights
-and one continuing state. A real two-task gradient update and checkpoint
-reconstruction have been verified. The published task-performance results
-still come from the separately trained policies.
+connects the physical and chemical interfaces to one set of core weights,
+with either continuing or separately retained task states. The completed
+shared-core and active-feedback studies jointly train both interfaces and
+evaluate native task performance. Earlier task-specific results remain
+separate comparisons.
 
 The active-experiment policy reads structured public measurements and operation
 feedback. Training updates **26.65 million parameters**, including **23.11 million**
