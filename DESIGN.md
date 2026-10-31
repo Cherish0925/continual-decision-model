@@ -158,6 +158,29 @@ Training across lifetimes optimizes the shared representation and the learning p
 
 Retrieving an old experience is preferred to blindly overwriting current adapters with an old snapshot. Newer learning must remain available when a previous condition returns.
 
+### Implemented experimental memory
+
+The [shared scientific-task model](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+stores raw input–outcome ledgers from completed tasks. At a new task it
+reconstructs a response predictor from each ledger using the current model and
+four learned functional updates. Observed returns then determine how much to
+use each historical predictor, alongside a predictor fitted only to the current
+task. This preserves the meaning of the stored measurements when shared model
+weights change during training.
+
+The primary implementation retains six task ledgers with up to 32 observations
+each. Writes replace the oldest task; repeated relations can occupy multiple
+slots. Hidden task identities are not supplied. Likelihood training updates the
+response model and applicability reader; the action-credit comparison additionally
+trains that reader from subsequent task costs. The same core weights serve
+physics and chemistry, with separate h/z states for each interface.
+
+The completed primary comparison establishes cheaper recovery of returning
+chemical relationships, together with additional cost on new relationships.
+Fixed evidence reading and neural-state resets preserve the recovery benefit.
+This is an implemented route for reuse of experimental knowledge; autonomous
+archive allocation and neural consolidation remain separate research targets.
+
 ### Candidate: function-preserving transfer
 
 This candidate is not implemented and is excluded from the current eight-run
@@ -255,15 +278,15 @@ Compare a recurrent policy, a restarted workspace, persistent inference without 
 | Dynamic scientific actions and received-result prediction | Implemented in [cdm/digital.py](cdm/digital.py), using the existing GRU/workspace and a public-observation object registry |
 | Scientific-task trajectory training and fresh-interaction policy updates | Implemented in [experiments/discoveryworld/](experiments/discoveryworld/README.md); task execution is evaluated separately from imitation accuracy |
 | Scientific-task activity choice, bounded experience retrieval and fast/slow prediction updates | Jointly trained in [continual_experiment](experiments/continual_experiment/README.md); eight trainings and paired native task-stream comparisons |
+| Functional response updates and experimental-memory applicability | Implemented in [response_replay.py](cdm/response_replay.py) and [experimental_memory.py](cdm/experimental_memory.py); shared-core training and new/return native comparisons in [the study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md) |
 | Observations arriving during internal work or one pending tool request | Implemented by `ContinualSession` in [cdm/continual_experiment.py](cdm/continual_experiment.py); the native scientific study uses synchronous tool execution |
 | Full pretrained-weight multimodal training and teacher distillation | Not run in this update |
 | Asynchronous semantic execution and learned semantic-call policy | Interfaces defined above; worker and policy training remain |
 | General long-term retrieval, latent world prediction, learned subgoals and skill consolidation | Specified above; beyond the implemented bounded memory and prediction adapters |
-| Autonomous digital experimentation | Native Reactor Lab completion from reset: 14/16 and 13/16 across two trained evidence readers; fixed source core, explicit numerical hypotheses and scalar primitive. Cross-domain experimentation remains an objective. See [task results](experiments/discoveryworld/RESULTS.md). |
+| Autonomous digital experimentation | Shared-core policies execute native Reactor Lab and Combinatorial Chemistry tasks from reset, using structured observations and numerical tools. [Current results](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md) distinguish operation in both domains from transfer between them. |
 
-The task learner reads received evidence and completes native Reactor Lab
-experiments. Its latest training path also learns internal activity choices and
-updates prediction adapters during execution. The [results](experiments/continual_experiment/results/README.md)
-measure the use and benefit of those mechanisms. Physical relation fitting still
-uses the numerical model. Learning that improves later experiments, rapid recall
-after interference and broad multimodal operation remain open research goals.
+The scientific-task path now learns from returned physical and chemical
+experiments. Within-task response fitting and archived observations both improve
+specific native comparisons. Stable improvement over strong references, useful
+autonomous computation and broad multimodal operation remain research goals.
+Physical relation fitting continues to use the numerical model.

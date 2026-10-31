@@ -22,8 +22,13 @@ def run_stream(job):
     model, saved = load_shared_checkpoint(options['checkpoint'])
     model.eval()
     physical, chemical = model.tasks['physics'], model.tasks['chemistry']
+    chemical.retain_observed_responses = options.get('retain_observed_responses', False)
     if options.get('disable_response_replay', False):
         chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
+    if options.get('memory_mode'):
+        chemical.experimental_memory.config = replace(chemical.experimental_memory.config, mode=options['memory_mode'])
+    if options.get('memory_slots'):
+        chemical.experimental_memory.config = replace(chemical.experimental_memory.config, slots=options['memory_slots'])
     assert physical.core is chemical.core
     session = ContinualPhysicsSession(physical)
     chemical_state = chemical.initial(1, 'cpu')
@@ -35,16 +40,16 @@ def run_stream(job):
         nonlocal chemical_state
         task = stream['chemistry'][index]
         prior_h, prior_z = chemical_state['h'], chemical_state['z']
-        prior_slow = chemical_state.get('response_slow')
-        # New apparatus, fresh numerical ledger. The hidden process continues.
-        chemical_state = chemical.initial(1, 'cpu')
         reset_chemical = options.get('reset_chemical_state', False)
-        if prior_slow is not None and not reset_chemical:
-            chemical_state['response_slow'] = prior_slow
+        chemical_state = chemical.next_apparatus(chemical_state, torch.ones(1, dtype=torch.bool),
+            torch.tensor([index == 0 or reset_chemical]))
         if mode == 'continuing':
             chemical_state.update(h=physical_session.state['h'], z=physical_session.state['z'])
         elif not reset_chemical:
             chemical_state.update(h=prior_h, z=prior_z)
+        if options.get('reset_chemical_neural_state', False):
+            fresh = chemical.initial(1, 'cpu')
+            chemical_state.update(h=fresh['h'], z=fresh['z'])
         start = {k: chemical_state[k].clone() for k in ('h', 'z')}
         summary, chemical_state = run_chemistry({
             'checkpoint': options['checkpoint'], 'seed': task['seed'],
@@ -53,6 +58,9 @@ def run_stream(job):
             'max_actions': 1000, 'max_experiments': 209, 'threads': options['threads'],
             'initial_rng_root': options['initial_rng_root'], 'primitive_candidates': True,
             'discard_response_updates': options.get('discard_response_updates', False),
+            'direct_retrieval': options.get('direct_retrieval', False),
+            'planning_mode': options.get('planning_mode', 'progress'),
+            'freeze_forecast_memory': options.get('freeze_forecast_memory', False),
         }, model=chemical, state=chemical_state, return_state=True)
         if mode == 'continuing':
             physical_session.state = {**physical_session.state,
@@ -60,6 +68,8 @@ def run_stream(job):
         row = {**summary, 'stream': stream['name'], 'episode_index': index,
                'state_sharing': mode,
                'cross_domain_state_change': {k: float((chemical_state[k] - start[k]).detach().norm()) for k in start}}
+        row.update({k: task[k] for k in ('exposure', 'intervening_tasks', 'training_regime',
+                   'untrained_proportion_structure') if k in task})
         rows.append(row)
         (output / stream['name'] / 'chemistry_summary.json').write_text(json.dumps(rows, indent=2) + '\n')
         if summary['error']:
@@ -68,8 +78,16 @@ def run_stream(job):
     physical_options = {**options, 'state_mode': 'carry', 'discard_physical_updates': False,
         'discard_physical_memory': False, 'feedback_delay_ticks': 2, 'tolerance_hz': 2.,
         'max_actions': 400, 'max_decisions': 160, 'device': 'cpu'}
-    result = run_physics((physical_options, stream), model=physical,
-                         session=session, after_episode=after_physics)
+    if options.get('chemistry_only', False):
+        if mode != 'separated':
+            raise ValueError('Skipping physical executions requires separate domain states')
+        (output / stream['name']).mkdir(parents=True)
+        for index in range(len(stream['chemistry'])):
+            after_physics(index, session)
+        result = {'episodes': []}
+    else:
+        result = run_physics((physical_options, stream), model=physical,
+                             session=session, after_episode=after_physics)
     if any(row['error'] for row in result['episodes']):
         raise RuntimeError('Physical execution error')
     return {'stream': stream['name'], 'state_sharing': mode,
@@ -88,7 +106,20 @@ def main():
     p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
+    p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
+    p.add_argument('--memory-slots', type=int,
+                   help='Change archive capacity at execution; model weights remain unchanged')
+    p.add_argument('--chemistry-only', action='store_true',
+                   help='For same-weight memory controls with separated domain states')
+    p.add_argument('--reset-chemical-neural-state', action='store_true')
+    p.add_argument('--direct-retrieval', action='store_true')
+    p.add_argument('--planning-mode', choices=('progress', 'completion', 'two_step'), default='progress')
+    p.add_argument('--freeze-forecast-memory', action='store_true')
+    p.add_argument('--retain-observed-responses', action='store_true',
+                   help='Development comparison: retain deterministic observations inside each archived context')
     args = p.parse_args()
+    if args.memory_slots is not None and args.memory_slots < 1:
+        p.error('memory-slots must be positive')
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
     args.output.mkdir(parents=True, exist_ok=False)

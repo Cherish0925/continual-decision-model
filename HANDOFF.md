@@ -1,5 +1,66 @@
 # Research progress
 
+## Experimental memory: joint learning, action credit and retention
+
+The [memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+completed four 200-window joint trainings and 5,280 native executions. Both
+continuations recover old chemical relationships more efficiently: 59.33 and
+64.23 operations, versus 88.67 and 83.07 for separately trained no-memory
+references. All 240 chemical tasks complete in each condition. New-task costs
+increase, and only the first continuation establishes an overall gain. Fixed
+evidence weighting is competitive; resetting h/z does not remove the archive
+benefit. Physics completes 232/240 and 234/240, versus initial 233/240 and
+229/240. All conditions, predictions and paired intervals are in the study.
+
+Two development checks are complete. Retaining exact observed responses adds
+no task gain. Updating memory evidence inside a two-experiment forecast helps
+that planner's mean but still does not surpass the trained action policy.
+
+Four additional 100-window continuations and all twelve native conditions are
+complete. Direct action-return credit into applicability changes chemical cost
+by −3.63 [−8.45, +0.25] and +0.57 [−4.37, +5.93] relative to prediction-only
+continuation. Neither gain is established; both action-trained models retain
+119/120 physical and 120/120 chemical completions. New-task reuse costs remain.
+The reader receives the new gradient while response experts remain detached
+on that path; its actual task effect has now been tested.
+
+Six archived tasks cannot cover a return after six intervening tasks. The
+same-weight twelve-ledger intervention saves 7.88 and 9.56 operations overall
+on the primary cohort, mostly through those long returns. Short returns become
+slightly more expensive. On the second cohort, the same capacity change reduces
+overall operations from 78.02 / 85.38 to 69.97 / 75.02, with 120/120 completed
+in every condition. Both paired intervals exclude zero. This comparison uses
+the same saved initialization as the other native references.
+This improves retention without adding a learned write mechanism or more
+parameter training. Full interval and prediction results are in the study.
+
+Outputs: `runs/continual_physics/experimental_memory_20261101`. The completed
+primary study is in `train/`, `native/`, `references/` and `cohort/`; the completed
+follow-up uses `decision_train/`, `decision_native/` and `decision_cohort/`.
+Capacity outputs are `capacity_native/` and `capacity_confirmation_matched/`.
+An earlier capacity run used a separately saved initialization in
+`capacity_confirmation/`; it is not used for cross-method comparisons.
+Repeating its four conditions with the common initialization gave the same
+task costs and completions. All planned trainings and native comparisons
+are complete.
+All primary endpoints remain fixed; development comparisons use their separate
+recorded intermediate checkpoints.
+
+The evidence supports cross-task reuse of experimental records and a concrete
+retention limit. Learned applicability, persistent h/z, and extra planning have
+not shown a repeatable additional advantage in these comparisons. The next
+scientific problem is how a policy acquires evidence that distinguishes an old
+relationship from a new one, while avoiding expensive attempts based on the
+wrong archive. The action reader currently receives mixed outcome predictions;
+the individual archived hypotheses and their disagreement are not explicit
+action features. The two-experiment planner does propagate hypothetical
+evidence, but has not surpassed the learned policy. A useful next comparison
+would train experiment choice from the consequences of distinguishing those
+hypotheses, preserving the current execution behavior at initialization.
+This representation issue is a candidate explanation, not an established cause
+of the new-task penalty. General multimodal operation and autonomous consolidation
+remain broader project goals.
+
 ## Response learning: completed update and joint-training comparisons
 
 The [response-learning study](experiments/continual_experiment/RESPONSE_LEARNING.md)

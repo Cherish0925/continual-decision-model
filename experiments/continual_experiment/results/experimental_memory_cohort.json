@@ -1,0 +1,2566 @@
+{
+  "purpose": "Future experiment utility after variable interference and recurrence",
+  "schedule": [
+    0,
+    1,
+    2,
+    0,
+    3,
+    4,
+    1,
+    5,
+    0,
+    2,
+    5,
+    3
+  ],
+  "streams": [
+    {
+      "name": "memory_00",
+      "seeds": [
+        390000,
+        390006,
+        390012,
+        390015,
+        390023,
+        390029,
+        390031,
+        390035,
+        390040,
+        390047,
+        390050,
+        390058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310010,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310000,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310023,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310027,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310003,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310019,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310005,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310009,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310033,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310036,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310092,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310012,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_01",
+      "seeds": [
+        391000,
+        391006,
+        391012,
+        391015,
+        391023,
+        391029,
+        391031,
+        391035,
+        391040,
+        391047,
+        391050,
+        391058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310068,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310005,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310011,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310108,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310063,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310007,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310019,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310017,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310123,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310210,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310038,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310095,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_02",
+      "seeds": [
+        392000,
+        392006,
+        392012,
+        392015,
+        392023,
+        392029,
+        392031,
+        392035,
+        392040,
+        392047,
+        392050,
+        392058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310052,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310018,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310030,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310067,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310093,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310049,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310021,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310007,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310231,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310066,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310020,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310109,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_03",
+      "seeds": [
+        393000,
+        393006,
+        393012,
+        393015,
+        393023,
+        393029,
+        393031,
+        393035,
+        393040,
+        393047,
+        393050,
+        393058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310034,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310159,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310055,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310043,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310044,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310094,
+          "recipe_group": "Substance A:1|Substance D:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310178,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310045,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310061,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310119,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310052,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310066,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_04",
+      "seeds": [
+        394000,
+        394006,
+        394012,
+        394015,
+        394023,
+        394029,
+        394031,
+        394035,
+        394040,
+        394047,
+        394050,
+        394058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310163,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310113,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310071,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310207,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310024,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310262,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310154,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310004,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310226,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310074,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310017,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310026,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_05",
+      "seeds": [
+        395000,
+        395006,
+        395012,
+        395015,
+        395023,
+        395029,
+        395031,
+        395035,
+        395040,
+        395047,
+        395050,
+        395058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310132,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310083,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310463,
+          "recipe_group": "Substance A:1|Substance D:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310165,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310057,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310018,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310099,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310002,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310186,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310466,
+          "recipe_group": "Substance A:1|Substance D:3",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310008,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310103,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_06",
+      "seeds": [
+        396000,
+        396006,
+        396012,
+        396015,
+        396023,
+        396029,
+        396031,
+        396035,
+        396040,
+        396047,
+        396050,
+        396058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310102,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310045,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310319,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310120,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310068,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310229,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310057,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310002,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310153,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310324,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310008,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310108,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_07",
+      "seeds": [
+        397000,
+        397006,
+        397012,
+        397015,
+        397023,
+        397029,
+        397031,
+        397035,
+        397040,
+        397047,
+        397050,
+        397058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310196,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310153,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310012,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310285,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310112,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310035,
+          "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310163,
+          "recipe_group": "Substance A:1|Substance B:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310001,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310312,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310145,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310224,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310126,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_08",
+      "seeds": [
+        398000,
+        398006,
+        398012,
+        398015,
+        398023,
+        398029,
+        398031,
+        398035,
+        398040,
+        398047,
+        398050,
+        398058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310354,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310123,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310274,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310357,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310041,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310184,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310135,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310001,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310371,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310360,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310011,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310051,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_09",
+      "seeds": [
+        399000,
+        399006,
+        399012,
+        399015,
+        399023,
+        399029,
+        399031,
+        399035,
+        399040,
+        399047,
+        399050,
+        399058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310151,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310131,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310048,
+          "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310368,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310236,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310084,
+          "recipe_group": "Substance B:1|Substance D:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310205,
+          "recipe_group": "Substance A:1|Substance B:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310004,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310419,
+          "recipe_group": "Substance A:3|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310053,
+          "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310152,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310250,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_10",
+      "seeds": [
+        400000,
+        400006,
+        400012,
+        400015,
+        400023,
+        400029,
+        400031,
+        400035,
+        400040,
+        400047,
+        400050,
+        400058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310391,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310055,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310233,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310401,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310022,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310006,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310126,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310060,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310437,
+          "recipe_group": "Substance A:1|Substance B:3",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310259,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310084,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310164,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_11",
+      "seeds": [
+        401000,
+        401006,
+        401012,
+        401015,
+        401023,
+        401029,
+        401031,
+        401035,
+        401040,
+        401047,
+        401050,
+        401058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310292,
+          "recipe_group": "Substance B:1|Substance D:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310310,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310010,
+          "recipe_group": "Substance B:2|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310325,
+          "recipe_group": "Substance B:1|Substance D:3",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310248,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310189,
+          "recipe_group": "Substance B:3|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310313,
+          "recipe_group": "Substance A:1|Substance B:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310080,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310486,
+          "recipe_group": "Substance B:1|Substance D:3",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310033,
+          "recipe_group": "Substance B:2|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310082,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310253,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_12",
+      "seeds": [
+        402000,
+        402006,
+        402012,
+        402015,
+        402023,
+        402029,
+        402031,
+        402035,
+        402040,
+        402047,
+        402050,
+        402058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310277,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310170,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310013,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310333,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310085,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310031,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310181,
+          "recipe_group": "Substance A:1|Substance C:3",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310025,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310337,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310014,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310034,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310116,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_13",
+      "seeds": [
+        403000,
+        403006,
+        403012,
+        403015,
+        403023,
+        403029,
+        403031,
+        403035,
+        403040,
+        403047,
+        403050,
+        403058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310303,
+          "recipe_group": "Substance B:3|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310268,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310028,
+          "recipe_group": "Substance C:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310335,
+          "recipe_group": "Substance B:3|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310155,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310056,
+          "recipe_group": "Substance C:3|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310459,
+          "recipe_group": "Substance A:1|Substance B:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310014,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310423,
+          "recipe_group": "Substance B:3|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310062,
+          "recipe_group": "Substance C:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310015,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310158,
+          "recipe_group": "Substance A:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_14",
+      "seeds": [
+        404000,
+        404006,
+        404012,
+        404015,
+        404023,
+        404029,
+        404031,
+        404035,
+        404040,
+        404047,
+        404050,
+        404058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310363,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310134,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310015,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310382,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310038,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310035,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310206,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310042,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310415,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310016,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310064,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310040,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_15",
+      "seeds": [
+        405000,
+        405006,
+        405012,
+        405015,
+        405023,
+        405029,
+        405031,
+        405035,
+        405040,
+        405047,
+        405050,
+        405058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310102,
+          "recipe_group": "Substance C:3|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310037,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310135,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310125,
+          "recipe_group": "Substance C:3|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310077,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310075,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310074,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310031,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310366,
+          "recipe_group": "Substance C:3|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310240,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310148,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310104,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_16",
+      "seeds": [
+        406000,
+        406006,
+        406012,
+        406015,
+        406023,
+        406029,
+        406031,
+        406035,
+        406040,
+        406047,
+        406050,
+        406058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310418,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310047,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310029,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310420,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310072,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310046,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310081,
+          "recipe_group": "Substance A:2|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310083,
+          "recipe_group": "Substance A:3|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310431,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310044,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310162,
+          "recipe_group": "Substance A:3|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310110,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_17",
+      "seeds": [
+        407000,
+        407006,
+        407012,
+        407015,
+        407023,
+        407029,
+        407031,
+        407035,
+        407040,
+        407047,
+        407050,
+        407058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310106,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310172,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310190,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310128,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310326,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310361,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310180,
+          "recipe_group": "Substance A:1|Substance C:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310006,
+          "recipe_group": "Substance A:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310183,
+          "recipe_group": "Substance A:1|Substance C:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310256,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310137,
+          "recipe_group": "Substance A:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310410,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_18",
+      "seeds": [
+        408000,
+        408006,
+        408012,
+        408015,
+        408023,
+        408029,
+        408031,
+        408035,
+        408040,
+        408047,
+        408050,
+        408058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Normal",
+          "seed": 310442,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310138,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310048,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310458,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310306,
+          "recipe_group": "Substance A:3|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310053,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310140,
+          "recipe_group": "Substance A:2|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310043,
+          "recipe_group": "Substance B:1|Substance C:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310514,
+          "recipe_group": "Substance A:1|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310050,
+          "recipe_group": "Substance A:1|Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310073,
+          "recipe_group": "Substance B:1|Substance C:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Normal",
+          "seed": 310328,
+          "recipe_group": "Substance A:3|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    },
+    {
+      "name": "memory_19",
+      "seeds": [
+        409000,
+        409006,
+        409012,
+        409015,
+        409023,
+        409029,
+        409031,
+        409035,
+        409040,
+        409047,
+        409050,
+        409058
+      ],
+      "chemistry": [
+        {
+          "difficulty": "Challenge",
+          "seed": 310270,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310417,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310510,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310380,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310156,
+          "recipe_group": "Substance A:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310096,
+          "recipe_group": "Substance B:1|Substance C:1|Substance D:2",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310451,
+          "recipe_group": "Substance A:1|Substance C:2|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310060,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "new",
+          "intervening_tasks": null,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310397,
+          "recipe_group": "Substance A:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 4,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310539,
+          "recipe_group": "Substance A:2|Substance C:1|Substance D:1",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "untrained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310110,
+          "recipe_group": "Substance A:2|Substance B:1",
+          "exposure": "return",
+          "intervening_tasks": 2,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        },
+        {
+          "difficulty": "Challenge",
+          "seed": 310182,
+          "recipe_group": "Substance A:1|Substance D:2",
+          "exposure": "return",
+          "intervening_tasks": 6,
+          "training_regime": "trained_named_composition",
+          "untrained_proportion_structure": false
+        }
+      ]
+    }
+  ],
+  "model_inputs": "Public observations, returned experiments, public ingredient availability; no task identity",
+  "split": "New native instances; named compositions may be held out, but cosine response family is unchanged",
+  "budgets": {
+    "physics": 400,
+    "chemistry": 1000
+  },
+  "selection": "Fixed seed ranges and recurrence before model outcomes; no selection by success"
+}

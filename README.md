@@ -8,97 +8,53 @@
 
 An observation can become outdated while inference is still running. The research question is how to preserve useful computation, incorporate new observations, and spend additional computation where it improves subsequent decisions.
 
-The latest [response-learning comparison](experiments/continual_experiment/RESPONSE_LEARNING.md)
-learns how an experiment should change predictions for related experiments.
-Across two continuations, retaining this fitted correction improves subsequent
-prediction and reduces native operations by **6.3% and 6.8%** against removing
-it from the same weights; all 40 tasks complete in each condition. The prediction
-gain includes previously untested mixtures within the current task. It has no
-established advantage over independently trained probability calibration.
-Sixteen update trainings and all 1,040 task executions are public. Four completed
-shared-core continuations add 2,400 native executions. Their response updates
-reduce chemical operations by **8.5% and 9.8%** against same-weight removal,
-with all 120 tasks completed in each condition. They still have no established
-advantage over the separately trained calibration reference; autonomous compute
-and long-term recovery remain open objectives. [Full joint comparisons](experiments/continual_experiment/RESPONSE_LEARNING.md#completed-joint-training)
-include physical outcomes, task returns and all controls.
+## Current research
 
-The earlier [physical-learning study](experiments/physical_belief/README.md)
-connects accumulated knowledge to the predictions used for measurement and
-control. Six joint trainings from two independent parents complete **117/120
-and 116/120** new native tasks, against **115/120** for each parent, with **9.9%
-and 15.1% fewer actual actions**. Matched ordinary continuation does not reproduce
-this improvement. Cross-task memory contributes inconsistently: resetting the
-same trained memory yields one more completion in each repetition, and rapid
-recovery of a returning relationship remains unresolved. The results separate
-the value of the complete training method from the effect of retaining memory.
+The [experimental-memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+asks how a continuing model can recognize when past experimental knowledge is
+useful again. It archives actual input–outcome records, reconstructs response
+predictors, and compares those predictors against new observations before
+choosing the next experiment. Current-task learning remains available when
+past relationships do not explain the observations.
 
-The ongoing [continual physical-learning study](experiments/continual_physics/README.md)
-connects those predictions to a persistent neural state and learned choices of
-computation and online learning. All eight trainings and twelve primary native
-conditions are complete; the full models fall below the preceding models.
-They reveal mismatched training/execution costs
-and a failure-feedback gap in decision confidence. Correcting the latter
-raises one fixed model from 83/120 to 105/120 on new instances; its strong
-parent still reaches 119/120. Both additional recurrent references are complete
-and also fall below their parents. Four new trainings using a [native execution model](experiments/continual_physics/EXECUTION.md)
-have now completed their separate 120-instance comparison. Full models finish
-**115/120 and 117/120**, with **103.61 and 101.58** mean native actions; matched
-parents finish **116/120 and 117/120**, with **105.02 and 97.98** actions. Carrying
-all task state saves **25.42 and 27.33 actions** over resetting it, while online
-physical updates and learned activity selection still lack a stable advantage
-over their corresponding controls. [All eleven conditions and 1,320 executions](experiments/continual_physics/EXECUTION.md#completed-native-comparison)
-are retained.
-The [initial-checkpoint and matched-prefix comparisons](experiments/continual_physics/INITIALIZATION.md)
-show that substantial regression precedes
-continued training, so the original and revised execution paths are compared
-explicitly.
+Four joint continuations and **5,280 native executions** are complete on twenty
+twelve-task streams. On returning chemical relationships, memory reduces mean
+operations from **88.67 to 59.33** and **83.07 to 64.23** relative to separately
+trained no-memory models; all 240 chemical tasks complete in each condition.
+New relationships incur extra cost, and only one continuation establishes an
+overall advantage. Fixed evidence weighting performs similarly to learned
+reading, and neural-state resets preserve the return benefit.
+[Complete results](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md#completed-native-comparison)
+include new/return effects, physical outcomes, direct recipe retrieval and the
+known-family Bayesian reference.
 
-Two completed comparisons inform this study. An independent
-[Bayesian active-calibration reference](experiments/classical_calibration/RESULTS.md)
-with relationship memory completes **118/120** new instances with **98.41** mean
-native actions. Separately, [state interventions](experiments/continual_experiment/results/neural_state_controls.md)
-on the earlier joint model locate its cross-task benefits and return costs in
-GRU history; carrying its workspace does not change the measured task outcomes.
-These comparisons guide the ongoing model study and its next state-update experiment.
+Four further joint continuations and 2,400 native executions test direct
+action-return training of the memory reader. That change does not establish
+an improvement over prediction-only continuation or the memory parents.
+[Complete follow-up](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md#learning-applicability-from-action-returns).
 
-A second native task, [Combinatorial Chemistry](experiments/continual_chemistry/README.md),
-uses the recurrent architecture with a learned model of experimental outcomes.
-On **60 new native instances**, all six conditions complete every task. Two
-jointly trained models use **143.35 and 278.37** mean actions, against **367.38**
-for the matched recipe-enumeration reference. Removing direct experimental
-history from the first model raises its cost to **343.75** actions. This supports
-learning useful relationships from earlier experiments. The two training runs
-differ substantially, and the additional benefit of the recurrent-state readout
-remains uncertain. [Complete comparisons](experiments/continual_chemistry/README.md#native-confirmation-of-history-conditioned-decisions)
-include both runs, interventions and recipe-group uncertainty. Chemistry and
-physical control have separately trained task adaptations in these completed
-results. Four completed [shared-core trainings](experiments/continual_experiment/SHARED_TRAINING.md)
-interleave physical action learning and chemical response learning in one
-gradient sequence, comparing continuing and per-interface state. All 1,920 fixed native executions are complete. Continuing a single h/z has
-no consistent advantage over separate task states with shared parameters;
-the linked table retains every endpoint and paired stream comparison.
-An additional [Bayesian reference](experiments/continual_chemistry/BAYESIAN_REFERENCE.md),
-given the public reaction-function family, completes the same 60 tasks in
-98.60 mean operations. This stronger prior and the learned models' different
-information requirements are explicit in the comparison.
-The [v0.12.0 release](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.12.0)
-provides all 320 training instances and four fixed chemical checkpoints.
+Archive retention is a separate, effective intervention. Expanding six task
+ledgers to twelve preserves relationships that were previously evicted before
+their return. Both continuations need fewer operations on long returns, with
+the same weights and evidence rule; short returns incur a small extra cost.
+[Capacity comparisons](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md#retention-across-longer-interruptions)
+report the initial cohort and new instances separately. New relationships
+remain the main source of inappropriate reuse.
 
-The [active-feedback study](experiments/continual_experiment/ACTIVE_TRAINING.md#completed-native-comparison)
-completed four joint trainings and ten native comparisons. Both full models
-finish all 120 chemical tasks, using 97.83 and 96.56 operations versus the
-initial model's 100.28. Neither has an established advantage over its trained
-fixed-computation reference. Discarding online response updates uses 96.92 and
-93.10 operations; the paired differences include zero. The models perform
-learning updates but no consolidation, so useful continuing adaptation and
-long-term knowledge recovery remain open research objectives. All endpoints,
-activity counts and individual task outcomes are available in the study.
-A same-history replay also finds that retained online corrections worsen
-next-outcome prediction in both continuations. The study includes the paired
-predictions and intervals; the cause within the update rule remains unresolved.
+This follows the completed [response-learning comparison](experiments/continual_experiment/RESPONSE_LEARNING.md).
+A learned relation-conditioned update makes an experiment improve predictions
+for related experiments. After joint training, retaining that update reduces
+chemical operations by **8.5% and 9.8%** relative to removing it from the same
+weights, while completing all 120 tasks in each condition. Superiority over a
+separately trained calibration reference remains unestablished. The new memory
+study tests whether useful learning can survive task changes.
 
-## Current results
+The project measures three complementary capabilities: using ongoing computation
+to improve action, learning from the model's own returns, and recovering useful
+knowledge after interference. Their individual results are tracked in
+[HANDOFF.md](HANDOFF.md); a combined advantage is still a research objective.
+
+## Earlier measured results
 
 The scientific-task studies train the continuing core to choose what to measure
 and when to test a setting, expand practice through alternative calibration
@@ -137,9 +93,19 @@ measures experience carried between instances. The subsequent
 selection and parameter learning to the same policy. Useful adaptive computation,
 rapid recovery after interference and learning that improves later experimental
 decisions are now studied through the [physical-belief comparison](experiments/physical_belief/README.md).
-Useful autonomous computation and reliable recovery after interference remain open.
+Useful autonomous computation and recovery across broader task families remain open.
 
 ## Model
+
+The current shared scientific-task checkpoint stores **47.82 million parameters**;
+**32.71 million** are trainable in the joint continuation. It shares core weights
+between physical control and chemistry and retains a separate neural state for
+each interface. Its trained experimental archive holds six task ledgers, with
+up to 32 returned observations per ledger; execution comparisons also use twelve.
+The applicability reader adds 228 parameters.
+This path uses structured public measurements and numerical tools. The earlier
+image/text model is a separate experimental configuration described below.
+
 
 A [shared-core implementation](experiments/continual_experiment/README.md#a-single-core-for-physical-and-chemical-experiments)
 connects the physical and chemical interfaces to one set of core weights,

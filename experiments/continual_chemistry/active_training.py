@@ -24,13 +24,7 @@ def enable_response_learning(parent, activity_mode='learned', max_internal_steps
 
 
 def start_apparatus(model, state, task_boundary, lifetime_boundary):
-    fresh = model.initial(len(task_boundary), task_boundary.device)
-    # h/z and consolidated response corrections remain available after other
-    # tasks. Current-apparatus evidence and its fast correction start empty.
-    continued = {**fresh, 'h': state['h'], 'z': state['z'],
-                 'response_slow': state['response_slow']}
-    state = select_rows(state, continued, task_boundary)
-    return select_rows(state, fresh, lifetime_boundary)
+    return model.next_apparatus(state, task_boundary, lifetime_boundary)
 
 
 def choose_activity(model, state, obs, *, sample, retain_grad=True):
@@ -65,6 +59,15 @@ def proposed_experiments(model, state, obs):
     # receives an outcome target. The response loss below supplies its gradient.
     with torch.no_grad():
         prediction = model.readout(state, obs['candidates'], obs['action_mask'])
+    if getattr(model, 'memory_action_credit', False):
+        evidence_state = {**state, 'archive_evidence': state['archive_evidence'].detach()}
+        weights = model.experimental_memory.weights(evidence_state,
+            obs['candidates'][:, 0, 16:24].bool()).exp()
+        mixture = (prediction['memory_experts'].exp() * weights[:, None, :, None]).sum(2)
+        mixture = mixture.clamp_min(1e-30).log()
+        # Censoring and mixture commute. Preserve the existing forecast's
+        # exact numerical values, adding only the reader's action gradient.
+        prediction['action_memory_outcomes'] = prediction['outcomes'] + (mixture - mixture.detach())
     base = ContinualExperimentPolicy.readout(model, state, obs['candidates'], obs['action_mask'])
     out = {**prediction, 'features': base['features']}
     return model.experiment_logits(out, obs)
@@ -110,7 +113,7 @@ def active_chemical_window(model, state, env, count, statistics, *, compute_cost
         entropies.append(distribution.entropy() + activity_entropy)
         counts.append(computations.detach())
         end_lifetime = result['terminal'] & torch.tensor(
-            [i % 6 == 0 for i in env.task_index], device=action.device)
+            [i % env.lifetime_length == 0 for i in env.task_index], device=action.device)
         continuing.append(~end_lifetime)
     # Bootstrap the next received observation, including task boundaries, using
     # a copied environment state so the continuing rollout is not advanced twice.

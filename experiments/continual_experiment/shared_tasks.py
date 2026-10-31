@@ -11,6 +11,7 @@ from cdm.experimental_belief import ExperimentalBelief
 from cdm.conditional_response import ConditionalResponseConfig
 from cdm.adaptive_response import ResponseAdaptationConfig
 from cdm.response_replay import ResponseReplayConfig
+from cdm.experimental_memory import ExperimentalMemoryConfig
 from cdm.recurrent_feedback import RecurrentFeedbackConfig, configure_recurrent_feedback
 from cdm.shared_core import SharedCorePolicies
 from experiments.continual_chemistry.reaction import ReactionExperimentPolicy, load_reaction_checkpoint
@@ -50,7 +51,9 @@ def load_shared_checkpoint(path, device='cpu'):
                 ResponseAdaptationConfig(**config['response_adaptation_config'])
                 if 'response_adaptation_config' in config else None,
                 ResponseReplayConfig(**config['response_replay_config'])
-                if 'response_replay_config' in config else None)
+                if 'response_replay_config' in config else None,
+                ExperimentalMemoryConfig(**config['experimental_memory_config'])
+                if 'experimental_memory_config' in config else None)
         else:
             raise ValueError(f'Unknown task interface {name}')
         if 'recurrent_feedback_config' in config:

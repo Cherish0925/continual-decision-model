@@ -85,13 +85,20 @@ def run(options, *, model=None, state=None, return_state=False):
                     planning=None
                     if public['rust_level']==0:selected=len(choices)-1
                     elif model is None:selected=int(obs['action_mask'][0].nonzero()[0])
-                    elif adaptive_response:selected=int(model.experiment_logits(out,obs)[0].argmax())
                     elif getattr(args,'planning_mode','progress')!='progress':
                         from .foresight import choose_experiment,ForesightConfig
                         selected,planning=choose_experiment(model,state,public,obs,choices,out,
                             elapsed_actions=env.steps,max_actions=args.max_actions,mode=args.planning_mode,
-                            config=ForesightConfig(topk=getattr(args,'planning_topk',6)))
+                            config=ForesightConfig(topk=getattr(args,'planning_topk',6),
+                                update_memory_evidence=not getattr(args,'freeze_forecast_memory',False)))
+                    elif adaptive_response:selected=int(model.experiment_logits(out,obs)[0].argmax())
                     else:selected=int(outcome_action_scores(out,obs)[0].argmax())
+                    retrieved = None
+                    if getattr(args, 'direct_retrieval', False) and public['rust_level'] > 0:
+                        from .episodic_retrieval import previous_success
+                        retrieved = previous_success(state, obs['candidates'], obs['action_mask'])
+                        if retrieved is not None:
+                            selected = retrieved
                     if model:
                         action=torch.tensor([selected]);state=model.begin_action(state,out['features'],action)
                         before_h=state['h'].clone();before_z=state['z'].clone()
@@ -104,10 +111,18 @@ def run(options, *, model=None, state=None, return_state=False):
                         else:result=executor.experiment(choices[selected])
                     finally:execution_seconds+=perf_counter()-start
                     if model:
+                        if getattr(args, 'direct_retrieval', False):
+                            result['directly_retrieved_recipe'] = retrieved is not None
                         if planning is not None:result['planning']=planning
                         result['model_outcome_logits']=out['outcomes'][0,selected].tolist()
                         result['model_recipe_score']=float(outcome_action_scores(out,obs)[0,selected])
                         result['model_progress_cost_prediction']=out['predictions'][0,selected].tolist()
+                        if 'memory_experts' in out:
+                            memory = model.experimental_memory
+                            result['experimental_memory'] = {
+                                'weights': memory.weights(state, obs['candidates'][:, 0, 16:24].bool()).exp()[0].tolist(),
+                                'expert_return_log_probabilities': out['memory_experts'][0, selected].tolist(),
+                                'archived_tasks': int(state['archive_mask'][0].any(-1).sum())}
                         start=perf_counter();state=model.feedback(state,feedback(result))
                         if adaptive_response and any(choices[selected]):
                             state = model.record_response(state, out, torch.tensor([selected]),
@@ -156,6 +171,7 @@ def main():
     p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--planning-mode',choices=['progress','completion','two_step'],default='progress')
     p.add_argument('--planning-topk',type=int,default=6)
+    p.add_argument('--freeze-forecast-memory',action='store_true')
     args=p.parse_args();summary=run(vars(args));print(json.dumps(summary))
     if summary['error']:raise SystemExit(1)
 

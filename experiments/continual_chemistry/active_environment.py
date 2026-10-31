@@ -17,9 +17,11 @@ from .recipes import primitive_recipes
 
 
 class ActiveChemicalEnvironment:
-    def __init__(self, root, batch, seed, device, budget=1000, split='train'):
+    def __init__(self, root, batch, seed, device, budget=1000, split='train', schedule='paired'):
         self.device, self.batch, self.budget = torch.device(device), batch, budget
         self.rng = random.Random(seed)
+        self.schedule = schedule
+        self.lifetime_length = 6 if schedule == 'paired' else 12
         manifest = json.loads((Path(root) / 'manifest.json').read_text())
         self.entries = [r for r in manifest['episodes'] if r['split'] == split]
         for entry in self.entries:
@@ -53,11 +55,29 @@ class ActiveChemicalEnvironment:
         self.new_task = self.terminal.clone()
         self.new_lifetime = torch.zeros_like(self.terminal)
         for lane in self.terminal.nonzero().flatten().tolist():
-            position = self.task_index[lane] % 6
+            position = self.task_index[lane] % self.lifetime_length
             if position == 0:
-                self.lifetime[lane] = self.rng.sample(self.entries, 2)
+                if self.schedule == 'paired':
+                    a, b = self.rng.sample(self.entries, 2)
+                    self.lifetime[lane] = [a, a, b, b, a, a]
+                elif self.schedule == 'mixed':
+                    groups = {}
+                    for r in self.entries:
+                        groups.setdefault((r['difficulty'], r['recipe_group']), []).append(r)
+                    keys = self.rng.sample(list(groups), 6)
+                    sequence = [0, 1]
+                    for i in range(2, self.lifetime_length):
+                        # Context return and novelty have variable lags. No
+                        # sequence position or hidden key is passed to the model.
+                        seen = set(sequence)
+                        unused = [j for j in range(6) if j not in seen]
+                        choices = unused if unused and self.rng.random() < .45 else sorted(seen)
+                        sequence.append(self.rng.choice(choices))
+                    self.lifetime[lane] = [self.rng.choice(groups[keys[i]]) for i in sequence]
+                else:
+                    raise ValueError(self.schedule)
                 self.new_lifetime[lane] = True
-            row = self.lifetime[lane][int(position in (2, 3))]
+            row = self.lifetime[lane][position]
             n = 3 if row['difficulty'] == 'Normal' else 4
             target = dict(item.rsplit(':', 1) for item in row['recipe_group'].split('|'))
             vector = [int(target.get(f'Substance {chr(65+i)}', 0)) for i in range(n)]

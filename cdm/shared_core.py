@@ -86,7 +86,7 @@ class SharedCorePolicies(nn.Module):
             configuration = policy.configuration()
             configuration.pop('core_config', None)
             flags = {key: getattr(policy, key) for key in ('retain_adaptation', 'retain_physical_adaptation',
-                     'direct_history', 'core_response') if hasattr(policy, key)}
+                     'direct_history', 'core_response', 'memory_action_credit') if hasattr(policy, key)}
             tasks[name] = {'configuration': configuration, 'model': weights, 'runtime': flags}
         return {'kind': 'shared_experiment_core_v1', 'core_config': dict(vars(self.core.config)),
                 'core': self.core.state_dict(), 'tasks': tasks}

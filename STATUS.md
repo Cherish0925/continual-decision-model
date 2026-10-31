@@ -1,31 +1,31 @@
 # CDM: objective, implementation, and results
 
-**Latest completed comparison:** [physical prediction and experimental control](experiments/physical_belief/README.md)
-jointly train the continuing neural core and a reusable physical belief. Six
-trainings and thirteen native conditions are complete. On 120 new instances,
-the two complete models finish 117 and 116 tasks, against 115 for each parent,
-and reduce mean actions by 9.9% and 15.1%. Ordinary continuation does not produce
-this improvement. Retaining the same trained memory has a completion–cost
-tradeoff and does not improve the first task when a previous relationship returns.
-The study uses Bayesian task updates, structured inputs and one fixed workspace
-refinement; learned activity scheduling and general cross-domain deployment
-remain separate objectives.
+**Latest completed comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+completes four joint trainings and 5,280 native executions. Returning chemical
+tasks need 33.1% and 22.7% fewer operations than separately trained no-memory
+references, with all 240 chemical tasks completed in each condition. New-task
+costs rise; an overall advantage is established only in the first continuation.
+The gain persists with fixed evidence reading and neural-state resets. Useful
+cross-task experimental records are established here; an extra contribution
+from learned reading or persistent neural state is not. Four paired follow-up
+trainings and 2,400 native executions find no established gain from direct
+action-return credit into applicability. Increasing archive capacity preserves
+records needed for long returns and reduces their cost; new-task reuse remains
+problematic. The linked study separates retention, reading and action learning.
 
 The preceding [joint activity and learning comparison](experiments/continual_experiment/results/README.md)
 finished 179/184 and 174/184 tasks without surpassing its strongest reference.
 That result motivated learning physical predictions that directly affect the
 experimental decision, rather than only predicting operation cost and success.
 
-Implementation updated **29 October 2026**, including autonomous Reactor Lab
-completion, fixed-prior numerical learning and action training from actual
-experimental feedback. The native results below supersede the earlier
-supplied-calibration-only capability. Scientific-task code, results and downloadable artifacts are included in
-[v0.5.0–v0.8.0](experiments/discoveryworld/RELEASE.md).
+The entries below preserve earlier scientific-task implementations and results.
+Current code, comparisons and artifact instructions are linked from
+[the release guide](experiments/discoveryworld/RELEASE.md).
 Published planner numbers come from release [v0.2.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.0); activity heads retrained with the corrected PPO bootstrap and the integrated learning-while-operating runs come from release [v0.2.1](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.2.1); the first continual-core campaign from [v0.3.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.3.0), and 35 second-round checkpoints with evaluations from [v0.4.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.4.0).
 
 **CDM aims to be a continuously operating model that learns both what to do in the world and how to spend its own computation and experience.** Observations, requests, tool results, and conversations enter the same ongoing process. Goals, unfinished inference, and learned abilities should outlast an individual output.
 
-The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Recall of situations met before, revision of inference in progress, and proactive work are not yet achieved. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
+The present results are a trained navigation prototype with persistent computation and learned choices of observation and refinement, and a continual core: one model that keeps its state through process lifetimes and chooses at every tick its control, its measurements and the use of its compute for inference or for an update of its own parameters, while the process keeps moving. Training its state to predict what each action will do makes this model better than a recurrent policy, whether or not the policy reads the predictions; trained through the learning steps it actually takes, its own parameter updates halve its error during operation. Those process-lifetime studies did not establish recall of earlier situations, revision of inference in progress, or proactive work. The newer experimental-memory results above measure a specific route to knowledge reuse. The setting called "full", in which every activity is learned, is the most complete configuration of this prototype; it is not yet the continuously proactive model the project aims for. General multimodal operation, autonomous research, and long-term skill acquisition remain research objectives.
 
 ## 28 October experience across experimental instances
 
