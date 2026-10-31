@@ -22,6 +22,7 @@ def run_stream(job):
     model, saved = load_shared_checkpoint(options['checkpoint'])
     model.eval()
     physical, chemical = model.tasks['physics'], model.tasks['chemistry']
+    chemical.retain_observed_responses = options.get('retain_observed_responses', False)
     if options.get('disable_response_replay', False):
         chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
     if options.get('memory_mode'):
@@ -106,6 +107,8 @@ def main():
                    help='For same-weight memory controls with separated domain states')
     p.add_argument('--reset-chemical-neural-state', action='store_true')
     p.add_argument('--direct-retrieval', action='store_true')
+    p.add_argument('--retain-observed-responses', action='store_true',
+                   help='Development comparison: retain deterministic observations inside each archived context')
     args = p.parse_args()
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}

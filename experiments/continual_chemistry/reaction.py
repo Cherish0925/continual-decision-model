@@ -136,6 +136,9 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             support = self.response(q, c, before, q, before, after, mask, f)
             logits = self.response_replay(logits, self.response_adaptation.features(prediction['hidden']), query,
                 support['latent_logits'], self.response_adaptation.features(support['hidden']), q, before, after, mask)
+        if getattr(self, 'retain_observed_responses', False):
+            from cdm.observed_response import condition_on_observed_responses
+            logits = condition_on_observed_responses(logits, query, q, before, after, mask)
         return logits.log_softmax(-1).reshape(b, k, a, -1).transpose(1, 2)
 
     def replay_context(self, state, candidates):

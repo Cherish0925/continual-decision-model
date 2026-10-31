@@ -1,5 +1,29 @@
 # Research progress
 
+## Experimental memory: training and native evaluation in progress
+
+The [experimental-memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+adds an archive of actual experimental records and learns its applicability
+from subsequent returns. Four joint continuations are running to update 200:
+memory and independently trained no-memory conditions for both existing parents.
+The native queue evaluates all fixed endpoints on twenty new twelve-task
+streams, with 240 chemical and 240 physical instances per full condition.
+Half of the chemical tasks return to an earlier relationship after interference.
+
+The original parents and both Bayesian references have finished this cohort.
+Bayesian memory completes all 240 chemical tasks, as does its reset comparison.
+It reduces mean return-task cost by 29.1 actions (whole-stream interval
+−40.83 to −18.21), but new-task costs offset much of this gain: the overall
+change is −3.79 actions (−10.62 to +2.73). Candidate model results are pending.
+
+Local outputs are under `runs/continual_physics/experimental_memory_20261101`:
+`train/`, `native/`, `references/` and the fixed `cohort/manifest.json`.
+The main evaluation and additional direct-retrieval/neural-state comparisons
+continue automatically after each training completes. A separate development
+comparison tests preserving deterministic observed values inside an archived
+context. It uses previously evaluated instances and matched intermediate
+weights within each repetition, without changing the primary endpoints.
+
 ## Response learning: completed update and joint-training comparisons
 
 The [response-learning study](experiments/continual_experiment/RESPONSE_LEARNING.md)
