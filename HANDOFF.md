@@ -2,11 +2,15 @@
 
 ## Experimental memory: joint learning, action credit and retention
 
+[v0.14.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
+provides the models, training inputs and complete experimental records.
+[Download and reproduction instructions](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140).
+
 The [memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completed four 200-window joint trainings and 5,280 native executions. Both
 continuations recover old chemical relationships more efficiently: 59.33 and
 64.23 operations, versus 88.67 and 83.07 for separately trained no-memory
-references. All 240 chemical tasks complete in each condition. New-task costs
+references. Both memory and no-memory models complete all 240 chemical tasks. New-task costs
 increase, and only the first continuation establishes an overall gain. Fixed
 evidence weighting is competitive; resetting h/z does not remove the archive
 benefit. Physics completes 232/240 and 234/240, versus initial 233/240 and

@@ -3,7 +3,7 @@
 **Latest completed comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completes four joint trainings and 5,280 native executions. Returning chemical
 tasks need 33.1% and 22.7% fewer operations than separately trained no-memory
-references, with all 240 chemical tasks completed in each condition. New-task
+references; both memory and no-memory models complete all 240 chemical tasks. New-task
 costs rise; an overall advantage is established only in the first continuation.
 The gain persists with fixed evidence reading and neural-state resets. Useful
 cross-task experimental records are established here; an extra contribution

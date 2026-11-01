@@ -10,6 +10,9 @@ An observation can become outdated while inference is still running. The researc
 
 ## Current research
 
+[v0.14.0: models and experimental records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
+· [Download and reproduce](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140)
+
 The [experimental-memory study](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 asks how a continuing model can recognize when past experimental knowledge is
 useful again. It archives actual input–outcome records, reconstructs response
@@ -20,7 +23,7 @@ past relationships do not explain the observations.
 Four joint continuations and **5,280 native executions** are complete on twenty
 twelve-task streams. On returning chemical relationships, memory reduces mean
 operations from **88.67 to 59.33** and **83.07 to 64.23** relative to separately
-trained no-memory models; all 240 chemical tasks complete in each condition.
+trained no-memory models. Both memory and no-memory models complete all 240 chemical tasks.
 New relationships incur extra cost, and only one continuation establishes an
 overall advantage. Fixed evidence weighting performs similarly to learned
 reading, and neural-state resets preserve the return benefit.

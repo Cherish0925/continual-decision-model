@@ -2,16 +2,14 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
-## Experimental memory: v0.14.0 preparation
+## Experimental memory: v0.14.0
 
-[Method and complete comparison](../continual_experiment/EXPERIMENTAL_MEMORY.md)
-· [Changes under review](https://github.com/Cherish0925/continual-decision-model/pull/8)
+[Download v0.14.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
+· [Method and complete comparison](../continual_experiment/EXPERIMENTAL_MEMORY.md)
 
-The draft release packages the shared response-learning parents, the four
+The release packages the shared response-learning parents, the four
 experimental-memory endpoints, four action-credit comparison endpoints,
 training inputs, and complete native records.
-It is not yet a public release. The download commands below become available
-when v0.14.0 is published.
 
 | Archive | Contents |
 |---|---|
@@ -30,7 +28,7 @@ backbone. Archives restore repository-relative paths; optimizer state is
 omitted from inference packages. The packaged training starts a fresh optimizer
 from the saved parent weights, as in the reported comparison.
 
-To repeat the first memory condition after publication:
+To repeat the first memory condition:
 
 ```bash
 git checkout v0.14.0
