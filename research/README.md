@@ -23,6 +23,8 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 | [Transport results](../experiments/transport/RESULTS.md) | Completed quadratic solver comparisons |
 | [Phase review](PHASE_REVIEW.md) | Historical interpretation of the process-lifetime studies |
 
+[Open research questions after v0.14.0](OPEN_QUESTIONS_V014.md) connects the new-task cost and returning-task gains to choices about memory, active experiments and continual computation.
+
 [DESIGN.md](../DESIGN.md) describes the architecture.
 [TRAINING.md](../TRAINING.md) describes the data, objectives and optimization.
 [RUNNING.md](../RUNNING.md) links executable studies.
