@@ -25,9 +25,11 @@ def worker(job):
 
 @torch.no_grad()
 def evaluate(model, manifest, *, root, device='cpu', batch=8, memory='evidence', slots=12,
-             baseline='model', record_predictions=False):
+             baseline='model', record_predictions=False, disable_selector=False):
     model.eval()
     policy = model.tasks['chemistry']
+    if disable_selector:
+        policy.experiment_value = None
     policy.experimental_memory.config = replace(policy.experimental_memory.config, mode=memory, slots=slots)
     rows, predictions = [], []
     started = perf_counter()
@@ -47,8 +49,15 @@ def evaluate(model, manifest, *, root, device='cpu', batch=8, memory='evidence',
             tick = perf_counter()
             state = policy.receive(state, obs)
             state, _, _, internal, _ = choose_activity(policy, state, obs, sample=False)
-            if baseline == 'model':
+            if baseline in ('model', 'retrieval'):
                 action = proposed_experiments(policy, state, obs).argmax(-1)
+                if baseline == 'retrieval':
+                    from experiments.continual_chemistry.episodic_retrieval import previous_success
+                    for lane in range(len(streams)):
+                        remembered = previous_success({k: v[lane:lane + 1] for k, v in state.items()},
+                            obs['candidates'][lane:lane + 1], obs['action_mask'][lane:lane + 1])
+                        if remembered is not None:
+                            action[lane] = remembered
             elif baseline == 'enumeration':
                 # Public low-cost order; no response-law parameters.
                 cost = 6 + env.counts.sum(-1) + (env.counts > 0).sum(-1)
@@ -108,8 +117,9 @@ def main():
     p.add_argument('--batch', type=int, default=4)
     p.add_argument('--workers', type=int, default=1)
     p.add_argument('--memory-mode', choices=('evidence', 'disabled'), default='evidence')
-    p.add_argument('--baseline', choices=('model', 'enumeration', 'oracle'), default='model')
+    p.add_argument('--baseline', choices=('model', 'retrieval', 'enumeration', 'oracle'), default='model')
     p.add_argument('--record-predictions', action='store_true')
+    p.add_argument('--disable-selector', action='store_true', help='Remove only the new action-score residual')
     args = p.parse_args()
     torch.set_num_threads(1)
     torch.manual_seed(43)
@@ -117,7 +127,8 @@ def main():
     model, saved = load_shared_checkpoint(args.checkpoint, args.device)
     manifest = json.loads(args.manifest.read_text())
     options = dict(root=args.chemical_data, device=args.device, batch=args.batch,
-                   memory=args.memory_mode, baseline=args.baseline, record_predictions=args.record_predictions)
+                   memory=args.memory_mode, baseline=args.baseline, record_predictions=args.record_predictions,
+                   disable_selector=args.disable_selector)
     if args.workers == 1:
         rows, predictions, seconds = evaluate(model, manifest, **options)
     else:

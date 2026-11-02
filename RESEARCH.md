@@ -76,12 +76,17 @@ The choice between sensing and computation depends on their achievable improveme
 
 ## Current execution priority
 
-**Updated 2 November 2026 after v0.14.0.** The authoritative implementation
+**Updated 2 November 2026 with the response-law study.** The implementation
 sequence is [Continual Agent](research/CONTINUAL_AGENT.md). Its companion
 [result synthesis](research/MEMORY_AND_EXPERIMENTS.md) distinguishes the
 recomputed native results, finite-model calculations and proposed changes.
 This supersedes the 30 October execution plan; earlier studies remain linked
-in [HANDOFF.md](HANDOFF.md).
+in [HANDOFF.md](HANDOFF.md). The
+[completed comparison](experiments/continual_experiment/RESPONSE_FAMILIES.md)
+now supplies the frozen-parent memory control, six joint continuations,
+two digital cohorts and native retention results. Its new action selector
+does not establish a performance advantage; the independent confirmation also
+does not establish an overall gain from the selector-removed continuation.
 
 The next result should connect **learning a response relationship, choosing an
 experiment, and retaining useful knowledge**. Preserve that connection when
@@ -89,13 +94,14 @@ adding asynchronous observations, ongoing inference and learned operation
 choice. A chemistry-only selector is an initial comparison, not the full CDM
 research objective.
 
-1. Establish the strongest initialization by adding twelve ledgers and fixed
-   weighting to the original frozen parent. Preserve its predictor and
-   within-task h/z. This separates useful retention from continuation training.
-2. Expose uncertainty within both remembered and unfamiliar relationships to
-   action value. Train on multiple response mechanisms and changing task
-   streams; compare recurrent meta-RL, latent-context meta-RL, episodic memory
-   and a cost-aware known-family planner from the outset.
+1. Retain the original frozen parents with twelve ledgers as the reference:
+   the completed control finds no established benefit from the earlier memory
+   continuation. Preserve the inherited action path and within-task h/z.
+2. Learn a distribution over unfamiliar response functions. The completed
+   selector exposes archived functions, while its fresh component still has
+   one marginal predictor. Train and compare this missing representation with
+   recurrent meta-RL and latent-context meta-RL under the same inputs and
+   interaction budget. Keep the existing episodic and known-formula references.
 3. Use the same state and operation interfaces in an independently advancing
    process. Preserve and revise unfinished computation, account for delayed
    observations, and learn when to observe, act, compute, update or wait.

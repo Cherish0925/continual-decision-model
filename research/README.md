@@ -8,6 +8,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 | Study | Contents |
 | --- | --- |
 | [Current model and implementation direction](CONTINUAL_AGENT.md) | Persistent state, relationship belief, action and computation values, continual training, applications and file-level work sequence |
+| [Response-law transfer and action representations](../experiments/continual_experiment/RESPONSE_FAMILIES.md) | Six joint trainings, frozen-parent memory, two digital cohorts, native retention and selector-removal confirmation |
 | [Memory results and corrected calculations](MEMORY_AND_EXPERIMENTS.md) | Recomputed native costs, a finite planning example, prior assumptions and corrections that change the next experiment |
 | [Experimental knowledge across task changes](../experiments/continual_experiment/EXPERIMENTAL_MEMORY.md) | Completed joint training and native comparisons: return-task savings, new-task cost, fixed and learned applicability, direct retrieval and Bayesian memory |
 | [Response updates and later experiments](../experiments/continual_experiment/RESPONSE_LEARNING.md) | Update and full joint comparisons complete; useful response fitting survives core training; strong-reference and long-term gains remain unresolved |

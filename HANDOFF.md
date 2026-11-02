@@ -1,28 +1,48 @@
 # Research progress
 
-## 2 November: response-family implementation and training
+## 2 November: response-family results and independent confirmation
 
 The [response-family study](experiments/continual_experiment/RESPONSE_FAMILIES.md)
-implements the first two changes from the integrated direction and starts
-training on five response mechanisms. The frozen-parent comparison is complete:
+implements the first two changes from the integrated direction and completes
+six joint trainings on five response mechanisms. The frozen-parent comparison is complete:
 twelve ledgers reduce the original parents' costs to 66.84 / 69.34 on the primary
 cohort, with 240/240 completions. The earlier memory continuation does not
 establish an additional gain. New training therefore starts from the originals.
 
-Six fixed-budget joint trainings compare the inherited actor, a marginal
+The fixed-budget joint trainings compare the inherited actor, a marginal
 selector, and a selector of individual response hypotheses. The new selectors
 preserve inherited action scores at initialization. Training updates the shared
 physical/chemical core and task interfaces. The digital extension retains the
 public response/cost interface; hidden laws never enter policy inputs.
 
-Work is on `research/continual-belief-20261102`. Run outputs are under
-`runs/continual_physics/continual_belief_20261102/`: `parent_memory/` is complete;
-`train/` holds six ongoing or queued jobs; `cohorts/` fixes development and final
-streams; `development/` and `test/` contain corresponding evaluations.
+All 256-window endpoints, the 576-task primary comparison, a separate 576-task
+confirmation and 3,840 native executions are complete. The hypothesis-set head
+does not establish an advantage over its same-size marginal control. Removing
+it from the trained models restores native chemistry to 240/240 at 64.06 / 67.70
+operations. Its exported `core_only.pt` preserves all other trained weights.
+
+On independent digital streams these simpler models use 155.18 / 156.93
+operations against 161.47 / 160.93 for the frozen parents. Both paired intervals
+include zero; the stronger primary-cohort gain is not a confirmed overall
+advantage. The known-formula reference uses 121.12 operations and completes
+574/576. The [study](experiments/continual_experiment/RESPONSE_FAMILIES.md) contains
+every condition, native retention, training curves, cohorts and comparison code.
+
+Run outputs are under `runs/continual_physics/continual_belief_20261102/`:
+`parent_memory/`, `train/`, `cohorts/`, `development/`, `test/`, `confirmation/`
+and `native/` are complete. No training or evaluation job from this study remains.
+Models and records are supplied in v0.15.0, with repository-relative paths.
+
+Continue with a learned distribution over unfamiliar response functions.
+The current fresh component remains one marginal predictor; the new set head
+only exposes distinctions among available archived predictors. Keep the
+inherited actor as the action reference, and compare recurrent and learned
+latent-context policies before claiming a general model advantage. Do not
+continue tuning the unsuccessful extra action head on these test cohorts.
 The original research objective and remaining model capabilities are preserved
 in the integrated direction below.
 
-## 2 November: integrated model and research direction
+## 2 November: the plan preceding this study
 
 Start with **[CONTINUAL_AGENT.md](research/CONTINUAL_AGENT.md)** for the current
 architecture, training objectives, applications, implementation order and
@@ -31,18 +51,19 @@ contains the result calculations and corrected interpretations;
 [the focused method comparison](ref/BELIEF_AND_COMPUTATION.md) specifies the
 nearest learned and model-based alternatives.
 
-This update recomputes published CSV summaries and a finite experimental-design
-example. It does not train models, run new native tasks or start a training
-queue. Released results below remain the measured starting point.
+The initial integration recomputed published CSV summaries and a finite
+experimental-design example. The new training and evaluations are reported
+above; this section preserves their motivation.
 
 The twelve-ledger configurations save 10.8% and 14.1% against the frozen initial
-models on the primary cohort, but new tasks remain more expensive. The next
-missing comparison is the original parent with the same twelve-ledger memory.
+models on the primary cohort, but new tasks remain more expensive. The original
+parent with the same twelve-ledger memory was then the missing comparison;
+the response-law study above now supplies it.
 The full trained actor already has a task-return residual; a failure of its
 bare progress-per-cost term is not automatically a failure of that actor.
 
-Proceed from that initialization comparison to learned relationship beliefs
-and future-cost action selection on changing response families. Integrate
+The plan proceeds from that initialization comparison to learned relationship
+beliefs and future-cost action selection on changing response families. Integrate
 pending events and reusable inference in the timed process through the same
 model interfaces. Retain autonomous computation, multimodal perception and
 quiet-period consolidation as explicit parts of the model, with subsequent

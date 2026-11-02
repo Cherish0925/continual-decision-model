@@ -1,0 +1,4406 @@
+{
+  "conditions": {
+    "belief": {
+      "all": {
+        "tasks": 576,
+        "completed": 569,
+        "operations": 122.59027777777777
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 144.54166666666666
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 281,
+        "operations": 120.41319444444444
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 104.99305555555556
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 93,
+        "operations": 149.83870967741936
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 269,
+        "operations": 149.76383763837637
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 207,
+        "operations": 75.90094339622641
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 77.62280701754386
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 96.54054054054055
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 101.35135135135135
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 144.54166666666666
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 64,
+        "operations": 220.35211267605635
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 107.67676767676768
+      }
+    },
+    "direct911": {
+      "all": {
+        "tasks": 576,
+        "completed": 557,
+        "operations": 178.40277777777777
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.77777777777777
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 279,
+        "operations": 161.18055555555554
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 141,
+        "operations": 173.47222222222223
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 90,
+        "operations": 228.3763440860215
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 261,
+        "operations": 233.74538745387454
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 206,
+        "operations": 85.73584905660377
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 113,
+        "operations": 115.21929824561404
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 157.85135135135135
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 177.3783783783784
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.77777777777777
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 63,
+        "operations": 271.77464788732397
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 97,
+        "operations": 143.05050505050505
+      }
+    },
+    "direct912": {
+      "all": {
+        "tasks": 576,
+        "completed": 553,
+        "operations": 181.24131944444446
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.77083333333334
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 279,
+        "operations": 159.28472222222223
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 188.625
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 230.51612903225808
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 261,
+        "operations": 232.36531365313652
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 203,
+        "operations": 94.27358490566037
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 113,
+        "operations": 115.56140350877193
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 156.90540540540542
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 159.66216216216216
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.77083333333334
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 61,
+        "operations": 297.6478873239437
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 95,
+        "operations": 154.57575757575756
+      }
+    },
+    "disabled911": {
+      "all": {
+        "tasks": 576,
+        "completed": 572,
+        "operations": 162.22569444444446
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 141,
+        "operations": 218.65972222222223
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 287,
+        "operations": 139.59375
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 151.05555555555554
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 92,
+        "operations": 154.96774193548387
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 270,
+        "operations": 171.05535055350555
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 210,
+        "operations": 154.12264150943398
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 115.64912280701755
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 125.35135135135135
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 145.67567567567568
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 141,
+        "operations": 218.65972222222223
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 186.7887323943662
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 156.0909090909091
+      }
+    },
+    "disabled912": {
+      "all": {
+        "tasks": 576,
+        "completed": 560,
+        "operations": 206.93402777777777
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 132,
+        "operations": 320.9375
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 284,
+        "operations": 157.14930555555554
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 192.5
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 88,
+        "operations": 221.1290322580645
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 265,
+        "operations": 201.52767527675277
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 207,
+        "operations": 207.6179245283019
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 101.5
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 70,
+        "operations": 191.6891891891892
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 194.0810810810811
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 132,
+        "operations": 320.9375
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 256.4366197183099
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 148.02020202020202
+      }
+    },
+    "enumeration": {
+      "all": {
+        "tasks": 576,
+        "completed": 487,
+        "operations": 414.07118055555554
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 106,
+        "operations": 519.3819444444445
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 252,
+        "operations": 380.27777777777777
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 129,
+        "operations": 376.34722222222223
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 83,
+        "operations": 435.39784946236557
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 225,
+        "operations": 415.81180811808116
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 179,
+        "operations": 402.49056603773585
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 101,
+        "operations": 364.5
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 63,
+        "operations": 399.0945945945946
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 66,
+        "operations": 469.6621621621622
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 106,
+        "operations": 519.3819444444445
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 57,
+        "operations": 410.5633802816901
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 94,
+        "operations": 290.1313131313131
+      }
+    },
+    "hypotheses911": {
+      "all": {
+        "tasks": 576,
+        "completed": 573,
+        "operations": 143.99131944444446
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 193.96527777777777
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 285,
+        "operations": 124.15625
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 133.6875
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 93,
+        "operations": 169.6236559139785
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 268,
+        "operations": 202.0811808118081
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 58.490566037735846
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 113,
+        "operations": 108.95614035087719
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 123.01351351351352
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 140.59459459459458
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 193.96527777777777
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 70,
+        "operations": 175.09859154929578
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 107.55555555555556
+      }
+    },
+    "hypotheses912": {
+      "all": {
+        "tasks": 576,
+        "completed": 563,
+        "operations": 150.33333333333334
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 138,
+        "operations": 215.72916666666666
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 282,
+        "operations": 128.88888888888889
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 143,
+        "operations": 127.82638888888889
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 161.2258064516129
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 262,
+        "operations": 209.40959409594095
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 70.0377358490566
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 89.63157894736842
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 71,
+        "operations": 158.16216216216216
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 153.3108108108108
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 138,
+        "operations": 215.72916666666666
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 68,
+        "operations": 183.01408450704224
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 93.5959595959596
+      }
+    },
+    "inherited911": {
+      "all": {
+        "tasks": 576,
+        "completed": 572,
+        "operations": 140.14930555555554
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 140,
+        "operations": 196.05555555555554
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 288,
+        "operations": 117.81944444444444
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 128.90277777777777
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 90,
+        "operations": 185.10752688172042
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 270,
+        "operations": 187.08487084870848
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 60.429245283018865
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 84.23684210526316
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 143.05405405405406
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 133.72972972972974
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 140,
+        "operations": 196.05555555555554
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 160.80281690140845
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 111.03030303030303
+      }
+    },
+    "inherited912": {
+      "all": {
+        "tasks": 576,
+        "completed": 566,
+        "operations": 150.91319444444446
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 210.66666666666666
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 286,
+        "operations": 127.90972222222223
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 143,
+        "operations": 137.16666666666666
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 186.66666666666666
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 268,
+        "operations": 193.59040590405905
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 209,
+        "operations": 80.6745283018868
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 87.21929824561404
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 72,
+        "operations": 167.1081081081081
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 149.71621621621622
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 210.66666666666666
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 70,
+        "operations": 173.33802816901408
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 110.05050505050505
+      }
+    },
+    "marginal911": {
+      "all": {
+        "tasks": 576,
+        "completed": 566,
+        "operations": 142.17013888888889
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 139,
+        "operations": 199.5625
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 284,
+        "operations": 120.13194444444444
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 143,
+        "operations": 128.85416666666666
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 169.58064516129033
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 265,
+        "operations": 193.25830258302582
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 64.83962264150944
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 82.71929824561404
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 72,
+        "operations": 164.01351351351352
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 136.6216216216216
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 139,
+        "operations": 199.5625
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 68,
+        "operations": 175.83098591549296
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 90.82828282828282
+      }
+    },
+    "marginal912": {
+      "all": {
+        "tasks": 576,
+        "completed": 569,
+        "operations": 147.31076388888889
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.47916666666666
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 288,
+        "operations": 119.13888888888889
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 133.48611111111111
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 90,
+        "operations": 173.94623655913978
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 268,
+        "operations": 199.0369003690037
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 211,
+        "operations": 69.50471698113208
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 86.5701754385965
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 150.67567567567568
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 132.83783783783784
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 217.47916666666666
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 165.95774647887325
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 110.12121212121212
+      }
+    },
+    "no_selector911": {
+      "all": {
+        "tasks": 576,
+        "completed": 571,
+        "operations": 138.65277777777777
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 141,
+        "operations": 172.94444444444446
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 287,
+        "operations": 123.98958333333333
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 143,
+        "operations": 133.6875
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 179.08602150537635
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 270,
+        "operations": 181.760147601476
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 65.81132075471699
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 86.12280701754386
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 156.2972972972973
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 155.22972972972974
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 141,
+        "operations": 172.94444444444446
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 70,
+        "operations": 170.9718309859155
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 100.5050505050505
+      }
+    },
+    "no_selector912": {
+      "all": {
+        "tasks": 576,
+        "completed": 572,
+        "operations": 134.43229166666666
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 142,
+        "operations": 176.28472222222223
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 288,
+        "operations": 113.84375
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 142,
+        "operations": 133.75694444444446
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 91,
+        "operations": 162.11827956989248
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 271,
+        "operations": 174.71586715867159
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 210,
+        "operations": 70.79245283018868
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 85.46491228070175
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 133.2972972972973
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 72,
+        "operations": 152.56756756756758
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 142,
+        "operations": 176.28472222222223
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 159.25352112676057
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 99.43434343434343
+      }
+    },
+    "oracle": {
+      "all": {
+        "tasks": 576,
+        "completed": 576,
+        "operations": 30.227430555555557
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 30.51388888888889
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 288,
+        "operations": 30.09375
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 30.208333333333332
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 93,
+        "operations": 30.591397849462364
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 271,
+        "operations": 30.18450184501845
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 212,
+        "operations": 30.12264150943396
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 30.271929824561404
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 30.405405405405407
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 30.77027027027027
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 144,
+        "operations": 30.51388888888889
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 71,
+        "operations": 29.95774647887324
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 29.414141414141415
+      }
+    },
+    "parent911": {
+      "all": {
+        "tasks": 576,
+        "completed": 567,
+        "operations": 158.09375
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 231.17361111111111
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 288,
+        "operations": 126.84722222222223
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 142,
+        "operations": 147.50694444444446
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 190.46236559139786
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 268,
+        "operations": 207.93357933579335
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 210,
+        "operations": 80.18396226415095
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 114,
+        "operations": 95.96491228070175
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 125.70270270270271
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 193.01351351351352
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 231.17361111111111
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 69,
+        "operations": 182.57746478873239
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 103.88888888888889
+      }
+    },
+    "parent912": {
+      "all": {
+        "tasks": 576,
+        "completed": 565,
+        "operations": 155.41666666666666
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 205.80555555555554
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "completed": 286,
+        "operations": 130.31944444444446
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "completed": 142,
+        "operations": 155.22222222222223
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "completed": 89,
+        "operations": 187.27956989247312
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "completed": 266,
+        "operations": 207.02952029520296
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "completed": 210,
+        "operations": 75.4622641509434
+      },
+      "family:cosine": {
+        "tasks": 114,
+        "completed": 113,
+        "operations": 105.76315789473684
+      },
+      "family:inhibition": {
+        "tasks": 74,
+        "completed": 73,
+        "operations": 140.01351351351352
+      },
+      "family:interaction": {
+        "tasks": 74,
+        "completed": 74,
+        "operations": 179.54054054054055
+      },
+      "family:interaction_inhibition": {
+        "tasks": 144,
+        "completed": 137,
+        "operations": 205.80555555555554
+      },
+      "family:metric": {
+        "tasks": 71,
+        "completed": 69,
+        "operations": 192.45070422535213
+      },
+      "family:multiple_solutions": {
+        "tasks": 99,
+        "completed": 99,
+        "operations": 106.22222222222223
+      }
+    }
+  },
+  "comparisons": {
+    "hypotheses911:marginal911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          1.8211805555555556,
+          0.012152777777777778
+        ],
+        "interval95": [
+          [
+            -16.240842013888887,
+            19.061024305555552
+          ],
+          [
+            -0.001736111111111111,
+            0.027777777777777776
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -5.597222222222222,
+          0.034722222222222224
+        ],
+        "interval95": [
+          [
+            -53.29184027777777,
+            34.791666666666664
+          ],
+          [
+            0.006944444444444444,
+            0.06944444444444445
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          4.024305555555555,
+          0.003472222222222222
+        ],
+        "interval95": [
+          [
+            -19.605729166666666,
+            27.302517361111104
+          ],
+          [
+            -0.017361111111111112,
+            0.024305555555555556
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          4.833333333333333,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -20.507118055555555,
+            36.7017361111111
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          0.043010752688172046,
+          0.043010752688172046
+        ],
+        "interval95": [
+          [
+            -48.608639134592394,
+            49.86973345588228
+          ],
+          [
+            0.0,
+            0.10344827586206896
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          8.822878228782288,
+          0.01107011070110701
+        ],
+        "interval95": [
+          [
+            -17.83975434542349,
+            34.9525022530134
+          ],
+          [
+            -0.014336917562724014,
+            0.034249189584858265
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -6.349056603773585,
+          0.0
+        ],
+        "interval95": [
+          [
+            -20.351856576697923,
+            5.610879497430039
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses911:inherited911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          3.842013888888889,
+          0.001736111111111111
+        ],
+        "interval95": [
+          [
+            -13.792100694444443,
+            21.33094618055554
+          ],
+          [
+            -0.010416666666666666,
+            0.013888888888888888
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -2.0902777777777777,
+          0.027777777777777776
+        ],
+        "interval95": [
+          [
+            -54.9453125,
+            47.885243055555506
+          ],
+          [
+            0.0,
+            0.0625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          6.336805555555555,
+          -0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -14.06267361111111,
+            27.44114583333333
+          ],
+          [
+            -0.027777777777777776,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          4.784722222222222,
+          0.0
+        ],
+        "interval95": [
+          [
+            -17.59045138888889,
+            28.264062499999998
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -15.483870967741936,
+          0.03225806451612903
+        ],
+        "interval95": [
+          [
+            -57.50046296296296,
+            27.14617917119729
+          ],
+          [
+            0.0,
+            0.08889438943894382
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          14.99630996309963,
+          -0.007380073800738007
+        ],
+        "interval95": [
+          [
+            -11.996416111285056,
+            42.031083267819696
+          ],
+          [
+            -0.026515151515151516,
+            0.007662835249042145
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -1.9386792452830188,
+          0.0
+        ],
+        "interval95": [
+          [
+            -12.491426767676767,
+            7.513561138230741
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses911:parent911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -14.102430555555555,
+          0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -35.06453993055556,
+            5.32157118055555
+          ],
+          [
+            -0.005208333333333333,
+            0.027777777777777776
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -37.208333333333336,
+          0.04861111111111111
+        ],
+        "interval95": [
+          [
+            -101.52118055555555,
+            19.931076388888883
+          ],
+          [
+            0.013888888888888888,
+            0.09722222222222222
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -2.6909722222222223,
+          -0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -22.948958333333334,
+            19.646267361111104
+          ],
+          [
+            -0.027777777777777776,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -13.819444444444445,
+          0.013888888888888888
+        ],
+        "interval95": [
+          [
+            -39.583506944444444,
+            13.764583333333324
+          ],
+          [
+            0.0,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -20.838709677419356,
+          0.043010752688172046
+        ],
+        "interval95": [
+          [
+            -62.7796511627907,
+            21.77947368421052
+          ],
+          [
+            0.0,
+            0.10227272727272728
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -5.85239852398524,
+          0.0
+        ],
+        "interval95": [
+          [
+            -34.32974507491676,
+            22.81442495126705
+          ],
+          [
+            -0.021739130434782608,
+            0.019083969465648856
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -21.693396226415093,
+          0.009433962264150943
+        ],
+        "interval95": [
+          [
+            -47.754946646341466,
+            -0.6970390981735171
+          ],
+          [
+            0.0,
+            0.023923444976076555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses911:disabled911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -18.234375,
+          0.001736111111111111
+        ],
+        "interval95": [
+          [
+            -36.44453125,
+            -1.3747829861111143
+          ],
+          [
+            -0.010416666666666666,
+            0.015625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -24.694444444444443,
+          0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -84.40434027777778,
+            20.90277777777778
+          ],
+          [
+            0.0,
+            0.0625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -15.4375,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -36.995052083333334,
+            6.441059027777777
+          ],
+          [
+            -0.020833333333333332,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -17.368055555555557,
+          0.0
+        ],
+        "interval95": [
+          [
+            -34.50694444444444,
+            3.202083333333323
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          14.655913978494624,
+          0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -6.495105805751492,
+            37.46055357142856
+          ],
+          [
+            0.0,
+            0.03571428571428571
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          31.025830258302584,
+          -0.007380073800738007
+        ],
+        "interval95": [
+          [
+            10.671548859476204,
+            54.5160122254455
+          ],
+          [
+            -0.022900763358778626,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -95.63207547169812,
+          0.009433962264150943
+        ],
+        "interval95": [
+          [
+            -128.95745129100393,
+            -67.75705006073021
+          ],
+          [
+            0.0,
+            0.03000376884422105
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses911:direct911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -34.411458333333336,
+          0.027777777777777776
+        ],
+        "interval95": [
+          [
+            -53.469097222222224,
+            -17.159548611111113
+          ],
+          [
+            0.010416666666666666,
+            0.050347222222222224
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -23.8125,
+          0.04861111111111111
+        ],
+        "interval95": [
+          [
+            -70.24340277777777,
+            18.756944444444443
+          ],
+          [
+            0.006944444444444444,
+            0.1111111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -37.02430555555556,
+          0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -63.17743055555556,
+            -15.201128472222226
+          ],
+          [
+            0.0,
+            0.04861111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -39.78472222222222,
+          0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -77.29913194444444,
+            -15.659722222222221
+          ],
+          [
+            0.0,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -58.75268817204301,
+          0.03225806451612903
+        ],
+        "interval95": [
+          [
+            -105.78175,
+            -15.902289603960417
+          ],
+          [
+            0.0,
+            0.07228915662650602
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -31.66420664206642,
+          0.025830258302583026
+        ],
+        "interval95": [
+          [
+            -52.7919964028777,
+            -11.224085134498642
+          ],
+          [
+            0.0036101083032490976,
+            0.052830188679245285
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -27.245283018867923,
+          0.02830188679245283
+        ],
+        "interval95": [
+          [
+            -61.118572970206706,
+            0.7834470657048036
+          ],
+          [
+            0.0,
+            0.06278026905829596
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses911:no_selector911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          5.338541666666667,
+          0.003472222222222222
+        ],
+        "interval95": [
+          [
+            -12.664583333333333,
+            23.019140625
+          ],
+          [
+            -0.008680555555555556,
+            0.015625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          21.020833333333332,
+          0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -30.965972222222224,
+            69.58350694444444
+          ],
+          [
+            0.0,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          0.16666666666666666,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -22.351041666666664,
+            22.75364583333333
+          ],
+          [
+            -0.024305555555555556,
+            0.006944444444444444
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          0.0,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -22.118402777777778,
+            23.86128472222222
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -9.46236559139785,
+          0.043010752688172046
+        ],
+        "interval95": [
+          [
+            -56.74397957684396,
+            38.188020833333326
+          ],
+          [
+            0.0,
+            0.10344827586206896
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          20.321033210332104,
+          -0.007380073800738007
+        ],
+        "interval95": [
+          [
+            -4.749751346871114,
+            45.58133311453889
+          ],
+          [
+            -0.02640295161591631,
+            0.007662835249042145
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -7.320754716981132,
+          0.0
+        ],
+        "interval95": [
+          [
+            -20.165448113207546,
+            4.638365924693146
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:marginal912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          3.0225694444444446,
+          -0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -9.106250000000001,
+            14.23263888888889
+          ],
+          [
+            -0.024305555555555556,
+            0.005208333333333333
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -1.75,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -40.013888888888886,
+            27.68871527777776
+          ],
+          [
+            -0.027777777777777776,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          9.75,
+          -0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -1.6840277777777777,
+            22.53854166666666
+          ],
+          [
+            -0.03819444444444445,
+            -0.006944444444444444
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -5.659722222222222,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -21.410069444444442,
+            15.48611111111111
+          ],
+          [
+            -0.020833333333333332,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -12.720430107526882,
+          -0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -42.23999741200828,
+            19.927285801713573
+          ],
+          [
+            -0.05,
+            0.023255813953488372
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          10.37269372693727,
+          -0.02214022140221402
+        ],
+        "interval95": [
+          [
+            -8.941026837531762,
+            29.003927420687372
+          ],
+          [
+            -0.04363636363636364,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          0.5330188679245284,
+          0.0047169811320754715
+        ],
+        "interval95": [
+          [
+            -15.867845882063552,
+            15.420646103617145
+          ],
+          [
+            0.0,
+            0.01485148514851485
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:inherited912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -0.5798611111111112,
+          -0.005208333333333333
+        ],
+        "interval95": [
+          [
+            -17.25347222222222,
+            15.508897569444441
+          ],
+          [
+            -0.020833333333333332,
+            0.013888888888888888
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          5.0625,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -50.307118055555556,
+            54.09097222222221
+          ],
+          [
+            -0.041666666666666664,
+            0.0763888888888889
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          0.9791666666666666,
+          -0.013888888888888888
+        ],
+        "interval95": [
+          [
+            -12.028298611111111,
+            15.020920138888888
+          ],
+          [
+            -0.027777777777777776,
+            -0.003472222222222222
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -9.340277777777779,
+          0.0
+        ],
+        "interval95": [
+          [
+            -34.67378472222222,
+            16.903124999999996
+          ],
+          [
+            -0.020833333333333332,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -25.440860215053764,
+          0.0
+        ],
+        "interval95": [
+          [
+            -59.56831632653061,
+            8.200107526881718
+          ],
+          [
+            -0.031258223684210516,
+            0.031914893617021274
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          15.819188191881919,
+          -0.02214022140221402
+        ],
+        "interval95": [
+          [
+            -1.1542671845895225,
+            34.091632618318
+          ],
+          [
+            -0.043478260869565216,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -10.63679245283019,
+          0.014150943396226415
+        ],
+        "interval95": [
+          [
+            -32.38004901960784,
+            8.597681924882608
+          ],
+          [
+            0.0,
+            0.03755868544600939
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:parent912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -5.083333333333333,
+          -0.003472222222222222
+        ],
+        "interval95": [
+          [
+            -20.008984375,
+            9.995225694444438
+          ],
+          [
+            -0.017361111111111112,
+            0.010416666666666666
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          9.92361111111111,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -25.724479166666665,
+            53.62586805555554
+          ],
+          [
+            -0.034722222222222224,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -1.4305555555555556,
+          -0.013888888888888888
+        ],
+        "interval95": [
+          [
+            -11.26388888888889,
+            9.44800347222222
+          ],
+          [
+            -0.027777777777777776,
+            -0.003472222222222222
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -27.395833333333332,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -67.87552083333333,
+            3.6319444444444446
+          ],
+          [
+            -0.020833333333333332,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -26.053763440860216,
+          0.0
+        ],
+        "interval95": [
+          [
+            -55.206530927835054,
+            5.356492143779595
+          ],
+          [
+            -0.031578947368421054,
+            0.030303030303030304
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          2.3800738007380073,
+          -0.014760147601476014
+        ],
+        "interval95": [
+          [
+            -16.858194129961124,
+            21.920572407044993
+          ],
+          [
+            -0.037543945187200084,
+            0.0076045627376425855
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -5.4245283018867925,
+          0.009433962264150943
+        ],
+        "interval95": [
+          [
+            -28.476882167961524,
+            13.105396002024289
+          ],
+          [
+            0.0,
+            0.023923444976076555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:disabled912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -56.60069444444444,
+          0.005208333333333333
+        ],
+        "interval95": [
+          [
+            -82.99040798611111,
+            -33.838541666666664
+          ],
+          [
+            -0.010416666666666666,
+            0.024305555555555556
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -105.20833333333333,
+          0.041666666666666664
+        ],
+        "interval95": [
+          [
+            -182.24444444444444,
+            -42.57569444444445
+          ],
+          [
+            -0.006944444444444444,
+            0.10434027777777526
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -28.260416666666668,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -48.75026041666666,
+            -8.821875000000015
+          ],
+          [
+            -0.020833333333333332,
+            0.006944444444444444
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -64.67361111111111,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -112.42395833333333,
+            -30.048263888888894
+          ],
+          [
+            -0.020833333333333332,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -59.903225806451616,
+          0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -104.46701953444848,
+            -22.296079192546593
+          ],
+          [
+            0.0,
+            0.03488372093023256
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          7.881918819188192,
+          -0.01107011070110701
+        ],
+        "interval95": [
+          [
+            -10.279141365949572,
+            25.94295754928315
+          ],
+          [
+            -0.03007518796992481,
+            0.007575757575757576
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -137.58018867924528,
+          0.02358490566037736
+        ],
+        "interval95": [
+          [
+            -184.53964285714287,
+            -95.64928738317758
+          ],
+          [
+            0.0,
+            0.05347648599282585
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:direct912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -30.90798611111111,
+          0.017361111111111112
+        ],
+        "interval95": [
+          [
+            -57.40920138888889,
+            -7.425130208333337
+          ],
+          [
+            -0.003472222222222222,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -2.0416666666666665,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -52.03559027777778,
+            45.15972222222222
+          ],
+          [
+            -0.034722222222222224,
+            0.04861111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -30.395833333333332,
+          0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -53.99331597222222,
+            -9.867621527777784
+          ],
+          [
+            -0.010416666666666666,
+            0.03819444444444445
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -60.798611111111114,
+          0.041666666666666664
+        ],
+        "interval95": [
+          [
+            -139.77864583333331,
+            3.111111111111111
+          ],
+          [
+            -0.013888888888888888,
+            0.1111111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -69.29032258064517,
+          0.0
+        ],
+        "interval95": [
+          [
+            -138.08545892169448,
+            -9.715215664711643
+          ],
+          [
+            -0.05319148936170213,
+            0.05154639175257732
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -22.95571955719557,
+          0.0036900369003690036
+        ],
+        "interval95": [
+          [
+            -45.56642256828575,
+            -0.3925120530333557
+          ],
+          [
+            -0.019011406844106463,
+            0.02909090909090909
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -24.235849056603772,
+          0.04245283018867924
+        ],
+        "interval95": [
+          [
+            -62.027979258328095,
+            9.389691482226693
+          ],
+          [
+            0.009389671361502348,
+            0.08163265306122448
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "hypotheses912:no_selector912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          15.901041666666666,
+          -0.015625
+        ],
+        "interval95": [
+          [
+            4.692578125,
+            30.050477430555553
+          ],
+          [
+            -0.029513888888888888,
+            -0.003472222222222222
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          39.44444444444444,
+          -0.027777777777777776
+        ],
+        "interval95": [
+          [
+            4.186458333333334,
+            84.73020833333332
+          ],
+          [
+            -0.0625,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          15.04513888888889,
+          -0.020833333333333332
+        ],
+        "interval95": [
+          [
+            4.604079861111112,
+            26.84392361111111
+          ],
+          [
+            -0.03819444444444445,
+            -0.006944444444444444
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -5.930555555555555,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -14.548784722222221,
+            0.9097222222222222
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -0.8924731182795699,
+          -0.021505376344086023
+        ],
+        "interval95": [
+          [
+            -27.251615168539324,
+            29.35083048530417
+          ],
+          [
+            -0.05619573544433094,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          34.693726937269375,
+          -0.033210332103321034
+        ],
+        "interval95": [
+          [
+            14.271994590939824,
+            56.266688963210704
+          ],
+          [
+            -0.05263157894736842,
+            -0.01509433962264151
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -0.7547169811320755,
+          0.009433962264150943
+        ],
+        "interval95": [
+          [
+            -14.246642881290446,
+            10.795353002550419
+          ],
+          [
+            0.0,
+            0.03015075376884422
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector911:marginal911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -3.517361111111111,
+          0.008680555555555556
+        ],
+        "interval95": [
+          [
+            -12.196397569444445,
+            4.288541666666662
+          ],
+          [
+            0.001736111111111111,
+            0.015625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -26.618055555555557,
+          0.013888888888888888
+        ],
+        "interval95": [
+          [
+            -49.44479166666667,
+            -7.360937500000002
+          ],
+          [
+            0.0,
+            0.034722222222222224
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          3.857638888888889,
+          0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -4.454947916666666,
+            12.555902777777773
+          ],
+          [
+            0.0,
+            0.024305555555555556
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          4.833333333333333,
+          0.0
+        ],
+        "interval95": [
+          [
+            -4.506944444444445,
+            16.354861111111102
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          9.505376344086022,
+          0.0
+        ],
+        "interval95": [
+          [
+            -1.9558687943262407,
+            20.370443877551015
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -11.498154981549815,
+          0.01845018450184502
+        ],
+        "interval95": [
+          [
+            -28.218468013468012,
+            3.1656386963104506
+          ],
+          [
+            0.003861003861003861,
+            0.034482758620689655
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          0.9716981132075472,
+          0.0
+        ],
+        "interval95": [
+          [
+            -4.621219201359388,
+            6.5942516722408016
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector911:inherited911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -1.4965277777777777,
+          -0.001736111111111111
+        ],
+        "interval95": [
+          [
+            -9.680772569444445,
+            5.803906249999999
+          ],
+          [
+            -0.006944444444444444,
+            0.003472222222222222
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -23.11111111111111,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -47.63229166666667,
+            -3.159375000000005
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          6.170138888888889,
+          -0.003472222222222222
+        ],
+        "interval95": [
+          [
+            0.8124131944444445,
+            13.125086805555554
+          ],
+          [
+            -0.010416666666666666,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          4.784722222222222,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -6.3265625000000005,
+            18.152951388888887
+          ],
+          [
+            -0.020833333333333332,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -6.021505376344086,
+          -0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -27.5373268770176,
+            12.935550385109094
+          ],
+          [
+            -0.036585365853658534,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -5.324723247232472,
+          0.0
+        ],
+        "interval95": [
+          [
+            -16.455639720974293,
+            4.872830732700135
+          ],
+          [
+            -0.01098901098901099,
+            0.010948905109489052
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          5.382075471698113,
+          0.0
+        ],
+        "interval95": [
+          [
+            -2.65069249528367,
+            14.975512892376674
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector911:parent911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -19.44097222222222,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -31.285069444444442,
+            -8.484375
+          ],
+          [
+            0.0,
+            0.015625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -58.229166666666664,
+          0.027777777777777776
+        ],
+        "interval95": [
+          [
+            -86.96545138888888,
+            -31.846527777777787
+          ],
+          [
+            0.006944444444444444,
+            0.04861111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -2.857638888888889,
+          -0.003472222222222222
+        ],
+        "interval95": [
+          [
+            -12.399305555555555,
+            7.409982638888885
+          ],
+          [
+            -0.010416666666666666,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -13.819444444444445,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -29.327256944444443,
+            -0.43680555555556566
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -11.376344086021506,
+          0.0
+        ],
+        "interval95": [
+          [
+            -38.329687108886105,
+            16.875927197802184
+          ],
+          [
+            -0.03296703296703297,
+            0.03
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -26.173431734317344,
+          0.007380073800738007
+        ],
+        "interval95": [
+          [
+            -43.597896905725854,
+            -9.501484972255442
+          ],
+          [
+            0.0,
+            0.01838235294117647
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -14.372641509433961,
+          0.009433962264150943
+        ],
+        "interval95": [
+          [
+            -31.93620345744681,
+            0.06984260433319998
+          ],
+          [
+            0.0,
+            0.023923444976076555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector912:marginal912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -12.878472222222221,
+          0.005208333333333333
+        ],
+        "interval95": [
+          [
+            -29.594487847222222,
+            0.7500434027777771
+          ],
+          [
+            -0.006944444444444444,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -41.19444444444444,
+          0.034722222222222224
+        ],
+        "interval95": [
+          [
+            -98.96076388888888,
+            8.229513888888883
+          ],
+          [
+            0.0,
+            0.08333333333333333
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -5.295138888888889,
+          0.0
+        ],
+        "interval95": [
+          [
+            -14.784982638888888,
+            3.003645833333331
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          0.2708333333333333,
+          -0.013888888888888888
+        ],
+        "interval95": [
+          [
+            -10.916666666666666,
+            16.52100694444444
+          ],
+          [
+            -0.041666666666666664,
+            0.0
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -11.827956989247312,
+          0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -36.14489643969135,
+            7.53168776371308
+          ],
+          [
+            0.0,
+            0.03488372093023256
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -24.321033210332104,
+          0.01107011070110701
+        ],
+        "interval95": [
+          [
+            -53.77913799003764,
+            -2.4794425087108074
+          ],
+          [
+            0.0,
+            0.02973977695167286
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          1.2877358490566038,
+          -0.0047169811320754715
+        ],
+        "interval95": [
+          [
+            -19.549075669932712,
+            23.173615384615378
+          ],
+          [
+            -0.028849637681159418,
+            0.013452914798206279
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector912:inherited912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -16.48090277777778,
+          0.010416666666666666
+        ],
+        "interval95": [
+          [
+            -31.875043402777777,
+            -2.989453125000002
+          ],
+          [
+            -0.005208333333333333,
+            0.029513888888888888
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -34.38194444444444,
+          0.034722222222222224
+        ],
+        "interval95": [
+          [
+            -85.43315972222223,
+            8.951736111111106
+          ],
+          [
+            0.0,
+            0.09027777777777778
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -14.065972222222221,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -26.625086805555554,
+            -3.746267361111115
+          ],
+          [
+            0.0,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -3.4097222222222223,
+          -0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -21.7015625,
+            17.27777777777778
+          ],
+          [
+            -0.041666666666666664,
+            0.020833333333333332
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -24.548387096774192,
+          0.021505376344086023
+        ],
+        "interval95": [
+          [
+            -58.5995133263653,
+            -0.011180281405001316
+          ],
+          [
+            0.0,
+            0.056818181818181816
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -18.874538745387454,
+          0.01107011070110701
+        ],
+        "interval95": [
+          [
+            -35.514046556122445,
+            -3.5657528914590757
+          ],
+          [
+            0.0,
+            0.025
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -9.882075471698114,
+          0.0047169811320754715
+        ],
+        "interval95": [
+          [
+            -36.98505996164396,
+            17.388884524744686
+          ],
+          [
+            -0.024390243902439025,
+            0.032407407407407406
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "no_selector912:parent912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -20.984375,
+          0.012152777777777778
+        ],
+        "interval95": [
+          [
+            -34.071788194444444,
+            -9.091753472222226
+          ],
+          [
+            0.0,
+            0.024305555555555556
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -29.520833333333332,
+          0.034722222222222224
+        ],
+        "interval95": [
+          [
+            -64.02378472222222,
+            -0.7012152777777803
+          ],
+          [
+            0.013888888888888888,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -16.475694444444443,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -29.451475694444444,
+            -5.478993055555558
+          ],
+          [
+            0.0,
+            0.017361111111111112
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -21.46527777777778,
+          0.0
+        ],
+        "interval95": [
+          [
+            -53.625347222222224,
+            3.611111111111111
+          ],
+          [
+            -0.041666666666666664,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -25.161290322580644,
+          0.021505376344086023
+        ],
+        "interval95": [
+          [
+            -48.10727327447833,
+            -4.20180840664712
+          ],
+          [
+            0.0,
+            0.056179775280898875
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -32.313653136531364,
+          0.01845018450184502
+        ],
+        "interval95": [
+          [
+            -52.069331857933726,
+            -14.075170606095012
+          ],
+          [
+            0.0038314176245210726,
+            0.03475138901968167
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -4.669811320754717,
+          0.0
+        ],
+        "interval95": [
+          [
+            -29.49552349241583,
+            21.635256324677904
+          ],
+          [
+            -0.02463359020631127,
+            0.020202020202020204
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "parent911:direct911": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -20.30902777777778,
+          0.017361111111111112
+        ],
+        "interval95": [
+          [
+            -44.628515625,
+            2.982942708333329
+          ],
+          [
+            -0.003472222222222222,
+            0.03993055555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          13.395833333333334,
+          0.0
+        ],
+        "interval95": [
+          [
+            -51.354166666666664,
+            78.625
+          ],
+          [
+            -0.04861111111111111,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -34.333333333333336,
+          0.03125
+        ],
+        "interval95": [
+          [
+            -55.791666666666664,
+            -15.343489583333337
+          ],
+          [
+            0.006944444444444444,
+            0.0625
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -25.96527777777778,
+          0.006944444444444444
+        ],
+        "interval95": [
+          [
+            -85.21545138888888,
+            14.869444444444424
+          ],
+          [
+            -0.020833333333333332,
+            0.041666666666666664
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -37.913978494623656,
+          -0.010752688172043012
+        ],
+        "interval95": [
+          [
+            -98.27704632532219,
+            12.122005347593571
+          ],
+          [
+            -0.04819277108433735,
+            0.022988505747126436
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -25.81180811808118,
+          0.025830258302583026
+        ],
+        "interval95": [
+          [
+            -48.513762301567674,
+            -3.404866098984345
+          ],
+          [
+            0.0038019213042977304,
+            0.049429657794676805
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -5.55188679245283,
+          0.018867924528301886
+        ],
+        "interval95": [
+          [
+            -44.45891527599487,
+            30.161190349946974
+          ],
+          [
+            -0.013044902221378392,
+            0.056074766355140186
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    },
+    "parent912:direct912": {
+      "all": {
+        "tasks": 576,
+        "streams": 48,
+        "mean_difference": [
+          -25.82465277777778,
+          0.020833333333333332
+        ],
+        "interval95": [
+          [
+            -54.69331597222222,
+            -2.2319444444444545
+          ],
+          [
+            -0.003472222222222222,
+            0.04861111111111111
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:heldout_combination": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -11.965277777777779,
+          0.0
+        ],
+        "interval95": [
+          [
+            -93.77309027777777,
+            48.69496527777777
+          ],
+          [
+            -0.05555555555555555,
+            0.06944444444444445
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:new_parameters": {
+        "tasks": 288,
+        "streams": 24,
+        "mean_difference": [
+          -28.96527777777778,
+          0.024305555555555556
+        ],
+        "interval95": [
+          [
+            -51.58046875,
+            -9.21510416666667
+          ],
+          [
+            0.0,
+            0.05555555555555555
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "group:wider_parameters": {
+        "tasks": 144,
+        "streams": 12,
+        "mean_difference": [
+          -33.40277777777778,
+          0.034722222222222224
+        ],
+        "interval95": [
+          [
+            -103.75902777777777,
+            11.208333333333334
+          ],
+          [
+            0.0,
+            0.09027777777777778
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:changed": {
+        "tasks": 93,
+        "streams": 39,
+        "mean_difference": [
+          -43.236559139784944,
+          0.0
+        ],
+        "interval95": [
+          [
+            -106.15306352270638,
+            12.846717171717165
+          ],
+          [
+            -0.052083333333333336,
+            0.05263157894736842
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:new": {
+        "tasks": 271,
+        "streams": 48,
+        "mean_difference": [
+          -25.33579335793358,
+          0.01845018450184502
+        ],
+        "interval95": [
+          [
+            -53.44828220081136,
+            1.0259655197819098
+          ],
+          [
+            -0.007518796992481203,
+            0.04727272727272727
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      },
+      "exposure:return": {
+        "tasks": 212,
+        "streams": 47,
+        "mean_difference": [
+          -18.81132075471698,
+          0.0330188679245283
+        ],
+        "interval95": [
+          [
+            -55.51798355076574,
+            11.876977995166834
+          ],
+          [
+            0.0,
+            0.07106659128635696
+          ]
+        ],
+        "columns": [
+          "operations",
+          "completion_fraction"
+        ],
+        "unit": "complete task stream"
+      }
+    }
+  },
+  "scope": "Digital extension, fixed streams; known-family reference has generator-formula knowledge"
+}

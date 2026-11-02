@@ -29,14 +29,17 @@ def main():
             shutil.copyfile(Path(__file__).parent / 'results' / f'response_families_{split}.json', target)
     digital_jobs, native_jobs, pairs, native_pairs = [], [], [], []
     for seed in (911, 912):
-        name = f'parent{seed}'
         directory = args.previous / 'train' / f'memory{seed}'
-        if not (digital / name / 'summary.json').exists():
-            command = ['-m', 'experiments.continual_experiment.evaluate_response_families',
-                '--checkpoint', str(directory / 'initial.pt'), '--manifest', str(cohorts / 'test.json'),
-                '--output', str(digital / name), '--batch', '1', '--workers', str(args.workers),
-                '--record-predictions']
-            digital_jobs.append(dict(name=name, directory=str(directory), endpoint='initial.pt', arguments=command))
+        for condition in ('parent', 'direct'):
+            name = f'{condition}{seed}'
+            if not (digital / name / 'summary.json').exists():
+                command = ['-m', 'experiments.continual_experiment.evaluate_response_families',
+                    '--checkpoint', str(directory / 'initial.pt'), '--manifest', str(cohorts / 'test.json'),
+                    '--output', str(digital / name), '--batch', '1', '--workers', str(args.workers),
+                    '--record-predictions']
+                if condition == 'direct':
+                    command += ['--baseline', 'retrieval', '--memory-mode', 'disabled']
+                digital_jobs.append(dict(name=name, directory=str(directory), endpoint='initial.pt', arguments=command))
     for name in ('belief', 'oracle', 'enumeration'):
         if not (digital / name / 'summary.json').exists():
             command = ['-m', 'experiments.continual_experiment.evaluate_family_reference',
@@ -45,15 +48,17 @@ def main():
             digital_jobs.append(dict(name=name, directory=str(args.previous / 'train/memory911'),
                                      endpoint='initial.pt', arguments=command))
     for seed in (911, 912):
-        for condition in ('hypotheses', 'marginal', 'inherited', 'disabled'):
+        for condition in ('hypotheses', 'marginal', 'inherited', 'disabled', 'no_selector'):
             name = f'{condition}{seed}'
-            source = 'hypotheses' if condition == 'disabled' else condition
+            source = 'hypotheses' if condition in ('disabled', 'no_selector') else condition
             directory = train / f'{source}{seed}'
             command = ['-m', 'experiments.continual_experiment.evaluate_response_families',
                 '--checkpoint', str(directory / 'last.pt'),
                 '--manifest', str(args.root / 'cohorts/test.json'),
                 '--output', str(digital / name), '--batch', '1', '--workers', str(args.workers),
                 '--record-predictions', '--memory-mode', 'disabled' if condition == 'disabled' else 'evidence']
+            if condition == 'no_selector':
+                command += ['--disable-selector']
             digital_jobs.append(dict(name=name, directory=str(directory), endpoint='last.pt', arguments=command))
             if condition == 'disabled':
                 continue
@@ -64,11 +69,14 @@ def main():
                 '--initial-rng-root', str(args.previous / 'native/initial_rng'),
                 '--state-sharing', 'separated', '--memory-mode', 'evidence', '--memory-slots', '12',
                 '--workers', str(args.workers)]
+            if condition == 'no_selector':
+                command += ['--disable-selector', '--chemistry-only']
             native_jobs.append(dict(name=name, directory=str(directory), endpoint='last.pt', arguments=command))
         pairs.extend((f'hypotheses{seed}', f'{other}{seed}')
-                     for other in ('marginal', 'inherited', 'parent', 'disabled'))
+                     for other in ('marginal', 'inherited', 'parent', 'disabled', 'direct', 'no_selector'))
+        pairs.append((f'parent{seed}', f'direct{seed}'))
         native_pairs.extend((f'hypotheses{seed}', f'{other}{seed}')
-                            for other in ('marginal', 'inherited', 'parent'))
+                            for other in ('marginal', 'inherited', 'parent', 'no_selector'))
 
     # The chemistry comparison above added ledgers without changing the original
     # physics policy. Reuse those exact saved native outcomes in this reference.
@@ -89,7 +97,8 @@ def main():
     digital_plan = dict(**common, jobs=digital_jobs, paired_conditions=pairs,
         manifest=str(args.root / 'cohorts/test.json'),
         scope='Digital extension; frozen test cohort. Reuse complete parent/reference results when available.',
-        reference_selection='Information rule selected on separate development streams; fixed for this evaluation')
+        reference_selection='Information rule selected on separate development streams; fixed for this evaluation',
+        followups='Direct retrieval and same-weight selector removal were added after initial candidate results; no model retuning')
     native_plan = dict(**common, jobs=native_jobs, references=references, paired_conditions=native_pairs,
         manifest=str(args.previous / 'cohort/manifest.json'),
         scope='Existing primary native cohort, shared saved initializations; retention and transfer comparison')

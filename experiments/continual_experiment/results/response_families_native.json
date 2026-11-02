@@ -1,0 +1,2086 @@
+{
+  "protocol": {
+    "training_updates": 256,
+    "endpoint": "fixed final training window; no test selection",
+    "repetitions": "Two continuations of existing parents, not independent pretraining",
+    "jobs": [
+      {
+        "name": "hypotheses911",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/hypotheses911",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/hypotheses911/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/hypotheses911",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "marginal911",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/marginal911",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/marginal911/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/marginal911",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "inherited911",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/inherited911",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/inherited911/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/inherited911",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "hypotheses912",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/hypotheses912",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/hypotheses912/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/hypotheses912",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "marginal912",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/marginal912",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/marginal912/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/marginal912",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "inherited912",
+        "directory": "runs/continual_physics/continual_belief_20261102/train/inherited912",
+        "endpoint": "last.pt",
+        "arguments": [
+          "-m",
+          "experiments.continual_experiment.evaluate_shared_tasks",
+          "--checkpoint",
+          "runs/continual_physics/continual_belief_20261102/train/inherited912/last.pt",
+          "--manifest",
+          "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+          "--output",
+          "runs/continual_physics/continual_belief_20261102/native/inherited912",
+          "--initial-rng-root",
+          "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+          "--state-sharing",
+          "separated",
+          "--memory-mode",
+          "evidence",
+          "--memory-slots",
+          "12",
+          "--workers",
+          "8"
+        ]
+      },
+      {
+        "name": "parent911",
+        "reused": "original physics and frozen-parent-plus-memory chemistry"
+      },
+      {
+        "name": "parent912",
+        "reused": "original physics and frozen-parent-plus-memory chemistry"
+      },
+      {
+        "name": "no_selector911"
+      },
+      {
+        "name": "no_selector912"
+      }
+    ],
+    "references": [
+      {
+        "name": "parent911",
+        "reused": "original physics and frozen-parent-plus-memory chemistry"
+      },
+      {
+        "name": "parent912",
+        "reused": "original physics and frozen-parent-plus-memory chemistry"
+      }
+    ],
+    "paired_conditions": [
+      [
+        "hypotheses911",
+        "marginal911"
+      ],
+      [
+        "hypotheses911",
+        "inherited911"
+      ],
+      [
+        "hypotheses911",
+        "parent911"
+      ],
+      [
+        "hypotheses912",
+        "marginal912"
+      ],
+      [
+        "hypotheses912",
+        "inherited912"
+      ],
+      [
+        "hypotheses912",
+        "parent912"
+      ],
+      [
+        "no_selector911",
+        "hypotheses911"
+      ],
+      [
+        "no_selector911",
+        "parent911"
+      ],
+      [
+        "no_selector911",
+        "marginal911"
+      ],
+      [
+        "no_selector911",
+        "inherited911"
+      ],
+      [
+        "no_selector912",
+        "hypotheses912"
+      ],
+      [
+        "no_selector912",
+        "parent912"
+      ],
+      [
+        "no_selector912",
+        "marginal912"
+      ],
+      [
+        "no_selector912",
+        "inherited912"
+      ]
+    ],
+    "manifest": "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+    "scope": "Existing primary native cohort, shared saved initializations; retention and transfer comparison",
+    "followups": {
+      "jobs": [
+        {
+          "name": "no_selector911",
+          "domain": "test",
+          "arguments": [
+            "-m",
+            "experiments.continual_experiment.evaluate_response_families",
+            "--checkpoint",
+            "runs/continual_physics/continual_belief_20261102/train/hypotheses911/last.pt",
+            "--output",
+            "runs/continual_physics/continual_belief_20261102/test/no_selector911",
+            "--workers",
+            "12",
+            "--disable-selector",
+            "--memory-mode",
+            "evidence",
+            "--manifest",
+            "runs/continual_physics/continual_belief_20261102/cohorts/test.json",
+            "--batch",
+            "1",
+            "--record-predictions"
+          ]
+        },
+        {
+          "name": "no_selector911",
+          "domain": "native",
+          "arguments": [
+            "-m",
+            "experiments.continual_experiment.evaluate_shared_tasks",
+            "--checkpoint",
+            "runs/continual_physics/continual_belief_20261102/train/hypotheses911/last.pt",
+            "--output",
+            "runs/continual_physics/continual_belief_20261102/native/no_selector911",
+            "--workers",
+            "12",
+            "--disable-selector",
+            "--memory-mode",
+            "evidence",
+            "--manifest",
+            "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+            "--initial-rng-root",
+            "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+            "--state-sharing",
+            "separated",
+            "--memory-slots",
+            "12",
+            "--chemistry-only"
+          ]
+        },
+        {
+          "name": "no_selector912",
+          "domain": "test",
+          "arguments": [
+            "-m",
+            "experiments.continual_experiment.evaluate_response_families",
+            "--checkpoint",
+            "runs/continual_physics/continual_belief_20261102/train/hypotheses912/last.pt",
+            "--output",
+            "runs/continual_physics/continual_belief_20261102/test/no_selector912",
+            "--workers",
+            "12",
+            "--disable-selector",
+            "--memory-mode",
+            "evidence",
+            "--manifest",
+            "runs/continual_physics/continual_belief_20261102/cohorts/test.json",
+            "--batch",
+            "1",
+            "--record-predictions"
+          ]
+        },
+        {
+          "name": "no_selector912",
+          "domain": "native",
+          "arguments": [
+            "-m",
+            "experiments.continual_experiment.evaluate_shared_tasks",
+            "--checkpoint",
+            "runs/continual_physics/continual_belief_20261102/train/hypotheses912/last.pt",
+            "--output",
+            "runs/continual_physics/continual_belief_20261102/native/no_selector912",
+            "--workers",
+            "12",
+            "--disable-selector",
+            "--memory-mode",
+            "evidence",
+            "--manifest",
+            "runs/continual_physics/experimental_memory_20261101/cohort/manifest.json",
+            "--initial-rng-root",
+            "runs/continual_physics/experimental_memory_20261101/native/initial_rng",
+            "--state-sharing",
+            "separated",
+            "--memory-slots",
+            "12",
+            "--chemistry-only"
+          ]
+        }
+      ],
+      "comparison": "Same final hypothesis-model weights; remove only the new action residual; physics unchanged. Post-hoc comparison after the native chemistry regression appeared."
+    }
+  },
+  "conditions": {
+    "hypotheses911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 239,
+          "mean_native_actions": 108.13333333333334,
+          "mean_seconds": 5.70659237098104,
+          "mean_inference_seconds": 1.324217541748658
+        },
+        "new": {
+          "instances": 120,
+          "completed": 119,
+          "mean_native_actions": 164.3,
+          "mean_seconds": 8.336162269193059,
+          "mean_inference_seconds": 1.8470193141605704
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 51.96666666666667,
+          "mean_seconds": 3.077022472769022,
+          "mean_inference_seconds": 0.8014157693367452
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 54.85,
+          "mean_seconds": 3.2492019618628545,
+          "mean_inference_seconds": 0.8659992836182937
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 84.72897196261682,
+          "mean_seconds": 4.60213217247173,
+          "mean_inference_seconds": 1.0583672350289943
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 233,
+          "mean_native_actions": 112.93333333333334,
+          "mean_seconds": 6.150119365301604
+        }
+      }
+    },
+    "marginal911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 72.2125,
+          "mean_seconds": 3.8480429789361854,
+          "mean_inference_seconds": 0.8370434485919153
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 102.04166666666667,
+          "mean_seconds": 5.166802643518895,
+          "mean_inference_seconds": 1.051128723969062
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 42.38333333333333,
+          "mean_seconds": 2.529283314353476,
+          "mean_inference_seconds": 0.6229581732147683
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 42.7875,
+          "mean_seconds": 2.576300490810536,
+          "mean_inference_seconds": 0.6437982951523736
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 70.38317757009345,
+          "mean_seconds": 3.7736977631765827,
+          "mean_inference_seconds": 0.8222004088320743
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 228,
+          "mean_native_actions": 119.88333333333334,
+          "mean_seconds": 6.397684742114507
+        }
+      }
+    },
+    "inherited911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 68.33333333333333,
+          "mean_seconds": 4.153565328226735,
+          "mean_inference_seconds": 0.7883953938648726
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 93.69166666666666,
+          "mean_seconds": 5.689640584541484,
+          "mean_inference_seconds": 1.0297313623751203
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 42.975,
+          "mean_seconds": 2.617490071911986,
+          "mean_inference_seconds": 0.5470594253546248
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 44.0375,
+          "mean_seconds": 2.606788412248716,
+          "mean_inference_seconds": 0.5580912387697026
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 66.62616822429906,
+          "mean_seconds": 4.23827505073397,
+          "mean_inference_seconds": 0.8286412396929531
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 224,
+          "mean_native_actions": 122.0,
+          "mean_seconds": 7.534640932665207
+        }
+      }
+    },
+    "hypotheses912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 239,
+          "mean_native_actions": 77.94166666666666,
+          "mean_seconds": 5.230916145591376,
+          "mean_inference_seconds": 1.2986144030544287
+        },
+        "new": {
+          "instances": 120,
+          "completed": 119,
+          "mean_native_actions": 110.36666666666666,
+          "mean_seconds": 7.161484237542997,
+          "mean_inference_seconds": 1.6846878902831426
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 45.516666666666666,
+          "mean_seconds": 3.3003480536397545,
+          "mean_inference_seconds": 0.9125409158257146
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 46.9875,
+          "mean_seconds": 3.3977529555093495,
+          "mean_inference_seconds": 0.9583725049160421
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 67.59813084112149,
+          "mean_seconds": 4.597644978577149,
+          "mean_inference_seconds": 1.1497287332454575
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 227,
+          "mean_native_actions": 114.44583333333334,
+          "mean_seconds": 7.338263372626776
+        }
+      }
+    },
+    "marginal912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 65.22916666666667,
+          "mean_seconds": 3.970204871473834,
+          "mean_inference_seconds": 0.6968184605551263
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 87.725,
+          "mean_seconds": 5.173010853569334,
+          "mean_inference_seconds": 0.8630847853453208
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 42.733333333333334,
+          "mean_seconds": 2.767398889378334,
+          "mean_inference_seconds": 0.5305521357649317
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 43.6875,
+          "mean_seconds": 2.823838947410695,
+          "mean_inference_seconds": 0.5513524454087019
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 62.691588785046726,
+          "mean_seconds": 3.883213925027402,
+          "mean_inference_seconds": 0.6995805479655756
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 230,
+          "mean_native_actions": 115.4125,
+          "mean_seconds": 7.374950995466983
+        }
+      }
+    },
+    "inherited912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 65.6125,
+          "mean_seconds": 5.200074187681699,
+          "mean_inference_seconds": 1.1625455285112063
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 87.46666666666667,
+          "mean_seconds": 7.0059310322316986,
+          "mean_inference_seconds": 1.5205530159330616
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 43.75833333333333,
+          "mean_seconds": 3.394217343131701,
+          "mean_inference_seconds": 0.804538041089351
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 44.45,
+          "mean_seconds": 3.3573914226377384,
+          "mean_inference_seconds": 0.8041920045390725
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 62.495327102803735,
+          "mean_seconds": 5.095630274302213,
+          "mean_inference_seconds": 1.1605910349149848
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 234,
+          "mean_native_actions": 109.02916666666667,
+          "mean_seconds": 8.749889515254957
+        }
+      }
+    },
+    "parent911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 66.8375,
+          "mean_seconds": 3.5013109674599643,
+          "mean_inference_seconds": 0.6524792465691766
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 89.16666666666667,
+          "mean_seconds": 4.513837921479717,
+          "mean_inference_seconds": 0.8144079831273605
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 44.50833333333333,
+          "mean_seconds": 2.4887840134402115,
+          "mean_inference_seconds": 0.4905505100109925
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 46.575,
+          "mean_seconds": 2.580869997595437,
+          "mean_inference_seconds": 0.5151421141810715
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 68.32710280373831,
+          "mean_seconds": 3.664951044404618,
+          "mean_inference_seconds": 0.7028959399071809
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 233,
+          "mean_native_actions": 115.39583333333333,
+          "mean_seconds": 6.914226745115593
+        }
+      }
+    },
+    "parent912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 69.3375,
+          "mean_seconds": 3.7310423176114758,
+          "mean_inference_seconds": 0.6807588337222115
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 93.16666666666667,
+          "mean_seconds": 4.8522259700112045,
+          "mean_inference_seconds": 0.8505982718430459
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 45.50833333333333,
+          "mean_seconds": 2.609858665211747,
+          "mean_inference_seconds": 0.5109193956013769
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 47.8375,
+          "mean_seconds": 2.7219922880176455,
+          "mean_inference_seconds": 0.5386175861349329
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 71.13084112149532,
+          "mean_seconds": 3.8836214225042927,
+          "mean_inference_seconds": 0.7262740094284309
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "completed": 229,
+          "mean_native_actions": 107.175,
+          "mean_seconds": 6.242336644581519
+        }
+      }
+    },
+    "no_selector911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 64.05833333333334,
+          "mean_seconds": 4.405841681112846,
+          "mean_inference_seconds": 0.8124701148830354
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 85.29166666666667,
+          "mean_seconds": 5.6327221315198885,
+          "mean_inference_seconds": 0.9932039429278423
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 42.825,
+          "mean_seconds": 3.1789612307058026,
+          "mean_inference_seconds": 0.6317362868382285
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 44.075,
+          "mean_seconds": 3.264007827732712,
+          "mean_inference_seconds": 0.652936638891697
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 60.504672897196265,
+          "mean_seconds": 4.2408678669865445,
+          "mean_inference_seconds": 0.8100941512455172
+        }
+      }
+    },
+    "no_selector912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "completed": 240,
+          "mean_native_actions": 67.69583333333334,
+          "mean_seconds": 4.785404266285089,
+          "mean_inference_seconds": 1.0652761364666123
+        },
+        "new": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 91.8,
+          "mean_seconds": 6.246069643258427,
+          "mean_inference_seconds": 1.3387678134720773
+        },
+        "return": {
+          "instances": 120,
+          "completed": 120,
+          "mean_native_actions": 43.59166666666667,
+          "mean_seconds": 3.324738889311751,
+          "mean_inference_seconds": 0.7917844594611476
+        },
+        "long_return": {
+          "instances": 80,
+          "completed": 80,
+          "mean_native_actions": 44.3375,
+          "mean_seconds": 3.399226007051766,
+          "mean_inference_seconds": 0.8119835901539773
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "completed": 107,
+          "mean_native_actions": 66.33644859813084,
+          "mean_seconds": 4.737282204380799,
+          "mean_inference_seconds": 1.063259860552917
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "hypotheses911:marginal911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 35.920833333333334,
+          "mean_action_difference_95ci": [
+            23.72479166666667,
+            49.5186458333333
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 62.25833333333333,
+          "mean_action_difference_95ci": [
+            37.96666666666667,
+            89.825
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 9.583333333333334,
+          "mean_action_difference_95ci": [
+            4.133125000000001,
+            16.083333333333332
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 12.0625,
+          "mean_action_difference_95ci": [
+            4.4,
+            21.763437499999984
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 14.345794392523365,
+          "mean_action_difference_95ci": [
+            3.2209668803418805,
+            26.34991648397536
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -6.95,
+          "mean_action_difference_95ci": [
+            -12.479270833333333,
+            -1.5665625000000014
+          ],
+          "completion_fraction_difference": 0.020833333333333332,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.04583333333333333
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "hypotheses911:inherited911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 39.8,
+          "mean_action_difference_95ci": [
+            26.436770833333334,
+            54.14197916666666
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 70.60833333333333,
+          "mean_action_difference_95ci": [
+            45.11625,
+            98.61874999999996
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 8.991666666666667,
+          "mean_action_difference_95ci": [
+            3.1416666666666666,
+            15.85041666666666
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 10.8125,
+          "mean_action_difference_95ci": [
+            2.7,
+            20.987812499999997
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 18.102803738317757,
+          "mean_action_difference_95ci": [
+            6.083173076923077,
+            31.765083648138148
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -9.066666666666666,
+          "mean_action_difference_95ci": [
+            -15.812708333333333,
+            -3.195520833333338
+          ],
+          "completion_fraction_difference": 0.0375,
+          "completion_fraction_difference_95ci": [
+            0.008333333333333333,
+            0.06666666666666667
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "hypotheses911:parent911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 41.295833333333334,
+          "mean_action_difference_95ci": [
+            27.1540625,
+            56.525104166666665
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 75.13333333333334,
+          "mean_action_difference_95ci": [
+            47.79958333333333,
+            105.10854166666667
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 7.458333333333333,
+          "mean_action_difference_95ci": [
+            1.7666666666666666,
+            14.033958333333324
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 8.275,
+          "mean_action_difference_95ci": [
+            0.3871875000000003,
+            17.96312499999999
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 16.401869158878505,
+          "mean_action_difference_95ci": [
+            1.4760378510378513,
+            33.37524038461538
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -2.4625,
+          "mean_action_difference_95ci": [
+            -7.9375,
+            2.6083333333333334
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            -0.016666666666666666,
+            0.016666666666666666
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "hypotheses912:marginal912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 12.7125,
+          "mean_action_difference_95ci": [
+            4.070625000000001,
+            24.666666666666668
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 22.641666666666666,
+          "mean_action_difference_95ci": [
+            8.208125,
+            41.90062499999999
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 2.783333333333333,
+          "mean_action_difference_95ci": [
+            -1.0333333333333334,
+            8.108749999999993
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 3.3,
+          "mean_action_difference_95ci": [
+            -1.9,
+            11.062812499999996
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 4.906542056074766,
+          "mean_action_difference_95ci": [
+            -0.41884735202492207,
+            9.862791053921569
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -0.9666666666666667,
+          "mean_action_difference_95ci": [
+            -6.629583333333333,
+            4.883333333333334
+          ],
+          "completion_fraction_difference": -0.0125,
+          "completion_fraction_difference_95ci": [
+            -0.041666666666666664,
+            0.0125
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "hypotheses912:inherited912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 12.329166666666667,
+          "mean_action_difference_95ci": [
+            3.3498958333333335,
+            24.6625
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 22.9,
+          "mean_action_difference_95ci": [
+            7.658125,
+            43.19229166666666
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 1.7583333333333333,
+          "mean_action_difference_95ci": [
+            -2.033333333333333,
+            7.166874999999997
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 2.5375,
+          "mean_action_difference_95ci": [
+            -2.65,
+            10.388437499999986
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 5.102803738317757,
+          "mean_action_difference_95ci": [
+            -0.3542035398230086,
+            10.415882437758338
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 5.416666666666667,
+          "mean_action_difference_95ci": [
+            -0.7042708333333333,
+            11.887604166666664
+          ],
+          "completion_fraction_difference": -0.029166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.058333333333333334,
+            -0.004166666666666667
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "hypotheses912:parent912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 8.604166666666666,
+          "mean_action_difference_95ci": [
+            -1.413020833333333,
+            21.40885416666666
+          ],
+          "completion_fraction_difference": -0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            -0.0125,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 17.2,
+          "mean_action_difference_95ci": [
+            -1.0502083333333332,
+            40.291666666666664
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 0.008333333333333333,
+          "mean_action_difference_95ci": [
+            -3.2333333333333334,
+            3.3333333333333335
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -0.85,
+          "mean_action_difference_95ci": [
+            -5.825,
+            4.0753124999999955
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -3.532710280373832,
+          "mean_action_difference_95ci": [
+            -15.175450779727095,
+            6.7201372549019585
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      },
+      "physics": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 7.270833333333333,
+          "mean_action_difference_95ci": [
+            2.725,
+            12.050312499999997
+          ],
+          "completion_fraction_difference": -0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            -0.025,
+            0.008333333333333333
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector911:hypotheses911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -44.075,
+          "mean_action_difference_95ci": [
+            -58.9584375,
+            -29.870625000000004
+          ],
+          "completion_fraction_difference": 0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0125
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -79.00833333333334,
+          "mean_action_difference_95ci": [
+            -108.50895833333334,
+            -51.857500000000016
+          ],
+          "completion_fraction_difference": 0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.025
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -9.141666666666667,
+          "mean_action_difference_95ci": [
+            -15.767083333333334,
+            -3.533333333333333
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -10.775,
+          "mean_action_difference_95ci": [
+            -20.75,
+            -2.9371875000000047
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -24.22429906542056,
+          "mean_action_difference_95ci": [
+            -38.866118421052626,
+            -11.43096559378469
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector911:parent911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -2.779166666666667,
+          "mean_action_difference_95ci": [
+            -6.9792708333333335,
+            0.9542708333333318
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -3.875,
+          "mean_action_difference_95ci": [
+            -12.3,
+            3.6416666666666666
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -1.6833333333333333,
+          "mean_action_difference_95ci": [
+            -3.175,
+            -0.21666666666666667
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -2.5,
+          "mean_action_difference_95ci": [
+            -4.875,
+            -0.09968750000000455
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -7.822429906542056,
+          "mean_action_difference_95ci": [
+            -15.580974025974026,
+            -1.1774675758153743
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector911:marginal911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -8.154166666666667,
+          "mean_action_difference_95ci": [
+            -13.566875,
+            -3.7916666666666665
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -16.75,
+          "mean_action_difference_95ci": [
+            -27.642083333333332,
+            -8.133125000000003
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 0.44166666666666665,
+          "mean_action_difference_95ci": [
+            -1.8166666666666667,
+            2.2333333333333334
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 1.2875,
+          "mean_action_difference_95ci": [
+            -1.7875,
+            4.125
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -9.878504672897197,
+          "mean_action_difference_95ci": [
+            -18.824305555555554,
+            -1.951822916666668
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector911:inherited911": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -4.275,
+          "mean_action_difference_95ci": [
+            -6.5877083333333335,
+            -2.3623958333333346
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -8.4,
+          "mean_action_difference_95ci": [
+            -12.941666666666666,
+            -4.508333333333334
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -0.15,
+          "mean_action_difference_95ci": [
+            -0.8,
+            0.5583333333333333
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 0.0375,
+          "mean_action_difference_95ci": [
+            -0.75,
+            0.775
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -6.121495327102804,
+          "mean_action_difference_95ci": [
+            -10.907490079365079,
+            -2.304314888010541
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector912:hypotheses912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -10.245833333333334,
+          "mean_action_difference_95ci": [
+            -23.5421875,
+            -0.7790625000000015
+          ],
+          "completion_fraction_difference": 0.004166666666666667,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0125
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -18.566666666666666,
+          "mean_action_difference_95ci": [
+            -40.92541666666666,
+            -2.166250000000006
+          ],
+          "completion_fraction_difference": 0.008333333333333333,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.025
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -1.925,
+          "mean_action_difference_95ci": [
+            -7.258541666666667,
+            1.825
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -2.65,
+          "mean_action_difference_95ci": [
+            -10.5375,
+            2.6125
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -1.2616822429906542,
+          "mean_action_difference_95ci": [
+            -7.42311320754717,
+            4.766409224645206
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector912:parent912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": -1.6416666666666666,
+          "mean_action_difference_95ci": [
+            -5.875104166666667,
+            2.595833333333333
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -1.3666666666666667,
+          "mean_action_difference_95ci": [
+            -9.025,
+            5.933541666666664
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -1.9166666666666667,
+          "mean_action_difference_95ci": [
+            -5.258333333333334,
+            1.0
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -3.5,
+          "mean_action_difference_95ci": [
+            -8.1625,
+            0.3875
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": -4.794392523364486,
+          "mean_action_difference_95ci": [
+            -13.218461217681401,
+            3.108965896589658
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector912:marginal912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 2.466666666666667,
+          "mean_action_difference_95ci": [
+            -0.012604166666666573,
+            4.916770833333332
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 4.075,
+          "mean_action_difference_95ci": [
+            -1.0416666666666667,
+            9.22520833333333
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 0.8583333333333333,
+          "mean_action_difference_95ci": [
+            -0.3502083333333331,
+            2.25
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": 0.65,
+          "mean_action_difference_95ci": [
+            -0.6875,
+            2.2625
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 3.6448598130841123,
+          "mean_action_difference_95ci": [
+            -1.410922619047619,
+            8.913502358490565
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    },
+    "no_selector912:inherited912": {
+      "chemistry": {
+        "all": {
+          "instances": 240,
+          "streams": 20,
+          "mean_action_difference": 2.0833333333333335,
+          "mean_action_difference_95ci": [
+            -0.3876041666666666,
+            4.587604166666665
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "new": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": 4.333333333333333,
+          "mean_action_difference_95ci": [
+            -0.8168749999999998,
+            9.583541666666664
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "return": {
+          "instances": 120,
+          "streams": 20,
+          "mean_action_difference": -0.16666666666666666,
+          "mean_action_difference_95ci": [
+            -1.7416666666666667,
+            1.4083333333333334
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "long_return": {
+          "instances": 80,
+          "streams": 20,
+          "mean_action_difference": -0.1125,
+          "mean_action_difference_95ci": [
+            -1.8,
+            1.65
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        },
+        "untrained_composition": {
+          "instances": 107,
+          "streams": 20,
+          "mean_action_difference": 3.8411214953271027,
+          "mean_action_difference_95ci": [
+            -0.9190041983731304,
+            9.127910539215678
+          ],
+          "completion_fraction_difference": 0.0,
+          "completion_fraction_difference_95ci": [
+            0.0,
+            0.0
+          ],
+          "bootstrap_unit": "whole_ordered_stream",
+          "bootstrap_samples": 10000
+        }
+      }
+    }
+  }
+}

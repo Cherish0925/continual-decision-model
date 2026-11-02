@@ -1,12 +1,23 @@
 # CDM: objective, implementation, and results
 
-**Current direction, 2 November:** [model and implementation plan](research/CONTINUAL_AGENT.md),
-[result synthesis](research/MEMORY_AND_EXPERIMENTS.md) and
-[nearest-method comparison](ref/BELIEF_AND_COMPUTATION.md). This documentation
-and analytical update adds no new trained capability. The plan's capability
-table separates the released implementation from the next model changes.
+**Latest completed study, 2 November:** [response-law transfer and memory](experiments/continual_experiment/RESPONSE_FAMILIES.md)
+includes six joint trainings, primary and independent 576-task digital cohorts,
+and 3,840 new native executions. Adding twelve experimental ledgers to the
+original frozen parents improves returning-task performance. The new
+hypothesis-conditioned selector does not establish an advantage over the
+same-size marginal selector and harms native chemistry. Removing it restores
+chemical performance; its remaining core and predictors have lower mean cost
+on the independent digital cohort, but the paired intervals include zero.
+Models and complete records are in
+[v0.15.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.15.0).
 
-**Latest completed comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
+The [model and implementation plan](research/CONTINUAL_AGENT.md),
+[result synthesis](research/MEMORY_AND_EXPERIMENTS.md) and
+[nearest-method comparison](ref/BELIEF_AND_COMPUTATION.md) retain the broader
+research direction. The next unresolved connection is learning uncertainty
+over unfamiliar response functions and using it to select informative actions.
+
+**Preceding comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completes four joint trainings and 5,280 native executions. Returning chemical
 tasks need 33.1% and 22.7% fewer operations than separately trained no-memory
 references; both memory and no-memory models complete all 240 chemical tasks. New-task

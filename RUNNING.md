@@ -1,5 +1,12 @@
 # Run and extend CDM
 
+For the latest trained scientific-task models, start with the
+[v0.15.0 download and evaluation commands](experiments/discoveryworld/RELEASE.md#response-law-transfer-and-memory-v0150).
+The digital response-law evaluator uses generated tasks and needs no downloaded
+trajectory files. Its native DiscoveryWorld comparison reuses the released
+environment initializations. These models use structured observations; the
+multimodal examples below are a separate execution path.
+
 ## Multimodal input and state path
 
 Install the optional perception and vision-language dependencies (Transformers 5.4.0; PyTorch and Torchvision must be a compatible pair):

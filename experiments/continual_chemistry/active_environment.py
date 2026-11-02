@@ -22,11 +22,7 @@ class ActiveChemicalEnvironment:
         self.rng = random.Random(seed)
         self.schedule = schedule
         self.lifetime_length = 6 if schedule == 'paired' else 12
-        manifest = json.loads((Path(root) / 'manifest.json').read_text())
-        self.entries = [r for r in manifest['episodes'] if r['split'] == split]
-        for entry in self.entries:
-            with (Path(root) / entry['directory'] / 'experiments.jsonl').open() as stream:
-                entry['prepare_actions'] = json.loads(next(stream))['transition_start']
+        self.entries = self.load_entries(root, split)
         self.candidate_count = len(primitive_recipes(4)) + 1
         self.leave_index = self.candidate_count - 1
         self.capacity = 128  # At least eight operations per return, budget 1000.
@@ -50,6 +46,14 @@ class ActiveChemicalEnvironment:
         self.returned = self.dispatched = self.ended = self.total_actions = 0
         self.task_rows = []
         self.reset_finished()
+
+    def load_entries(self, root, split):
+        manifest = json.loads((Path(root) / 'manifest.json').read_text())
+        entries = [r for r in manifest['episodes'] if r['split'] == split]
+        for entry in entries:
+            with (Path(root) / entry['directory'] / 'experiments.jsonl').open() as stream:
+                entry['prepare_actions'] = json.loads(next(stream))['transition_start']
+        return entries
 
     def reset_finished(self):
         self.new_task = self.terminal.clone()

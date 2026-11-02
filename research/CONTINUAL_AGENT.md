@@ -230,6 +230,22 @@ After a learning period, compare a model that consolidated with one using an equ
 
 The deliverable is one continuing model with these operations connected to action, not a growing list of dormant modules. Organize work into substantial changes with an executable comparison at each dependency boundary.
 
+**2 November execution update.** The [response-law study](../experiments/continual_experiment/RESPONSE_FAMILIES.md)
+completes the frozen-parent comparison, the hypothesis/marginal action
+representation comparison and joint training across five generated mechanisms.
+Original parents plus twelve ledgers provide the better starting policy.
+The additional set-based action head has no established advantage and causes
+native chemical regression; removing it restores that capability. Its favorable
+primary-cohort mean does not become a stable overall gain on independent streams.
+
+The next implementation should learn uncertainty within unfamiliar response
+functions and update that uncertainty from chosen observations. The present
+fresh component still supplies one marginal prediction. Retain the inherited
+actor as the working action reference; test learned relationship beliefs against
+recurrent and latent-context policies before adding another action encoder.
+Independent-time inference and lasting consolidation remain parts of the same
+objective, with their original evaluation requirements intact.
+
 | Work | Concrete change | Result that determines the next choice |
 | --- | --- | --- |
 | Establish the starting policy | Load each original parent with twelve ledgers and fixed weighting, retaining its response predictor and within-task h/z | Whether memory continuation training improved on simply adding memory to the stronger parent |
@@ -250,7 +266,7 @@ The following names are proposed additions unless an existing module already cov
 | `cdm/experimental_memory.py` | Preserve raw observations; expose compatible records and mixture weights; compare recency/frequency without conflating duplicate slots with new knowledge |
 | `cdm/conditional_response.py`, `cdm/response_replay.py` | Add a relationship-conditioned prediction path; retain history conditioning; compare learned similarity and deployed-step fitting |
 | Proposed `cdm/relation_belief.py` | Weighted relationship hypotheses, within-fresh uncertainty, likelihood updates, rejuvenation and component-mass normalization |
-| Proposed `cdm/experiment_value.py` | Hypothesis/candidate set encoding; next-state cost including outcome censoring and time |
+| `cdm/experiment_value.py` | Implemented hypothesis/candidate action residual; calibrated next-state cost and time remain unimplemented |
 | `experiments/continual_chemistry/reaction.py` | Expose per-hypothesis forecasts to the selector; retain inherited, information and value modes; preserve h/z for the first comparison |
 | `experiments/continual_chemistry/active_environment.py` and a separate extension module | Parameterized response laws, sampled recurrence and changed-law returns without changing official-task semantics |
 | `experiments/continual_experiment/` | Frozen-parent-plus-memory comparison; new stream manifests; recurrent and latent-context training; stage results at fixed endpoints |

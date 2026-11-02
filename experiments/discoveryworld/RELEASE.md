@@ -2,6 +2,81 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Response-law transfer and memory: v0.15.0
+
+[Download v0.15.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.15.0)
+· [Methods and complete results](../continual_experiment/RESPONSE_FAMILIES.md)
+
+Six joint continuations compare inherited action scoring, marginal predictions
+and individual remembered hypotheses. The release includes the fixed endpoints,
+the post-hoc selector removals, both digital cohorts, and all new native records.
+The new selector does not establish an advantage. Removing it restores native
+chemistry, but its independent digital comparison does not establish an overall
+gain over the frozen parents or the continued inherited actors.
+
+| Archive | Contents |
+|---|---|
+| `cdm-response-laws-seed911-inference.tar.zst` | Three initial and final models, the selector-removed model, and original parent for continuation 911 |
+| `cdm-response-laws-seed912-inference.tar.zst` | The same eight checkpoints for continuation 912 |
+| `cdm-response-laws-records.tar.zst.part00`, `.part01` | All six training histories, development and final digital comparisons, 3,840 new native executions, and shared native initializations |
+| `DiscoveryWorld-LICENSE.txt` | Upstream license for the derived task records |
+
+The two model archives are about 538 MB each; the two record parts total
+about 2.28 GB. Companion `*-files.txt` files list their contents. Archives
+restore repository-relative paths. Inference checkpoints omit optimizer state;
+training starts a fresh optimizer from the saved initial model. Both packaged
+selector-removed checkpoints have been extracted and loaded with their shared
+core and two task interfaces, preserving every tensor.
+
+To evaluate a selector-removed model on the independent digital cohort:
+
+```bash
+git checkout v0.15.0
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.15.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-response-laws-seed911-inference.tar.zst' \
+  --pattern 'DiscoveryWorld-LICENSE.txt' --dir artifacts/v0.15.0
+zstd -dc --long=30 artifacts/v0.15.0/cdm-response-laws-seed911-inference.tar.zst | tar -x
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_response_families \
+  --checkpoint runs/continual_physics/continual_belief_20261102/train/hypotheses911/core_only.pt \
+  --manifest experiments/continual_experiment/results/response_families_confirmation_cohort.json \
+  --memory-mode evidence --workers 8 --batch 1 \
+  --output runs/reproduced-response-911
+```
+
+The digital generator needs no external trajectory files. Use `last.pt` to
+retain the new selector, or the `marginal911` and `inherited911` directories for
+their independently trained endpoints. The original parent is stored at
+`runs/continual_physics/experimental_memory_20261101/train/memory911/initial.pt`.
+Continuation 912 has the same directory structure in its own model archive.
+Use separate output directories for separate conditions.
+
+For the original native tasks, also restore the two record parts and reuse
+their shared environment states:
+
+```bash
+gh release download v0.15.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-response-laws-records.tar.zst.part*' --dir artifacts/v0.15.0
+cat artifacts/v0.15.0/cdm-response-laws-records.tar.zst.part* | zstd -dc --long=30 | tar -x
+PYTHONHASHSEED=0 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_shared_tasks \
+  --checkpoint runs/continual_physics/continual_belief_20261102/train/hypotheses911/core_only.pt \
+  --manifest experiments/continual_experiment/results/experimental_memory_cohort.json \
+  --initial-rng-root runs/continual_physics/experimental_memory_20261101/native/initial_rng \
+  --state-sharing separated --memory-mode evidence --memory-slots 12 \
+  --workers 8 --threads 1 --output runs/reproduced-response-native-911
+```
+
+Repeating joint training additionally needs the measured inputs from v0.14.0:
+`cdm-memory-training-inference.tar.zst` and
+`cdm-memory-training-records.tar.zst`. Repeating the historical-parent comparison
+also uses the earlier experimental-memory and memory-decisions records.
+The [study commands](../continual_experiment/RESPONSE_FAMILIES.md#running-the-study)
+give the complete launch sequence. Training used approximately 33–34 GiB per
+job on H100. The launcher uses two GPUs; for one GPU, run its saved individual
+`train_shared_tasks` commands sequentially with `--device cuda:0`.
+
 ## Experimental memory: v0.14.0
 
 [Download v0.14.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)

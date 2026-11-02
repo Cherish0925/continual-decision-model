@@ -14,13 +14,28 @@ An observation can become outdated while inference is still running. The researc
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
-The 2 November synthesis connects relationship learning, persistent inference,
-active experiments, learned computation and long-term consolidation in one
-implementation plan. It includes a file-level work map and a two-H100 training
-route. Its analytical script recomputes published results and a finite planning
-example; this update adds no new training or native executions. The next main
-study extends response-law learning and action value beyond the official
-chemistry family, while integrating a process that advances during inference.
+The [response-law study](experiments/continual_experiment/RESPONSE_FAMILIES.md)
+completes six joint trainings, two 576-task digital cohorts and 3,840 native
+executions. It expands training to five response mechanisms and tests a withheld
+combination. Adding twelve experimental ledgers to the original models is an
+effective initialization; previous memory continuation is not needed to obtain
+that benefit. On the primary mixed-law cohort, retained observations reduce
+operations relative to removing them from the same trained models.
+
+The new hypothesis-set action head does not improve on the marginal selector
+and harms original chemical tasks. Removing it restores chemical performance.
+On independent digital streams, the resulting models average 155.18 / 156.93
+operations versus their parents' 161.47 / 160.93, with both paired intervals
+including zero. The complete results preserve these limits, the simpler
+continuation controls and the stronger known-formula reference.
+
+[v0.15.0: response-law models and records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.15.0)
+· [Download and reproduce](experiments/discoveryworld/RELEASE.md#response-law-transfer-and-memory-v0150)
+
+The integrated direction retains persistent inference, active experiments,
+learned computation and long-term consolidation. The next model change targets
+uncertainty within unfamiliar response functions and its use in action, with
+direct recurrent and latent-context comparisons.
 
 [v0.14.0: models and experimental records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140)

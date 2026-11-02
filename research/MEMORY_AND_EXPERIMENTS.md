@@ -2,6 +2,14 @@
 
 **2 November 2026. Source revision: `aecc237ecb191685d7e3b4f9f80565a78fdc9976`.** This synthesis uses the released native records, the November 1 analytical revision and the current implementation. It accompanies the [model and research direction](CONTINUAL_AGENT.md). No new model training or native task execution is reported here.
 
+**Subsequent experiment:** the [frozen-parent comparison](../experiments/continual_experiment/RESPONSE_FAMILIES.md#starting-model-memory-without-extra-training)
+has now been run on the same primary native cohort and saved initializations.
+Adding twelve ledgers to the original parents gives 66.84 / 69.34 operations,
+with 240/240 completions for each. The earlier continuation gives 69.77 / 72.43;
+its extra training has no established benefit over the memory-enabled originals.
+The response-family training therefore starts from those originals. References
+to the missing comparison below describe the earlier evidence state.
+
 The useful result is that retained experimental observations can substantially reduce work when a relationship returns. The unresolved question is how to obtain that benefit without expensive inappropriate reuse, and how to extend it beyond a known response family. Continued-state architecture, learned memory reading and autonomous computation have not yet established separate advantages in these comparisons.
 
 ## 1. Recomputed native results

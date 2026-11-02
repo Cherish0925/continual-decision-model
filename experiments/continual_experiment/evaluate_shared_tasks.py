@@ -22,6 +22,8 @@ def run_stream(job):
     model, saved = load_shared_checkpoint(options['checkpoint'])
     model.eval()
     physical, chemical = model.tasks['physics'], model.tasks['chemistry']
+    if options.get('disable_selector', False):
+        chemical.experiment_value = None
     chemical.retain_observed_responses = options.get('retain_observed_responses', False)
     if options.get('disable_response_replay', False):
         chemical.response_replay.config = replace(chemical.response_replay.config, mode='calibration')
@@ -109,6 +111,7 @@ def main():
     p.add_argument('--memory-mode', choices=('learned', 'disabled', 'evidence', 'recent'))
     p.add_argument('--memory-slots', type=int,
                    help='Change archive capacity at execution; model weights remain unchanged')
+    p.add_argument('--disable-selector', action='store_true', help='Remove only the new action-score residual')
     p.add_argument('--chemistry-only', action='store_true',
                    help='For same-weight memory controls with separated domain states')
     p.add_argument('--reset-chemical-neural-state', action='store_true')

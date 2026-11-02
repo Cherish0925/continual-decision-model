@@ -5,7 +5,7 @@ import torch
 def previous_success(state, candidates, action_mask):
     """Try a recent successful recipe that has not failed in the current task.
 
-    Uses the same six public ledgers as the learned model. If no retained
+    Uses the same public ledgers as the learned model. If no retained
     success is still a legal candidate, use the separately trained current-task
     policy. No response formula or hidden context identity is available.
     """

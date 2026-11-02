@@ -1,5 +1,12 @@
 # Data and training
 
+The latest completed schedule is the
+[six-condition response-law study](experiments/continual_experiment/RESPONSE_FAMILIES.md):
+three action representations, two inherited parents, and 256 fixed training
+windows each. It jointly trains the core and both task interfaces, then
+evaluates transfer and native-task retention. The linked study includes all
+training curves, fixed cohorts and reproduction commands.
+
 The current training objectives and sequence are in
 [Training the model's decisions](research/CONTINUAL_AGENT.md#4-training-the-models-decisions).
 They extend the initial multimodal route below with learned relationship

@@ -2,7 +2,8 @@ import random
 import torch
 
 from experiments.continual_chemistry.active_environment import ActiveChemicalEnvironment
-from experiments.continual_chemistry.response_families import TRAIN_FAMILIES, response_levels, sample_law, sample_lifetime
+from experiments.continual_chemistry.response_families import (TRAIN_FAMILIES, ResponseFamilyEnvironment,
+    response_levels, sample_law, sample_lifetime)
 from experiments.continual_chemistry.recipes import primitive_recipes
 
 
@@ -33,3 +34,15 @@ def test_returns_preserve_the_law_and_changed_tasks_are_new_identities():
             assert task['identity'] not in seen
         seen[task['identity']] = task['law']
     assert {t['exposure'] for t in stream} == {'new', 'return', 'changed'}
+
+
+def test_generated_tasks_run_without_external_trajectory_files():
+    env = ResponseFamilyEnvironment(None, 2, 71, 'cpu', budget=60)
+    for _ in range(30):
+        obs = env.observation()
+        assert obs['action_mask'].any(-1).all()
+        action = obs['action_mask'].float().argmax(-1)
+        env.step(action)
+        env.reset_finished()
+    assert min(env.task_index) > 1
+    assert env.ended > 0

@@ -99,11 +99,18 @@ class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
         self.fixed_manifest = manifest
         super().__init__(root, batch, seed, device, budget=budget, schedule='mixed')
 
+    def load_entries(self, root, split):
+        # These laws are generated here; no DiscoveryWorld trajectory files
+        # contribute to their observations, transitions or preparation costs.
+        return []
+
     def reset_finished(self):
-        boundary, lifetime = super().reset_finished()
+        boundary = self.terminal.clone()
+        lifetime = torch.zeros_like(boundary)
         for lane in boundary.nonzero().flatten().tolist():
-            position = (self.task_index[lane] - 1) % self.lifetime_length
+            position = self.task_index[lane] % self.lifetime_length
             if position == 0:
+                lifetime[lane] = True
                 if self.fixed_manifest is None:
                     self.law_streams[lane] = sample_lifetime(self.law_rng[lane], self.families,
                                                            self.lifetime_length, wider=self.wider)
@@ -123,6 +130,15 @@ class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
             self.component_mask[lane, :n] = 1
             # Identical public preparation cost for every generator and method.
             self.actions[lane] = 14
+            self.rust[lane] = 3
+            self.cursor[lane] = 0
+            self.history[lane].zero_()
+            self.history_mask[lane].zero_()
+            self.seen[lane].zero_()
+            self.endpoint[lane].fill_(-1)
+            self.task_index[lane] += 1
+        self.terminal.zero_()
+        self.new_task, self.new_lifetime = boundary, lifetime
         return boundary, lifetime
 
     def response(self, counts, recipe, before):

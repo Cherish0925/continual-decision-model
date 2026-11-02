@@ -55,7 +55,8 @@ def summarize(directory, manifest, pairs):
                   scope='Digital extension, fixed streams; known-family reference has generator-formula knowledge')
     (directory / 'comparisons.json').write_text(json.dumps(output, indent=2) + '\n')
     with (directory / 'instances.csv').open('w') as file:
-        writer = csv.DictWriter(file, fieldnames=list(rows[0])); writer.writeheader(); writer.writerows(rows)
+        writer = csv.DictWriter(file, fieldnames=list(rows[0]), lineterminator='\n')
+        writer.writeheader(); writer.writerows(rows)
     return output
 
 
@@ -65,7 +66,8 @@ def main():
     p.add_argument('--manifest', type=Path, required=True)
     args = p.parse_args()
     pairs = [(f'hypotheses{s}', f'{other}{s}') for s in (911, 912)
-             for other in ('marginal', 'inherited', 'parent', 'disabled')]
+             for other in ('marginal', 'inherited', 'parent', 'disabled', 'direct', 'no_selector')]
+    pairs += [(f'parent{s}', f'direct{s}') for s in (911, 912)]
     result = summarize(args.input, json.loads(args.manifest.read_text()), pairs)
     print(json.dumps({k: v['all'] for k, v in result['conditions'].items()}, indent=2))
 
