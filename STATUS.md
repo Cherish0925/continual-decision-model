@@ -1,5 +1,11 @@
 # CDM: objective, implementation, and results
 
+**Current direction, 2 November:** [model and implementation plan](research/CONTINUAL_AGENT.md),
+[result synthesis](research/MEMORY_AND_EXPERIMENTS.md) and
+[nearest-method comparison](ref/BELIEF_AND_COMPUTATION.md). This documentation
+and analytical update adds no new trained capability. The plan's capability
+table separates the released implementation from the next model changes.
+
 **Latest completed comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completes four joint trainings and 5,280 native executions. Returning chemical
 tasks need 33.1% and 22.7% fewer operations than separately trained no-memory

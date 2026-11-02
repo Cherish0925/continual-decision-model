@@ -1,5 +1,9 @@
 # Model comparisons
 
+For the current relationship-learning and timed-operation direction, start
+with [Belief, memory and computation](BELIEF_AND_COMPUTATION.md). The comparisons
+below retain the broader computation-reuse and architecture context.
+
 The current CDM experiment asks whether a model can learn to reuse unfinished computation when goals, observations, and dynamics change. The proposed mechanism stores intermediate work with its generating conditions, then reads and revises it using the current context. The comparison is task return at a measured computation and response-time budget.
 
 Source editions and reading depth are recorded in [papers.json](papers.json). The architecture is in [DESIGN.md](../DESIGN.md); tasks, training conditions, and measurements are in [EXPERIMENTS.md](../EXPERIMENTS.md).

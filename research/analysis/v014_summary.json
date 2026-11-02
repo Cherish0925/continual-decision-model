@@ -1,0 +1,439 @@
+{
+  "source_revision": "aecc237ecb191685d7e3b4f9f80565a78fdc9976",
+  "scope": "Published CSV aggregation and finite-model calculation; no new training or native executions.",
+  "source_sha256": {
+    "experiments/continual_chemistry/results/exploration_data.json": "b60e774d76c47223e93f6dbb13dae2d4e01768f2fdd11289a59b6ed7579456a2",
+    "experiments/continual_experiment/results/experimental_memory_instances.csv": "ce64ee31b5e21648a8e4c6160d962379e0f55c85317635c57984f4604ab8683f",
+    "experiments/continual_experiment/results/memory_capacity_native_instances.csv": "49992f2e940198698de4a0bf64205e2302f47c840eba56a4d582b65765d28aeb",
+    "experiments/continual_experiment/results/memory_capacity_confirmation_instances.csv": "73f0127291701642f5154aca77c4b4a80d981f8af18c474fb3f5b8b5ae6bc98f"
+  },
+  "training_prior": {
+    "Normal": {
+      "episodes": 160,
+      "support_size": 19,
+      "structure_counts": {
+        "(1, 1)": 12,
+        "(1, 1, 1)": 52,
+        "(1, 1, 2)": 41,
+        "(1, 2)": 38,
+        "(1, 3)": 17
+      }
+    },
+    "Challenge": {
+      "episodes": 160,
+      "support_size": 46,
+      "structure_counts": {
+        "(1, 1)": 24,
+        "(1, 1, 1)": 49,
+        "(1, 1, 2)": 34,
+        "(1, 2)": 42,
+        "(1, 3)": 11
+      }
+    }
+  },
+  "prior_assumptions": "Episode-frequency structure prior; exchangeable ingredient labels; zero mass outside observed structures.",
+  "native_records": {
+    "primary_original": {
+      "initial911": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 78.22083333333333
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 59.825
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 96.61666666666666
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 79.16666666666667
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 77.275
+        }
+      },
+      "initial912": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 84.29583333333333
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 71.14166666666667
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 97.45
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 84.8
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 83.79166666666667
+        }
+      }
+    },
+    "primary_capacity": {
+      "capacity12_911": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 69.77083333333333
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 58.983333333333334
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 80.55833333333334
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 95.99166666666666
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 43.55
+        }
+      },
+      "capacity12_912": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 72.425
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 63.108333333333334
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 81.74166666666666
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 100.73333333333333
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 44.11666666666667
+        }
+      },
+      "capacity6_911": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 77.65
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 65.6
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 89.7
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 96.575
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 58.725
+        }
+      },
+      "capacity6_912": {
+        "all": {
+          "tasks": 240,
+          "completed": 240,
+          "mean_operations": 81.98333333333333
+        },
+        "Normal": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 70.025
+        },
+        "Challenge": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 93.94166666666666
+        },
+        "new": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 100.8
+        },
+        "return": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 63.166666666666664
+        }
+      }
+    },
+    "confirmation": {
+      "capacity12_911": {
+        "all": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 69.96666666666667
+        },
+        "Normal": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 57.6
+        },
+        "Challenge": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 82.33333333333333
+        },
+        "new": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 94.93333333333334
+        },
+        "return": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 45.0
+        }
+      },
+      "capacity12_912": {
+        "all": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 75.01666666666667
+        },
+        "Normal": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 66.08333333333333
+        },
+        "Challenge": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 83.95
+        },
+        "new": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 105.55
+        },
+        "return": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 44.483333333333334
+        }
+      },
+      "capacity6_911": {
+        "all": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 78.01666666666667
+        },
+        "Normal": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 62.88333333333333
+        },
+        "Challenge": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 93.15
+        },
+        "new": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 94.88333333333334
+        },
+        "return": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 61.15
+        }
+      },
+      "capacity6_912": {
+        "all": {
+          "tasks": 120,
+          "completed": 120,
+          "mean_operations": 85.38333333333334
+        },
+        "Normal": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 72.73333333333333
+        },
+        "Challenge": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 98.03333333333333
+        },
+        "new": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 105.3
+        },
+        "return": {
+          "tasks": 60,
+          "completed": 60,
+          "mean_operations": 65.46666666666667
+        }
+      }
+    }
+  },
+  "primary_paired": {
+    "911": {
+      "candidate_minus_reference": -8.45,
+      "saving_percent": 10.802748628349224,
+      "paired_stream_bootstrap_95_percent": [
+        -17.120833333333334,
+        -0.12083333333333333
+      ],
+      "streams": 20,
+      "bootstrap_replicates": 4000,
+      "bootstrap_seed": 20261102
+    },
+    "912": {
+      "candidate_minus_reference": -11.870833333333334,
+      "saving_percent": 14.082348870545202,
+      "paired_stream_bootstrap_95_percent": [
+        -19.870833333333334,
+        -4.8125
+      ],
+      "streams": 20,
+      "bootstrap_replicates": 4000,
+      "bootstrap_seed": 20261102
+    }
+  },
+  "confirmation_paired": {
+    "911": {
+      "candidate_minus_reference": -8.05,
+      "saving_percent": 10.318308053834652,
+      "paired_stream_bootstrap_95_percent": [
+        -14.183333333333334,
+        -4.0
+      ],
+      "streams": 10,
+      "bootstrap_replicates": 4000,
+      "bootstrap_seed": 20261102
+    },
+    "912": {
+      "candidate_minus_reference": -10.366666666666667,
+      "saving_percent": 12.141323443294944,
+      "paired_stream_bootstrap_95_percent": [
+        -16.358333333333334,
+        -5.291666666666667
+      ],
+      "streams": 10,
+      "bootstrap_replicates": 4000,
+      "bootstrap_seed": 20261102
+    }
+  },
+  "finite_action_example": {
+    "return_probability": 0.55,
+    "available_actions": 55,
+    "preparation_cost": 14,
+    "exit_cost": 4,
+    "optimum_total_expected_cost": 51.057131537242476,
+    "actions": [
+      {
+        "first_action": [
+          1,
+          1,
+          1
+        ],
+        "total_expected_cost": 79.86053882725832,
+        "success_probability": 0.275,
+        "relationship_information_nats": 0.5881687773541906,
+        "component_identity_information_nats": 0.5881687773541905,
+        "immediate_progress_per_cost": 0.18958333333333335
+      },
+      {
+        "first_action": [
+          1,
+          3,
+          0
+        ],
+        "total_expected_cost": 51.36148969889065,
+        "success_probability": 0.275,
+        "relationship_information_nats": 1.2419388087558714,
+        "component_identity_information_nats": 0.7583533983857653,
+        "immediate_progress_per_cost": 0.1586205758055996
+      },
+      {
+        "first_action": [
+          1,
+          4,
+          0
+        ],
+        "total_expected_cost": 51.057131537242476,
+        "success_probability": 0.275,
+        "relationship_information_nats": 1.2682408712687137,
+        "component_identity_information_nats": 0.7842028391405864,
+        "immediate_progress_per_cost": 0.14433438985736927
+      }
+    ]
+  },
+  "identity_counterexample": {
+    "targets": [
+      [
+        1,
+        3,
+        0
+      ],
+      [
+        1,
+        4,
+        0
+      ]
+    ],
+    "common_successful_action": [
+      1,
+      4,
+      0
+    ],
+    "common_action_levels": [
+      0,
+      0
+    ],
+    "distinguishing_action": [
+      2,
+      1,
+      0
+    ],
+    "distinguishing_levels": [
+      1,
+      2
+    ],
+    "scope": "Broader target family; (1,4,0) is not in the training-derived target support."
+  }
+}

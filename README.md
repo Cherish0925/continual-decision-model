@@ -10,6 +10,18 @@ An observation can become outdated while inference is still running. The researc
 
 ## Current research
 
+**[Current model and research direction](research/CONTINUAL_AGENT.md)** ·
+[Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
+[Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
+
+The 2 November synthesis connects relationship learning, persistent inference,
+active experiments, learned computation and long-term consolidation in one
+implementation plan. It includes a file-level work map and a two-H100 training
+route. Its analytical script recomputes published results and a finite planning
+example; this update adds no new training or native executions. The next main
+study extends response-law learning and action value beyond the official
+chemistry family, while integrating a process that advances during inference.
+
 [v0.14.0: models and experimental records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140)
 

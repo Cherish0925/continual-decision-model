@@ -1,5 +1,7 @@
 # Open research questions after experimental memory
 
+**Updated synthesis:** [model direction](CONTINUAL_AGENT.md) and [results and corrections](MEMORY_AND_EXPERIMENTS.md). This brief is retained as the question record; use the synthesis for the current implementation sequence.
+
 Consultation brief for [CDM v0.14.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0), source revision [`6c0d991`](https://github.com/Cherish0925/continual-decision-model/tree/6c0d991eae0e628e2ea10b0c2de3ff59b0bc5186). Read the results at this revision before proposing changes. Where later work changes an answer, identify that revision separately.
 
 **Central question.** In a changing world, when should an agent use an old explanation, choose an experiment that distinguishes competing explanations, continue thinking, or start learning something new? The choice has to improve the actions that follow while the world continues to move.

@@ -1,5 +1,34 @@
 # Research progress
 
+## 2 November: integrated model and research direction
+
+Start with **[CONTINUAL_AGENT.md](research/CONTINUAL_AGENT.md)** for the current
+architecture, training objectives, applications, implementation order and
+compute allocation. [MEMORY_AND_EXPERIMENTS.md](research/MEMORY_AND_EXPERIMENTS.md)
+contains the result calculations and corrected interpretations;
+[the focused method comparison](ref/BELIEF_AND_COMPUTATION.md) specifies the
+nearest learned and model-based alternatives.
+
+This update recomputes published CSV summaries and a finite experimental-design
+example. It does not train models, run new native tasks or start a training
+queue. Released results below remain the measured starting point.
+
+The twelve-ledger configurations save 10.8% and 14.1% against the frozen initial
+models on the primary cohort, but new tasks remain more expensive. The next
+missing comparison is the original parent with the same twelve-ledger memory.
+The full trained actor already has a task-return residual; a failure of its
+bare progress-per-cost term is not automatically a failure of that actor.
+
+Proceed from that initialization comparison to learned relationship beliefs
+and future-cost action selection on changing response families. Integrate
+pending events and reusable inference in the timed process through the same
+model interfaces. Retain autonomous computation, multimodal perception and
+quiet-period consolidation as explicit parts of the model, with subsequent
+actions and later-task improvement as their training outcomes.
+
+The execution plan above supersedes the next-step suggestions in older dated
+entries. Their measurements and implementation history are preserved below.
+
 ## Experimental memory: joint learning, action credit and retention
 
 [v0.14.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)

@@ -7,6 +7,8 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 
 | Study | Contents |
 | --- | --- |
+| [Current model and implementation direction](CONTINUAL_AGENT.md) | Persistent state, relationship belief, action and computation values, continual training, applications and file-level work sequence |
+| [Memory results and corrected calculations](MEMORY_AND_EXPERIMENTS.md) | Recomputed native costs, a finite planning example, prior assumptions and corrections that change the next experiment |
 | [Experimental knowledge across task changes](../experiments/continual_experiment/EXPERIMENTAL_MEMORY.md) | Completed joint training and native comparisons: return-task savings, new-task cost, fixed and learned applicability, direct retrieval and Bayesian memory |
 | [Response updates and later experiments](../experiments/continual_experiment/RESPONSE_LEARNING.md) | Update and full joint comparisons complete; useful response fitting survives core training; strong-reference and long-term gains remain unresolved |
 | [Active physical and chemical learning](../experiments/continual_experiment/ACTIVE_TRAINING.md) | Completed joint active-feedback training; response updates did not establish a task advantage |
@@ -23,7 +25,9 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 | [Transport results](../experiments/transport/RESULTS.md) | Completed quadratic solver comparisons |
 | [Phase review](PHASE_REVIEW.md) | Historical interpretation of the process-lifetime studies |
 
-[Open research questions after v0.14.0](OPEN_QUESTIONS_V014.md) connects the new-task cost and returning-task gains to choices about memory, active experiments and continual computation.
+[Open research questions after v0.14.0](OPEN_QUESTIONS_V014.md) preserves the
+question brief. The two current documents above integrate its answers and
+subsequent corrections into the next implementation direction.
 
 [DESIGN.md](../DESIGN.md) describes the architecture.
 [TRAINING.md](../TRAINING.md) describes the data, objectives and optimization.

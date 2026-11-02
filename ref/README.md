@@ -1,5 +1,11 @@
 # Related research
 
+**[Focused update: belief, memory and computation](BELIEF_AND_COMPUTATION.md)**
+connects the 2 November research direction to recurrent and latent-context
+meta-RL, episodic recall, online adaptation, experimental design and concurrent
+control. It extends the initial collection below without changing its survey
+counts or reading-depth records.
+
 **Initial literature survey cutoff: 15 October 2026.** A focused update on
 27 October adds the robot metareasoning preprint to the planning comparison.
 

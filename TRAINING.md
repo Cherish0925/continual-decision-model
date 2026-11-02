@@ -1,5 +1,11 @@
 # Data and training
 
+The current training objectives and sequence are in
+[Training the model's decisions](research/CONTINUAL_AGENT.md#4-training-the-models-decisions).
+They extend the initial multimodal route below with learned relationship
+beliefs, future-cost action values, timed operation choices and later-use
+consolidation. Released experiment configurations remain reproducible as written.
+
 ## First multimodal training route
 
 The architecture is fixed in [DESIGN.md](DESIGN.md); initial dimensions and optimization settings are in [configs/cdm_multimodal_v1.json](configs/cdm_multimodal_v1.json). Pretrained image/text features, native vision-language context and numeric inputs enter one persistent core. Load the released CDM core before training its new connections when the task schema matches. The frontend and semantic reader are implemented. The [DiscoveryWorld task path](experiments/discoveryworld/README.md) now connects public observations, dynamic actions, trajectory imitation, numerical-result prediction and fresh-interaction actor–critic updates. The [joint scientific-task path](experiments/continual_experiment/README.md) now connects activity selection, retrieval and deployment-time prediction updates to the persistent core. It uses structured observations; multimodal joint training and learning that improves physical inference remain separate research tasks. Existing lifetime commands continue to train structured process events.

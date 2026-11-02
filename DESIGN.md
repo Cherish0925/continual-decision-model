@@ -1,5 +1,10 @@
 # Continual Decision Model: first multimodal architecture
 
+For the **current state representation and implementation direction**, read
+[Continual Agent](research/CONTINUAL_AGENT.md#3-model-structure-and-state).
+This document preserves the first multimodal configuration and its interface
+choices; it is a reference configuration, not a final architecture claim.
+
 **Selected on 19 October; pretrained reuse extended on 20 October 2026.** CDM is a persistent, goal-conditioned model that learns actions and the use of observation, computation and experience. This document fixes the first integrated architecture. [STATUS.md](STATUS.md) records implementation and measured behavior; [TRAINING.md](TRAINING.md) defines optimization.
 
 The main path is **pretrained perception → recurrent state ↔ persistent Transformer workspace → action and activity policies**, with action-conditioned prediction, episodic memory and parameter learning connected to the same state. A frozen vision-language model supplies semantic context on demand; an offline teacher supplies training trajectories. The continual core remains responsible for state, actions and activity choices.
