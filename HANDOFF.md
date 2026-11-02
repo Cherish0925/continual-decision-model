@@ -1,5 +1,27 @@
 # Research progress
 
+## 2 November: response-family implementation and training
+
+The [response-family study](experiments/continual_experiment/RESPONSE_FAMILIES.md)
+implements the first two changes from the integrated direction and starts
+training on five response mechanisms. The frozen-parent comparison is complete:
+twelve ledgers reduce the original parents' costs to 66.84 / 69.34 on the primary
+cohort, with 240/240 completions. The earlier memory continuation does not
+establish an additional gain. New training therefore starts from the originals.
+
+Six fixed-budget joint trainings compare the inherited actor, a marginal
+selector, and a selector of individual response hypotheses. The new selectors
+preserve inherited action scores at initialization. Training updates the shared
+physical/chemical core and task interfaces. The digital extension retains the
+public response/cost interface; hidden laws never enter policy inputs.
+
+Work is on `research/continual-belief-20261102`. Run outputs are under
+`runs/continual_physics/continual_belief_20261102/`: `parent_memory/` is complete;
+`train/` holds six ongoing or queued jobs; `cohorts/` fixes development and final
+streams; `development/` and `test/` contain corresponding evaluations.
+The original research objective and remaining model capabilities are preserved
+in the integrated direction below.
+
 ## 2 November: integrated model and research direction
 
 Start with **[CONTINUAL_AGENT.md](research/CONTINUAL_AGENT.md)** for the current

@@ -1,0 +1,19 @@
+{
+  "selected": "information",
+  "selection": "Development completion first, then mean operations; compare fixed two-step, greedy and information rules",
+  "development": {
+    "two_step": [
+      187,
+      231.86458333333334
+    ],
+    "greedy": [
+      189,
+      130.03645833333334
+    ],
+    "information": [
+      191,
+      121.171875
+    ]
+  },
+  "final": "All final streams frozen before training; selected reference is now fixed"
+}
