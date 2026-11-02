@@ -42,6 +42,14 @@ continue tuning the unsuccessful extra action head on these test cohorts.
 The original research objective and remaining model capabilities are preserved
 in the integrated direction below.
 
+The [current architecture](research/CONTINUAL_AGENT.md#observation-selection-buffers-and-state-estimation)
+now distinguishes observation history, input buffering, state filtering,
+experimental memory and pending results. Several already exist; the physical
+delivery wrapper alone does not advance the world during inference. Connect
+the current model to the independent-clock path while learning coherent
+unfamiliar response alternatives. The implementation table marks the parent
+and selector comparisons complete, so subsequent work starts from their results.
+
 ## 2 November: the plan preceding this study
 
 Start with **[CONTINUAL_AGENT.md](research/CONTINUAL_AGENT.md)** for the current

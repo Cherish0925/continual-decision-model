@@ -1,6 +1,6 @@
 # Continual Decision Model: research and implementation direction
 
-**Working source:** [`aecc237`](https://github.com/Cherish0925/continual-decision-model/tree/aecc237ecb191685d7e3b4f9f80565a78fdc9976), following v0.14.0. This is the current research direction, not a claim that the proposed model has been trained. The [result synthesis](MEMORY_AND_EXPERIMENTS.md) contains the calculations and corrections behind the choices below.
+**Working source:** [v0.15.0, `8f0b628`](https://github.com/Cherish0925/continual-decision-model/tree/8f0b6287fa3823874615a6fb07d4808463e89107). The [response-family study](../experiments/continual_experiment/RESPONSE_FAMILIES.md) reports the completed implementation and experiments. The remaining architecture below is the research direction. The earlier [result synthesis](MEMORY_AND_EXPERIMENTS.md) preserves the v0.14.0 calculations and their corrections.
 
 **Build a model whose experience improves its next experiment, whose ongoing inference can be revised as observations arrive, and whose learned policy chooses when to act, observe, compute and learn.** Preserve the fast action path while these operations run. A user request changes the goals of this continuing process; it need not start a new process.
 
@@ -8,9 +8,11 @@ The next implementation should connect a predictive belief over old and new rela
 
 ## 1. What the results change
 
-The project has useful task-local response learning and experimental memory. On the primary 240-task chemistry cohort, twelve ledgers with a fixed reader cost 69.77 / 72.43 operations, versus 78.22 / 84.30 for the frozen initial policies. All complete the tasks. These are different weights as well as different memory settings; the missing frozen-parent-plus-memory comparison matters. A second cohort supports twelve versus six ledgers, not the unrun comparison against the original parent.
+The project has useful task-local response learning and experimental memory. The formerly missing frozen-parent comparison is now complete: twelve ledgers with fixed weighting reduce the original models' costs from 78.22 / 84.30 to 66.84 / 69.34 operations, with all 240 tasks completed. The earlier memory continuations cost 69.77 / 72.43 with the same capacity and do not establish a training benefit over these stronger starting models.
 
-A training-derived, known-family Bayesian replay is much more competitive with CDM than the earlier test-derived-prior calculation suggested. Its reported Normal mean is 60.0, against CDM's 59.0 / 63.1; its Challenge information heuristic is 79.9, against 80.6 / 81.7. These estimates motivate moving beyond the official response family. They do **not** establish a universal optimum or a small remaining improvement ceiling: the reference knows the response law, uses an assumed recurrence process, and is not exactly optimized on Challenge.
+Six new continuations train across five response mechanisms. The hypothesis-set action head does not outperform its same-size marginal control consistently; it also increases native chemical cost. Removing only that head restores 240/240 completions at 64.06 / 67.70 operations. On independent digital streams, the resulting continuation's mean savings are not an established overall gain. These results favor retaining the inherited actor while changing the predictive representation available to it.
+
+The earlier training-derived Bayesian replay was competitive with the v0.14.0 continuation: reported Normal means were 60.0 versus 59.0 / 63.1, and Challenge means 79.9 versus 80.6 / 81.7. Those comparisons remain historical motivation for extending the response family. They do **not** establish a universal optimum or a small remaining improvement ceiling: the reference knows the response law, uses an assumed recurrence process, and is not exactly optimized on Challenge. The v0.15.0 digital comparison now includes a separate known-formula reference across the new mechanisms.
 
 | Capability | What exists | Next substantive result |
 | --- | --- | --- |
@@ -24,7 +26,7 @@ A training-derived, known-family Bayesian replay is much more competitive with C
 | Multimodal interaction | Pretrained image/text interfaces exist separately | Perceptual information changes useful actions in the continuing model |
 | Initiative | Autonomous task execution exists | A standing goal causes useful self-initiated observation or action without another prompt |
 
-The scientific-task path currently stores about 47.82M parameters, with 32.71M trainable in its joint continuation. The earlier 0.428B image/text path is a different configuration. Do not add inactive encoders or teachers to the parameter count of a measured policy.
+The v0.15.0 scientific-task path stores approximately 47.84M parameters with its added 16,849-parameter action head. Its preceding configuration stored about 47.82M, with 32.71M trainable in that continuation. The earlier 0.428B image/text path is a different configuration. Do not add inactive encoders or teachers to the parameter count of a measured policy.
 
 ## 2. The scientific question
 
@@ -82,6 +84,28 @@ $$
 
 Shared weights do not require a single shared h/z for unrelated instruments. Use addressed investigation state with a common learned transition. Compare cross-task carry, within-task recurrence and workspace refinement separately; resetting h/z only at a task boundary does not justify removing it inside the task.
 
+### Observation selection, buffers and state estimation
+
+These functions already exist in partial forms. Keep their different purposes explicit:
+
+| Function | Current implementation | Work still needed in the common acting path |
+| --- | --- | --- |
+| Observation history | `reaction_history` stores up to 256 returned experiments; the conditional predictor attends to response-specific groups | Time-aware selection and compression for continuous multimodal streams |
+| Experience retention | Circular fast-update storage, recent support selection, and twelve cross-task ledgers of up to 32 observations each in the current comparison | Retention trained through later use; distinction between a raw record, derived state and consolidated knowledge |
+| State filtering | GRU update gates, observation attention, and likelihood-weighted competition between current and archived predictors | A predictive distribution over unfamiliar relationships, updated from chosen observations |
+| Pending results | `ContinualSession` tracks one outstanding request; the physical session can delay its delivery while internal ticks continue | Multiple pending sources, capture/arrival/application times and state reconstruction after late observations |
+| Independent time | Earlier lifetime experiments have a separately advancing process | Integrating that timing with the current learned scientific-task model |
+
+The pending-result physical wrapper explicitly delays delivery without advancing the simulator's own clock. It is not the independent-time implementation. Likewise, PyTorch `register_buffer` means a non-parameter model tensor; its name alone does not indicate a streaming input queue.
+
+An input buffer retains events until they can be used. A state filter estimates what is happening from those events and the model's predictions. Admission and scheduling decide which events need expensive processing now. A replay buffer supplies learning examples. One mechanism does not replace the others.
+
+For an independent stream, retain the source, capture time, arrival time, payload and originating request. Coalesce redundant latest-value readings or use temporal summaries where the task permits it; retain the association between a dispatched experiment and its returned outcome. Delayed observations should update the appropriate past state and its consequences. Unexpected transitions need a path into the state update rather than being removed simply because the current predictor assigns them low probability.
+
+Buffer capacity alone cannot overcome a sustained arrival rate above processing capacity. If events arrive at rate $\lambda$ and the selected processing path serves them at rate $\mu$, a fixed-size lossless queue cannot operate indefinitely when $\lambda>\mu$. Adapt sensing, representation, batching or computation allocation. Even below that rate, bursts can produce stale decisions; choose processing by its effect on the next useful action as well as throughput.
+
+Use small event microbatches for the fast state, bounded chunks for workspace refinement and learning, and a fast action readout from the latest usable state. Train event selection and compute allocation on subsequent task outcomes and measured delay. Current reaction tasks supply compact, structured observations, so their negative selector result is not explained by a demonstrated raw-input overload. The streaming work serves the real-time objective; it is not a substitute for learning unfamiliar response functions.
+
 ### A belief that represents both remembered and unfamiliar relationships
 
 Let $\xi$ denote a response relationship. Initially it may be an explicit parameter vector in a finite simulator; the learned version uses an inferred latent variable or a posterior over model parameters. Each retained investigation contributes a distribution $q_m(\xi\mid D_m)$, not just one deterministic forecast. A fresh component represents possibilities not explained by currently available records:
@@ -131,6 +155,10 @@ $$
 The successor includes changed physical state, posterior, elapsed time, pending work and remaining budget. In chemistry, successful experiments terminate only after the native exit action is charged. A drop from rust 3 to 1 changes what future experiments can distinguish; this consequence must reach V. In a timed process, the world evolves during computation as well as during tool execution.
 
 A few summary scalars are useful features but need not be sufficient. Provide the value/selector with a permutation-invariant encoding of weighted hypotheses and candidate-conditioned predictions. Two actions can have identical marginal outcome distributions yet leave different posterior partitions and future action costs. Entropy, success probability and top weight alone cannot always represent this difference.
+
+For example, two binary experiments A and B can each have success probability one half under either of two beliefs. The first belief gives equal weight to response functions (A,B)=(0,0) and (1,1); the second to (0,1) and (1,0). Their per-action probabilities are identical, but after A fails, B's success probability is respectively zero or one. A useful fresh-task representation must support this dependence between possible experiments. A recurrent network can learn such dependence implicitly; the current result does not prove GRUs incapable of doing so. What is missing from the explicit planning interface is a learned distribution of coherent unfamiliar functions, rather than one categorical forecast for each query.
+
+The next predictor should infer a latent relationship from actual history and sample or enumerate bounded alternatives whose identity is shared across candidate queries. Condition each alternative on the experiment that returns, then recompute downstream action values. Do not generate unrelated outcome samples for each candidate and call them sampled relationships. Train on observation sequences from the same relationship, and on the later experiments those observations change. Keep exact-history conditioning and the inherited action policy available while this representation is learned.
 
 ### Memory, adaptation and consolidation
 
@@ -248,14 +276,16 @@ objective, with their original evaluation requirements intact.
 
 | Work | Concrete change | Result that determines the next choice |
 | --- | --- | --- |
-| Establish the starting policy | Load each original parent with twelve ledgers and fixed weighting, retaining its response predictor and within-task h/z | Whether memory continuation training improved on simply adding memory to the stronger parent |
-| Expose the belief to action | Add per-relationship predictions and a masked set encoder; preserve the inherited selector as a named mode | Whether useful distinctions are lost by marginal prediction alone |
-| Learn response and action together | Train the relationship posterior, observation model and cost-to-go on diverse streams; compare learned and fixed metrics | Whether learning transfers beyond the official geometry and competes with recurrent/latent-context methods |
+| Starting policy: completed in v0.15.0 | Original parents plus twelve ledgers and fixed weighting are available | Use this reference; the earlier memory continuation has no established additional benefit |
+| Archive-set selector: completed in v0.15.0 | Marginal and per-archive action heads were jointly trained and compared | Retain the inherited actor; another action head alone does not supply unfamiliar-function uncertainty |
+| Learn response and action together: next | Train a posterior over coherent unfamiliar functions, its observation update and future-cost action use; compare recurrent and latent-context methods | Whether selected observations change predictions for other experiments and reduce subsequent task cost across response families |
 | Reuse computation under time | Integrate pending events, bounded refinement and the independent clock | Whether retaining/revising work improves action quality at a measured latency budget |
 | Learn computation and consolidation | Train operation values and later-use updates in the same streams | Whether the learned schedule and retained parameter changes improve future tasks over equal-cost alternatives |
 | Scale what works | Increase streams, exposure, memory and model size separately | Which resource increases capability, and where inference cost outweighs the benefit |
 
-The initial selector comparison is bounded: one declared cohort and settings, with the existing predictor unchanged. Use it to choose initialization and features; do not spend successive releases tuning the same official family. Run the broader response-family and timed studies as the principal work.
+The initial selector comparison is complete. Proceed with the predictive representation and its use in action; do not repeat selector tuning as though that comparison were still missing. Implement the event-buffer and independent-clock connection through the same state interface, using the inherited predictor and actor first, so it is ready for the learned relationship update. The next integrated run should exercise a received observation changing a belief, a pending calculation and a later action in that continuing process.
+
+Separate scientific progress from execution throughput. The current negative selector result identifies an ineffective trained connection, not a GPU bottleneck or a failed input buffer. Training and evaluation counts alone do not locate elapsed-time costs. Measure data generation, prediction over archived records, optimization and native execution once on a representative run, then change the dominant cost. A complete training objective must also exercise the desired operation: a simulator paused during internal work cannot teach the cost of acting on a world that changed while the model was computing.
 
 ### File-level implementation map
 
@@ -267,7 +297,7 @@ The following names are proposed additions unless an existing module already cov
 | `cdm/conditional_response.py`, `cdm/response_replay.py` | Add a relationship-conditioned prediction path; retain history conditioning; compare learned similarity and deployed-step fitting |
 | Proposed `cdm/relation_belief.py` | Weighted relationship hypotheses, within-fresh uncertainty, likelihood updates, rejuvenation and component-mass normalization |
 | `cdm/experiment_value.py` | Implemented hypothesis/candidate action residual; calibrated next-state cost and time remain unimplemented |
-| `experiments/continual_chemistry/reaction.py` | Expose per-hypothesis forecasts to the selector; retain inherited, information and value modes; preserve h/z for the first comparison |
+| `experiments/continual_chemistry/reaction.py` | Replace the single fresh component with coherent relationship alternatives while retaining archive forecasts, within-task h/z and the inherited action reference |
 | `experiments/continual_chemistry/active_environment.py` and a separate extension module | Parameterized response laws, sampled recurrence and changed-law returns without changing official-task semantics |
 | `experiments/continual_experiment/` | Frozen-parent-plus-memory comparison; new stream manifests; recurrent and latent-context training; stage results at fixed endpoints |
 | `cdm/core.py`, `cdm/recurrent_feedback.py` | Keep the current recurrent/workspace reference; add revision and operation choices only when they affect the acting path |
