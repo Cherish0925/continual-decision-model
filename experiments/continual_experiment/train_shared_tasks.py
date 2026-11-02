@@ -115,6 +115,10 @@ def main():
     parser.add_argument('--chemical-schedule', choices=('paired', 'mixed'), default='paired')
     parser.add_argument('--memory-action-credit', action='store_true')
     parser.add_argument('--memory-lr', type=float)
+    parser.add_argument('--memory-slots', type=int, default=6)
+    parser.add_argument('--experiment-value', choices=('marginal', 'hypotheses'))
+    parser.add_argument('--experiment-value-lr', type=float, default=.001)
+    parser.add_argument('--chemical-families', choices=('official', 'diverse'), default='official')
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -143,7 +147,12 @@ def main():
         chemical.response_replay.load_state_dict(update['model'])
     if args.experimental_memory is not None:
         from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
-        chemical.experimental_memory = ExperimentalMemory(ExperimentalMemoryConfig(mode=args.experimental_memory)).to(args.device)
+        chemical.experimental_memory = ExperimentalMemory(ExperimentalMemoryConfig(
+            mode=args.experimental_memory, slots=args.memory_slots)).to(args.device)
+    if args.experiment_value is not None:
+        from cdm.experiment_value import ExperimentValue, ExperimentValueConfig
+        chemical.experiment_value = ExperimentValue(chemical.continual_config.adapter_width,
+            ExperimentValueConfig(mode=args.experiment_value)).to(args.device)
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
     chemical.memory_action_credit = args.memory_action_credit
     reference = deepcopy(physical.base).eval().requires_grad_(False)
@@ -151,8 +160,12 @@ def main():
     if args.chemical_mode == 'active':
         from experiments.continual_chemistry.active_environment import ActiveChemicalEnvironment
         from experiments.continual_chemistry.active_training import active_chemical_window
-        streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device,
-                                             schedule=args.chemical_schedule)
+        if args.chemical_families == 'diverse':
+            from experiments.continual_chemistry.response_families import ResponseFamilyEnvironment
+            streams = ResponseFamilyEnvironment(args.chemical_data, args.batch, args.seed, args.device)
+        else:
+            streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device,
+                                                 schedule=args.chemical_schedule)
     else:
         streams = ChemicalStreams(args.chemical_data, args.batch, args.seed)
     statistics = chemical_saved['training']['feedback_statistics']
@@ -165,6 +178,8 @@ def main():
                                   (physical, '', args.new_lr)]
     if args.memory_lr is not None:
         rates.append((chemical.experimental_memory, '', args.memory_lr))
+    if chemical.experiment_value is not None:
+        rates.append((chemical.experiment_value, '', args.experiment_value_lr))
     rates.append((chemical, '', args.chemical_lr))
     for module, prefix, rate in rates:
         parameters = [p for name, p in module.named_parameters()
@@ -203,6 +218,17 @@ def main():
             chemical_update_control='same fitted calibration without response fitting' if args.response_replay_control else None,
             chemical_update_initial=str(args.response_replay_checkpoint),
             chemical_update_schedule='fixed before each response readout; no learned response-compute allocation')
+    if args.chemical_families == 'diverse':
+        metadata.update(chemical_environment='Digital response-family extension; same public observations and operation costs',
+            chemical_families=['cosine', 'metric', 'interaction', 'inhibition', 'multiple_solutions'],
+            chemical_counterfactuals='Only executed responses receive a likelihood target; law identity is simulator-only',
+            chemical_sequence='12 tasks; new laws, exact returns and changed familiar targets; randomized order',
+            official_evaluation='The extension is not an official DiscoveryWorld task or leaderboard score')
+    if args.experiment_value is not None:
+        metadata.update(chemical_action_representation=args.experiment_value,
+            chemical_action_initialization='Zero final residual; inherited action scores unchanged',
+            chemical_action_learning='Longitudinal actor-critic task return; response forecasts detached on this actor path',
+            chemical_fresh_uncertainty='Fresh predictor supplies a response distribution; no within-fresh latent hypotheses yet')
     if chemical.experimental_memory is not None:
         metadata.update(chemical_memory=chemical.experimental_memory.config.__dict__,
             chemical_sequence=args.chemical_schedule,

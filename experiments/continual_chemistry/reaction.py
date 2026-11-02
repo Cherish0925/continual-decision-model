@@ -10,6 +10,7 @@ from cdm.conditional_response import ConditionalResponse, ConditionalResponseCon
 from cdm.adaptive_response import AdaptiveResponse, ResponseAdaptationConfig
 from cdm.response_replay import ResponseReplay, ResponseReplayConfig, recent_support
 from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
+from cdm.experiment_value import ExperimentValue, ExperimentValueConfig
 from cdm.core import ContinualCore, CoreConfig
 from .observations import model_from_core_checkpoint
 from .recipes import primitive_recipes
@@ -17,7 +18,7 @@ from .recipes import primitive_recipes
 
 class ReactionExperimentPolicy(ContinualExperimentPolicy):
     def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig(),
-                 adaptation_config=None, replay_config=None, memory_config=None):
+                 adaptation_config=None, replay_config=None, memory_config=None, value_config=None):
         super().__init__(base, config)
         self.response = ConditionalResponse(2 * self.core.config.width, response_config)
         self.direct_history = True
@@ -27,6 +28,7 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         self.retain_response_adaptation = True
         self.response_replay = None if replay_config is None else ResponseReplay(response_config.levels, replay_config)
         self.experimental_memory = None if memory_config is None else ExperimentalMemory(memory_config)
+        self.experiment_value = None if value_config is None else ExperimentValue(config.adapter_width, value_config)
         if adaptation_config is not None:
             self.experiment_residual = torch.nn.Linear(config.adapter_width + 5, 1)
             torch.nn.init.zeros_(self.experiment_residual.weight)
@@ -112,6 +114,7 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             mixed = self.experimental_memory.combine(state, component_mask, experts)
             prediction['log_probabilities'] = observable_log_probabilities(mixed, current)
             extra['memory_experts'] = observable_log_probabilities(experts, current[:, :, None])
+            extra['memory_weights'] = self.experimental_memory.weights(state, component_mask).exp()
         return {**out, **extra, 'outcomes': prediction['log_probabilities'],
                 'latent_response_logits': prediction['latent_logits']}
 
@@ -166,6 +169,11 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         log_score = score.clamp_min(1e-8).log()
         if not action_credit:
             log_score = log_score.detach()
+        if self.experiment_value is not None:
+            experts = out.get('memory_experts', out['outcomes'][:, :, None])
+            weights = out.get('memory_weights', torch.ones_like(experts[:, 0, :, 0]))
+            residual = residual + self.experiment_value(observation['candidates'], observation['action_mask'],
+                                                        experts, weights, out['features'])
         return (4 * log_score + residual).masked_fill(
             ~observation['action_mask'], -torch.inf)
 
@@ -195,6 +203,8 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             result['response_replay_config'] = asdict(self.response_replay.config)
         if self.experimental_memory is not None:
             result['experimental_memory_config'] = asdict(self.experimental_memory.config)
+        if self.experiment_value is not None:
+            result['experiment_value_config'] = asdict(self.experiment_value.config)
         return result
 
 
@@ -216,7 +226,9 @@ def load_reaction_checkpoint(path, device='cpu'):
                                     ResponseReplayConfig(**saved['response_replay_config'])
                                     if 'response_replay_config' in saved else None,
                                     ExperimentalMemoryConfig(**saved['experimental_memory_config'])
-                                    if 'experimental_memory_config' in saved else None)
+                                    if 'experimental_memory_config' in saved else None,
+                                    ExperimentValueConfig(**saved['experiment_value_config'])
+                                    if 'experiment_value_config' in saved else None)
     model.load_state_dict(saved['model'])
     return model.to(device), saved
 
