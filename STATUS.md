@@ -1,5 +1,13 @@
 # CDM: objective, implementation, and results
 
+**Running comparison, 3 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
+updates the shared core, task interfaces and learned response functions.
+Four continuation seeds compare joint gradients, prediction-only gradients
+and inherited continuation. New target ratios, five-ingredient tasks, held-out
+response mechanisms and paired input renaming broaden the fixed test. Native
+physics/chemistry check retention. This implementation is running; its final
+model advantage has not yet been evaluated in full.
+
 **Latest completed study, 3 November:** [learned response functions](experiments/continual_experiment/FUNCTION_BELIEF.md)
 adds coherent unfamiliar-law alternatives, likelihood conditioning and
 finite-budget planning. Twelve predictor trainings and the independent and

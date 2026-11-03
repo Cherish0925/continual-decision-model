@@ -14,7 +14,14 @@ An observation can become outdated while inference is still running. The researc
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
-The latest [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
+The current [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
+trains response hypotheses from subsequent action returns, together with the
+shared core and both task interfaces. Four continuation repetitions compare
+three training conditions. A fixed 1,008-task cohort tests new mechanisms,
+target ratios and ingredient counts; paired renaming tests and native retention
+are reported separately. Training and full evaluation are in progress.
+
+The latest completed [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
 learns coherent alternatives for unfamiliar experimental relationships.
 Measurements update predictions of experiments that have not been performed.
 Two 106,500-parameter predictors complete 570/576 and 574/576 tasks at 148.16

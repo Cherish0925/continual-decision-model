@@ -276,9 +276,13 @@ cheaper information rule remains competitive. A direct likelihood mixture with
 the inherited CDM increases native chemical cost, so that integration remains
 experimental. The original actor and twelve ledgers remain the working reference.
 
-The next learned connection is between this response belief and subsequent
-task cost. It must preserve successful native behavior while learning how
-uncertainty changes the value of an experiment or a further computation.
+The [joint continuation](../experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
+now implements the connection between response beliefs and subsequent action
+return. Its zero-initialized residual preserves the inherited scores initially;
+selected-response likelihood and action return train the same latent functions.
+Four continuation repetitions and broader transfer comparisons are running.
+Native retention and superiority over simpler continuations remain empirical
+questions until that comparison is complete.
 Independent-time inference and lasting consolidation retain their original
 evaluation requirements.
 
@@ -287,7 +291,7 @@ evaluation requirements.
 | Starting policy: completed in v0.15.0 | Original parents plus twelve ledgers and fixed weighting are available | Use this reference; the earlier memory continuation has no established additional benefit |
 | Archive-set selector: completed in v0.15.0 | Marginal and per-archive action heads were jointly trained and compared | Retain the inherited actor; another action head alone does not supply unfamiliar-function uncertainty |
 | Response functions: implemented and tested | Shared latent functions, censored observation updates, conditional/attentive references and finite-budget lookahead | Joint response predictions support useful hypothetical updates; a general advantage over the strong CDM is unestablished |
-| Response-to-action integration: next | Train native subsequent cost and policy behavior with the learned belief; retain the strong parent and matched recurrent/latent-context references | Whether the belief improves the continuing model's decisions while preserving native capability; direct likelihood mixing has failed this comparison |
+| Response-to-action integration: implemented, comparison running | Joint gradients from selected responses and action return; same-architecture prediction-only and inherited continuation controls | Four repetitions, broader digital transfer and original native retention; direct likelihood mixing remains the earlier failed integration |
 | Reuse computation under time | Integrate pending events, bounded refinement and the independent clock | Whether retaining/revising work improves action quality at a measured latency budget |
 | Learn computation and consolidation | Train operation values and later-use updates in the same streams | Whether the learned schedule and retained parameter changes improve future tasks over equal-cost alternatives |
 | Scale what works | Increase streams, exposure, memory and model size separately | Which resource increases capability, and where inference cost outweighs the benefit |
@@ -306,6 +310,7 @@ The following names are proposed additions unless an existing module already cov
 | `cdm/conditional_response.py`, `cdm/response_replay.py` | Add a relationship-conditioned prediction path; retain history conditioning; compare learned similarity and deployed-step fitting |
 | `cdm/relation_belief.py` | Implemented learned function mixture, likelihood conditioning and conditional/attentive references; continuous posterior rejuvenation remains open |
 | `cdm/experiment_value.py` | Implemented hypothesis/candidate action residual; calibrated next-state cost and time remain unimplemented |
+| `cdm/belief_decision.py` | Implemented differentiable hypothetical posterior features and zero-initialized action residual; joint continuation versus prediction-only comparison running |
 | `experiments/continual_chemistry/reaction.py` | Experimental learned-function integration preserves archive scoring and inherited weights; train the decision connection before replacing the native reference |
 | `experiments/continual_chemistry/active_environment.py` and a separate extension module | Parameterized response laws, sampled recurrence and changed-law returns without changing official-task semantics |
 | `experiments/continual_experiment/` | Frozen-parent-plus-memory comparison; new stream manifests; recurrent and latent-context training; stage results at fixed endpoints |

@@ -1,5 +1,31 @@
 # Research progress
 
+## 3 November: joint learning and broader task transfer
+
+The [joint continuation](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
+now connects action-return gradients to the learned response hypotheses while
+retaining the inherited policy at initialization. Four fresh predictors are
+complete. The twelve full continuations and their digital/native comparisons
+are running; final performance claims await the complete fixed endpoints.
+
+The three conditions compare joint action/response gradients, prediction-only
+gradients with the same forward architecture, and inherited continuation.
+There are four continuation seeds from two original cores. Training includes
+seven chemical response mechanisms and consistent ingredient renaming.
+The [fixed test](experiments/continual_experiment/results/joint_belief_test_cohort.json)
+contains 1,008 instances in 84 new streams, plus 144 paired naming replays.
+It separates wider parameters, untrained response combinations, untrained
+threshold laws, new target ratios and five-ingredient inputs. Original native
+physics and chemistry are retention comparisons on saved initial states.
+
+Code: `cdm/belief_decision.py`, `cdm/relation_belief.py`, the shared trainer and
+`experiments/continual_experiment/joint_belief.py`. Run outputs are under
+`runs/continual_physics/joint_belief_20261103/`; `plan.json` fixes the conditions,
+budget and endpoint. Each completed training has `finished.json`. Interrupted
+resource/CPU-library attempts are retained separately and excluded from
+completed comparisons. The inherited models remain the reference during this
+study. Independent-time operation and parameter consolidation remain open.
+
 ## 3 November: learned response functions and finite-cost planning
 
 The [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
