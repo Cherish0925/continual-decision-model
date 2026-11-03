@@ -11,6 +11,7 @@ from cdm.adaptive_response import AdaptiveResponse, ResponseAdaptationConfig
 from cdm.response_replay import ResponseReplay, ResponseReplayConfig, recent_support
 from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
 from cdm.experiment_value import ExperimentValue, ExperimentValueConfig
+from cdm.relation_belief import RelationBelief, RelationBeliefConfig
 from cdm.core import ContinualCore, CoreConfig
 from .observations import model_from_core_checkpoint
 from .recipes import primitive_recipes
@@ -18,7 +19,8 @@ from .recipes import primitive_recipes
 
 class ReactionExperimentPolicy(ContinualExperimentPolicy):
     def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig(),
-                 adaptation_config=None, replay_config=None, memory_config=None, value_config=None):
+                 adaptation_config=None, replay_config=None, memory_config=None, value_config=None,
+                 relation_config=None, relation_prior=.5):
         super().__init__(base, config)
         self.response = ConditionalResponse(2 * self.core.config.width, response_config)
         self.direct_history = True
@@ -29,6 +31,10 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         self.response_replay = None if replay_config is None else ResponseReplay(response_config.levels, replay_config)
         self.experimental_memory = None if memory_config is None else ExperimentalMemory(memory_config)
         self.experiment_value = None if value_config is None else ExperimentValue(config.adapter_width, value_config)
+        if relation_config is not None and memory_config is None:
+            raise ValueError('Response-law integration requires the inherited experimental-memory reader')
+        self.relation_belief = None if relation_config is None else RelationBelief(relation_config)
+        self.relation_prior = relation_prior
         if adaptation_config is not None:
             self.experiment_residual = torch.nn.Linear(config.adapter_width + 5, 1)
             torch.nn.init.zeros_(self.experiment_residual.weight)
@@ -115,6 +121,24 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             prediction['log_probabilities'] = observable_log_probabilities(mixed, current)
             extra['memory_experts'] = observable_log_probabilities(experts, current[:, :, None])
             extra['memory_weights'] = self.experimental_memory.weights(state, component_mask).exp()
+        if self.relation_belief is not None:
+            relation, relation_evidence = self.relation_belief.conditioned(
+                proportions, component_mask, history_q,
+                (history[..., 16] * 3).round().long(),
+                (history[..., 17] * 3).round().long(), history_mask)
+            # Keep the inherited predictor, its archive scoring and its action
+            # interface. Returned observations determine which response model
+            # is useful on this apparatus; no task labels select the branch.
+            empty = {**state, 'archive_evidence': torch.zeros_like(state['archive_evidence']),
+                     'archive_returns': torch.zeros_like(state['archive_returns'])}
+            parent_prior = self.experimental_memory.weights(empty, component_mask)
+            parent_evidence = (parent_prior + state['archive_evidence']).logsumexp(-1)
+            prior = relation.new_tensor([1 - self.relation_prior, self.relation_prior]).log()
+            weights = (torch.stack((parent_evidence, relation_evidence), -1) + prior).log_softmax(-1)
+            relation = observable_log_probabilities(relation, current)
+            prediction['log_probabilities'] = torch.logsumexp(
+                torch.stack((prediction['log_probabilities'], relation), 2) + weights[:, None, :, None], 2)
+            extra['relation_weight'] = weights[:, 1].exp()
         return {**out, **extra, 'outcomes': prediction['log_probabilities'],
                 'latent_response_logits': prediction['latent_logits']}
 
@@ -205,6 +229,9 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             result['experimental_memory_config'] = asdict(self.experimental_memory.config)
         if self.experiment_value is not None:
             result['experiment_value_config'] = asdict(self.experiment_value.config)
+        if self.relation_belief is not None:
+            result['relation_belief_config'] = self.relation_belief.configuration()
+            result['relation_prior'] = self.relation_prior
         return result
 
 
@@ -228,7 +255,10 @@ def load_reaction_checkpoint(path, device='cpu'):
                                     ExperimentalMemoryConfig(**saved['experimental_memory_config'])
                                     if 'experimental_memory_config' in saved else None,
                                     ExperimentValueConfig(**saved['experiment_value_config'])
-                                    if 'experiment_value_config' in saved else None)
+                                    if 'experiment_value_config' in saved else None,
+                                    RelationBeliefConfig(**saved['relation_belief_config'])
+                                    if 'relation_belief_config' in saved else None,
+                                    saved.get('relation_prior', .5))
     model.load_state_dict(saved['model'])
     return model.to(device), saved
 

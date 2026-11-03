@@ -1,7 +1,9 @@
 # Run and extend CDM
 
-For the latest trained scientific-task models, start with the
-[v0.15.0 download and evaluation commands](experiments/discoveryworld/RELEASE.md#response-law-transfer-and-memory-v0150).
+For the latest response-function models and comparisons, start with the
+[v0.16.0 download and evaluation commands](experiments/discoveryworld/RELEASE.md#learned-response-functions-v0160).
+The release includes the original strong CDM parents and marks the new
+evidence-mixture integration as experimental.
 The digital response-law evaluator uses generated tasks and needs no downloaded
 trajectory files. Its native DiscoveryWorld comparison reuses the released
 environment initializations. These models use structured observations; the

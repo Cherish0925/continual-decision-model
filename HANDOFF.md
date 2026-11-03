@@ -1,5 +1,43 @@
 # Research progress
 
+## 3 November: learned response functions and finite-cost planning
+
+The [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
+implements coherent alternatives for unfamiliar relationships. One learned
+latent function predicts several experiments; actual measurements update its
+posterior. Twelve predictor trainings, 21 comparisons on one independent
+576-task cohort, and 480 native executions are complete. The shared CDM core
+was not retrained in this study.
+
+The selected 106,500-parameter response models complete 570/576 and 574/576 at
+148.16 and 147.53 operations. Matched attentive predictors need 205.56 and
+203.76; the original CDM with twelve ledgers needs 144.48 and 146.64. The new
+representation improves on that conditional-prediction reference and reaches
+the strong parent's range; it has not established superiority over the parent.
+
+Finite-budget lookahead supplies a useful, measured use of joint hypotheses.
+Allowing a hypothetical observation to update the next experimental choice
+saves 118.86 [80.03, 159.32] and 124.85 [86.91, 164.06] operations relative to
+the same finite planner with that update disabled. Both still update from real
+observations. The cheaper information rule remains competitive. A repeated-trial
+continuation approximation reverses the benefit, showing why the actual
+non-repeating, budgeted execution needs to enter planning.
+
+The direct CDM evidence-mixture integration is not a recommended replacement:
+native cost rises to 91.93 / 91.35 from 66.84 / 69.34, with one lost completion
+in the first repetition. Its original weights and archive scoring are intact;
+new forecasts change the inherited ranking. The next integrated training must
+learn subsequent action cost and preserve native competence. Predictive
+likelihood by itself has not achieved that connection.
+
+Code, model endpoints, data, complete tables, native records and the comparison
+figure are supplied in [v0.16.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0).
+[Download and run](experiments/discoveryworld/RELEASE.md#learned-response-functions-v0160).
+All outputs are under `runs/continual_physics/function_belief_20261103/`.
+No training or evaluation from this comparison remains running. The architecture
+document records implemented function inference and keeps independent-time
+operation, learned computation and consolidation as the next connected work.
+
 ## 2 November: response-family results and independent confirmation
 
 The [response-family study](experiments/continual_experiment/RESPONSE_FAMILIES.md)

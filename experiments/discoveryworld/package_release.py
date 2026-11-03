@@ -63,7 +63,7 @@ def portable(value, root):
     return value
 
 
-def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld", exclude=()):
+def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld", exclude=(), tensor_files=()):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
@@ -77,7 +77,9 @@ def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/disco
             for path in files(root, runs, base):
                 if any(path.relative_to(root).match(pattern) for pattern in exclude):
                     continue
-                checkpoint = path.name in CHECKPOINTS or bool(re.fullmatch(r"(?:epoch|update|checkpoint)\d+\.pt", path.name))
+                checkpoint = (path.name in CHECKPOINTS or
+                    path.relative_to(root).as_posix() in tensor_files or
+                    bool(re.fullmatch(r"(?:epoch|update|checkpoint)\d+\.pt", path.name)))
                 image = path.suffix.lower() in IMAGES
                 compressed_text = path.name.endswith((".json.gz", ".jsonl.gz"))
                 record = path.suffix in TEXT or compressed_text or path.suffix in {".svg", ".pdf", ".npz"}
@@ -168,5 +170,7 @@ if __name__ == "__main__":
     parser.add_argument("--name", default="cdm-scientific", help="Archive filename prefix")
     parser.add_argument("--exclude", action="append", default=[],
                         help="Omit a repository-relative pattern when the same asset is supplied separately")
+    parser.add_argument("--tensor-file", action="append", default=[],
+                        help="Explicit repository-relative tensor file to include in the model bundle")
     args = parser.parse_args()
-    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base, args.exclude)
+    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base, args.exclude, args.tensor_file)

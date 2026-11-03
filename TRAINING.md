@@ -1,6 +1,12 @@
 # Data and training
 
-The latest completed schedule is the
+The latest [response-function study](experiments/continual_experiment/FUNCTION_BELIEF.md)
+completes twelve small predictor trainings on a shared measured corpus. It
+compares joint latent functions with conditional/attentive predictors, then
+tests planning and a frozen-core CDM integration. The latter does not improve
+native efficiency. The study gives endpoints, data and executable commands.
+
+The preceding joint-core schedule is the
 [six-condition response-law study](experiments/continual_experiment/RESPONSE_FAMILIES.md):
 three action representations, two inherited parents, and 256 fixed training
 windows each. It jointly trains the core and both task interfaces, then

@@ -266,24 +266,33 @@ The additional set-based action head has no established advantage and causes
 native chemical regression; removing it restores that capability. Its favorable
 primary-cohort mean does not become a stable overall gain on independent streams.
 
-The next implementation should learn uncertainty within unfamiliar response
-functions and update that uncertainty from chosen observations. The present
-fresh component still supplies one marginal prediction. Retain the inherited
-actor as the working action reference; test learned relationship beliefs against
-recurrent and latent-context policies before adding another action encoder.
-Independent-time inference and lasting consolidation remain parts of the same
-objective, with their original evaluation requirements intact.
+**3 November execution update.** The [function-belief study](../experiments/continual_experiment/FUNCTION_BELIEF.md)
+now learns a distribution of unfamiliar response functions and updates it from
+actual measurements. Twelve predictor trainings compare shared latent functions
+with conditional and attentive predictors. The selected function models improve
+on the attentive reference and match the inherited CDM's digital task efficiency.
+Finite-cost lookahead benefits from hypothetical observation updates, while the
+cheaper information rule remains competitive. A direct likelihood mixture with
+the inherited CDM increases native chemical cost, so that integration remains
+experimental. The original actor and twelve ledgers remain the working reference.
+
+The next learned connection is between this response belief and subsequent
+task cost. It must preserve successful native behavior while learning how
+uncertainty changes the value of an experiment or a further computation.
+Independent-time inference and lasting consolidation retain their original
+evaluation requirements.
 
 | Work | Concrete change | Result that determines the next choice |
 | --- | --- | --- |
 | Starting policy: completed in v0.15.0 | Original parents plus twelve ledgers and fixed weighting are available | Use this reference; the earlier memory continuation has no established additional benefit |
 | Archive-set selector: completed in v0.15.0 | Marginal and per-archive action heads were jointly trained and compared | Retain the inherited actor; another action head alone does not supply unfamiliar-function uncertainty |
-| Learn response and action together: next | Train a posterior over coherent unfamiliar functions, its observation update and future-cost action use; compare recurrent and latent-context methods | Whether selected observations change predictions for other experiments and reduce subsequent task cost across response families |
+| Response functions: implemented and tested | Shared latent functions, censored observation updates, conditional/attentive references and finite-budget lookahead | Joint response predictions support useful hypothetical updates; a general advantage over the strong CDM is unestablished |
+| Response-to-action integration: next | Train native subsequent cost and policy behavior with the learned belief; retain the strong parent and matched recurrent/latent-context references | Whether the belief improves the continuing model's decisions while preserving native capability; direct likelihood mixing has failed this comparison |
 | Reuse computation under time | Integrate pending events, bounded refinement and the independent clock | Whether retaining/revising work improves action quality at a measured latency budget |
 | Learn computation and consolidation | Train operation values and later-use updates in the same streams | Whether the learned schedule and retained parameter changes improve future tasks over equal-cost alternatives |
 | Scale what works | Increase streams, exposure, memory and model size separately | Which resource increases capability, and where inference cost outweighs the benefit |
 
-The initial selector comparison is complete. Proceed with the predictive representation and its use in action; do not repeat selector tuning as though that comparison were still missing. Implement the event-buffer and independent-clock connection through the same state interface, using the inherited predictor and actor first, so it is ready for the learned relationship update. The next integrated run should exercise a received observation changing a belief, a pending calculation and a later action in that continuing process.
+The selector and first learned-function comparisons are complete. The finite-order result supplies an executable continuation model for further action learning. Implement the event-buffer and independent-clock connection through the same state interface, using the inherited predictor and actor first. The next integrated run should exercise a received observation changing a belief, a pending calculation and a later action in that continuing process.
 
 Separate scientific progress from execution throughput. The current negative selector result identifies an ineffective trained connection, not a GPU bottleneck or a failed input buffer. Training and evaluation counts alone do not locate elapsed-time costs. Measure data generation, prediction over archived records, optimization and native execution once on a representative run, then change the dominant cost. A complete training objective must also exercise the desired operation: a simulator paused during internal work cannot teach the cost of acting on a world that changed while the model was computing.
 
@@ -295,9 +304,9 @@ The following names are proposed additions unless an existing module already cov
 | --- | --- |
 | `cdm/experimental_memory.py` | Preserve raw observations; expose compatible records and mixture weights; compare recency/frequency without conflating duplicate slots with new knowledge |
 | `cdm/conditional_response.py`, `cdm/response_replay.py` | Add a relationship-conditioned prediction path; retain history conditioning; compare learned similarity and deployed-step fitting |
-| Proposed `cdm/relation_belief.py` | Weighted relationship hypotheses, within-fresh uncertainty, likelihood updates, rejuvenation and component-mass normalization |
+| `cdm/relation_belief.py` | Implemented learned function mixture, likelihood conditioning and conditional/attentive references; continuous posterior rejuvenation remains open |
 | `cdm/experiment_value.py` | Implemented hypothesis/candidate action residual; calibrated next-state cost and time remain unimplemented |
-| `experiments/continual_chemistry/reaction.py` | Replace the single fresh component with coherent relationship alternatives while retaining archive forecasts, within-task h/z and the inherited action reference |
+| `experiments/continual_chemistry/reaction.py` | Experimental learned-function integration preserves archive scoring and inherited weights; train the decision connection before replacing the native reference |
 | `experiments/continual_chemistry/active_environment.py` and a separate extension module | Parameterized response laws, sampled recurrence and changed-law returns without changing official-task semantics |
 | `experiments/continual_experiment/` | Frozen-parent-plus-memory comparison; new stream manifests; recurrent and latent-context training; stage results at fixed endpoints |
 | `cdm/core.py`, `cdm/recurrent_feedback.py` | Keep the current recurrent/workspace reference; add revision and operation choices only when they affect the acting path |

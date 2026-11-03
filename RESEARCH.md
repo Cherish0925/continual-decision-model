@@ -76,7 +76,7 @@ The choice between sensing and computation depends on their achievable improveme
 
 ## Current execution priority
 
-**Updated 2 November 2026 with the response-law study.** The implementation
+**Updated 3 November 2026 with learned response functions.** The implementation
 sequence is [Continual Agent](research/CONTINUAL_AGENT.md). Its companion
 [result synthesis](research/MEMORY_AND_EXPERIMENTS.md) distinguishes the
 recomputed native results, finite-model calculations and proposed changes.
@@ -97,11 +97,12 @@ research objective.
 1. Retain the original frozen parents with twelve ledgers as the reference:
    the completed control finds no established benefit from the earlier memory
    continuation. Preserve the inherited action path and within-task h/z.
-2. Learn a distribution over unfamiliar response functions. The completed
-   selector exposes archived functions, while its fresh component still has
-   one marginal predictor. Train and compare this missing representation with
-   recurrent meta-RL and latent-context meta-RL under the same inputs and
-   interaction budget. Keep the existing episodic and known-formula references.
+2. Connect the [learned response distribution](experiments/continual_experiment/FUNCTION_BELIEF.md)
+   to continuing action learning. Shared latent functions and finite-budget
+   lookahead are implemented; direct prediction mixing harms native efficiency.
+   Train subsequent task cost and compare recurrent/latent-context policies with
+   the same inputs and interaction budget. Keep the strong inherited policy,
+   episodic memory and known-formula references.
 3. Use the same state and operation interfaces in an independently advancing
    process. Preserve and revise unfinished computation, account for delayed
    observations, and learn when to observe, act, compute, update or wait.

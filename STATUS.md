@@ -1,6 +1,17 @@
 # CDM: objective, implementation, and results
 
-**Latest completed study, 2 November:** [response-law transfer and memory](experiments/continual_experiment/RESPONSE_FAMILIES.md)
+**Latest completed study, 3 November:** [learned response functions](experiments/continual_experiment/FUNCTION_BELIEF.md)
+adds coherent unfamiliar-law alternatives, likelihood conditioning and
+finite-budget planning. Twelve predictor trainings and the independent and
+native comparisons are complete. The selected function models improve on
+matched attentive predictors and perform in the original strong CDM's range.
+Hypothetical observation updates help the finite planner; its cheaper
+information-rule reference remains competitive. Direct integration increases
+native cost and remains experimental. The original native reference is retained.
+[v0.16.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)
+provides endpoints, training data and execution records.
+
+**Preceding study, 2 November:** [response-law transfer and memory](experiments/continual_experiment/RESPONSE_FAMILIES.md)
 includes six joint trainings, primary and independent 576-task digital cohorts,
 and 3,840 new native executions. Adding twelve experimental ledgers to the
 original frozen parents improves returning-task performance. The new
@@ -14,8 +25,8 @@ Models and complete records are in
 The [model and implementation plan](research/CONTINUAL_AGENT.md),
 [result synthesis](research/MEMORY_AND_EXPERIMENTS.md) and
 [nearest-method comparison](ref/BELIEF_AND_COMPUTATION.md) retain the broader
-research direction. The next unresolved connection is learning uncertainty
-over unfamiliar response functions and using it to select informative actions.
+research direction. The next unresolved connection is training the continuing
+action policy to use the learned belief while preserving native capability.
 
 **Preceding comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completes four joint trainings and 5,280 native executions. Returning chemical

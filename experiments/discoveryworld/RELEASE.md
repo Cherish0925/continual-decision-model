@@ -2,6 +2,73 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Learned response functions: v0.16.0
+
+[Download v0.16.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)
+· [Method and complete results](../continual_experiment/FUNCTION_BELIEF.md)
+
+This release adds learned unfamiliar-law hypotheses and finite-budget planning.
+The function models improve on matched attentive predictors and perform in the
+original strong CDM's range. Hypothetical updates help the finite planner;
+the cheaper information rule remains competitive. The direct CDM integration
+increases native chemical cost and is supplied as an experimental comparison.
+The original native parents remain the recommended reference.
+
+| Archive | Contents |
+| --- | --- |
+| `cdm-function-models.tar.zst` | Initial and final weights from twelve predictor trainings, both experimental CDM integrations, and both frozen CDM parents |
+| `cdm-function-data.tar.zst` | The shared measured training and validation tensors |
+| `cdm-function-records.tar.zst.part00`, `.part01` | Training histories, cohorts, all final and development comparisons, 480 native executions and shared native initializations |
+| `DiscoveryWorld-LICENSE.txt` | Upstream license for native task records |
+
+The model archive is about 307 MB and measured tensors about 1.6 MB. Native
+world records account for most of the larger records archive. The companion
+`*-files.txt` files list every member. All paths restore relative to the
+repository root. The two integrated models preserve their inherited core and
+physical-policy weights. Their packed checkpoints and the two selected
+predictors have been extracted and loaded before publication.
+
+To run a learned predictor on the fixed digital test cohort:
+
+```bash
+git checkout v0.16.0
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.16.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-function-models.tar.zst' --dir artifacts/v0.16.0
+zstd -dc --long=30 artifacts/v0.16.0/cdm-function-models.tar.zst | tar -x
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_relation_belief \
+  --checkpoint runs/continual_physics/function_belief_20261103/train/modulated31/last.pt \
+  --manifest experiments/continual_experiment/results/function_belief_test_cohort.json \
+  --selection information --workers 8 --output runs/reproduced-function-31
+```
+
+Use `finite_plan` for the finite-order planner, `finite_marginal` for its
+hypothetical-update intervention, and `--capacity 0` for the no-archive
+comparison. Initialization 32 and the attentive/additive references are in
+the same archive. Changing the selection rule does not retrain the model.
+
+For native records and initialization:
+
+```bash
+gh release download v0.16.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-function-records.tar.zst.part*' \
+  --pattern 'DiscoveryWorld-LICENSE.txt' --dir artifacts/v0.16.0
+cat artifacts/v0.16.0/cdm-function-records.tar.zst.part* | zstd -dc --long=30 | tar -x
+PYTHONHASHSEED=0 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_shared_tasks \
+  --checkpoint runs/continual_physics/function_belief_20261103/integrated/cdm31.pt \
+  --manifest experiments/continual_experiment/results/experimental_memory_cohort.json \
+  --initial-rng-root runs/continual_physics/experimental_memory_20261101/native/initial_rng \
+  --state-sharing separated --memory-mode evidence --memory-slots 12 \
+  --chemistry-only --workers 8 --output runs/reproduced-function-native-31
+```
+
+Restore `cdm-function-data.tar.zst` to repeat training, or regenerate the
+measured sequences with the [study command](../continual_experiment/FUNCTION_BELIEF.md#reproduce).
+The two-GPU launcher records every configuration; its individual training
+entry also accepts `--device cuda:0` for sequential execution on one GPU.
+
 ## Response-law transfer and memory: v0.15.0
 
 [Download v0.15.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.15.0)

@@ -14,6 +14,24 @@ An observation can become outdated while inference is still running. The researc
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
+The latest [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
+learns coherent alternatives for unfamiliar experimental relationships.
+Measurements update predictions of experiments that have not been performed.
+Two 106,500-parameter predictors complete 570/576 and 574/576 tasks at 148.16
+and 147.53 operations, against 205.56 and 203.76 for matched attentive
+references. They perform in the range of the existing strong CDM.
+
+Finite-budget planning makes hypothetical observation updates useful, saving
+about 119 and 125 operations against the same planner without those updates.
+It does not outperform a cheaper information rule. Direct integration into the
+inherited CDM increases native chemical cost, so the original model remains
+the recommended native reference.
+
+![Response-function and planning comparisons](experiments/continual_experiment/results/function_belief.svg)
+
+[v0.16.0: models, measured training data and complete records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)
+· [Download and reproduce](experiments/discoveryworld/RELEASE.md#learned-response-functions-v0160)
+
 The [response-law study](experiments/continual_experiment/RESPONSE_FAMILIES.md)
 completes six joint trainings, two 576-task digital cohorts and 3,840 native
 executions. It expands training to five response mechanisms and tests a withheld
@@ -33,9 +51,9 @@ continuation controls and the stronger known-formula reference.
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#response-law-transfer-and-memory-v0150)
 
 The integrated direction retains persistent inference, active experiments,
-learned computation and long-term consolidation. The next model change targets
-uncertainty within unfamiliar response functions and its use in action, with
-direct recurrent and latent-context comparisons.
+learned computation and long-term consolidation. Learned unfamiliar-function
+inference is now implemented and compared above. The next connection is its
+use by the continuing action policy under actual cost and time constraints.
 
 [v0.14.0: models and experimental records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140)
