@@ -46,16 +46,20 @@ def load_model(path):
 
 
 class LearnedExperiments:
-    def __init__(self, model, n, capacity=12, reuse=.45, selection='information', shortlist=12, budget=1000):
+    def __init__(self, model, n, capacity=12, reuse=.45, selection='information', shortlist=12, budget=1000,
+                 max_parts=6, permutation=None):
         self.model, self.n = model, n
         self.capacity, self.reuse = capacity, reuse
         self.selection, self.shortlist = selection, shortlist
         self.budget = budget
-        self.recipes = np.asarray(primitive_recipes(n))
+        self.recipes = np.asarray(primitive_recipes(n, max_parts))
         counts = torch.zeros(len(self.recipes),8)
         counts[:,:n] = torch.as_tensor(self.recipes)
         self.queries = counts / counts.sum(-1,keepdim=True)
         self.components = torch.arange(8)<n
+        if permutation is not None:
+            self.queries = self.queries[:, permutation]
+            self.components = self.components[permutation]
         self.archives, self.history = [], []
         self.is_functions = isinstance(model,RelationBelief)
         with torch.no_grad():

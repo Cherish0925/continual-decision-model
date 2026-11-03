@@ -17,13 +17,15 @@ from .recipes import primitive_recipes
 
 
 class ActiveChemicalEnvironment:
-    def __init__(self, root, batch, seed, device, budget=1000, split='train', schedule='paired'):
+    def __init__(self, root, batch, seed, device, budget=1000, split='train', schedule='paired',
+                 max_components=4, max_parts=6):
         self.device, self.batch, self.budget = torch.device(device), batch, budget
         self.rng = random.Random(seed)
         self.schedule = schedule
         self.lifetime_length = 6 if schedule == 'paired' else 12
         self.entries = self.load_entries(root, split)
-        self.candidate_count = len(primitive_recipes(4)) + 1
+        self.max_parts = max_parts
+        self.candidate_count = len(primitive_recipes(max_components, max_parts)) + 1
         self.leave_index = self.candidate_count - 1
         self.capacity = 128  # At least eight operations per return, budget 1000.
         b, a, h = batch, self.candidate_count, self.capacity
@@ -87,7 +89,7 @@ class ActiveChemicalEnvironment:
             vector = [int(target.get(f'Substance {chr(65+i)}', 0)) for i in range(n)]
             # Preserve each repeated relationship's ingredient identities. The
             # selected training instances determine all task content.
-            candidates = primitive_recipes(n)
+            candidates = primitive_recipes(n, self.max_parts)
             self.counts[lane].zero_()
             self.counts[lane, :len(candidates), :n] = torch.tensor(candidates, device=self.device)
             self.allowed[lane].zero_(); self.allowed[lane, :len(candidates)] = True

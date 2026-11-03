@@ -57,6 +57,30 @@ class RelationBelief(nn.Module):
     def configuration(self):
         return asdict(self.config)
 
+    def joint_conditioned(self, queries, components, support, before, after, valid):
+        """Return joint hypotheses and their posterior for a batch of histories.
+
+        Decode each distinct public query once. Repeated queries in several
+        lanes/history positions share a computation, not an observed label.
+        Gradients from future action returns can enter the same decoder used
+        by the proper observed-response likelihood.
+        """
+        b, a, d = queries.shape
+        points = torch.cat((queries, support), 1)
+        keys = torch.cat((points, components[:, None].expand_as(points)), -1)
+        unique, index = torch.unique(keys.flatten(0, 1), dim=0, return_inverse=True)
+        bank = self(unique[:, :d], unique[:, d:]).transpose(0, 1)
+        functions = bank[index].reshape(b, points.shape[1], self.config.particles, self.config.levels)
+        observed = observable_log_probabilities(functions[:, a:], before[..., None])
+        labels = after[..., None, None].expand(-1, -1, self.config.particles, 1)
+        likelihood = observed.gather(-1, labels).squeeze(-1)
+        mass = self.log_prior(components) + torch.where(valid[..., None], likelihood, 0.).sum(1)
+        weights = mass.log_softmax(-1)
+        query_functions = functions[:, :a]
+        marginal = torch.logsumexp(query_functions + weights[:, None, :, None], 2)
+        return dict(functions=query_functions, weights=weights, marginal=marginal,
+                    evidence=mass.logsumexp(-1))
+
     def conditioned(self, queries, components, support, before, after, valid):
         """Predict a batch and return the observed sequence's marginal likelihood.
 

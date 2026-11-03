@@ -25,17 +25,25 @@ def worker(job):
 
 @torch.no_grad()
 def evaluate(model, manifest, *, root, device='cpu', batch=8, memory='evidence', slots=12,
-             baseline='model', record_predictions=False, disable_selector=False):
+             baseline='model', record_predictions=False, disable_selector=False, disable_relation=False):
     model.eval()
     policy = model.tasks['chemistry']
     if disable_selector:
         policy.experiment_value = None
+    if disable_relation:
+        policy.belief_decision = policy.relation_belief = None
     policy.experimental_memory.config = replace(policy.experimental_memory.config, mode=memory, slots=slots)
     rows, predictions = [], []
     started = perf_counter()
     for start in range(0, len(manifest['streams']), batch):
         streams = manifest['streams'][start:start + batch]
-        env = ResponseFamilyEnvironment(root, len(streams), manifest['seed'], device, manifest=streams)
+        parts = {s.get('max_parts', 6) for s in streams}
+        renamed = {s.get('rename_components', False) for s in streams}
+        if len(parts) != 1 or len(renamed) != 1:
+            raise ValueError('Batch streams with the same action space and observation protocol')
+        env = ResponseFamilyEnvironment(root, len(streams), manifest['seed'] + start, device, manifest=streams,
+            max_parts=next(iter(parts)), rename_components=next(iter(renamed)),
+            max_components=max(t['law']['components'] for s in streams for t in s['tasks']))
         state = policy.initial(len(streams), device)
         complete = torch.zeros(len(streams), dtype=torch.bool, device=device)
         counts = torch.zeros_like(complete, dtype=torch.long)
@@ -90,6 +98,8 @@ def evaluate(model, manifest, *, root, device='cpu', batch=8, memory='evidence',
                         counts=env.counts[lane, action[lane]].tolist(),
                         probabilities=out['outcomes'][lane, 0].exp().tolist(),
                         operations=int(result['cost'][lane]), internal_activities=int(internal[lane])))
+                    if 'relation_outcomes' in out:
+                        predictions[-1]['relation_probabilities'] = out['relation_outcomes'][lane, 0].exp().tolist()
             state = policy.feedback(state, result['targets'], result['returned'])
             updated = policy.record_response(state, out, zero, result['before'], result['after'])
             state = select_rows(state, updated, valid)
@@ -120,6 +130,7 @@ def main():
     p.add_argument('--baseline', choices=('model', 'retrieval', 'enumeration', 'oracle'), default='model')
     p.add_argument('--record-predictions', action='store_true')
     p.add_argument('--disable-selector', action='store_true', help='Remove only the new action-score residual')
+    p.add_argument('--disable-relation', action='store_true', help='Remove the function-belief action route')
     args = p.parse_args()
     torch.set_num_threads(1)
     torch.manual_seed(43)
@@ -128,7 +139,7 @@ def main():
     manifest = json.loads(args.manifest.read_text())
     options = dict(root=args.chemical_data, device=args.device, batch=args.batch,
                    memory=args.memory_mode, baseline=args.baseline, record_predictions=args.record_predictions,
-                   disable_selector=args.disable_selector)
+                   disable_selector=args.disable_selector, disable_relation=args.disable_relation)
     if args.workers == 1:
         rows, predictions, seconds = evaluate(model, manifest, **options)
     else:

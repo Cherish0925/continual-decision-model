@@ -16,6 +16,7 @@ from .recipes import primitive_recipes
 
 
 TRAIN_FAMILIES = ('cosine', 'metric', 'interaction', 'inhibition', 'multiple_solutions')
+EXPANDED_FAMILIES = TRAIN_FAMILIES + ('absolute_distance', 'bottleneck')
 
 
 def response_levels(counts, law):
@@ -26,6 +27,19 @@ def response_levels(counts, law):
     t = F.normalize(target, dim=-1)
     family = law['family']
     cosine = (q * t).sum(-1)
+    if family in {'absolute_distance', 'bottleneck', 'threshold_balance'}:
+        proportion = counts[..., :n].double() / counts[..., :n].sum(-1, keepdim=True).clamp_min(1)
+        difference = (proportion - target / target.sum()).abs()
+        if family == 'absolute_distance':
+            distance = difference.sum(-1) / 2
+        elif family == 'bottleneck':
+            distance = difference.max(-1).values
+        else:
+            # A held-out conjunction: both total and worst-component error
+            # must meet a level's threshold; no cosine geometry is used.
+            distance = torch.maximum(difference.sum(-1) / 2, 1.5 * difference.max(-1).values)
+        return torch.where(distance < .035, 0, torch.where(distance < .16, 1,
+                           torch.where(distance < .35, 2, 3)))
     if family == 'metric':
         weights = torch.as_tensor(law['metric'], device=q.device, dtype=q.dtype).sqrt()
         cosine = (F.normalize(q * weights, dim=-1) * F.normalize(t * weights, dim=-1)).sum(-1)
@@ -51,8 +65,8 @@ def response_levels(counts, law):
     return level
 
 
-def sample_law(rng, n, families, *, wider=False):
-    choices = primitive_recipes(n)
+def sample_law(rng, n, families, *, wider=False, max_parts=6, minimum_target_parts=1):
+    choices = [q for q in primitive_recipes(n, max_parts) if sum(q) >= minimum_target_parts]
     metric_range = (-1.4, 1.4) if wider else (-.9, .9)
     return dict(family=rng.choice(families), components=n, target=list(rng.choice(choices)),
         second_target=list(rng.choice(choices)), metric=[10 ** rng.uniform(*metric_range) for _ in range(n)],
@@ -60,13 +74,15 @@ def sample_law(rng, n, families, *, wider=False):
         inhibitor=rng.randrange(n), tolerance=rng.uniform(.04, .18))
 
 
-def sample_lifetime(rng, families, length=12, *, wider=False):
-    n = rng.choice((3, 4))
+def sample_lifetime(rng, families, length=12, *, wider=False, components=(3, 4),
+                    max_parts=6, minimum_target_parts=1):
+    n = rng.choice(components)
     laws, seen, result = [], {}, []
     for i in range(length):
         mode = 'new' if i < 2 else rng.choices(('new', 'return', 'changed'), (.35, .45, .20))[0]
         if mode == 'new':
-            law = sample_law(rng, n, families, wider=wider)
+            law = sample_law(rng, n, families, wider=wider, max_parts=max_parts,
+                             minimum_target_parts=minimum_target_parts)
             laws.append(law)
             identity = len(laws) - 1
         else:
@@ -74,7 +90,7 @@ def sample_lifetime(rng, families, length=12, *, wider=False):
             law = deepcopy(laws[identity])
             if mode == 'changed':
                 # A nearby proportion is a changed law, not an exact return.
-                candidates = primitive_recipes(n)
+                candidates = [q for q in primitive_recipes(n, max_parts) if sum(q) >= minimum_target_parts]
                 target = torch.tensor(law['target'], dtype=torch.float64)
                 q = torch.tensor(candidates, dtype=torch.float64)
                 similarity = (F.normalize(q, dim=-1) * F.normalize(target, dim=-1)).sum(-1)
@@ -90,14 +106,19 @@ def sample_lifetime(rng, families, length=12, *, wider=False):
 
 class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
     def __init__(self, root, batch, seed, device, budget=1000, families=TRAIN_FAMILIES,
-                 manifest=None, wider=False):
+                 manifest=None, wider=False, rename_components=False, max_parts=6, max_components=4):
         self.law_rng = [random.Random(seed + 91827 + 104729 * lane) for lane in range(batch)]
         self.families, self.wider = tuple(families), wider
         self.law_streams = [None] * batch
         self.current_laws = [None] * batch
         self.task_metadata = [None] * batch
         self.fixed_manifest = manifest
-        super().__init__(root, batch, seed, device, budget=budget, schedule='mixed')
+        self.rename_components = rename_components
+        self.public_names = [list(range(8)) for _ in range(batch)]
+        # Renaming has an independent RNG and cannot alter which laws are sampled.
+        self.name_rng = [random.Random(seed + 45211 + 32452843 * lane) for lane in range(batch)]
+        super().__init__(root, batch, seed, device, budget=budget, schedule='mixed',
+                         max_parts=max_parts, max_components=max_components)
 
     def load_entries(self, root, split):
         # These laws are generated here; no DiscoveryWorld trajectory files
@@ -111,6 +132,9 @@ class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
             position = self.task_index[lane] % self.lifetime_length
             if position == 0:
                 lifetime[lane] = True
+                if self.rename_components:
+                    supplied = None if self.fixed_manifest is None else self.fixed_manifest[lane].get('public_permutation')
+                    self.public_names[lane] = supplied if supplied is not None else self.name_rng[lane].sample(range(8), 8)
                 if self.fixed_manifest is None:
                     self.law_streams[lane] = sample_lifetime(self.law_rng[lane], self.families,
                                                            self.lifetime_length, wider=self.wider)
@@ -120,7 +144,7 @@ class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
             self.current_laws[lane] = item['law']
             self.task_metadata[lane] = item
             n = item['law']['components']
-            candidates = primitive_recipes(n)
+            candidates = primitive_recipes(n, self.max_parts)
             self.counts[lane].zero_()
             self.counts[lane, :len(candidates), :n] = torch.tensor(candidates, device=self.device)
             self.allowed[lane].zero_()
@@ -140,6 +164,15 @@ class ResponseFamilyEnvironment(ActiveChemicalEnvironment):
         self.terminal.zero_()
         self.new_task, self.new_lifetime = boundary, lifetime
         return boundary, lifetime
+
+    def observation(self):
+        observation = super().observation()
+        if not self.rename_components:
+            return observation
+        from .reaction import permute_observation_components
+        renamed = [permute_observation_components({k: v[i:i+1] for k, v in observation.items()},
+                    torch.tensor(self.public_names[i], device=self.device)) for i in range(self.batch)]
+        return {k: torch.cat([row[k] for row in renamed], 0) for k in observation}
 
     def response(self, counts, recipe, before):
         levels = torch.stack([response_levels(q, law) for q, law in zip(counts, self.current_laws)])

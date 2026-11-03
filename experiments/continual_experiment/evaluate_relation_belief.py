@@ -17,11 +17,16 @@ def worker(job):
     stream, options=job
     torch.set_num_threads(1)
     model,saved=load_model(options['checkpoint'])
-    env=ResponseFamilyEnvironment(None,1,17,'cpu',manifest=[stream])
+    env=ResponseFamilyEnvironment(None,1,17,'cpu',manifest=[stream],
+        max_parts=stream.get('max_parts',6),
+        max_components=max(t['law']['components'] for t in stream['tasks']),
+        rename_components=stream.get('rename_components',False))
     initial_observation=env.observation()
     components=int(initial_observation['candidates'][0,0,16:24].sum())
     belief=LearnedExperiments(model,components,
-        capacity=options['capacity'],selection=options['selection'],budget=env.budget)
+        capacity=options['capacity'],selection=options['selection'],budget=env.budget,
+        max_parts=stream.get('max_parts',6),
+        permutation=env.public_names[0] if stream.get('rename_components',False) else None)
     records, forecasts=[],[]
     started=perf_counter(); seconds=0.
     while len(records)<len(stream['tasks']):

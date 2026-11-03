@@ -58,7 +58,10 @@ def proposed_experiments(model, state, obs):
     # Action selection may inspect every candidate, but only the executed one
     # receives an outcome target. The response loss below supplies its gradient.
     with torch.no_grad():
-        prediction = model.readout(state, obs['candidates'], obs['action_mask'])
+        prediction = model.readout(state, obs['candidates'], obs['action_mask'],
+                                   include_relation=model.belief_decision is None)
+    if model.belief_decision is not None:
+        prediction.update(model.relation_readout(state, obs['candidates']))
     if getattr(model, 'memory_action_credit', False):
         evidence_state = {**state, 'archive_evidence': state['archive_evidence'].detach()}
         weights = model.experimental_memory.weights(evidence_state,
@@ -76,7 +79,7 @@ def proposed_experiments(model, state, obs):
 def active_chemical_window(model, state, env, count, statistics, *, compute_cost=.002,
                            discount=.995, entropy_weight=.01):
     losses, logps, rewards, values, entropies, continuing = [], [], [], [], [], []
-    nlls, counts = [], []
+    nlls, counts, relation_nlls = [], [], []
     starts = env.dispatched
     for _ in range(count):
         boundary, lifetime = (env.new_task, env.new_lifetime) if env.dispatched == 0 else env.reset_finished()
@@ -104,6 +107,11 @@ def active_chemical_window(model, state, env, count, statistics, *, compute_cost
         else:
             cost_loss = out['predictions'].sum() * 0
         losses.append(nll + cost_loss); nlls.append(nll.detach())
+        if 'relation_outcomes' in out:
+            relation_nll = F.nll_loss(out['relation_outcomes'][:, 0], result['after'], reduction='none')
+            relation_nll = (relation_nll * valid).sum() / valid.sum().clamp_min(1)
+            losses[-1] = losses[-1] + .5 * relation_nll
+            relation_nlls.append(relation_nll.detach())
         state = model.feedback(state, result['targets'], received)
         recorded = model.record_response(state, out, zero, result['before'], result['after'])
         state = select_rows(state, recorded, valid)
@@ -138,6 +146,7 @@ def active_chemical_window(model, state, env, count, statistics, *, compute_cost
     entropy = torch.stack(entropies).mean()
     loss = torch.stack(losses).mean() + .1 * policy + .1 * critic - entropy_weight * entropy
     return loss, state, {'response_nll': float(torch.stack(nlls).mean()),
+        'relation_nll': float(torch.stack(relation_nlls).mean()) if relation_nlls else None,
         'policy_loss': float(policy.detach()), 'value_loss': float(critic.detach()),
         'mean_internal_activities': float(torch.stack(counts).mean()),
         'requests': env.dispatched - starts, 'returned': env.returned,

@@ -257,3 +257,137 @@ saved native initial states and full command plans accompany the release.
 Training records retain every declared endpoint. Evaluation refuses unfinished
 checkpoints. The initial development run that overlapped attentive training was
 excluded and repeated on the fixed final checkpoints before rule selection.
+
+## Joint prediction and action learning
+
+The follow-up asks whether the response model can learn distinctions that
+improve subsequent experimental decisions. The preceding integration changed
+predictions used by an already trained policy. Here the inherited forecasts
+and action scores are preserved initially, and an additional action residual
+learns from both observed responses and subsequent task return.
+
+For each candidate experiment and possible **observable** result, the model
+computes the corresponding posterior mean of its latent response functions.
+The action residual receives the probability-weighted change from the current
+mean, the four outcome probabilities, expected information gain and the
+inherited action features. It does not receive a simulator formula, target
+composition or law identifier. The final linear layer starts at zero, so
+attaching it preserves the parent's action scores exactly before training.
+This is one hypothetical conditioning step, not an imagined full execution
+tree. Precise recipe execution remains the existing tool interface.
+
+The action-return gradient now reaches the same latent vectors and decoder
+that predict observed responses. The inherited action path previously evaluated
+response forecasts without gradients. The new differentiable path is explicit;
+the parent forecast path and memory mechanism keep their existing behavior.
+Actual selected experiments supply a censored response likelihood with weight
+0.5. The existing actor-critic objective, physical learning loss and chemical
+response/cost losses are retained.
+
+There are three fixed continuation conditions:
+
+| Condition | Response-function training | Decision training |
+| --- | --- | --- |
+| Joint | Selected-response likelihood and subsequent action return | Inherited policy and new belief residual |
+| Prediction only | Selected-response likelihood; belief features detached from action return | Identical residual, shared core and task interfaces |
+| Inherited continuation | No added response-function model | Existing policy, shared core and task interfaces |
+
+The first two conditions have identical parameters and forward computations.
+Their distinction is the gradient from decisions into response hypotheses.
+All conditions train the common GRU and Transformer workspace and both task
+interfaces. Each has four continuation seeds, derived from two released
+parents; seeds 201/203 share parent 911, and 202/204 share parent 912. The four
+response predictors have separately initialized weights and share the
+preceding measured corpus. These are four continuation repetitions, not four
+independent pretrained backbones or independently collected corpora.
+
+Each continuation uses 256 optimizer windows, batch 12, eight physical requests
+and eight chemical requests per lane and window. Its endpoint is the final
+window. No final-test checkpoint selection is used. Chemical training expands
+the five earlier response families with absolute-distance and bottleneck
+responses. Public ingredient identifiers are consistently permuted within a
+twelve-task lifetime. This changes observable names without revealing the
+hidden law or altering which simulator relationships are sampled. Training
+continues to use three/four ingredients and primitive recipes of at most six
+parts.
+
+The continuation comparison matches update counts, external-request allowance
+and initial simulator seeds. Policies select their own experiments, so their
+subsequent measured observations and completed training tasks can differ.
+
+Learning sequential experimental decisions from history is related to
+[Deep Adaptive Design](https://proceedings.mlr.press/v139/foster21a.html);
+conditioning decisions on task uncertainty is related to
+[VariBAD](https://arxiv.org/abs/1910.08348). The comparison here concerns the
+use of a learned response-function distribution by a continuing shared model,
+its action-gradient contribution and retention under changing task conditions.
+It does not claim to introduce latent beliefs or adaptive design themselves.
+
+### What the broader test measures
+
+The fixed cohort contains **84 independently generated twelve-task streams**,
+or **1,008 task instances**, across these groups:
+
+| Group | Streams | Change relative to training |
+| --- | ---: | --- |
+| New parameters | 24 | New sampled laws and task-return sequences |
+| Wider parameters | 12 | Wider metric and interaction parameters |
+| Held-out combination | 12 | Interaction and inhibition jointly determine responses |
+| Held-out threshold relation | 12 | Conjunction of total and worst-component discrepancy |
+| New target ratios | 12 | Primitive targets require seven/eight parts, absent from both training stages |
+| Five ingredients | 12 | One more ingredient than either training stage |
+
+Twelve additional streams replay the first twelve streams of the standard
+stream group with consistently renamed public ingredients: 144 task replays.
+They are paired sensitivity tests, excluded from the primary 1,008-task
+aggregate and its uncertainty intervals. New random parameters do not
+guarantee unique discrete target ratios; only the explicitly withheld target
+group provides that separation.
+
+The original parents with twelve ledgers and a simple information-gain policy
+using each frozen pretrained response model are evaluated on the same streams.
+The information policy has no joint core continuation, so that comparison is
+practical rather than an equal-training-data attribution. The matched
+prediction-only condition isolates the new gradient connection more closely.
+Costs include failures, and intervals resample whole streams separately for
+each training repetition. Naming replays and repeated methods are never
+counted as additional independent tasks.
+
+Native evaluations repeat the original twenty streams with the same saved
+world initializations: 240 physical and 240 chemical tasks per model. These
+measure retention on an existing cohort. They are not additional held-out
+DiscoveryWorld task families. The digital variations broaden the tested
+response mechanisms while retaining a common structured experiment interface;
+they do not establish open-ended scientific research ability.
+
+### Running the fixed comparison
+
+The four pretrained response models use seeds 201--204 and 24,000 updates with
+the modulated decoder. Place their final checkpoints at
+`predictors/seed201/last.pt` through `predictors/seed204/last.pt` below the run
+root. The run plan records all twelve continuation commands.
+
+```bash
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage plan
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage predictors
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage train --parallel 4
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage references --workers 8
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage test --parallel 4 --workers 12
+python -m experiments.continual_experiment.joint_belief \
+  --root runs/continual_physics/joint_belief_20261103 --stage native --parallel 4
+python -m experiments.continual_experiment.publish_joint_results \
+  --root runs/continual_physics/joint_belief_20261103
+```
+
+Each GPU runs one response-function continuation. Smaller inherited controls
+may overlap when measured memory permits. CPU evaluations run concurrently and
+wait for each final training marker before loading that model. The run record
+retains an early resource-interrupted attempt, excluded from the fixed final
+comparison; all reported models restart from their declared initialization.
+Inference times recorded under concurrent CPU evaluation describe that run,
+not an isolated deployment-latency benchmark.

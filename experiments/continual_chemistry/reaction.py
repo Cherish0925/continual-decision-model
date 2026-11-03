@@ -12,6 +12,7 @@ from cdm.response_replay import ResponseReplay, ResponseReplayConfig, recent_sup
 from cdm.experimental_memory import ExperimentalMemory, ExperimentalMemoryConfig
 from cdm.experiment_value import ExperimentValue, ExperimentValueConfig
 from cdm.relation_belief import RelationBelief, RelationBeliefConfig
+from cdm.belief_decision import BeliefDecision, BeliefDecisionConfig
 from cdm.core import ContinualCore, CoreConfig
 from .observations import model_from_core_checkpoint
 from .recipes import primitive_recipes
@@ -20,7 +21,7 @@ from .recipes import primitive_recipes
 class ReactionExperimentPolicy(ContinualExperimentPolicy):
     def __init__(self, base, config=ContinualExperimentConfig(), response_config=ConditionalResponseConfig(),
                  adaptation_config=None, replay_config=None, memory_config=None, value_config=None,
-                 relation_config=None, relation_prior=.5):
+                 relation_config=None, relation_prior=.5, decision_config=None):
         super().__init__(base, config)
         self.response = ConditionalResponse(2 * self.core.config.width, response_config)
         self.direct_history = True
@@ -35,6 +36,8 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             raise ValueError('Response-law integration requires the inherited experimental-memory reader')
         self.relation_belief = None if relation_config is None else RelationBelief(relation_config)
         self.relation_prior = relation_prior
+        self.belief_decision = (None if decision_config is None else BeliefDecision(
+            config.adapter_width, relation_config.latent, decision_config))
         if adaptation_config is not None:
             self.experiment_residual = torch.nn.Linear(config.adapter_width + 5, 1)
             torch.nn.init.zeros_(self.experiment_residual.weight)
@@ -76,7 +79,7 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         update = {**revised, 'reaction_history': h, 'reaction_mask': m}
         return select_rows(revised, update, rows)
 
-    def readout(self, state, candidates, action_mask):
+    def readout(self, state, candidates, action_mask, *, include_relation=True):
         out = super().readout(state, candidates, action_mask)
         proportions = candidates[..., 8:16]
         component_mask = candidates[:, 0, 16:24].bool()
@@ -121,7 +124,9 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             prediction['log_probabilities'] = observable_log_probabilities(mixed, current)
             extra['memory_experts'] = observable_log_probabilities(experts, current[:, :, None])
             extra['memory_weights'] = self.experimental_memory.weights(state, component_mask).exp()
-        if self.relation_belief is not None:
+        if include_relation and self.belief_decision is not None:
+            extra.update(self.relation_readout(state, candidates))
+        elif include_relation and self.relation_belief is not None:
             relation, relation_evidence = self.relation_belief.conditioned(
                 proportions, component_mask, history_q,
                 (history[..., 16] * 3).round().long(),
@@ -141,6 +146,19 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             extra['relation_weight'] = weights[:, 1].exp()
         return {**out, **extra, 'outcomes': prediction['log_probabilities'],
                 'latent_response_logits': prediction['latent_logits']}
+
+    def relation_readout(self, state, candidates):
+        valid = state['reaction_mask']
+        used = max(1, int(valid.any(0).nonzero()[-1]) + 1) if valid.any() else 1
+        history = state['reaction_history'][:, :used]
+        support = history[..., :8] / history[..., :8].sum(-1, keepdim=True).clamp_min(1e-8)
+        current = (candidates[..., 25] * 3).round().long()
+        belief = self.relation_belief.joint_conditioned(candidates[..., 8:16],
+            candidates[:, 0, 16:24].bool(), support, (history[..., 16] * 3).round().long(),
+            (history[..., 17] * 3).round().long(), valid[:, :used])
+        return dict(relation_functions=observable_log_probabilities(belief['functions'], current[..., None]),
+                    relation_weights=belief['weights'],
+                    relation_outcomes=observable_log_probabilities(belief['marginal'], current))
 
     def archived_predictions(self, state, proportions, components, current):
         b, a = proportions.shape[:2]
@@ -198,6 +216,9 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
             weights = out.get('memory_weights', torch.ones_like(experts[:, 0, :, 0]))
             residual = residual + self.experiment_value(observation['candidates'], observation['action_mask'],
                                                         experts, weights, out['features'])
+        if self.belief_decision is not None:
+            residual = residual + self.belief_decision(out['features'], out['relation_functions'],
+                                                       out['relation_weights'], self.relation_belief.particles)
         return (4 * log_score + residual).masked_fill(
             ~observation['action_mask'], -torch.inf)
 
@@ -232,6 +253,8 @@ class ReactionExperimentPolicy(ContinualExperimentPolicy):
         if self.relation_belief is not None:
             result['relation_belief_config'] = self.relation_belief.configuration()
             result['relation_prior'] = self.relation_prior
+        if self.belief_decision is not None:
+            result['belief_decision_config'] = asdict(self.belief_decision.config)
         return result
 
 
@@ -258,7 +281,9 @@ def load_reaction_checkpoint(path, device='cpu'):
                                     if 'experiment_value_config' in saved else None,
                                     RelationBeliefConfig(**saved['relation_belief_config'])
                                     if 'relation_belief_config' in saved else None,
-                                    saved.get('relation_prior', .5))
+                                    saved.get('relation_prior', .5),
+                                    BeliefDecisionConfig(**saved['belief_decision_config'])
+                                    if 'belief_decision_config' in saved else None)
     model.load_state_dict(saved['model'])
     return model.to(device), saved
 

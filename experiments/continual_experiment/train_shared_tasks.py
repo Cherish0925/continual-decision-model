@@ -118,7 +118,11 @@ def main():
     parser.add_argument('--memory-slots', type=int, default=6)
     parser.add_argument('--experiment-value', choices=('marginal', 'hypotheses'))
     parser.add_argument('--experiment-value-lr', type=float, default=.001)
-    parser.add_argument('--chemical-families', choices=('official', 'diverse'), default='official')
+    parser.add_argument('--chemical-families', choices=('official', 'diverse', 'expanded'), default='official')
+    parser.add_argument('--relation-predictor', type=Path)
+    parser.add_argument('--relation-learning', choices=('joint', 'prediction_only'), default='joint')
+    parser.add_argument('--relation-lr', type=float, default=3e-5)
+    parser.add_argument('--rename-components', action='store_true')
     parser.set_defaults(batch=16, external_per_stream=16, inherit_parent_interface=True,
                         condition_failure_weights=True, cache_observations=True)
     args = parser.parse_args()
@@ -153,6 +157,15 @@ def main():
         from cdm.experiment_value import ExperimentValue, ExperimentValueConfig
         chemical.experiment_value = ExperimentValue(chemical.continual_config.adapter_width,
             ExperimentValueConfig(mode=args.experiment_value)).to(args.device)
+    if args.relation_predictor is not None:
+        from cdm.belief_decision import BeliefDecision, BeliefDecisionConfig
+        from experiments.continual_chemistry.learned_belief import load_model
+        predictor, record = load_model(args.relation_predictor)
+        if record['kind'] != 'functions' or record['update'] != record['configuration']['updates']:
+            raise ValueError('Joint decisions require a completed response-function predictor')
+        chemical.relation_belief = predictor.to(args.device)
+        chemical.belief_decision = BeliefDecision(chemical.continual_config.adapter_width,
+            predictor.config.latent, BeliefDecisionConfig(learning=args.relation_learning)).to(args.device)
     model = SharedCorePolicies({'physics': physical, 'chemistry': chemical}).to(args.device).train()
     chemical.memory_action_credit = args.memory_action_credit
     reference = deepcopy(physical.base).eval().requires_grad_(False)
@@ -160,9 +173,11 @@ def main():
     if args.chemical_mode == 'active':
         from experiments.continual_chemistry.active_environment import ActiveChemicalEnvironment
         from experiments.continual_chemistry.active_training import active_chemical_window
-        if args.chemical_families == 'diverse':
-            from experiments.continual_chemistry.response_families import ResponseFamilyEnvironment
-            streams = ResponseFamilyEnvironment(args.chemical_data, args.batch, args.seed, args.device)
+        if args.chemical_families in ('diverse', 'expanded'):
+            from experiments.continual_chemistry.response_families import ResponseFamilyEnvironment, TRAIN_FAMILIES, EXPANDED_FAMILIES
+            streams = ResponseFamilyEnvironment(args.chemical_data, args.batch, args.seed, args.device,
+                families=EXPANDED_FAMILIES if args.chemical_families == 'expanded' else TRAIN_FAMILIES,
+                rename_components=args.rename_components)
         else:
             streams = ActiveChemicalEnvironment(args.chemical_data, args.batch, args.seed, args.device,
                                                  schedule=args.chemical_schedule)
@@ -180,6 +195,9 @@ def main():
         rates.append((chemical.experimental_memory, '', args.memory_lr))
     if chemical.experiment_value is not None:
         rates.append((chemical.experiment_value, '', args.experiment_value_lr))
+    if chemical.belief_decision is not None:
+        rates.extend([(chemical.relation_belief, '', args.relation_lr),
+                      (chemical.belief_decision, '', args.experiment_value_lr)])
     rates.append((chemical, '', args.chemical_lr))
     for module, prefix, rate in rates:
         parameters = [p for name, p in module.named_parameters()
@@ -218,12 +236,18 @@ def main():
             chemical_update_control='same fitted calibration without response fitting' if args.response_replay_control else None,
             chemical_update_initial=str(args.response_replay_checkpoint),
             chemical_update_schedule='fixed before each response readout; no learned response-compute allocation')
-    if args.chemical_families == 'diverse':
+    if args.chemical_families in ('diverse', 'expanded'):
         metadata.update(chemical_environment='Digital response-family extension; same public observations and operation costs',
-            chemical_families=['cosine', 'metric', 'interaction', 'inhibition', 'multiple_solutions'],
+            chemical_families=list(streams.families),
             chemical_counterfactuals='Only executed responses receive a likelihood target; law identity is simulator-only',
             chemical_sequence='12 tasks; new laws, exact returns and changed familiar targets; randomized order',
             official_evaluation='The extension is not an official DiscoveryWorld task or leaderboard score')
+    if args.relation_predictor is not None:
+        metadata.update(relation_learning=args.relation_learning,
+            relation_predictor=str(args.relation_predictor),
+            relation_action='Zero-initialized action residual reads possible posterior changes; inherited scores preserved initially',
+            relation_objective='0.5 times selected-response NLL plus action-return credit when learning=joint',
+            relation_credit='Prediction-only control detaches latent hypotheses from action loss, with all other paths unchanged')
     if args.experiment_value is not None:
         metadata.update(chemical_action_representation=args.experiment_value,
             chemical_action_initialization='Zero final residual; inherited action scores unchanged',
