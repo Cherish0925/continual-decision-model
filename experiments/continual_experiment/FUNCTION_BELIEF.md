@@ -389,5 +389,8 @@ may overlap when measured memory permits. CPU evaluations run concurrently and
 wait for each final training marker before loading that model. The run record
 retains an early resource-interrupted attempt, excluded from the fixed final
 comparison; all reported models restart from their declared initialization.
-Inference times recorded under concurrent CPU evaluation describe that run,
-not an isolated deployment-latency benchmark.
+CPU process interruptions were rerun with fixed weights on CUDA. Completed
+native streams can be recovered with `evaluate_shared_tasks --resume`; an
+incomplete stream restarts from its original state, preserving the interrupted
+files separately. Concurrent execution times and host interruptions are retained
+in the records and are not used as deployment-latency measurements.

@@ -16,6 +16,26 @@ from experiments.continual_physics.runtime import ContinualPhysicsSession
 from .shared_tasks import load_shared_checkpoint
 
 
+def completed_stream(output, stream, mode, chemistry_only=False):
+    directory = output / stream['name']
+    chemical = directory / 'chemistry_summary.json'
+    physical = directory / 'summary.json'
+    if not chemical.exists() or (not chemistry_only and not physical.exists()):
+        return None
+    chemistry = json.loads(chemical.read_text())
+    physics = [] if chemistry_only else json.loads(physical.read_text())
+    if len(chemistry) != len(stream['chemistry']) or len(physics) != (0 if chemistry_only else len(stream['seeds'])):
+        return None
+    if any(r.get('error') for r in chemistry + physics):
+        return None
+    if [r['seed'] for r in chemistry] != [r['seed'] for r in stream['chemistry']]:
+        raise ValueError('Saved chemical stream differs from the requested task sequence')
+    if not chemistry_only and [r['seed'] for r in physics] != stream['seeds']:
+        raise ValueError('Saved physical stream differs from the requested task sequence')
+    return dict(stream=stream['name'], state_sharing=mode or chemistry[0]['state_sharing'],
+                physics=physics, chemistry=chemistry)
+
+
 def run_stream(job):
     options, stream = job
     torch.set_num_threads(options['threads'])
@@ -105,6 +125,8 @@ def main():
     p.add_argument('--state-sharing', choices=('continuing', 'separated'))
     p.add_argument('--workers', type=int, default=6)
     p.add_argument('--threads', type=int, default=1)
+    p.add_argument('--resume', action='store_true',
+                   help='Reuse complete streams; rerun an interrupted stream from its initial state')
     p.add_argument('--discard-response-updates', action='store_true')
     p.add_argument('--disable-response-replay', action='store_true')
     p.add_argument('--reset-chemical-state', action='store_true')
@@ -125,11 +147,30 @@ def main():
         p.error('memory-slots must be positive')
     streams = json.loads(args.manifest.read_text())['streams']
     options = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
-    args.output.mkdir(parents=True, exist_ok=False)
-    (args.output / 'configuration.json').write_text(json.dumps(options, indent=2) + '\n')
-    results = []
+    args.output.mkdir(parents=True, exist_ok=args.resume)
+    configuration = args.output / 'configuration.json'
+    if configuration.exists():
+        previous = json.loads(configuration.read_text())
+        ignored = {'resume', 'workers', 'threads', 'output'}
+        if any(previous.get(k) != v for k, v in options.items() if k not in ignored):
+            raise ValueError('Resume requires the same checkpoint, cohort and evaluation conditions')
+    else:
+        configuration.write_text(json.dumps(options, indent=2) + '\n')
+    results, pending = [], []
+    for stream in streams:
+        saved = completed_stream(args.output, stream, args.state_sharing, args.chemistry_only) if args.resume else None
+        if saved is not None:
+            results.append(saved)
+        else:
+            old = args.output / stream['name']
+            if old.exists():
+                from time import time_ns
+                archive = args.output / 'interrupted'
+                archive.mkdir(exist_ok=True)
+                old.rename(archive / f'{stream["name"]}-{time_ns()}')
+            pending.append(stream)
     with ProcessPoolExecutor(args.workers, mp_context=multiprocessing.get_context('spawn')) as pool:
-        futures = [pool.submit(run_stream, (options, stream)) for stream in streams]
+        futures = [pool.submit(run_stream, (options, stream)) for stream in pending]
         for future in as_completed(futures):
             result = future.result(); results.append(result)
             (args.output / 'summary.json').write_text(json.dumps(results, indent=2) + '\n')
@@ -138,6 +179,7 @@ def main():
                        'completed': sum(r['completed_successfully'] for r in result[task]),
                        'actions': sum(r['native_actions'] for r in result[task])}
                 for task in ('physics', 'chemistry')}}), flush=True)
+    (args.output / 'summary.json').write_text(json.dumps(results, indent=2) + '\n')
     (args.output / 'finished.json').write_text(json.dumps({'streams': len(results)}) + '\n')
 
 

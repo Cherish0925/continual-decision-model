@@ -2,6 +2,7 @@
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -62,6 +63,37 @@ def native_rows(path, domain):
     return result
 
 
+def predictive_comparison(root, names, manifest):
+    """Compare the two forecasts on exactly the same returned experiments."""
+    stream_groups = {s['name']: s['group'] for s in manifest['streams']}
+    result = {}
+    for name in names:
+        path = root / 'test' / name / 'predictions.jsonl'
+        accumulators = {}
+        for line in path.read_text().splitlines():
+            row = json.loads(line)
+            if 'relation_probabilities' not in row:
+                continue
+            group = stream_groups[row['stream']]
+            keys = [group] + (['primary'] if group != 'renamed_inputs' else [])
+            base, relation = row['probabilities'], row['relation_probabilities']
+            y = row['after']
+            values = [1, -math.log(max(base[y], 1e-30)), -math.log(max(relation[y], 1e-30)),
+                      int(max(range(4), key=base.__getitem__) == y),
+                      int(max(range(4), key=relation.__getitem__) == y)]
+            for key in keys:
+                if key not in accumulators:
+                    accumulators[key] = np.zeros(5)
+                accumulators[key] += values
+        if accumulators:
+            result[name] = {key: dict(predictions=int(v[0]), inherited_nll=v[1]/v[0],
+                response_function_nll=v[2]/v[0], inherited_accuracy=v[3]/v[0],
+                response_function_accuracy=v[4]/v[0]) for key, v in accumulators.items()}
+    return dict(conditions=result,
+        scope='Both forecasts scored on each policy\'s actually selected next experiments; histories differ across trained policies',
+        units='nats per observed categorical outcome; zero probabilities clipped to 1e-30')
+
+
 def export(root, output):
     output.mkdir(parents=True, exist_ok=True)
     plan, manifest = read(root / 'plan.json'), read(root / 'test_cohort.json')
@@ -94,11 +126,13 @@ def export(root, output):
         scope=manifest['scope'], repetitions=plan['repetitions'],
         interval='Paired bootstrap of complete streams, separately for each training repetition',
         primary='84 streams / 1008 task instances; consistently renamed replays excluded',
-        timing='CPU evaluation is concurrent; measured inference time is not an isolated latency benchmark',
+        timing='Evaluation overlaps training; CPU process interruptions were rerun on CUDA. Timings are not isolated latency measurements',
         selection='All fixed final endpoints, no selection by this test cohort')
     (output / 'joint_belief.json').write_text(json.dumps(result, indent=2) + '\n')
     (output / 'joint_belief_test_cohort.json').write_text(json.dumps(manifest, indent=2) + '\n')
     write_csv(output / 'joint_belief_instances.csv', rows)
+    forecasts = predictive_comparison(root, [j['name'] for j in plan['jobs']], manifest)
+    (output / 'joint_belief_predictions.json').write_text(json.dumps(forecasts, indent=2) + '\n')
 
     native, native_summary, native_export = {}, {}, []
     for job in plan['jobs']:
