@@ -1,6 +1,6 @@
 """Joint prediction/action learning with four continuations and new task regimes."""
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from copy import deepcopy
 import json
 import os
@@ -8,7 +8,6 @@ from pathlib import Path
 import random
 import subprocess
 import sys
-import threading
 from time import perf_counter, sleep
 
 from experiments.continual_chemistry.response_families import EXPANDED_FAMILIES, sample_lifetime
@@ -66,46 +65,65 @@ def training_jobs(root, updates, batch):
 
 def execute(jobs, directory, parallel):
     directory.mkdir(parents=True, exist_ok=True)
-    devices = {}
-    for job in jobs:
+    def device(job):
         arguments = job['arguments']
         if '--device' in arguments:
-            device = arguments[arguments.index('--device') + 1]
-            if device.startswith('cuda:'):
-                devices.setdefault(device, threading.Lock())
-    def run(job):
-        started = perf_counter()
-        if job.get('ready'):
-            while not Path(job['ready']).exists():
-                completed = Path(job['ready']).parent.parent / 'completed.json'
-                if completed.exists():
-                    failed = next((r for r in json.loads(completed.read_text())
-                                   if r['name'] == job['name'] and r['exit_code']), None)
-                    if failed:
-                        return dict(name=job['name'], exit_code=failed['exit_code'], dependency_failed=True)
-                sleep(10)
+            value = arguments[arguments.index('--device') + 1]
+            if value.startswith('cuda:'):
+                return value
+
+    def finished(job):
         endpoint = Path(job['arguments'][job['arguments'].index('--output') + 1])
         marker = job.get('completion', 'finished.json' if job.get('ready') else 'summary.json')
-        if (endpoint / marker).exists() or (endpoint / 'finished.json').exists():
+        return (endpoint / marker).exists() or (endpoint / 'finished.json').exists()
+
+    def run(job):
+        started = perf_counter()
+        if finished(job):
             return dict(name=job['name'], exit_code=0, reused=True)
         arguments = job['arguments']
-        device = arguments[arguments.index('--device') + 1] if '--device' in arguments else None
-        from contextlib import nullcontext
-        with devices.get(device, nullcontext()):
-            with (directory / (job['name'] + '.log')).open('w') as log:
-                result = subprocess.run([sys.executable, *arguments], stdout=log, stderr=subprocess.STDOUT,
-                    env={**os.environ, 'OMP_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1',
-                         'PYTORCH_CUDA_ALLOC_CONF': 'expandable_segments:True'})
+        with (directory / (job['name'] + '.log')).open('w') as log:
+            result = subprocess.run([sys.executable, *arguments], stdout=log, stderr=subprocess.STDOUT,
+                env={**os.environ, 'OMP_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1',
+                     'PYTORCH_CUDA_ALLOC_CONF': 'expandable_segments:True'})
         row = dict(name=job['name'], exit_code=result.returncode, seconds=perf_counter() - started)
         print(json.dumps(row), flush=True)
         return row
-    done = []
+    done, pending, running = [], list(jobs), {}
+    def record(row):
+        done.append(row)
+        temporary = directory / 'completed.next.json'
+        temporary.write_text(json.dumps(done, indent=2) + '\n')
+        temporary.replace(directory / 'completed.json')
+
     with ThreadPoolExecutor(parallel) as pool:
-        for future in as_completed([pool.submit(run, job) for job in jobs]):
-            done.append(future.result())
-            temporary = directory / 'completed.next.json'
-            temporary.write_text(json.dumps(done, indent=2) + '\n')
-            temporary.replace(directory / 'completed.json')
+        while pending or running:
+            busy = {device(job) for job in running.values()} - {None}
+            for job in pending[:]:
+                if finished(job):
+                    record(dict(name=job['name'], exit_code=0, reused=True))
+                    pending.remove(job)
+                    continue
+                if job.get('ready') and not Path(job['ready']).exists():
+                    completed = Path(job['ready']).parent.parent / 'completed.json'
+                    failures = json.loads(completed.read_text()) if completed.exists() else []
+                    failed = next((r for r in failures if r['name'] == job['name'] and r['exit_code']), None)
+                    if failed:
+                        record(dict(name=job['name'], exit_code=failed['exit_code'], dependency_failed=True))
+                        pending.remove(job)
+                    continue
+                if len(running) < parallel and device(job) not in busy:
+                    running[pool.submit(run, job)] = job
+                    pending.remove(job)
+                    if device(job) is not None:
+                        busy.add(device(job))
+            if running:
+                ready, _ = wait(running, timeout=5, return_when=FIRST_COMPLETED)
+                for future in ready:
+                    record(future.result())
+                    del running[future]
+            elif pending:
+                sleep(5)
     if any(row['exit_code'] for row in done):
         raise SystemExit(1)
 
@@ -121,6 +139,7 @@ def main():
     p.add_argument('--workers', type=int, default=8)
     args = p.parse_args()
     if args.stage == 'plan':
+        args.root.mkdir(parents=True, exist_ok=True)
         jobs = training_jobs(args.root, args.updates, args.batch)
         plan = dict(jobs=jobs, updates=args.updates, batch=args.batch,
             repetitions='Four continuation seeds from two shared-core parents, four independently initialized response predictors',

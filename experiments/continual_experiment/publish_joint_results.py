@@ -25,8 +25,9 @@ def statistics(rows):
 def groups(rows):
     result = {'primary': [r for r in rows if r.get('group') != 'renamed_inputs']}
     for field in ('group', 'family', 'exposure'):
-        for value in sorted({r[field] for r in rows if field in r}):
-            result[f'{field}:{value}'] = [r for r in rows if r.get(field) == value]
+        source = rows if field == 'group' else result['primary']
+        for value in sorted({r[field] for r in source if field in r}):
+            result[f'{field}:{value}'] = [r for r in source if r.get(field) == value]
     return result
 
 
@@ -58,7 +59,7 @@ def native_rows(path, domain):
         for row in stream[domain]:
             result.append(dict(stream=stream['stream'], task_index=row['episode_index'],
                 native_actions=row['native_actions'], completed=int(row['completed_successfully']),
-                exposure=row.get('exposure', row.get('boundary', 'unspecified')),
+                exposure=row.get('exposure', 'unspecified'),
                 seed=row['seed']))
     return result
 
@@ -186,11 +187,11 @@ def figure(digital, native, output):
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 9,
                          'axes.spines.top': False, 'axes.spines.right': False,
                          'svg.fonttype': 'none', 'pdf.fonttype': 42})
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3.8), layout='constrained')
+    fig, axes = plt.subplots(1, 3, figsize=(11.8, 3.4), layout='constrained', sharey=True)
     colors = ['#246A83', '#CB6B42', '#60965D', '#8B6EA8']
     for ax, kind, title in zip(axes, ('digital', 'chemistry', 'physics'),
                               ('New digital task streams', 'Native chemistry: retention', 'Native physics: retention')):
-        names = ('Joint action + response', 'Response gradients only', 'Inherited continuation', 'Original parent')
+        names = ('Joint action + response', 'Response-only belief gradients', 'Inherited continuation', 'Original parent + memory')
         for i, (label, color) in enumerate(zip(names, colors)):
             keys = [f'{("joint", "prediction_only", "inherited")[i]}{s}' for s in SEEDS] if i < 3 else ['parent911', 'parent912']
             vals = [digital['conditions'][k]['primary'] if kind == 'digital' else native['conditions'][k][kind] for k in keys]
@@ -199,10 +200,10 @@ def figure(digital, native, output):
             ax.scatter(x, i + offsets, s=28, color=color, zorder=3)
             ax.plot([x.min(), x.max()], [i, i], color=color, alpha=.5)
         ax.set_yticks(range(4), names)
-        ax.invert_yaxis()
         ax.set_xlabel('Mean operations (failures included)')
         ax.set_title(title, loc='left', fontsize=10, fontweight='bold')
         ax.grid(axis='x', alpha=.16)
+    axes[0].invert_yaxis()
     fig.get_layout_engine().set(w_pad=.12, h_pad=.1)
     for suffix in ('svg', 'pdf', 'png'):
         fig.savefig(output / f'joint_belief.{suffix}', dpi=180)

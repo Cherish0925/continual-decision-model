@@ -1,10 +1,10 @@
 # Continual Decision Model: research and implementation direction
 
-**Working source:** [v0.15.0, `8f0b628`](https://github.com/Cherish0925/continual-decision-model/tree/8f0b6287fa3823874615a6fb07d4808463e89107). The [response-family study](../experiments/continual_experiment/RESPONSE_FAMILIES.md) reports the completed implementation and experiments. The remaining architecture below is the research direction. The earlier [result synthesis](MEMORY_AND_EXPERIMENTS.md) preserves the v0.14.0 calculations and their corrections.
+**Working implementation:** [joint prediction and action learning](../experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning). It trains the shared core, task interfaces and learned response functions on physical and chemical task streams. The [response-family study](../experiments/continual_experiment/RESPONSE_FAMILIES.md) records the preceding comparisons. The remaining architecture below is the research direction; the earlier [result synthesis](MEMORY_AND_EXPERIMENTS.md) preserves its historical calculations and corrections.
 
 **Build a model whose experience improves its next experiment, whose ongoing inference can be revised as observations arrive, and whose learned policy chooses when to act, observe, compute and learn.** Preserve the fast action path while these operations run. A user request changes the goals of this continuing process; it need not start a new process.
 
-The next implementation should connect a predictive belief over old and new relationships to action values, then train the same state and operation interface on task changes and independently advancing time. Keep the existing GRU, workspace and strongest released policies as starting points. Do not make increasing their size the explanation for a missing capability.
+The current implementation connects hypothetical response updates to action values and trains them through subsequent experimental returns. Independent-time operation, revision of ongoing inference and parameter consolidation remain to be connected to this scientific-task path. Keep the strongest measured policies as comparisons when extending it.
 
 ## 1. What the results change
 
@@ -26,7 +26,7 @@ The earlier training-derived Bayesian replay was competitive with the v0.14.0 co
 | Multimodal interaction | Pretrained image/text interfaces exist separately | Perceptual information changes useful actions in the continuing model |
 | Initiative | Autonomous task execution exists | A standing goal causes useful self-initiated observation or action without another prompt |
 
-The v0.15.0 scientific-task path stores approximately 47.84M parameters with its added 16,849-parameter action head. Its preceding configuration stored about 47.82M, with 32.71M trainable in that continuation. The earlier 0.428B image/text path is a different configuration. Do not add inactive encoders or teachers to the parameter count of a measured policy.
+The joint-belief scientific-task path stores 47,964,566 parameters, with 32,854,399 trainable in the continuation. Its learned response predictor has 106,500 parameters and its belief-to-action head has 37,761. The v0.15.0 path stored approximately 47.84M with a different 16,849-parameter action head. The earlier 0.428B image/text path is a separate configuration; inactive encoders and teachers are excluded from these counts.
 
 ## 2. The scientific question
 

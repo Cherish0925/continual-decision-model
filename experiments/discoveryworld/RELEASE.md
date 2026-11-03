@@ -2,6 +2,58 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Joint prediction and action training: v0.17.0
+
+[Download v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
+· [Method and fixed comparisons](../continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
+
+The comparison trains four continuations of each of three conditions: joint
+response/action gradients, response-only gradients through the same forward
+architecture, and inherited-policy continuation. Every fixed final endpoint
+is included. Run labels 201/203 use parent 911; 202/204 use parent 912.
+Continuation RNG seeds are 1701--1704 and response-predictor seeds are 201--204.
+
+| Archive | Contents |
+| --- | --- |
+| `cdm-joint-seed201-inference.tar.zst` through `cdm-joint-seed204-inference.tar.zst` | Initial/final weights of the three continuation conditions and the corresponding response predictor |
+| `cdm-joint-inputs-inference.tar.zst` | Both original shared parents, physical initialization models, calibration model and measured response-predictor training/validation tensors |
+| `cdm-joint-inputs-records.tar.zst.part00`, `.part01` | Physical training data and execution geometry, original native cohort and initializations, reference results |
+| `cdm-joint-records.tar.zst*` | Fixed plans and test streams, training curves, digital comparisons and completed native execution records |
+| `DiscoveryWorld-LICENSE.txt` | Upstream license for native task records |
+
+Checkpoints preserve model weights and configuration. Optimizer state is
+omitted from these inference archives; the initial checkpoints and fixed
+commands support repeating training. Companion `*-files.txt` inventories list
+the contents. All paths restore relative to the repository root.
+
+To evaluate one released model on the fixed digital cohort:
+
+```bash
+git checkout v0.17.0
+python -m pip install -e '.[neural,discoveryworld]'
+gh release download v0.17.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-joint-seed201-inference.tar.zst' --dir artifacts/v0.17.0
+zstd -dc --long=30 artifacts/v0.17.0/cdm-joint-seed201-inference.tar.zst | tar -x
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python -m experiments.continual_experiment.evaluate_response_families \
+  --checkpoint runs/continual_physics/joint_belief_20261103/train/joint201/last.pt \
+  --manifest experiments/continual_experiment/results/joint_belief_test_cohort.json \
+  --device cuda:0 --workers 1 --batch 4 --record-predictions \
+  --output runs/reproduced-joint201
+```
+
+Replace `joint201` with `prediction_only201` or `inherited201` for the matched
+controls. CPU execution uses `--device cpu` and can distribute independent
+streams across `--workers`. Model outcomes are evaluated at the final training
+window; evaluation is not used to choose a checkpoint.
+
+For native replay or fresh training, download and extract the inputs and
+records archives as well. Join `.part00`, `.part01`, and any later pieces in
+filename order before decompression. The original world initializations are
+shared across native methods. The [training commands](../continual_experiment/FUNCTION_BELIEF.md#running-the-fixed-comparison)
+prepare fresh output directories and then run all conditions and references.
+Use a new `--root` when repeating training alongside extracted results.
+
 ## Learned response functions: v0.16.0
 
 [Download v0.16.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)

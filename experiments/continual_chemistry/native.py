@@ -137,7 +137,9 @@ def run(options, *, model=None, state=None, return_state=False):
                     if env.ended:ending='native_termination';break
             except ActionBudgetReached:ending='native_action_budget'
             except (ValueError,RuntimeError) as exc:
-                import traceback;traceback.print_exc();error=f'{type(exc).__name__}: {exc}';ending='execution_error'
+                import traceback
+                traceback.print_exc(file=log)
+                error=f'{type(exc).__name__}: {exc}';ending='execution_error'
         summary={'scenario':'Combinatorial Chemistry','difficulty':args.difficulty,'seed':args.seed,
             'policy':args.policy,'has_trained_chemistry_heads':trained_heads,'native_actions':env.steps,'experiments':len(executor.history),
             'returned_rust':executor.state()['rust_level'],'completed_successfully':all(r['completed_successfully'] for r in env.metrics),

@@ -276,6 +276,16 @@ attaching it preserves the parent's action scores exactly before training.
 This is one hypothetical conditioning step, not an imagined full execution
 tree. Precise recipe execution remains the existing tool interface.
 
+In equations, let $w_k$ be the probability of response function $k$ after
+the observed history, and let $p_k(y\mid x)$ predict the observable outcome
+of candidate experiment $x$. The hypothetical update is
+$w_k^{x,y}=w_k p_k(y\mid x)/\sum_j w_j p_j(y\mid x)$.
+The decision head receives the four separate vectors
+$p(y\mid x)[\sum_k w_k^{x,y}z_k-\sum_k w_k z_k]$, together with
+the outcome probabilities, information gain and inherited action features.
+Keeping these vectors separate matters: their probability-weighted sum is
+zero, whereas each outcome can imply a different next action.
+
 The action-return gradient now reaches the same latent vectors and decoder
 that predict observed responses. The inherited action path previously evaluated
 response forecasts without gradients. The new differentiable path is explicit;
@@ -295,9 +305,10 @@ There are three fixed continuation conditions:
 The first two conditions have identical parameters and forward computations.
 Their distinction is the gradient from decisions into response hypotheses.
 All conditions train the common GRU and Transformer workspace and both task
-interfaces. Each has four continuation seeds, derived from two released
-parents; seeds 201/203 share parent 911, and 202/204 share parent 912. The four
-response predictors have separately initialized weights and share the
+interfaces. Each has four continuation runs, derived from two released
+parents; runs 201/203 share parent 911, and 202/204 share parent 912. Their
+continuation RNG seeds are 1701--1704; their response-predictor initialization
+seeds are 201--204. The four response predictors share the
 preceding measured corpus. These are four continuation repetitions, not four
 independent pretrained backbones or independently collected corpora.
 
