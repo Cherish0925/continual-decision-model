@@ -1,14 +1,18 @@
 # CDM: objective, implementation, and results
 
-**Running comparison, 3 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
-updates the shared core, task interfaces and learned response functions.
-Four continuation seeds compare joint gradients, prediction-only gradients
-and inherited continuation. New target ratios, five-ingredient tasks, held-out
-response mechanisms and paired input renaming broaden the fixed test. Native
-physics/chemistry check retention. This implementation is running; its final
-model advantage has not yet been evaluated in full.
+**Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
+includes twelve full shared-core continuations, four predictor initializations,
+1,008 primary test instances, 144 paired naming replays and 5,760 native
+executions. The four joint endpoints complete 952–961/1,008 at 241–246 mean
+operations, against the original parents' 867/883 at 327/321. Matched inherited
+continuation reaches 952–966 at 236–249; the added action-gradient connection
+has no stable advantage across runs. Response prediction improves on the
+selected experiments, while native retention remains incomplete.
+[v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
+provides every endpoint, training inputs and completed records. No training
+or evaluation from this comparison remains running.
 
-**Latest completed study, 3 November:** [learned response functions](experiments/continual_experiment/FUNCTION_BELIEF.md)
+**Preceding study, 3 November:** [learned response functions](experiments/continual_experiment/FUNCTION_BELIEF.md)
 adds coherent unfamiliar-law alternatives, likelihood conditioning and
 finite-budget planning. Twelve predictor trainings and the independent and
 native comparisons are complete. The selected function models improve on
@@ -33,8 +37,9 @@ Models and complete records are in
 The [model and implementation plan](research/CONTINUAL_AGENT.md),
 [result synthesis](research/MEMORY_AND_EXPERIMENTS.md) and
 [nearest-method comparison](ref/BELIEF_AND_COMPUTATION.md) retain the broader
-research direction. The next unresolved connection is training the continuing
-action policy to use the learned belief while preserving native capability.
+research direction. Joint belief/action training is implemented and evaluated;
+stable gains over simpler continuation, native retention, independent-time
+inference and long-term parameter consolidation remain unresolved.
 
 **Preceding comparison:** [experimental memory](experiments/continual_experiment/EXPERIMENTAL_MEMORY.md)
 completes four joint trainings and 5,280 native executions. Returning chemical

@@ -1,5 +1,9 @@
 # Learning response functions from experiments
 
+The [completed joint-learning comparison](#completed-joint-learning-results)
+extends this study to twelve full shared-core continuations, broader task
+transfer and native retention. The earlier frozen-core study is preserved below.
+
 This study follows the [response-family comparison](RESPONSE_FAMILIES.md).
 Its question is whether learning a joint prediction of several experiments
 helps an agent infer an unfamiliar relationship and choose its next experiment.
@@ -371,6 +375,126 @@ DiscoveryWorld task families. The digital variations broaden the tested
 response mechanisms while retaining a common structured experiment interface;
 they do not establish open-ended scientific research ability.
 
+### Completed joint-learning results
+
+All four predictor trainings and twelve 256-window continuations are complete.
+Eighteen digital conditions use the same 1,008 primary instances and 144 naming
+replays. Twelve native comparisons add 5,760 executions on the original
+480-instance cohort. Counts of executions do not increase the number of
+independent tasks or training repetitions.
+
+![Broader-task performance and native retention](results/joint_belief.svg)
+
+Each dot is one trained endpoint; horizontal lines span the run means and
+are **not** uncertainty intervals. All panels include failed-task costs.
+Completion counts and stream-paired intervals are reported below and in the
+[complete digital comparison](results/joint_belief.json),
+[native comparison](results/joint_belief_native.json),
+[per-instance records](results/joint_belief_instances.csv),
+[native records](results/joint_belief_native_instances.csv),
+[same-history forecasts](results/joint_belief_predictions.json) and
+[training curves](results/joint_belief_training.csv).
+
+Each cell gives **completed tasks / 1,008; mean operations**. The denominator
+is shared across columns, not multiplied into a larger independent test set.
+
+| Method | Run 201 | Run 202 | Run 203 | Run 204 |
+| --- | ---: | ---: | ---: | ---: |
+| Original parent + twelve ledgers | 867; 326.96 | 883; 320.94 | Same as 201 | Same as 202 |
+| Inherited continuation | 956; 241.64 | 963; 238.78 | 952; 249.08 | 966; 235.61 |
+| Response-only belief gradients | 950; 242.23 | 952; 240.36 | 947; 249.90 | 951; 246.88 |
+| Joint action + response gradients | 952; 245.84 | 959; 245.87 | 961; 240.64 | 959; 245.10 |
+| Frozen response model + information rule | 882; 321.05 | 884; 325.22 | 870; 309.73 | 873; 309.52 |
+
+The joint models improve on their original parents by 85, 76, 94 and 76
+completions, while reducing mean cost by 24.8%, 23.4%, 26.4% and 23.6%.
+Each run's stream-paired intervals support both improvements. The independently
+continued inherited policy reaches similar performance, so these gains do not
+isolate a benefit of the new response representation or action-gradient path.
+
+The table below reports joint-model cost minus each matched control, with
+95% intervals from resampling complete task streams. Negative values favor
+joint training. Intervals describe uncertainty over these task streams for
+each endpoint; they are not a population estimate over training seeds.
+
+| Run | Minus response-only gradients | Minus inherited continuation |
+| --- | ---: | ---: |
+| 201 | +3.61 [−6.30, 13.17] | +4.20 [−8.63, 15.74] |
+| 202 | +5.51 [−6.81, 18.19] | +7.08 [−4.13, 18.86] |
+| 203 | −9.27 [−18.15, −0.58] | −8.44 [−17.19, 0.75] |
+| 204 | −1.78 [−9.83, 6.43] | +9.49 [0.17, 19.63] |
+
+Run 203 improves both cost and completion over its response-only control.
+The other runs do not establish that cost benefit, and run 204 costs more
+than inherited continuation. Thus action-return training of the response
+functions has a positive result in one repetition, without a stable advantage
+across repetitions. All endpoints are retained; none was chosen using this test.
+
+**Transfer varies with the change in task.** Across the four joint endpoints,
+the withheld interaction–inhibition group completes 139–143/144 tasks and the
+new threshold relation 136–139/144. New seven/eight-part target ratios complete
+133–136/144, while five-ingredient tasks complete 121–131/144 and require
+344–386 operations. Inherited continuation completes 128–132/144 of the latter
+tasks at 323–349 operations. Broader practice improves the overall test without
+making the added belief interface uniformly stronger on structural changes.
+
+Consistently renaming the same ingredients adds 23.15, 10.01, 2.44 and 19.57
+mean operations to the joint endpoints; all four paired cost intervals include
+zero. Completion changes are −2, 0, −2 and 0 out of 144. This paired test checks
+sensitivity to observable names; it neither establishes exact permutation
+invariance nor rules out every possible shortcut.
+
+**Prediction improves before a reliable decision advantage emerges.** On each
+joint model's actually selected experiments, the response-function forecast
+has lower negative log likelihood than the inherited forecast. Both are scored
+on the same returned observation within each run:
+
+| Run | Returned experiments | Inherited NLL | Response-function NLL |
+| --- | ---: | ---: | ---: |
+| 201 | 15,888 | 0.5382 | 0.4591 |
+| 202 | 15,950 | 0.5478 | 0.4643 |
+| 203 | 15,622 | 0.5366 | 0.4663 |
+| 204 | 15,903 | 0.5366 | 0.4707 |
+
+NLL is in nats per observed outcome. These are on-policy measurements:
+histories differ between trained models. They establish a predictive difference
+on the selected experiments, not the causal effect of that difference on actions.
+The likelihood and decision results together narrow the remaining question to
+which forecast distinctions improve subsequent choices and costs.
+
+**Native competence is not fully retained.** Each domain has the original
+240 instances, with identical saved initial states. Cells give completed
+tasks and mean operations:
+
+| Endpoint | Native physics / 240 | Native chemistry / 240 |
+| --- | ---: | ---: |
+| Parent 911 + twelve ledgers | 233; 115.40 | 240; 66.84 |
+| Parent 912 + twelve ledgers | 229; 107.17 | 240; 69.34 |
+| Joint 201 | 229; 115.56 | 240; 86.40 |
+| Joint 202 | 230; 119.57 | 240; 71.96 |
+| Joint 203 | 227; 117.84 | 240; 84.91 |
+| Joint 204 | 229; 125.56 | 240; 76.22 |
+| Response-only 201 | 219; 126.45 | 240; 68.72 |
+| Response-only 202 | 232; 112.84 | 240; 79.27 |
+| Response-only 203 | 229; 117.00 | 240; 91.33 |
+| Response-only 204 | 236; 115.45 | 240; 84.40 |
+| Inherited 201 | 216; 124.63 | 240; 77.72 |
+| Inherited 202 | 232; 114.49 | 240; 75.17 |
+| Inherited 203 | 233; 114.38 | 239; 93.09 |
+| Inherited 204 | 230; 114.78 | 240; 70.08 |
+
+All joint endpoints complete the chemical cohort but cost more than their
+parents; physical completion and cost also vary. The original parent with
+twelve ledgers remains the native reference. This study supports broader
+training as an effective route to new-task performance. It leaves a combined
+advantage in transfer, native retention and action-conditioned learning open.
+Independent-time operation and deployment-time parameter consolidation are
+not added by this comparison.
+
+[v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
+contains all initial/final models, training inputs and completed experiment
+records. [Download and replay](../discoveryworld/RELEASE.md#joint-prediction-and-action-training-v0170).
+
 ### Running the fixed comparison
 
 The four pretrained response models use seeds 201--204 and 24,000 updates with
@@ -395,9 +519,12 @@ python -m experiments.continual_experiment.publish_joint_results \
   --root runs/continual_physics/joint_belief_20261103
 ```
 
-Each GPU runs one response-function continuation. Smaller inherited controls
-may overlap when measured memory permits. CPU evaluations run concurrently and
-wait for each final training marker before loading that model. The run record
+The scheduler dispatches ready comparisons without occupying a worker while
+their dependencies are still running. Joint-gradient training uses about
+37 GiB per process; the detached and inherited controls permit additional
+concurrency where memory is available. Matching updates and external requests
+does not match floating-point operations. Evaluations wait for the final
+training marker before loading that model. The run record
 retains an early resource-interrupted attempt, excluded from the fixed final
 comparison; all reported models restart from their declared initialization.
 CPU process interruptions were rerun with fixed weights on CUDA. Completed

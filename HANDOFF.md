@@ -1,12 +1,14 @@
 # Research progress
 
-## 3 November: joint learning and broader task transfer
+## 4 November: completed joint learning and broader task transfer
 
 The [joint continuation](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
-now connects action-return gradients to the learned response hypotheses while
-retaining the inherited policy at initialization. Four fresh predictors are
-complete. The twelve full continuations and their digital/native comparisons
-are running; final performance claims await the complete fixed endpoints.
+connects action-return gradients to learned response hypotheses while retaining
+the inherited policy at initialization. Four fresh predictors, twelve full
+continuations and all digital/native comparisons are complete. The
+[results](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
+and [v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
+contain every declared final endpoint and the material needed to replay it.
 
 The three conditions compare joint action/response gradients, prediction-only
 gradients with the same forward architecture, and inherited continuation.
@@ -16,15 +18,36 @@ The [fixed test](experiments/continual_experiment/results/joint_belief_test_coho
 contains 1,008 instances in 84 new streams, plus 144 paired naming replays.
 It separates wider parameters, untrained response combinations, untrained
 threshold laws, new target ratios and five-ingredient inputs. Original native
-physics and chemistry are retention comparisons on saved initial states.
+physics and chemistry are retention comparisons on saved initial states:
+5,760 executions across twelve models on the original 480 instances.
+Eighteen digital conditions produce 20,736 task executions, not 20,736
+independent test instances.
+
+Broader continuation improves transfer. Joint models complete 952, 959, 961
+and 959 of the 1,008 primary tasks, reducing mean cost by 23–26% against their
+original parents. Inherited continuation completes 956, 963, 952 and 966 at
+similar cost. Only run 203 establishes a cost benefit over its matched
+response-only gradient control; the complete four-run comparison does not
+establish a stable contribution from the added gradient path.
+
+The learned response forecasts have lower NLL than the inherited forecasts
+on the same selected experiments. Native chemical costs nevertheless increase
+for all joint endpoints, and physical outcomes vary. Better prediction alone
+still does not establish a better complete policy. Preserve both the expanded
+training continuations and original native parents as references; changing
+the evaluation cohort or selecting one favorable run would not resolve this
+method comparison.
 
 Code: `cdm/belief_decision.py`, `cdm/relation_belief.py`, the shared trainer and
 `experiments/continual_experiment/joint_belief.py`. Run outputs are under
 `runs/continual_physics/joint_belief_20261103/`; `plan.json` fixes the conditions,
-budget and endpoint. Each completed training has `finished.json`. Interrupted
-resource/CPU-library attempts are retained separately and excluded from
-completed comparisons. The inherited models remain the reference during this
-study. Independent-time operation and parameter consolidation remain open.
+budget and endpoint. Every declared model completed 256 windows. Interrupted
+resource/CPU-library attempts remain separate from complete evaluations.
+No training or evaluation from this round remains running. Independent-time
+operation and parameter consolidation remain open. The next work should use
+these results to improve how predicted consequences affect decisions and
+preserve previous capability; repeating the same gradient experiment on
+these final test streams would not supply independent evidence.
 
 ## 3 November: learned response functions and finite-cost planning
 

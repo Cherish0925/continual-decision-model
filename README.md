@@ -14,30 +14,39 @@ An observation can become outdated while inference is still running. The researc
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
-The current [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)
-trains response hypotheses from subsequent action returns, together with the
-shared core and both task interfaces. Four continuation repetitions compare
-three training conditions. A fixed 1,008-task cohort tests new mechanisms,
-target ratios and ingredient counts; paired renaming tests and native retention
-are reported separately. Training and full evaluation are in progress.
+The completed [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
+trains response hypotheses from subsequent action returns together with the
+shared core and both task interfaces. Twelve full continuations compare three
+conditions across four repetitions from two parents. The fixed test has
+**1,008 primary task instances**, including untrained response mechanisms,
+target ratios and ingredient counts, plus **144 paired naming replays**.
+Original physics and chemistry supply **5,760 native retention executions**.
 
-The latest completed [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md)
-learns coherent alternatives for unfamiliar experimental relationships.
-Measurements update predictions of experiments that have not been performed.
-Two 106,500-parameter predictors complete 570/576 and 574/576 tasks at 148.16
-and 147.53 operations, against 205.56 and 203.76 for matched attentive
-references. They perform in the range of the existing strong CDM.
+Broader training improves new-task performance: the four joint models complete
+952–961/1,008 tasks at 241–246 mean operations, against the parents' 867/883
+completions at 327/321 operations. Matched inherited continuation reaches
+952–966 completions at 236–249 operations. The new action-gradient connection
+does not establish a stable advantage over these simpler continuations.
+Within the joint models, the learned response forecast is more accurate on
+selected experiments than the inherited forecast. Native costs generally increase. The original model with twelve ledgers remains the
+recommended native reference.
 
-Finite-budget planning makes hypothetical observation updates useful, saving
-about 119 and 125 operations against the same planner without those updates.
-It does not outperform a cheaper information rule. Direct integration into the
-inherited CDM increases native chemical cost, so the original model remains
-the recommended native reference.
+![Broader-task transfer and native retention](experiments/continual_experiment/results/joint_belief.svg)
 
-![Response-function and planning comparisons](experiments/continual_experiment/results/function_belief.svg)
+Dots are endpoint means; lines show the range across runs, not confidence
+intervals. The [full results](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
+include completion counts, paired intervals, task groups and all controls.
 
-[v0.16.0: models, measured training data and complete records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)
-· [Download and reproduce](experiments/discoveryworld/RELEASE.md#learned-response-functions-v0160)
+[v0.17.0: models, training inputs and complete records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
+· [Download and reproduce](experiments/discoveryworld/RELEASE.md#joint-prediction-and-action-training-v0170)
+
+The preceding [function-belief study](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-results)
+learns coherent alternatives for unfamiliar relationships. Its small response
+models improve on attentive conditional predictors and reach the strong CDM's
+digital performance range. Hypothetical observation updates help a finite-cost
+planner, while a cheaper information rule remains competitive.
+[v0.16.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.16.0)
+preserves that frozen-core comparison.
 
 The [response-law study](experiments/continual_experiment/RESPONSE_FAMILIES.md)
 completes six joint trainings, two 576-task digital cohorts and 3,840 native
@@ -58,9 +67,9 @@ continuation controls and the stronger known-formula reference.
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#response-law-transfer-and-memory-v0150)
 
 The integrated direction retains persistent inference, active experiments,
-learned computation and long-term consolidation. Learned unfamiliar-function
-inference is now implemented and compared above. The next connection is its
-use by the continuing action policy under actual cost and time constraints.
+learned computation and long-term consolidation. Response inference now enters
+joint action training. Stable decision gains, native retention and operation
+under an independent clock remain the next capabilities to establish.
 
 [v0.14.0: models and experimental records](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.14.0)
 · [Download and reproduce](experiments/discoveryworld/RELEASE.md#experimental-memory-v0140)
@@ -152,12 +161,12 @@ Useful autonomous computation and recovery across broader task families remain o
 
 ## Model
 
-The current shared scientific-task checkpoint stores **47.82 million parameters**;
-**32.71 million** are trainable in the joint continuation. It shares core weights
+The joint-belief scientific-task checkpoint stores **47.96 million parameters**;
+**32.85 million** are trainable in its continuation. It shares core weights
 between physical control and chemistry and retains a separate neural state for
-each interface. Its trained experimental archive holds six task ledgers, with
-up to 32 returned observations per ledger; execution comparisons also use twelve.
-The applicability reader adds 228 parameters.
+each interface. These comparisons use twelve experimental ledgers, with up to
+32 returned observations per ledger. The response-function model has 106,500
+parameters and the added belief-to-action head has 37,761.
 This path uses structured public measurements and numerical tools. The earlier
 image/text model is a separate experimental configuration described below.
 

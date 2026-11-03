@@ -181,7 +181,7 @@ def main():
                 '--manifest', 'runs/continual_physics/experimental_memory_20261101/cohort/manifest.json',
                 '--initial-rng-root', 'runs/continual_physics/experimental_memory_20261101/native/initial_rng',
                 '--output', str(args.root / 'native' / source['name']), '--state-sharing', 'separated',
-                '--memory-mode', 'evidence', '--memory-slots', '12', '--workers', '8']))
+                '--memory-mode', 'evidence', '--memory-slots', '12', '--workers', str(args.workers)]))
         (args.root / 'native').mkdir(exist_ok=True)
         (args.root / 'native' / 'plan.json').write_text(json.dumps(dict(jobs=jobs,
             scope='Original native cohort and saved starting states; retention comparison, not a new independent cohort'), indent=2)+'\n')

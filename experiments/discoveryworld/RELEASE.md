@@ -13,6 +13,13 @@ architecture, and inherited-policy continuation. Every fixed final endpoint
 is included. Run labels 201/203 use parent 911; 202/204 use parent 912.
 Continuation RNG seeds are 1701--1704 and response-predictor seeds are 201--204.
 
+All twelve continuations, eighteen digital comparisons and 5,760 native
+executions are complete. Joint models improve the new-task cohort over their
+original parents, with 952–961/1,008 completions and 23–26% lower mean cost.
+Matched inherited continuation reaches similar performance. The added
+response-to-action gradient does not establish a stable advantage, and native
+costs increase. The release preserves all conditions and original references.
+
 | Archive | Contents |
 | --- | --- |
 | `cdm-joint-seed201-inference.tar.zst` through `cdm-joint-seed204-inference.tar.zst` | Initial/final weights of the three continuation conditions and the corresponding response predictor |
@@ -25,6 +32,9 @@ Checkpoints preserve model weights and configuration. Optimizer state is
 omitted from these inference archives; the initial checkpoints and fixed
 commands support repeating training. Companion `*-files.txt` inventories list
 the contents. All paths restore relative to the repository root.
+Repeated per-episode copies of the native initial states are omitted from the
+records archive. Their shared originals are in the inputs archive; native
+replay restores those originals and writes the episode copies again.
 
 To evaluate one released model on the fixed digital cohort:
 

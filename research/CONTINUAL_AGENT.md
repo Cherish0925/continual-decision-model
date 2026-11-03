@@ -1,6 +1,6 @@
 # Continual Decision Model: research and implementation direction
 
-**Working implementation:** [joint prediction and action learning](../experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning). It trains the shared core, task interfaces and learned response functions on physical and chemical task streams. The [response-family study](../experiments/continual_experiment/RESPONSE_FAMILIES.md) records the preceding comparisons. The remaining architecture below is the research direction; the earlier [result synthesis](MEMORY_AND_EXPERIMENTS.md) preserves its historical calculations and corrections.
+**Completed implementation and comparison:** [joint prediction and action learning](../experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning). It trains the shared core, task interfaces and learned response functions on physical and chemical task streams. The [response-family study](../experiments/continual_experiment/RESPONSE_FAMILIES.md) records the preceding comparisons. The remaining architecture below is the research direction; the earlier [result synthesis](MEMORY_AND_EXPERIMENTS.md) preserves its historical calculations and corrections.
 
 **Build a model whose experience improves its next experiment, whose ongoing inference can be revised as observations arrive, and whose learned policy chooses when to act, observe, compute and learn.** Preserve the fast action path while these operations run. A user request changes the goals of this continuing process; it need not start a new process.
 
@@ -280,9 +280,12 @@ The [joint continuation](../experiments/continual_experiment/FUNCTION_BELIEF.md#
 now implements the connection between response beliefs and subsequent action
 return. Its zero-initialized residual preserves the inherited scores initially;
 selected-response likelihood and action return train the same latent functions.
-Four continuation repetitions and broader transfer comparisons are running.
-Native retention and superiority over simpler continuations remain empirical
-questions until that comparison is complete.
+Four repetitions of three continuations and all broader-transfer/native
+comparisons are complete. Broad training improves the new-task cohort, but
+the action-gradient path has no stable advantage over simpler continuation.
+Native chemical cost increases for every joint endpoint. The original native
+parents and broader-training continuations therefore remain complementary
+references; the new model does not replace both with a superior policy.
 Independent-time inference and lasting consolidation retain their original
 evaluation requirements.
 
@@ -291,12 +294,12 @@ evaluation requirements.
 | Starting policy: completed in v0.15.0 | Original parents plus twelve ledgers and fixed weighting are available | Use this reference; the earlier memory continuation has no established additional benefit |
 | Archive-set selector: completed in v0.15.0 | Marginal and per-archive action heads were jointly trained and compared | Retain the inherited actor; another action head alone does not supply unfamiliar-function uncertainty |
 | Response functions: implemented and tested | Shared latent functions, censored observation updates, conditional/attentive references and finite-budget lookahead | Joint response predictions support useful hypothetical updates; a general advantage over the strong CDM is unestablished |
-| Response-to-action integration: implemented, comparison running | Joint gradients from selected responses and action return; same-architecture prediction-only and inherited continuation controls | Four repetitions, broader digital transfer and original native retention; direct likelihood mixing remains the earlier failed integration |
+| Response-to-action integration: completed in v0.17.0 | Twelve full continuations; gradients from selected responses and action return, plus matched controls | Broad practice improves new tasks; the added gradient path has no stable advantage and native efficiency is not retained |
 | Reuse computation under time | Integrate pending events, bounded refinement and the independent clock | Whether retaining/revising work improves action quality at a measured latency budget |
 | Learn computation and consolidation | Train operation values and later-use updates in the same streams | Whether the learned schedule and retained parameter changes improve future tasks over equal-cost alternatives |
 | Scale what works | Increase streams, exposure, memory and model size separately | Which resource increases capability, and where inference cost outweighs the benefit |
 
-The selector and first learned-function comparisons are complete. The finite-order result supplies an executable continuation model for further action learning. Implement the event-buffer and independent-clock connection through the same state interface, using the inherited predictor and actor first. The next integrated run should exercise a received observation changing a belief, a pending calculation and a later action in that continuing process.
+The selector, learned-function and joint action-learning comparisons are complete. The finite-order result supplies an executable continuation model; joint gradient training has now tested one way to use it, without a stable advantage over inherited continuation. Implement the event-buffer and independent-clock connection through the same state interface, using the inherited predictor and actor first. The next integrated run should exercise a received observation changing a belief, a pending calculation and a later action in that continuing process.
 
 Separate scientific progress from execution throughput. The current negative selector result identifies an ineffective trained connection, not a GPU bottleneck or a failed input buffer. Training and evaluation counts alone do not locate elapsed-time costs. Measure data generation, prediction over archived records, optimization and native execution once on a representative run, then change the dominant cost. A complete training objective must also exercise the desired operation: a simulator paused during internal work cannot teach the cost of acting on a world that changed while the model was computing.
 
@@ -310,7 +313,7 @@ The following names are proposed additions unless an existing module already cov
 | `cdm/conditional_response.py`, `cdm/response_replay.py` | Add a relationship-conditioned prediction path; retain history conditioning; compare learned similarity and deployed-step fitting |
 | `cdm/relation_belief.py` | Implemented learned function mixture, likelihood conditioning and conditional/attentive references; continuous posterior rejuvenation remains open |
 | `cdm/experiment_value.py` | Implemented hypothesis/candidate action residual; calibrated next-state cost and time remain unimplemented |
-| `cdm/belief_decision.py` | Implemented differentiable hypothetical posterior features and zero-initialized action residual; joint continuation versus prediction-only comparison running |
+| `cdm/belief_decision.py` | Implemented differentiable hypothetical posterior features and zero-initialized action residual; four-run gradient comparison complete, with no stable cost advantage |
 | `experiments/continual_chemistry/reaction.py` | Experimental learned-function integration preserves archive scoring and inherited weights; train the decision connection before replacing the native reference |
 | `experiments/continual_chemistry/active_environment.py` and a separate extension module | Parameterized response laws, sampled recurrence and changed-law returns without changing official-task semantics |
 | `experiments/continual_experiment/` | Frozen-parent-plus-memory comparison; new stream manifests; recurrent and latent-context training; stage results at fixed endpoints |

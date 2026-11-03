@@ -207,6 +207,8 @@ def figure(digital, native, output):
     fig.get_layout_engine().set(w_pad=.12, h_pad=.1)
     for suffix in ('svg', 'pdf', 'png'):
         fig.savefig(output / f'joint_belief.{suffix}', dpi=180)
+    svg = output / 'joint_belief.svg'
+    svg.write_text('\n'.join(line.rstrip() for line in svg.read_text().splitlines()) + '\n')
     plt.close(fig)
 
 
