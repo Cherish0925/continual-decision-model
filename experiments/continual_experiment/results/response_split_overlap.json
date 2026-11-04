@@ -1,0 +1,813 @@
+{
+  "by_model": {
+    "information201": {
+      "new_menu": {
+        "completed": 219,
+        "mean_operations": 438.903,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 130.085,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 463,
+        "mean_operations": 329.615,
+        "tasks": 519
+      }
+    },
+    "information202": {
+      "new_menu": {
+        "completed": 212,
+        "mean_operations": 483.892,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 117.627,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 471,
+        "mean_operations": 317.565,
+        "tasks": 519
+      }
+    },
+    "information203": {
+      "new_menu": {
+        "completed": 201,
+        "mean_operations": 465.451,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 199,
+        "mean_operations": 111.796,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 470,
+        "mean_operations": 299.969,
+        "tasks": 519
+      }
+    },
+    "information204": {
+      "new_menu": {
+        "completed": 209,
+        "mean_operations": 454.059,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 197,
+        "mean_operations": 127.299,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 467,
+        "mean_operations": 299.886,
+        "tasks": 519
+      }
+    },
+    "inherited201": {
+      "new_menu": {
+        "completed": 260,
+        "mean_operations": 330.799,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 127.582,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 495,
+        "mean_operations": 236.329,
+        "tasks": 519
+      }
+    },
+    "inherited202": {
+      "new_menu": {
+        "completed": 263,
+        "mean_operations": 319.163,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 130.224,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 500,
+        "mean_operations": 236.225,
+        "tasks": 519
+      }
+    },
+    "inherited203": {
+      "new_menu": {
+        "completed": 255,
+        "mean_operations": 337.792,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 134.627,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 497,
+        "mean_operations": 244.173,
+        "tasks": 519
+      }
+    },
+    "inherited204": {
+      "new_menu": {
+        "completed": 264,
+        "mean_operations": 312.514,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 123.876,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 502,
+        "mean_operations": 236.2,
+        "tasks": 519
+      }
+    },
+    "joint201": {
+      "new_menu": {
+        "completed": 259,
+        "mean_operations": 331.889,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 125.458,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 492,
+        "mean_operations": 244.709,
+        "tasks": 519
+      }
+    },
+    "joint202": {
+      "new_menu": {
+        "completed": 255,
+        "mean_operations": 343.514,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 128.587,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 503,
+        "mean_operations": 237.106,
+        "tasks": 519
+      }
+    },
+    "joint203": {
+      "new_menu": {
+        "completed": 262,
+        "mean_operations": 331.198,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 132.169,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 498,
+        "mean_operations": 232.389,
+        "tasks": 519
+      }
+    },
+    "joint204": {
+      "new_menu": {
+        "completed": 264,
+        "mean_operations": 319.889,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 133.085,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 495,
+        "mean_operations": 246.979,
+        "tasks": 519
+      }
+    },
+    "parent911": {
+      "new_menu": {
+        "completed": 229,
+        "mean_operations": 401.462,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 198,
+        "mean_operations": 139.547,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 440,
+        "mean_operations": 358.208,
+        "tasks": 519
+      }
+    },
+    "parent912": {
+      "new_menu": {
+        "completed": 229,
+        "mean_operations": 398.705,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 197,
+        "mean_operations": 135.995,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 457,
+        "mean_operations": 349.408,
+        "tasks": 519
+      }
+    },
+    "prediction_only201": {
+      "new_menu": {
+        "completed": 257,
+        "mean_operations": 343.26,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 125.318,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 492,
+        "mean_operations": 231.437,
+        "tasks": 519
+      }
+    },
+    "prediction_only202": {
+      "new_menu": {
+        "completed": 255,
+        "mean_operations": 331.927,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 200,
+        "mean_operations": 129.333,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 497,
+        "mean_operations": 232.541,
+        "tasks": 519
+      }
+    },
+    "prediction_only203": {
+      "new_menu": {
+        "completed": 249,
+        "mean_operations": 350.91,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 140.229,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 497,
+        "mean_operations": 236.331,
+        "tasks": 519
+      }
+    },
+    "prediction_only204": {
+      "new_menu": {
+        "completed": 256,
+        "mean_operations": 333.472,
+        "tasks": 288
+      },
+      "seen_response_table": {
+        "completed": 201,
+        "mean_operations": 126.418,
+        "tasks": 201
+      },
+      "unmatched_response_table": {
+        "completed": 494,
+        "mean_operations": 245.48,
+        "tasks": 519
+      }
+    }
+  },
+  "common_unmatched_distinct_tables": 222,
+  "common_unmatched_same_menu": {
+    "information201": {
+      "completed": 375,
+      "mean_operations": 282.421,
+      "tasks": 406
+    },
+    "information202": {
+      "completed": 386,
+      "mean_operations": 256.835,
+      "tasks": 406
+    },
+    "information203": {
+      "completed": 384,
+      "mean_operations": 257.362,
+      "tasks": 406
+    },
+    "information204": {
+      "completed": 378,
+      "mean_operations": 245.121,
+      "tasks": 406
+    },
+    "inherited201": {
+      "completed": 392,
+      "mean_operations": 215.32,
+      "tasks": 406
+    },
+    "inherited202": {
+      "completed": 394,
+      "mean_operations": 223.367,
+      "tasks": 406
+    },
+    "inherited203": {
+      "completed": 394,
+      "mean_operations": 228.498,
+      "tasks": 406
+    },
+    "inherited204": {
+      "completed": 395,
+      "mean_operations": 216.948,
+      "tasks": 406
+    },
+    "joint201": {
+      "completed": 392,
+      "mean_operations": 231.697,
+      "tasks": 406
+    },
+    "joint202": {
+      "completed": 397,
+      "mean_operations": 219.017,
+      "tasks": 406
+    },
+    "joint203": {
+      "completed": 397,
+      "mean_operations": 216.943,
+      "tasks": 406
+    },
+    "joint204": {
+      "completed": 390,
+      "mean_operations": 228.978,
+      "tasks": 406
+    },
+    "parent911": {
+      "completed": 371,
+      "mean_operations": 303.857,
+      "tasks": 406
+    },
+    "parent912": {
+      "completed": 381,
+      "mean_operations": 299.431,
+      "tasks": 406
+    },
+    "prediction_only201": {
+      "completed": 393,
+      "mean_operations": 217.988,
+      "tasks": 406
+    },
+    "prediction_only202": {
+      "completed": 394,
+      "mean_operations": 216.461,
+      "tasks": 406
+    },
+    "prediction_only203": {
+      "completed": 396,
+      "mean_operations": 224.505,
+      "tasks": 406
+    },
+    "prediction_only204": {
+      "completed": 389,
+      "mean_operations": 226.771,
+      "tasks": 406
+    }
+  },
+  "common_unmatched_streams": 55,
+  "continuation_training": {
+    "inherited201": {
+      "condition": "inherited",
+      "ended_training_tasks": 1539,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 110,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 110
+    },
+    "inherited202": {
+      "condition": "inherited",
+      "ended_training_tasks": 1588,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 127,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 125
+    },
+    "inherited203": {
+      "condition": "inherited",
+      "ended_training_tasks": 1639,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 130,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 130
+    },
+    "inherited204": {
+      "condition": "inherited",
+      "ended_training_tasks": 1519,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 121,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 120
+    },
+    "joint201": {
+      "condition": "joint",
+      "ended_training_tasks": 1533,
+      "lanes": 12,
+      "predictor_validation_joint_nll": {
+        "500": 0.275484,
+        "6000": 0.208447,
+        "12000": 0.196769,
+        "18000": 0.192378,
+        "24000": 0.191961
+      },
+      "test_matches_including_possible_open_tasks": 269,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 267
+    },
+    "joint202": {
+      "condition": "joint",
+      "ended_training_tasks": 1630,
+      "lanes": 12,
+      "predictor_validation_joint_nll": {
+        "500": 0.279322,
+        "6000": 0.20888,
+        "12000": 0.197435,
+        "18000": 0.192791,
+        "24000": 0.191615
+      },
+      "test_matches_including_possible_open_tasks": 266,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 266
+    },
+    "joint203": {
+      "condition": "joint",
+      "ended_training_tasks": 1596,
+      "lanes": 12,
+      "predictor_validation_joint_nll": {
+        "500": 0.274089,
+        "6000": 0.206644,
+        "12000": 0.196467,
+        "18000": 0.190676,
+        "24000": 0.189604
+      },
+      "test_matches_including_possible_open_tasks": 270,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 270
+    },
+    "joint204": {
+      "condition": "joint",
+      "ended_training_tasks": 1399,
+      "lanes": 12,
+      "predictor_validation_joint_nll": {
+        "500": 0.281274,
+        "6000": 0.211309,
+        "12000": 0.201323,
+        "18000": 0.195938,
+        "24000": 0.194738
+      },
+      "test_matches_including_possible_open_tasks": 275,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 275
+    },
+    "prediction_only201": {
+      "condition": "prediction_only",
+      "ended_training_tasks": 1543,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 261,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 261
+    },
+    "prediction_only202": {
+      "condition": "prediction_only",
+      "ended_training_tasks": 1633,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 276,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 274
+    },
+    "prediction_only203": {
+      "condition": "prediction_only",
+      "ended_training_tasks": 1602,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 270,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 270
+    },
+    "prediction_only204": {
+      "condition": "prediction_only",
+      "ended_training_tasks": 1411,
+      "lanes": 12,
+      "test_matches_including_possible_open_tasks": 275,
+      "test_matches_with_corpus_if_used_and_ended_tasks": 275
+    }
+  },
+  "corpus": {
+    "train": {
+      "distinct_response_tables": 8455,
+      "laws": 16384,
+      "measurements": 786432
+    },
+    "validation": {
+      "laws": 1024,
+      "measurements": 49152,
+      "monitored_laws": 256,
+      "monitored_same_menu_and_responses": 154,
+      "same_menu_and_responses": 633,
+      "same_ordered_queries": 0
+    }
+  },
+  "distinct_same_menu_tables": 401,
+  "groups": {
+    "five_ingredients": {
+      "primary_target_uses_all_available_ingredients": 0,
+      "same_menu": 0,
+      "same_menu_and_responses": 0,
+      "seen_ordered_primary_target": 0,
+      "solvable_with_six_or_fewer_parts": 144,
+      "tasks": 144
+    },
+    "heldout_combination": {
+      "primary_target_uses_all_available_ingredients": 25,
+      "same_menu": 144,
+      "same_menu_and_responses": 4,
+      "seen_ordered_primary_target": 144,
+      "solvable_with_six_or_fewer_parts": 144,
+      "tasks": 144
+    },
+    "heldout_threshold": {
+      "primary_target_uses_all_available_ingredients": 35,
+      "same_menu": 144,
+      "same_menu_and_responses": 0,
+      "seen_ordered_primary_target": 144,
+      "solvable_with_six_or_fewer_parts": 144,
+      "tasks": 144
+    },
+    "new_parameters": {
+      "primary_target_uses_all_available_ingredients": 51,
+      "same_menu": 288,
+      "same_menu_and_responses": 139,
+      "seen_ordered_primary_target": 288,
+      "solvable_with_six_or_fewer_parts": 288,
+      "tasks": 288
+    },
+    "new_target_ratios": {
+      "primary_target_uses_all_available_ingredients": 68,
+      "same_menu": 0,
+      "same_menu_and_responses": 0,
+      "seen_ordered_primary_target": 0,
+      "solvable_with_six_or_fewer_parts": 103,
+      "tasks": 144
+    },
+    "wider_parameters": {
+      "primary_target_uses_all_available_ingredients": 34,
+      "same_menu": 144,
+      "same_menu_and_responses": 58,
+      "seen_ordered_primary_target": 144,
+      "solvable_with_six_or_fewer_parts": 144,
+      "tasks": 144
+    }
+  },
+  "matching": "Same ingredient count and indexed candidate menu; identical intrinsic categorical response on every candidate. No relabeling. Returns inside streams are included.",
+  "new_target_ratios_by_model": {
+    "information201": {
+      "long_recipe_required": {
+        "completed": 21,
+        "mean_operations": 698.585,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 95,
+        "mean_operations": 267.359,
+        "tasks": 103
+      }
+    },
+    "information202": {
+      "long_recipe_required": {
+        "completed": 28,
+        "mean_operations": 693.902,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 95,
+        "mean_operations": 235.738,
+        "tasks": 103
+      }
+    },
+    "information203": {
+      "long_recipe_required": {
+        "completed": 21,
+        "mean_operations": 789.049,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 92,
+        "mean_operations": 248.447,
+        "tasks": 103
+      }
+    },
+    "information204": {
+      "long_recipe_required": {
+        "completed": 24,
+        "mean_operations": 642.268,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 92,
+        "mean_operations": 258.126,
+        "tasks": 103
+      }
+    },
+    "inherited201": {
+      "long_recipe_required": {
+        "completed": 31,
+        "mean_operations": 589.805,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 100,
+        "mean_operations": 202.34,
+        "tasks": 103
+      }
+    },
+    "inherited202": {
+      "long_recipe_required": {
+        "completed": 33,
+        "mean_operations": 542.024,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 98,
+        "mean_operations": 225.184,
+        "tasks": 103
+      }
+    },
+    "inherited203": {
+      "long_recipe_required": {
+        "completed": 28,
+        "mean_operations": 628.927,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 99,
+        "mean_operations": 211.99,
+        "tasks": 103
+      }
+    },
+    "inherited204": {
+      "long_recipe_required": {
+        "completed": 34,
+        "mean_operations": 552.366,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 101,
+        "mean_operations": 179.097,
+        "tasks": 103
+      }
+    },
+    "joint201": {
+      "long_recipe_required": {
+        "completed": 36,
+        "mean_operations": 531.366,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 100,
+        "mean_operations": 196.835,
+        "tasks": 103
+      }
+    },
+    "joint202": {
+      "long_recipe_required": {
+        "completed": 33,
+        "mean_operations": 533.854,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 101,
+        "mean_operations": 208.223,
+        "tasks": 103
+      }
+    },
+    "joint203": {
+      "long_recipe_required": {
+        "completed": 33,
+        "mean_operations": 597.829,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 100,
+        "mean_operations": 206.612,
+        "tasks": 103
+      }
+    },
+    "joint204": {
+      "long_recipe_required": {
+        "completed": 33,
+        "mean_operations": 562.415,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 100,
+        "mean_operations": 187.049,
+        "tasks": 103
+      }
+    },
+    "parent911": {
+      "long_recipe_required": {
+        "completed": 23,
+        "mean_operations": 681.707,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 101,
+        "mean_operations": 171.476,
+        "tasks": 103
+      }
+    },
+    "parent912": {
+      "long_recipe_required": {
+        "completed": 24,
+        "mean_operations": 679.634,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 101,
+        "mean_operations": 158.417,
+        "tasks": 103
+      }
+    },
+    "prediction_only201": {
+      "long_recipe_required": {
+        "completed": 32,
+        "mean_operations": 584.024,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 99,
+        "mean_operations": 197.058,
+        "tasks": 103
+      }
+    },
+    "prediction_only202": {
+      "long_recipe_required": {
+        "completed": 28,
+        "mean_operations": 566.61,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 99,
+        "mean_operations": 208.825,
+        "tasks": 103
+      }
+    },
+    "prediction_only203": {
+      "long_recipe_required": {
+        "completed": 24,
+        "mean_operations": 693.537,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 99,
+        "mean_operations": 215.699,
+        "tasks": 103
+      }
+    },
+    "prediction_only204": {
+      "long_recipe_required": {
+        "completed": 32,
+        "mean_operations": 583.976,
+        "tasks": 41
+      },
+      "short_solution_exists": {
+        "completed": 100,
+        "mean_operations": 184.272,
+        "tasks": 103
+      }
+    }
+  },
+  "primary_streams": 84,
+  "primary_tasks": 1008,
+  "reference": "Strata and by_model use the released predictor corpus. continuation_training adds the streams of all 12 evaluated continuations. Earlier parent training is not reconstructed.",
+  "same_menu_positions": 720,
+  "strata": {
+    "new_menu": 288,
+    "seen_response_table": 201,
+    "unmatched_response_table": 519
+  },
+  "unmatched_against_corpus_and_four_joint_runs": 412
+}

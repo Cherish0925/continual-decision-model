@@ -349,7 +349,7 @@ or **1,008 task instances**, across these groups:
 | Wider parameters | 12 | Wider metric and interaction parameters |
 | Held-out combination | 12 | Interaction and inhibition jointly determine responses |
 | Held-out threshold relation | 12 | Conjunction of total and worst-component discrepancy |
-| New target ratios | 12 | Primitive targets require seven/eight parts, absent from both training stages |
+| New target ratios | 12 | The specified target has seven/eight parts, absent from both training stages; shorter recipes may also succeed |
 | Five ingredients | 12 | One more ingredient than either training stage |
 
 Twelve additional streams replay the first twelve streams of the standard
@@ -494,6 +494,74 @@ not added by this comparison.
 [v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)
 contains all initial/final models, training inputs and completed experiment
 records. [Download and replay](../discoveryworld/RELEASE.md#joint-prediction-and-action-training-v0170).
+
+### Response functions in training and test
+
+A fresh random seed produces a new experiment history, but two parameter settings can
+give exactly the same feedback on every available recipe. To distinguish these cases,
+we compared the complete categorical response tables at the same ingredient count
+and the same indexed recipe menu. Ingredient order is held fixed; a table that
+differs may still describe a related law or a permutation. The counts below describe
+the released endpoints; no model was retrained or selected in this analysis.
+
+* **Predictor training and validation.** Replaying the generator reproduced the
+  ordered recipes, before/after readings and costs of all 786,432 training and
+  49,152 validation measurements. The 16,384 training environments gave 8,455
+  distinct tables. None of the 1,024 validation environments repeated an ordered
+  sequence of 48 training queries, but 633 repeated an entire response table.
+  Of the 256 environments used to log validation loss, 154 repeated a table.
+  Average joint negative log likelihood across six validation settings decreased
+  in all four runs, from 0.274–0.281 at step 500 to 0.190–0.195 at step 24,000
+  (rounded). This measures prediction on new query histories, not exclusively on new laws.
+* **Digital transfer test.** Of 1,008 task positions, 720 used a training-sized
+  menu. Of these, 201 matched a predictor-training table: 139/288 new-parameter
+  positions, 58/144 wider-parameter, 4/144 held-out combination and 0/144
+  held-out threshold. The other 288 positions used larger menus and were counted
+  separately. A complete table match does not mean the model observed every
+  entry during training: each predictor environment supplied only 48 measurements.
+
+We also reconstructed the chemical streams of all twelve continuations from the
+released run plan. Each ended episode matched its logged lane, task index, family,
+exposure and return interval. We included the next potentially unfinished episode
+per lane to avoid declaring an exposed law unseen. **406 positions (222 distinct
+tables in 55 streams)** had no match in the predictor corpus or any continuation.
+Earlier parent training is outside this reconstruction. Task positions can include
+returns to a law encountered earlier in the test stream.
+
+| Completed on these 406 positions | Run 201 | Run 202 | Run 203 | Run 204 |
+| --- | ---: | ---: | ---: | ---: |
+| Original parent | 371 | 381 | 371 | 381 |
+| Inherited continuation | 392 | 394 | 394 | 395 |
+| Joint continuation | 392 | 397 | 397 | 390 |
+
+Both continuations improved over their parents on this subset. The joint model
+did not consistently outperform inherited continuation. Task difficulty varies
+across the subsets, so a difference between matched and unmatched tables is not
+an estimate of the effect of memorization.
+
+The successful recipes also qualify the larger-menu results. Of 144 seven/eight-part
+targets, 103 allowed a successful recipe with six or fewer parts. On the **41 that
+actually required more than six parts**, the joint models solved 36, 33, 33 and
+33 (inherited: 31, 33, 28 and 34). All 144 five-ingredient tasks offered five
+ingredients, but every primary target used four or fewer. This tests choosing
+among five available ingredients; it does not test a required five-way mixture.
+
+For a new-law comparison, reserve whole response functions before fitting or
+selecting models, group ingredient permutations when names are arbitrary, and
+count a new action range separately when success actually requires using it.
+Keep the original 480 native positions for measuring retention; use previously
+unevaluated streams for a final comparison after weights and tools are fixed.
+
+[Recomputation script](response_split_overlap.py) · [Counts and per-model results](results/response_split_overlap.json).
+With `cdm-function-data.tar.zst` (v0.16.0) and `cdm-joint-records.tar.zst`
+(v0.17.0) extracted at the repository root, run:
+
+```bash
+python -m experiments.continual_experiment.response_split_overlap \
+  --data runs/continual_physics/function_belief_20261103/data \
+  --training-root runs/continual_physics/joint_belief_20261103 \
+  --output /tmp/cdm-response-splits.json
+```
 
 ### Operations on tasks both policies complete
 
