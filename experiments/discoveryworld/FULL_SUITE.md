@@ -96,6 +96,11 @@ python -m experiments.discoveryworld.collect_suite \
 
 The local server must support structured chat responses and the checkpoint's chat template. Collection records the teacher identity, prompt version, actual actions and returned outcomes. Unfinished or malformed teacher generations remain visible in the records. `--resume` replays a saved prefix and requires identical public feedback before appending; initial RNG snapshots alone do not guarantee whole-world replay in every theme. A changed prefix requires a fresh episode, not continuation with mismatched observations.
 
+When replay cannot reproduce an interrupted world, `--resume --restart-interrupted`
+keeps completed cases and moves unfinished attempts under `interrupted/` before
+starting fresh trajectories. Their records and collection costs remain available;
+the old and new observations are never joined into one episode.
+
 This collection uses the instruction-tuned GPT-OSS-20B checkpoint distributed
 as [`unsloth/gpt-oss-20b`](https://huggingface.co/unsloth/gpt-oss-20b). Download it
 to `data/cache/gpt-oss-20b`. The tested inference environment is separate from
@@ -135,7 +140,7 @@ In this comparison, the [trainer](train.py) learns from the recorded actions and
 
 ### Hosted demonstrations and teacher-free learning
 
-[DeepSeek-V4.1-Flash-1017](https://api-docs.deepseek.com/news/news261017/) can be selected as a demonstration teacher through DeepSeek or [Alibaba Cloud Bailian](https://help.aliyun.com/zh/model-studio/deepseek-api). Both collectors present the same public observations, action arguments, and measurement history. Install the `hosted-teacher` extra. Set `DEEPSEEK_API_KEY` for the direct API; set `DASHSCOPE_API_KEY` and your `DASHSCOPE_BASE_URL` for Bailian. Credentials are read from the process environment and excluded from collection metadata. The direct API uses `deepseek-flash`; Bailian defaults to `deepseek-v4.1-flash-1017` and uses its `enable_thinking` option.
+[DeepSeek-V4.1-Flash-1017](https://api-docs.deepseek.com/news/news261017/) can be selected as a demonstration teacher through DeepSeek or [Alibaba Cloud Bailian](https://help.aliyun.com/zh/model-studio/deepseek-api). Both collectors present the same public observations, action arguments, and measurement history. The native experiment environment is required; hosted requests use Python's HTTP client without an additional provider SDK. Set `DEEPSEEK_API_KEY` for the direct API; set `DASHSCOPE_API_KEY` and your `DASHSCOPE_BASE_URL` for Bailian. Credentials are read from the process environment and excluded from collection metadata. The direct API uses `deepseek-flash`; Bailian defaults to `deepseek-v4.1-flash-1017` and uses its `enable_thinking` option.
 
 ```sh
 python -m experiments.discoveryworld.collect_suite --deepseek-flash \

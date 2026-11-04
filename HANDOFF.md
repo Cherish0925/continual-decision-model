@@ -27,6 +27,11 @@ replacement runs start from the same initial or completed imitation weights
 with one CPU thread and native stack reporting. The cause is still being
 investigated. This interruption is not a task failure or a completed model
 comparison. Final reinforcement and official-case scores are pending.
+The parallel Flash collector also encountered a native reference-library crash.
+Its finite public-action checks now run directly without that dependency.
+Nineteen completed cases were retained; 48 interrupted attempts were preserved
+separately before fresh collection because one native world could not be
+replayed exactly. Full-solution training waits for the resulting complete collection.
 
 Continue under `runs/discoveryworld/full_suite_20261104/native/`:
 `flash_skills` and `flash_skills_development` are complete;

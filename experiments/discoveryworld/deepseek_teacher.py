@@ -17,8 +17,6 @@ class DeepSeekFlashTeacher(NativeTeacher):
 
     def __init__(self, *, max_input_tokens, max_new_tokens, reasoning_effort, temperature,
                  provider="deepseek", model=None, action_corrections=0):
-        from jsonschema import Draft202012Validator
-        self.validator = Draft202012Validator
         self.provider = provider
         if provider == "bailian":
             self.endpoint = os.environ.get("DASHSCOPE_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1").rstrip("/")
@@ -72,6 +70,36 @@ class DeepSeekFlashTeacher(NativeTeacher):
             tokens = details["usage"]["completion_tokens"]
         return raw, tokens, details
 
+    @staticmethod
+    def public_proposal(proposal, schema):
+        """Match the finite action domains emitted by NativeTeacher.prompt.
+
+        These domains contain only required fields, enum choices and a bounded
+        memory string. Resolve the shared object enum directly; no concurrent
+        JSON Schema reference registry is needed for this interface.
+        """
+        if not isinstance(proposal, dict):
+            return False
+        for alternative in schema["anyOf"]:
+            properties = alternative["properties"]
+            if set(proposal) != set(properties):
+                continue
+            for key, rule in properties.items():
+                value = proposal[key]
+                if "$ref" in rule:
+                    rule = schema["$defs"][rule["$ref"].rsplit("/", 1)[-1]]
+                if "enum" in rule:
+                    if isinstance(value, bool) or value not in rule["enum"]:
+                        break
+                elif rule.get("type") == "string":
+                    if not isinstance(value, str) or len(value) > rule["maxLength"]:
+                        break
+                else:
+                    raise ValueError("Unsupported public action domain")
+            else:
+                return True
+        return False
+
     def _chat_once(self, state):
         thinking = self.reasoning_effort != "none"
         body = dict(model=self.served_model, messages=state["messages"],
@@ -108,7 +136,7 @@ class DeepSeekFlashTeacher(NativeTeacher):
         else:
             try:
                 proposal = json.loads(raw)
-                if not self.validator(state["output_schema"]).is_valid(proposal):
+                if not self.public_proposal(proposal, state["output_schema"]):
                     details["error"] = "Proposal is outside the current public action domains"
             except (ValueError, TypeError):
                 details["error"] = "Expected one JSON action object"

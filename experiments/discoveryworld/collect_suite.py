@@ -8,6 +8,7 @@ from copy import deepcopy
 import json
 import multiprocessing as mp
 from pathlib import Path
+import shutil
 from time import perf_counter
 import traceback
 
@@ -159,6 +160,21 @@ def collect(args):
         if (not args.resume or earlier.get("teacher") != teacher.configuration
                 or earlier.get("cases") != cases or earlier.get("rng_from") != rng_source):
             raise ValueError("Use a separate collection for a different teacher, case list or hosted configuration")
+    interrupted = list(earlier.get('interrupted_episodes', []))
+    if getattr(args, 'restart_interrupted', False):
+        for case in pending:
+            folder = args.output / case['id']
+            if not (folder / 'run.json').exists():
+                continue
+            archive = args.output / 'interrupted' / case['id']
+            archive.mkdir(parents=True, exist_ok=True)
+            destination = archive / str(len(list(archive.iterdir())))
+            trajectory = folder / 'trajectory.jsonl'
+            steps = len(trajectory.read_text().splitlines()) if trajectory.exists() else 0
+            shutil.move(str(folder), str(destination))
+            interrupted.append(dict(id=case['id'], steps=steps,
+                path=str(destination.relative_to(args.output)),
+                continuation='fresh episode; original trajectory retained separately'))
     if not args.resume:
         earlier = {}
     attempts = earlier.get('previous_attempts', [])
@@ -166,6 +182,7 @@ def collect(args):
         attempts.append({key: value for key, value in earlier.items() if key != 'previous_attempts'})
     write_json(collection, dict(teacher=teacher.configuration, previous_attempts=attempts,
         cases=cases, status='running', simulator=simulator_build(), rng_from=rng_source,
+        interrupted_episodes=interrupted,
         split="new native instances; law disjointness not asserted"))
     args.collection_started = True
     ctx = mp.get_context("spawn")
@@ -299,8 +316,12 @@ def main():
     p.add_argument("--model-source", default="unsloth/gpt-oss-20b")
     p.add_argument("--temperature", type=float, default=.7)
     p.add_argument("--resume", action="store_true")
+    p.add_argument("--restart-interrupted", action="store_true",
+                   help="With --resume, preserve unfinished trajectories separately and start fresh episodes")
     p.add_argument("--rng-from", type=Path, help="Use another teacher collection's initial simulator RNG snapshots")
     args=p.parse_args()
+    if args.restart_interrupted and not args.resume:
+        p.error('--restart-interrupted requires --resume')
     try:
         collect(args)
     except Exception as error:

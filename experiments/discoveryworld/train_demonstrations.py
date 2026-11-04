@@ -34,6 +34,7 @@ def main():
     p.add_argument('--epochs', type=int, default=8)
     p.add_argument('--seed', type=int, default=301)
     p.add_argument('--workers', type=int, default=8)
+    p.add_argument('--threads', type=int, default=1)
     p.add_argument('--wait-for-collections', action='store_true')
     p.add_argument('--evaluate', action='store_true',
                    help='Execute the final imitation and reinforcement endpoints without a teacher')
@@ -62,7 +63,7 @@ def main():
         '--resume-checkpoint',str(args.initial_checkpoint),
         '--train-trajectories',*map(str,train),'--validation-trajectories',*map(str,development),
         '--output',str(args.output/'imitation'),'--feature-cache',str(args.feature_cache),
-        '--device',args.device,'--threads','2','--mode',args.mode,'--epochs',str(args.epochs),
+        '--device',args.device,'--threads',str(args.threads),'--mode',args.mode,'--epochs',str(args.epochs),
         '--batch-size','4','--sequence-length','8','--precision','bfloat16',
         '--disable-cudnn-attention','--allow-failed-actions','--imitate-successful-episodes',
         '--imitation-reduction','action_run','--outcome-weight','0.5','--immediate-weight','0',
@@ -71,7 +72,7 @@ def main():
         '--checkpoint',str(args.output/'imitation/last.pt'),'--output',str(args.output/'reinforcement'),
         '--feature-cache',str(args.feature_cache),'--device',args.device,
         '--native-suite','all','--small-skills-first','--seeds',*map(str,args.learning_seeds),
-        '--workers',str(args.workers),'--threads','2','--sequence-length','8',
+        '--workers',str(args.workers),'--threads',str(args.threads),'--sequence-length','8',
         '--mode',args.mode,'--random-seed',str(args.seed),'--lr','0.0001']
     (args.output/'commands.json').write_text(json.dumps([train_command,rl_command],indent=2)+'\n')
     for command in (train_command,rl_command):

@@ -3,14 +3,29 @@ import io
 import json
 import os
 import unittest
-from importlib.util import find_spec
 from unittest.mock import patch
 
 from experiments.discoveryworld.deepseek_teacher import DeepSeekFlashTeacher
 
 
-@unittest.skipUnless(find_spec("jsonschema"), "Install the hosted-teacher extra")
 class HostedTeacherTests(unittest.TestCase):
+    def test_public_object_and_dialogue_domains_reject_unobserved_arguments(self):
+        with patch.dict(os.environ, {"DASHSCOPE_API_KEY": "bailian-test-only"}):
+            teacher = DeepSeekFlashTeacher(provider="bailian", max_input_tokens=4096,
+                max_new_tokens=1024, reasoning_effort="high", temperature=.7)
+        schema = {"anyOf": [{"properties": {"action": {"enum": ["USE"]},
+            "arg1": {"$ref": "#/$defs/observed_object"}, "arg2": {"$ref": "#/$defs/observed_object"},
+            "memory": {"type": "string", "maxLength": 1000}}}],
+            "$defs": {"observed_object": {"enum": [1, 2]}}}
+        proposal = dict(action="USE", arg1=1, arg2=2, memory="measured")
+        self.assertTrue(teacher.public_proposal(proposal, schema))
+        for change in (dict(arg2=3),dict(arg1=True),dict(memory="x"*1001),dict(extra=True)):
+            self.assertFalse(teacher.public_proposal({**proposal, **change},schema))
+        dialog = {"anyOf": [{"properties": {"chosen_dialog_option_int": {"enum": [1, 2]},
+                  "memory": {"type": "string", "maxLength": 1000}}}]}
+        self.assertTrue(teacher.public_proposal(dict(chosen_dialog_option_int=2,memory=""),dialog))
+        self.assertFalse(teacher.public_proposal(dict(chosen_dialog_option_int=3,memory=""),dialog))
+
     def test_public_schema_feedback_preserves_all_calls_and_only_executes_corrected_action(self):
         obs = {"ui": {}, "actions": {"WAIT": {"args": []}}, "teleport_locations": {}}
         with patch.dict(os.environ, {"DASHSCOPE_API_KEY": "bailian-test-only"}):
