@@ -65,6 +65,13 @@ There are two unrelated benchmarks named StreamBench. The video benchmark above 
 
 ## CDM environment choices
 
-Start with a nonlinear instrument whose actions change future observations. Add one established application domain and a held-out task family. Match observation access and resources for fixed-stream comparisons; allow policies to select different measurements in active-observation experiments.
+The [instrument and thermal processes](../experiments/lifetime/README.md) test online adaptation under controlled changes. [DiscoveryWorld](https://arxiv.org/abs/2406.06769) was selected as the first public scientific application: an agent can choose a measurement, see its consequences and act on the result. The [native study](../experiments/discoveryworld/FULL_SUITE.md#native-policy-training) trains on separate instances of that environment. A different seed can still produce a familiar law. The published fresh-start score measures independent task execution; it cannot show what one task taught the agent about the next.
 
-Compare predictive objectives, persistent state, implicit refinement, and explicit world-model planning. Track task outcomes, observation-to-action delay, acquisition, retention, and transfer. The concrete environment and model comparisons are in [EXPERIMENTS.md](../EXPERIMENTS.md).
+Two proposed external comparisons answer different questions. Neither has a CDM result here.
+
+| Environment | What CDM would have to do | Comparison |
+| --- | --- | --- |
+| [Symbolic Alchemy](https://arxiv.org/html/2102.02926v3) — active experimentation | Discover how potions transform stones. The hidden chemistry is fixed for ten trials within an episode and resampled between episodes. Use only the standard symbolic observations. | Compare reward across trials on unseen chemistries with a recurrent policy trained on the same interaction budget. Report the published Bayesian ideal observer separately: it knows the task prior. |
+| [DeepMind Control Suite](https://deepmind.google/blog/dm-control-software-and-tasks-for-continuous-control/) — continuous action | Replace the discrete experiment interface with a continuous action head. Score predictions on held-out, recorded action sequences; use simulator interaction to measure control return and decision latency. | Compare with [TD-MPC2](https://www.tdmpc2.com/) on the same tasks, observations and interaction budget. Letting the process advance during inference defines a separate real-time experiment. |
+
+For adaptation across a much larger population of rules, [XLand-MiniGrid](https://arxiv.org/abs/2312.12044) offers GPU-parallel tasks; hold out rule sets rather than just initial layouts. Report whether the same architecture was retrained, a new interface was fitted to a frozen core, or the same weights acted without training. A benchmark such as [WorldModelBench](https://openreview.net/forum?id=a3hafrDzuA) scores generated videos; CDM's action and outcome predictions do not provide that output.
