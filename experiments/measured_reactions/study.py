@@ -3,6 +3,7 @@ import argparse
 import csv
 import hashlib
 import json
+import time
 from collections import defaultdict
 from pathlib import Path
 
@@ -265,20 +266,31 @@ def main():
         if a.mode in ('conditional', 'conditional_blind'):
             model.measurement = ConditionalMeasurement(FEATURES, a.width).to(a.device)
         optim = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=a.lr)
-        for _ in range(a.updates):
-            ids = rng.choice(data.split['train'], a.batch, replace=True)
-            ranks = rng.random((a.batch, data.index.shape[1]))
-            loss = rollout(data.batch(ids, ranks), a.budget, a.mode, model, learning=True)
-            if not torch.isfinite(loss):
-                raise ValueError('Nonfinite training loss')
-            optim.zero_grad(set_to_none=True)
-            loss.backward()
-            nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optim.step()
+        started = time.perf_counter()
+        with (a.run / 'learning.jsonl').open('x') as progress:
+            for update in range(1, a.updates + 1):
+                ids = rng.choice(data.split['train'], a.batch, replace=True)
+                ranks = rng.random((a.batch, data.index.shape[1]))
+                loss = rollout(data.batch(ids, ranks), a.budget, a.mode, model, learning=True)
+                if not torch.isfinite(loss):
+                    raise ValueError('Nonfinite training loss')
+                optim.zero_grad(set_to_none=True)
+                loss.backward()
+                nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                optim.step()
+                if update == 1 or update % 25 == 0 or update == a.updates:
+                    row = dict(update=update, queries=update * a.batch * a.budget,
+                               loss=float(loss.detach()), elapsed_seconds=time.perf_counter() - started)
+                    progress.write(json.dumps(row) + '\n')
+                    progress.flush()
+                    print(json.dumps(row), flush=True)
         torch.save(dict(model=model.state_dict(), config=model.configuration(), mode=a.mode,
                         budget=a.budget, seed=a.seed), ckpt)
         cfg = {k: str(v) if isinstance(v, Path) else v for k, v in vars(a).items()}
         cfg.update(queries=a.updates * a.batch * a.budget, last_training_loss=float(loss.detach()))
+        cfg.update(elapsed_seconds=time.perf_counter() - started, torch_version=torch.__version__,
+                   cuda_version=torch.version.cuda, parameters=sum(p.numel() for p in model.parameters()),
+                   trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad))
         (a.run / 'train.json').write_text(json.dumps(cfg, indent=2) + '\n')
         print(f"trained {a.mode}: {cfg['queries']} queries")
         return
