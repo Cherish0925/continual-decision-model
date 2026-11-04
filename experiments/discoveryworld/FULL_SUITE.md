@@ -43,6 +43,20 @@ python -m experiments.discoveryworld.full_suite run --observation png \
 
 Each case starts with fresh agent state. The agent receives the public UI and action outcomes; `png` also supplies images. The runner records native actions, task success (the simulator's `completedSuccessfully`) and normalized progress for all 24 theme/difficulty combinations. It saves a policy's submitted scientific notes separately: explanatory knowledge needs [its own scoring procedure](https://github.com/allenai/discoveryworld/blob/fd591323920be0d3786ef350955de1945aa571e5/scripts/knowledgeScorer.py). A missing answer or a run error is not a measured score. To compare two policies with the same initial simulator random streams, pass the first scored output directory as `--rng-from`.
 
+## Published comparisons
+
+[Jansen et al., NeurIPS 2024, Table 4](https://papers.nips.cc/paper_files/paper/2024/file/13836f251823945316ae067350a5c366-Paper-Datasets_and_Benchmarks_Track.pdf) evaluated three ways of running GPT-4o, each zero-shot with a fresh episode for every instance. The table below counts successful completions. Each of the 24 published theme/difficulty completion fractions has five trials; the counts are summed before rounding.
+
+| GPT-4o agent | Input | Easy / 40 | Normal / 40 | Challenge / 40 | Total / 120 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ReAct | text | 15 | 7 | 7 | 29 (24.2%) |
+| Plan+Execute | text | 7 | 7 | 6 | 20 (16.7%) |
+| Hypothesizer | text and images | 11 | 9 | 3 | 23 (19.2%) |
+
+All three scored 0/15 on Reactor Lab. Finishing only Reactor Lab and Combinatorial Chemistry perfectly would already yield 30/120, one above the best of these three overall. This is why a cross-domain comparison needs the other six themes reported separately. Keep completion, procedural progress and explanatory knowledge as separate measures.
+
+[Wang et al., EvoBelief, Table 3 and Appendix E](https://arxiv.org/abs/2610.12789) offer a different comparison: GPT-5.4, two themes, twelve fresh instances per theme and difficulty, at most 320 environment actions and 1,650 model calls per instance. EvoBelief completed 10/12 Normal and 7/12 Challenge Reactor Lab instances; in Plant Nutrients it completed 9/12 and 10/12. These are four groups of twelve, not scores on the official 120. A direct CDM comparison needs the same instances, observations, tools and action limits. Report training exposure, native action counts and end-to-end decision latency alongside the scores.
+
 ## The model comparison
 
 The [v0.17.0 native evaluator](../continual_experiment/evaluate_shared_tasks.py) uses separate physics and chemistry action interfaces. Its checkpoint is not a drop-in checkpoint for the native-action factory above. The next training target is a single policy over public actions and their arguments: select a visible object, read or use it, choose a dialogue option, move, or wait. Use the shared core to predict how candidate experiments would change the next observation and to choose an action. Keep the published evaluation instances out of training; changing seeds alone does not guarantee a new law.
