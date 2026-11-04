@@ -44,7 +44,7 @@ Eight seeds, five separately trained policies per seed, width 32 and four slots.
 
 Hiding readings at deployment changed the original CDM's final score by less than 0.001 points on average. With the learned conditioning path, exposing the readings gained **0.60 points** over the very same weights without readings (7 of 8 seeds). The first two seeds motivated that comparison; the six further seeds averaged +0.63. The equal-budget separately trained conditional model without readings scored 30.31. These are development results. Useful feedback does not establish superiority to a simpler optimizer: the local kernel still leads here.
 
-[Per-seed and per-family results](results/development.json) · [All matched curves](results/development_curves.npz) · [Frozen checkpoint digests](results/endpoints.json). The curve array is ordered by condition, matched screen/start, then measurement.
+[Per-seed and per-family results](results/development.json) · [All matched curves](results/development_curves.npz) · [40 downloadable checkpoints and training configurations](https://github.com/Cherish0925/continual-decision-model/tree/5ec3e4b2f1ca936fc5f99a4023ca15afea6fb024/models/measured_reactions) · [Frozen checkpoint digests](results/endpoints.json). Extract the eight seed archives into the same run directory to repeat evaluation without training. The curve array is ordered by condition, matched screen/start, then measurement.
 
 ## Frozen transfer to other laboratories
 
@@ -54,6 +54,24 @@ Use the same forty fitted policies, fixed condition encoder, eight-query budget 
 - [Perera et al.](https://doi.org/10.1126/science.aap9112): one screen per reactant pair, actions described by catalyst, ligand, base and solvent; use the reported UV product-area response.
 
 The adapter maps published columns to existing reagent roles, trims outer whitespace and does not learn reagent identities or transform chemical structures. Neither weights, source priors nor hyperparameters are fit on these datasets; a reading may change predictions within a screen. Reagent nomenclature and response scales differ, so report each study separately. These are new laboratories and screens, not a claim that both reaction families were absent from source training.
+
+The [protocol and 40 checkpoint hashes](https://github.com/Cherish0925/continual-decision-model/commit/35ff4ea74edebb989ccf75f7230a3d9d03f2ca4c) were committed before scoring. Both datasets supply 15 substrate screens; Ahneman has 3,955 measured conditions and Perera 5,760. No weights or feature mappings were fit to either one. Scores below are the best response found with eight probes, averaged over four common starts and the 15 screens. Neural scores also average the same eight training seeds.
+
+| Policy | Ahneman (reported yield) | Perera (UV product area) |
+| --- | ---: | ---: |
+| Random selection | 59.04 | 70.29 |
+| Static source prior | 59.04 | 74.75 |
+| Kernel UCB with source prior | 59.47 | **76.70** |
+| Kernel diversity with source prior, no returned amplitudes | **60.73** | 71.77 |
+| Local kernel, no source training | 60.28 | 74.89 |
+| GRU | 59.42 | 66.48 |
+| CDM | 58.32 | 64.12 |
+| Conditional CDM | **60.01** | **72.07** |
+| Conditional CDM, separately trained without readings | 58.44 | 72.60 |
+
+Enabling actual measurements in the **same trained conditional weights** added 2.10 points on Ahneman (7/8 seeds positive) and 2.64 on Perera (8/8). The analogous changes in the original CDM were +0.06 and −0.14. The response update therefore affected useful choices at new laboratories, but it did not deliver the highest overall result. On Perera the separately trained no-readings policy also scored higher than the conditional policy. Comparisons are paired within each source; absolute scores should not be compared across the two columns. The seven final Roche families have not been scored.
+
+[All external scores](results/external.json) · [Matched per-screen curves](results/external_curves.npz).
 
 ## Run
 

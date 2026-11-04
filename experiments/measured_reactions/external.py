@@ -16,7 +16,7 @@ from .study import LEARNED, REFERENCES, Screens, evaluation, load_policy, summar
 SOURCES = {
     'ahneman': ('d7f318abfbb42eaadca482b1e9aa54540eeed60e0089b6a0eb4e75366c31ee2e', 'FullCV_01',
                 ['Aryl halide'], {'Base': 'Base', 'Ligand': 'Ligand', 'Additive': 'Additive'}, 'Output'),
-    'perera': ('a869e020ba31bd5676c67a4791c3b7384711b5216deaf444b8cd0a24c284640', 'Sheet1',
+    'perera': ('a869e020ba31bd5676c67a4791c3b7384711b5216de6af444b8cd0a24c284640', 'Sheet1',
                ['Reactant_1_Name', 'Reactant_2_Name'], {'Base': 'Reagent_1_Short_Hand',
                'Ligand': 'Ligand_Short_Hand', 'Catalyst': 'Catalyst_1_Short_Hand',
                'Solvent': 'Solvent_1_Short_Hand'}, 'Product_Yield_PCT_Area_UV'),

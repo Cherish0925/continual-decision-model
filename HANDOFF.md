@@ -1,5 +1,7 @@
 # Research progress
 
+The [measured-reaction study](experiments/measured_reactions/README.md) trained 40 small policies on laboratory records and evaluated their frozen weights on two further experimental datasets. Returning readings to the conditional update helped the same weights, but simpler acquisition rules still led overall. The [parallel training priorities](research/CONTINUAL_AGENT.md#parallel-training-priorities) distinguish the running native study, the executable reaction campaign and the timed-control and durable-learning experiments.
+
 ## 4 November: native actions across eight scientific themes
 
 The new [teacher and architecture comparison](experiments/discoveryworld/FULL_SUITE.md#separating-teacher-and-architecture-effects)

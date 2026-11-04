@@ -1,0 +1,628 @@
+{
+  "ahneman": {
+    "distinct_conditions_within_screens": 3955,
+    "observations": 3955,
+    "runs": {
+      "blind109": {
+        "best_1": 32.578,
+        "best_4": 59.593,
+        "best_8": 62.873
+      },
+      "blind127": {
+        "best_1": 32.578,
+        "best_4": 52.101,
+        "best_8": 57.159
+      },
+      "blind149": {
+        "best_1": 32.578,
+        "best_4": 55.931,
+        "best_8": 59.468
+      },
+      "blind173": {
+        "best_1": 32.578,
+        "best_4": 55.786,
+        "best_8": 65.295
+      },
+      "blind197": {
+        "best_1": 32.578,
+        "best_4": 36.156,
+        "best_8": 46.854
+      },
+      "blind223": {
+        "best_1": 32.578,
+        "best_4": 55.317,
+        "best_8": 56.781
+      },
+      "blind41": {
+        "best_1": 32.578,
+        "best_4": 53.906,
+        "best_8": 55.817
+      },
+      "blind73": {
+        "best_1": 32.578,
+        "best_4": 60.586,
+        "best_8": 61.679
+      },
+      "cdm109": {
+        "best_1": 32.578,
+        "best_4": 59.593,
+        "best_8": 62.873
+      },
+      "cdm109_without_readings": {
+        "best_1": 32.578,
+        "best_4": 59.593,
+        "best_8": 62.873
+      },
+      "cdm127": {
+        "best_1": 32.578,
+        "best_4": 52.101,
+        "best_8": 57.159
+      },
+      "cdm127_without_readings": {
+        "best_1": 32.578,
+        "best_4": 52.101,
+        "best_8": 57.159
+      },
+      "cdm149": {
+        "best_1": 32.578,
+        "best_4": 55.931,
+        "best_8": 58.684
+      },
+      "cdm149_without_readings": {
+        "best_1": 32.578,
+        "best_4": 55.931,
+        "best_8": 59.619
+      },
+      "cdm173": {
+        "best_1": 32.578,
+        "best_4": 61.236,
+        "best_8": 65.295
+      },
+      "cdm173_without_readings": {
+        "best_1": 32.578,
+        "best_4": 60.322,
+        "best_8": 65.295
+      },
+      "cdm197": {
+        "best_1": 32.578,
+        "best_4": 36.875,
+        "best_8": 48.282
+      },
+      "cdm197_without_readings": {
+        "best_1": 32.578,
+        "best_4": 36.94,
+        "best_8": 46.854
+      },
+      "cdm223": {
+        "best_1": 32.578,
+        "best_4": 55.317,
+        "best_8": 56.781
+      },
+      "cdm223_without_readings": {
+        "best_1": 32.578,
+        "best_4": 55.317,
+        "best_8": 56.781
+      },
+      "cdm41": {
+        "best_1": 32.578,
+        "best_4": 53.906,
+        "best_8": 55.817
+      },
+      "cdm41_without_readings": {
+        "best_1": 32.578,
+        "best_4": 53.906,
+        "best_8": 55.817
+      },
+      "cdm73": {
+        "best_1": 32.578,
+        "best_4": 60.586,
+        "best_8": 61.679
+      },
+      "cdm73_without_readings": {
+        "best_1": 32.578,
+        "best_4": 60.586,
+        "best_8": 61.679
+      },
+      "conditional109": {
+        "best_1": 32.578,
+        "best_4": 52.555,
+        "best_8": 59.063
+      },
+      "conditional109_without_readings": {
+        "best_1": 32.578,
+        "best_4": 52.745,
+        "best_8": 57.695
+      },
+      "conditional127": {
+        "best_1": 32.578,
+        "best_4": 56.905,
+        "best_8": 62.102
+      },
+      "conditional127_without_readings": {
+        "best_1": 32.578,
+        "best_4": 54.232,
+        "best_8": 60.335
+      },
+      "conditional149": {
+        "best_1": 32.578,
+        "best_4": 56.041,
+        "best_8": 60.508
+      },
+      "conditional149_without_readings": {
+        "best_1": 32.578,
+        "best_4": 53.9,
+        "best_8": 54.583
+      },
+      "conditional173": {
+        "best_1": 32.578,
+        "best_4": 59.161,
+        "best_8": 62.566
+      },
+      "conditional173_without_readings": {
+        "best_1": 32.578,
+        "best_4": 58.346,
+        "best_8": 61.997
+      },
+      "conditional197": {
+        "best_1": 32.578,
+        "best_4": 51.987,
+        "best_8": 57.544
+      },
+      "conditional197_without_readings": {
+        "best_1": 32.578,
+        "best_4": 53.566,
+        "best_8": 59.545
+      },
+      "conditional223": {
+        "best_1": 32.578,
+        "best_4": 52.211,
+        "best_8": 59.083
+      },
+      "conditional223_without_readings": {
+        "best_1": 32.578,
+        "best_4": 51.092,
+        "best_8": 56.549
+      },
+      "conditional41": {
+        "best_1": 32.578,
+        "best_4": 51.874,
+        "best_8": 59.029
+      },
+      "conditional41_without_readings": {
+        "best_1": 32.578,
+        "best_4": 51.203,
+        "best_8": 55.356
+      },
+      "conditional73": {
+        "best_1": 32.578,
+        "best_4": 54.749,
+        "best_8": 60.196
+      },
+      "conditional73_without_readings": {
+        "best_1": 32.578,
+        "best_4": 53.849,
+        "best_8": 57.266
+      },
+      "conditional_blind109": {
+        "best_1": 32.578,
+        "best_4": 50.606,
+        "best_8": 54.49
+      },
+      "conditional_blind127": {
+        "best_1": 32.578,
+        "best_4": 60.671,
+        "best_8": 63.526
+      },
+      "conditional_blind149": {
+        "best_1": 32.578,
+        "best_4": 52.27,
+        "best_8": 57.799
+      },
+      "conditional_blind173": {
+        "best_1": 32.578,
+        "best_4": 53.131,
+        "best_8": 57.419
+      },
+      "conditional_blind197": {
+        "best_1": 32.578,
+        "best_4": 54.996,
+        "best_8": 59.8
+      },
+      "conditional_blind223": {
+        "best_1": 32.578,
+        "best_4": 52.409,
+        "best_8": 55.648
+      },
+      "conditional_blind41": {
+        "best_1": 32.578,
+        "best_4": 53.777,
+        "best_8": 58.073
+      },
+      "conditional_blind73": {
+        "best_1": 32.578,
+        "best_4": 57.65,
+        "best_8": 60.792
+      },
+      "gru109": {
+        "best_1": 32.578,
+        "best_4": 54.776,
+        "best_8": 62.111
+      },
+      "gru127": {
+        "best_1": 32.578,
+        "best_4": 45.631,
+        "best_8": 55.821
+      },
+      "gru149": {
+        "best_1": 32.578,
+        "best_4": 58.874,
+        "best_8": 59.232
+      },
+      "gru173": {
+        "best_1": 32.578,
+        "best_4": 57.382,
+        "best_8": 63.842
+      },
+      "gru197": {
+        "best_1": 32.578,
+        "best_4": 44.142,
+        "best_8": 51.641
+      },
+      "gru223": {
+        "best_1": 32.578,
+        "best_4": 57.625,
+        "best_8": 61.136
+      },
+      "gru41": {
+        "best_1": 32.578,
+        "best_4": 53.292,
+        "best_8": 58.153
+      },
+      "gru73": {
+        "best_1": 32.578,
+        "best_4": 60.489,
+        "best_8": 63.463
+      },
+      "kernel_diverse": {
+        "best_1": 32.578,
+        "best_4": 54.725,
+        "best_8": 60.726
+      },
+      "kernel_local": {
+        "best_1": 32.578,
+        "best_4": 53.44,
+        "best_8": 60.282
+      },
+      "kernel_ucb": {
+        "best_1": 32.578,
+        "best_4": 52.606,
+        "best_8": 59.465
+      },
+      "prior": {
+        "best_1": 32.578,
+        "best_4": 53.349,
+        "best_8": 59.044
+      },
+      "random": {
+        "best_1": 32.578,
+        "best_4": 53.349,
+        "best_8": 59.044
+      }
+    },
+    "screens": 15,
+    "workbook_sha256": "d7f318abfbb42eaadca482b1e9aa54540eeed60e0089b6a0eb4e75366c31ee2e"
+  },
+  "perera": {
+    "distinct_conditions_within_screens": 5760,
+    "observations": 5760,
+    "runs": {
+      "blind109": {
+        "best_1": 41.056,
+        "best_4": 66.873,
+        "best_8": 68.078
+      },
+      "blind127": {
+        "best_1": 41.056,
+        "best_4": 53.88,
+        "best_8": 56.592
+      },
+      "blind149": {
+        "best_1": 41.056,
+        "best_4": 55.989,
+        "best_8": 59.648
+      },
+      "blind173": {
+        "best_1": 41.056,
+        "best_4": 63.38,
+        "best_8": 68.522
+      },
+      "blind197": {
+        "best_1": 41.056,
+        "best_4": 50.449,
+        "best_8": 55.56
+      },
+      "blind223": {
+        "best_1": 41.056,
+        "best_4": 62.316,
+        "best_8": 67.894
+      },
+      "blind41": {
+        "best_1": 41.056,
+        "best_4": 54.972,
+        "best_8": 64.823
+      },
+      "blind73": {
+        "best_1": 41.056,
+        "best_4": 70.464,
+        "best_8": 71.939
+      },
+      "cdm109": {
+        "best_1": 41.056,
+        "best_4": 66.873,
+        "best_8": 68.194
+      },
+      "cdm109_without_readings": {
+        "best_1": 41.056,
+        "best_4": 66.873,
+        "best_8": 68.856
+      },
+      "cdm127": {
+        "best_1": 41.056,
+        "best_4": 53.88,
+        "best_8": 56.592
+      },
+      "cdm127_without_readings": {
+        "best_1": 41.056,
+        "best_4": 53.88,
+        "best_8": 56.592
+      },
+      "cdm149": {
+        "best_1": 41.056,
+        "best_4": 55.823,
+        "best_8": 59.135
+      },
+      "cdm149_without_readings": {
+        "best_1": 41.056,
+        "best_4": 55.823,
+        "best_8": 59.135
+      },
+      "cdm173": {
+        "best_1": 41.056,
+        "best_4": 63.486,
+        "best_8": 68.522
+      },
+      "cdm173_without_readings": {
+        "best_1": 41.056,
+        "best_4": 63.486,
+        "best_8": 68.522
+      },
+      "cdm197": {
+        "best_1": 41.056,
+        "best_4": 53.56,
+        "best_8": 55.86
+      },
+      "cdm197_without_readings": {
+        "best_1": 41.056,
+        "best_4": 53.56,
+        "best_8": 56.297
+      },
+      "cdm223": {
+        "best_1": 41.056,
+        "best_4": 62.316,
+        "best_8": 67.894
+      },
+      "cdm223_without_readings": {
+        "best_1": 41.056,
+        "best_4": 62.316,
+        "best_8": 67.894
+      },
+      "cdm41": {
+        "best_1": 41.056,
+        "best_4": 54.446,
+        "best_8": 64.823
+      },
+      "cdm41_without_readings": {
+        "best_1": 41.056,
+        "best_4": 54.446,
+        "best_8": 64.823
+      },
+      "cdm73": {
+        "best_1": 41.056,
+        "best_4": 62.136,
+        "best_8": 71.939
+      },
+      "cdm73_without_readings": {
+        "best_1": 41.056,
+        "best_4": 62.136,
+        "best_8": 71.939
+      },
+      "conditional109": {
+        "best_1": 41.056,
+        "best_4": 58.82,
+        "best_8": 67.314
+      },
+      "conditional109_without_readings": {
+        "best_1": 41.056,
+        "best_4": 59.313,
+        "best_8": 67.007
+      },
+      "conditional127": {
+        "best_1": 41.056,
+        "best_4": 57.678,
+        "best_8": 70.692
+      },
+      "conditional127_without_readings": {
+        "best_1": 41.056,
+        "best_4": 55.996,
+        "best_8": 66.527
+      },
+      "conditional149": {
+        "best_1": 41.056,
+        "best_4": 66.353,
+        "best_8": 72.42
+      },
+      "conditional149_without_readings": {
+        "best_1": 41.056,
+        "best_4": 59.529,
+        "best_8": 68.649
+      },
+      "conditional173": {
+        "best_1": 41.056,
+        "best_4": 61.805,
+        "best_8": 72.886
+      },
+      "conditional173_without_readings": {
+        "best_1": 41.056,
+        "best_4": 61.719,
+        "best_8": 70.372
+      },
+      "conditional197": {
+        "best_1": 41.056,
+        "best_4": 63.878,
+        "best_8": 73.71
+      },
+      "conditional197_without_readings": {
+        "best_1": 41.056,
+        "best_4": 64.956,
+        "best_8": 71.85
+      },
+      "conditional223": {
+        "best_1": 41.056,
+        "best_4": 66.016,
+        "best_8": 72.956
+      },
+      "conditional223_without_readings": {
+        "best_1": 41.056,
+        "best_4": 61.859,
+        "best_8": 72.246
+      },
+      "conditional41": {
+        "best_1": 41.056,
+        "best_4": 62.349,
+        "best_8": 72.555
+      },
+      "conditional41_without_readings": {
+        "best_1": 41.056,
+        "best_4": 59.227,
+        "best_8": 66.881
+      },
+      "conditional73": {
+        "best_1": 41.056,
+        "best_4": 67.31,
+        "best_8": 74.001
+      },
+      "conditional73_without_readings": {
+        "best_1": 41.056,
+        "best_4": 64.043,
+        "best_8": 71.904
+      },
+      "conditional_blind109": {
+        "best_1": 41.056,
+        "best_4": 68.757,
+        "best_8": 76.36
+      },
+      "conditional_blind127": {
+        "best_1": 41.056,
+        "best_4": 68.716,
+        "best_8": 72.913
+      },
+      "conditional_blind149": {
+        "best_1": 41.056,
+        "best_4": 64.269,
+        "best_8": 70.894
+      },
+      "conditional_blind173": {
+        "best_1": 41.056,
+        "best_4": 70.173,
+        "best_8": 74.556
+      },
+      "conditional_blind197": {
+        "best_1": 41.056,
+        "best_4": 62.653,
+        "best_8": 69.544
+      },
+      "conditional_blind223": {
+        "best_1": 41.056,
+        "best_4": 66.153,
+        "best_8": 73.315
+      },
+      "conditional_blind41": {
+        "best_1": 41.056,
+        "best_4": 63.127,
+        "best_8": 71.967
+      },
+      "conditional_blind73": {
+        "best_1": 41.056,
+        "best_4": 65.889,
+        "best_8": 71.291
+      },
+      "gru109": {
+        "best_1": 41.056,
+        "best_4": 69.313,
+        "best_8": 77.483
+      },
+      "gru127": {
+        "best_1": 41.056,
+        "best_4": 54.311,
+        "best_8": 55.372
+      },
+      "gru149": {
+        "best_1": 41.056,
+        "best_4": 57.167,
+        "best_8": 65.534
+      },
+      "gru173": {
+        "best_1": 41.056,
+        "best_4": 66.735,
+        "best_8": 73.736
+      },
+      "gru197": {
+        "best_1": 41.056,
+        "best_4": 49.222,
+        "best_8": 54.617
+      },
+      "gru223": {
+        "best_1": 41.056,
+        "best_4": 59.292,
+        "best_8": 65.453
+      },
+      "gru41": {
+        "best_1": 41.056,
+        "best_4": 57.861,
+        "best_8": 66.723
+      },
+      "gru73": {
+        "best_1": 41.056,
+        "best_4": 69.664,
+        "best_8": 72.902
+      },
+      "kernel_diverse": {
+        "best_1": 41.056,
+        "best_4": 65.899,
+        "best_8": 71.773
+      },
+      "kernel_local": {
+        "best_1": 41.056,
+        "best_4": 63.149,
+        "best_8": 74.894
+      },
+      "kernel_ucb": {
+        "best_1": 41.056,
+        "best_4": 64.134,
+        "best_8": 76.699
+      },
+      "prior": {
+        "best_1": 41.056,
+        "best_4": 66.649,
+        "best_8": 74.75
+      },
+      "random": {
+        "best_1": 41.056,
+        "best_4": 62.495,
+        "best_8": 70.291
+      }
+    },
+    "screens": 15,
+    "workbook_sha256": "a869e020ba31bd5676c67a4791c3b7384711b5216de6af444b8cd0a24c284640"
+  }
+}
