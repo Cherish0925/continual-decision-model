@@ -10,7 +10,7 @@ import numpy as np
 import torch
 
 from .prepare import ROLES, digest
-from .study import LEARNED, REFERENCES, Screens, evaluation, load_policy, summarize
+from .study import LEARNED, REFERENCES, FEEDBACK_CONTROLS, Screens, evaluation, load_policy, summarize
 
 
 SOURCES = {
@@ -65,21 +65,22 @@ def main():
     p.add_argument('--runs', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--seeds', default='41,73,109,127,149,173,197,223')
+    p.add_argument('--modes', default=','.join(LEARNED))
     args = p.parse_args()
     torch.set_num_threads(1)
     source = Screens(args.source_table, 'cpu')
     seeds = [int(s) for s in args.seeds.split(',')]
     tables = {k: external_table(k, getattr(args, k), source) for k in SOURCES}
     report = {k: dict(**meta, runs={}) for k, (_, meta) in tables.items()}
-    jobs = [(m, None) for m in REFERENCES] + [(m, s) for s in seeds for m in LEARNED]
+    jobs = [(m, None) for m in REFERENCES] + [(m, s) for s in seeds for m in args.modes.split(',')]
     curves = defaultdict(list)
     keys, labels = {}, []
     for mode, seed in jobs:
         name = mode if seed is None else f'{mode}{seed}'
         model = None if seed is None else load_policy(args.runs / name / 'model.pt', mode, 'cpu', 8)
         modes = [(mode, name)]
-        if mode in ('conditional', 'cdm'):
-            modes.append(('conditional_blind' if mode == 'conditional' else 'blind', name + '_without_readings'))
+        if mode in FEEDBACK_CONTROLS:
+            modes.append((FEEDBACK_CONTROLS[mode], name + '_without_readings'))
         for actual_mode, label in modes:
             labels.append(label)
             for k, (data, _) in tables.items():

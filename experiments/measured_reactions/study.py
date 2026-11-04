@@ -14,12 +14,31 @@ from torch.nn import functional as F
 
 from cdm.active_experiment import ActiveExperimentConfig, ActiveExperimentPolicy
 from cdm.conditional_measurement import ConditionalMeasurement
+from cdm.categorical_measurement import CategoricalMeasurement, relation_features
 from cdm.core import ContinualCore, CoreConfig
 
 
 FEATURES = 64
 LEARNED = ('cdm', 'gru', 'blind', 'conditional', 'conditional_blind')
+RELATIONAL = ('categorical', 'relational', 'relational_gru', 'relational_blind', 'relational_kernel')
+ALL_LEARNED = LEARNED + RELATIONAL
+FEEDBACK_CONTROLS = {'cdm': 'blind', 'conditional': 'conditional_blind',
+                     'categorical': 'categorical_masked', 'relational': 'relational_blind',
+                     'relational_gru': 'relational_gru_masked', 'relational_kernel': 'relational_kernel_masked'}
 REFERENCES = ('random', 'prior', 'kernel_ucb', 'kernel_diverse', 'kernel_local')
+
+
+def add_measurement(model, mode):
+    width = model.config.action_width
+    if mode in ('conditional', 'conditional_blind'):
+        model.measurement = ConditionalMeasurement(FEATURES, width)
+    elif mode in RELATIONAL:
+        model.measurement = CategoricalMeasurement(FEATURES, width, named_prior=mode == 'categorical')
+        if mode == 'relational_kernel':
+            for p in model.parameters():
+                p.requires_grad_(False)
+            for p in model.measurement.parameters():
+                p.requires_grad_(True)
 
 
 class Screens:
@@ -121,18 +140,32 @@ def rollout(batch, budget, mode, model=None, learning=False):
     curve, history, observed, events = [], [], [], []
     logs, values, predictions, targets, rewards, entropies = [], [], [], [], [], []
     state = model.initial(len(b), x.device) if model is not None else None
-    conditional = mode in ('conditional', 'conditional_blind')
-    visible_values = mode not in ('blind', 'conditional_blind')
-    encoded = model.measurement.prepare(x) if conditional else None
+    categorical = mode.startswith(('categorical', 'relational'))
+    relational = mode.startswith('relational')
+    kernel_only = mode.startswith('relational_kernel')
+    conditional = mode in ('conditional', 'conditional_blind') or categorical
+    visible_values = mode not in ('blind', 'conditional_blind', 'relational_blind') and not mode.endswith('_masked')
+    present = available.clone()
+    encoded = (model.measurement.prepare(x, codes) if categorical else model.measurement.prepare(x)) if conditional else None
+    if relational:
+        x = relation_features(codes, present)
     for step in range(budget):
         if step and model is not None:
-            if mode == 'gru':
+            if relational:
+                shown = torch.stack(observed, 1)
+                x = relation_features(codes, present, torch.stack(history, 1),
+                                      shown if visible_values else torch.zeros_like(shown))
+            if kernel_only:
+                out = {'logits': x.new_zeros(x.shape[:2]).masked_fill(~available, -torch.inf),
+                       'value': x.new_zeros(len(x))}
+            elif mode in ('gru', 'relational_gru', 'relational_gru_masked'):
                 h = model.core.fast_embeddings(state['h'], model.event(events[-1])[None])[0]
                 state = {'h': h, 'z': torch.zeros_like(state['z'])}
             else:
                 memory = torch.stack(events, 1)
                 state = model.advance(events[-1], memory, torch.ones_like(memory[:, :, 0], dtype=torch.bool), state)
-            out = model.readout(state, x, available)
+            if not kernel_only:
+                out = model.readout(state, x, available)
             if conditional:
                 mu, sd = model.measurement(encoded, torch.stack(history, 1), torch.stack(observed, 1),
                                            use_values=visible_values)
@@ -221,8 +254,7 @@ def load_policy(checkpoint, mode, device, budget):
     active = ActiveExperimentConfig(**saved['config']['active_config'])
     core_cfg = CoreConfig(**saved['config']['core_config'])
     model = ActiveExperimentPolicy(active, ContinualCore(core_cfg, saved['model']['core.action_values']))
-    if mode in ('conditional', 'conditional_blind'):
-        model.measurement = ConditionalMeasurement(FEATURES, active.action_width)
+    add_measurement(model, mode)
     model.load_state_dict(saved['model'])
     return model.to(device).eval()
 
@@ -232,7 +264,7 @@ def main():
     p.add_argument('action', choices=['train', 'eval'])
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--run', type=Path, required=True)
-    p.add_argument('--mode', choices=LEARNED + REFERENCES, required=True)
+    p.add_argument('--mode', choices=ALL_LEARNED + REFERENCES, required=True)
     p.add_argument('--seed', type=int, default=1)
     p.add_argument('--device', default='cpu')
     p.add_argument('--threads', type=int, default=1)
@@ -248,8 +280,8 @@ def main():
                    help='Evaluate the same CDM or conditional checkpoint without returned signals')
     p.add_argument('--init-native', type=Path, help='Optional DigitalPolicy native checkpoint (core only)')
     a = p.parse_args()
-    if a.without_readings and (a.action != 'eval' or a.mode not in ('cdm', 'conditional')):
-        p.error('--without-readings applies only to evaluation of a cdm or conditional checkpoint')
+    if a.without_readings and (a.action != 'eval' or a.mode not in FEEDBACK_CONTROLS):
+        p.error('--without-readings needs a feedback-using learned evaluation policy')
     if min(a.threads, a.batch, a.starts, a.updates, a.slots) < 1 or a.width % 4:
         p.error('Require positive sizes and width divisible by 4')
     torch.set_num_threads(a.threads)
@@ -260,11 +292,11 @@ def main():
     model = None
     ckpt = a.run / 'model.pt'
     if a.action == 'train':
-        if a.mode not in LEARNED or ckpt.exists() or (a.run / 'train.json').exists():
+        if a.mode not in ALL_LEARNED or ckpt.exists() or (a.run / 'train.json').exists():
             p.error('Training needs a learned policy and a fresh run directory')
-        model = make_policy(a.width, a.slots, a.init_native).to(a.device)
-        if a.mode in ('conditional', 'conditional_blind'):
-            model.measurement = ConditionalMeasurement(FEATURES, a.width).to(a.device)
+        model = make_policy(a.width, a.slots, a.init_native)
+        add_measurement(model, a.mode)
+        model = model.to(a.device)
         optim = torch.optim.AdamW((p for p in model.parameters() if p.requires_grad), lr=a.lr)
         started = time.perf_counter()
         with (a.run / 'learning.jsonl').open('x') as progress:
@@ -294,9 +326,9 @@ def main():
         (a.run / 'train.json').write_text(json.dumps(cfg, indent=2) + '\n')
         print(f"trained {a.mode}: {cfg['queries']} queries")
         return
-    if a.mode in LEARNED:
+    if a.mode in ALL_LEARNED:
         model = load_policy(ckpt, a.mode, a.device, a.budget)
-    mode = {'cdm': 'blind', 'conditional': 'conditional_blind'}[a.mode] if a.without_readings else a.mode
+    mode = FEEDBACK_CONTROLS[a.mode] if a.without_readings else a.mode
     rows = evaluation(data, model, mode, a.budget, a.split, a.batch, a.starts)
     name = a.split + ('_without_readings' if a.without_readings else '')
     with (a.run / f'{name}.csv').open('w') as f:

@@ -75,6 +75,57 @@ Enabling actual measurements in the **same trained conditional weights** added 2
 
 ## Run
 
+### Larger training and a representation comparison
+
+The 4 November GPU campaign completed the declared 40 trainings: width 128,
+eight slots, 1,000 updates of 64 screens and 20,480,000 total training lookups.
+Eight seeds (101–108) ran across 32 A100 GPUs. Individual training took 24–70
+seconds, excluding process startup and evaluation. All endpoints use the
+fixed update count. The conditional model has 867,345 total parameters; this
+is a new small instantiation of the shared core implementation, not the native
+55-million-parameter policy or one set of weights spanning all applications.
+
+| Policy | Roche development | Ahneman | Perera |
+| --- | ---: | ---: | ---: |
+| CDM | 31.52 | 59.70 | 60.85 |
+| GRU | 31.37 | 59.96 | 62.22 |
+| CDM trained without readings | 32.05 | 65.10 | 70.43 |
+| Conditional CDM | 32.91 | 57.16 | 69.33 |
+| Conditional CDM trained without readings | 31.94 | 60.35 | 63.77 |
+| Best original classical reference | 32.74 | 60.73 | 76.70 |
+
+The source-development advantage over the best classical reference is small.
+External performance is lower than the earlier width-32 conditional model.
+Enabling readings in the same conditional weights still helps on average:
++0.78, +2.96 and +4.40 points, respectively. Useful feedback and overall
+transfer performance therefore remain distinct. Width, batch size, update
+count and seeds all changed from the earlier study; this is not an isolated
+training-duration intervention. The seven final reaction families remain unused.
+
+The next comparison fixes this larger training budget and tests whether
+reagent-name representations contribute to poor transfer. Five alternatives
+use the same source screens and seeds: a learned categorical kernel with the
+named policy; a relation-only CDM; a relation-only GRU; a separately trained
+relation-only CDM without readings; and the learned kernel without a recurrent
+action scorer. The last condition learns only kernel/prior parameters.
+All are trained from selected experimental outcomes, without demonstrations.
+
+The relation-only inputs describe equality of reagent roles, frequencies in
+the visible menu, and the returned measurements associated with those roles.
+Consistent one-to-one renaming leaves these inputs and predictions unchanged.
+The kernel learns which roles carry predictive information. These choices use
+established [categorical Bayesian optimization](https://proceedings.mlr.press/v119/ru20a.html)
+and [learned kernels](https://proceedings.mlr.press/v51/wilson16.html); their
+basic operations are not new inventions. The experiment tests whether the
+recurrent policy adds useful decisions beyond the kernel and whether removing
+arbitrary name dependence improves transfer. The two external datasets have
+already informed this redesign and now serve as external development
+comparisons. Final source-family evaluation remains separate.
+
+```bash
+python -m experiments.measured_reactions.campaign train-dev --data runs/measured_reactions/table.npz --out runs/measured_reactions/relations --devices cuda:0,cuda:1 --modes categorical,relational,relational_gru,relational_blind,relational_kernel
+```
+
 From the repository root, install the `neural` and `measured-reactions` extras and obtain the two upstream repositories at the revisions linked above. The preparation and transfer commands check the source file hashes. Raw experimental tables are not redistributed.
 
 ```bash

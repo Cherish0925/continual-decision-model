@@ -7,10 +7,10 @@ from pathlib import Path
 
 import numpy as np
 
-from .study import LEARNED, REFERENCES, summarize
+from .study import LEARNED, REFERENCES, FEEDBACK_CONTROLS, summarize
 
 
-def collect(root, data, seeds, out):
+def collect(root, data, seeds, out, modes=LEARNED):
     with np.load(data, allow_pickle=False) as f:
         meta = json.loads(str(f['meta']))
     summary = {'source_revision': meta['revision'], 'source_sha256': meta['sha256'],
@@ -22,8 +22,8 @@ def collect(root, data, seeds, out):
                                     'families': sorted({s['family'] for s in screens})}
     expected = [(m, None, False) for m in REFERENCES]
     for seed in seeds:
-        expected.extend((m, seed, False) for m in LEARNED)
-        expected.extend((m, seed, True) for m in ('cdm', 'conditional'))
+        expected.extend((m, seed, False) for m in modes)
+        expected.extend((m, seed, True) for m in modes if m in FEEDBACK_CONTROLS)
     metadata, labels, all_curves = None, [], []
     for mode, seed, masked in expected:
         name = mode if seed is None else f'{mode}{seed}'
@@ -70,5 +70,6 @@ if __name__ == '__main__':
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--seeds', default='41,73,109,127,149,173,197,223')
+    p.add_argument('--modes', default=','.join(LEARNED))
     a = p.parse_args()
-    collect(a.runs, a.data, [int(s) for s in a.seeds.split(',')], a.out)
+    collect(a.runs, a.data, [int(s) for s in a.seeds.split(',')], a.out, a.modes.split(','))

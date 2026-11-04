@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from .study import LEARNED, REFERENCES
+from .study import LEARNED, ALL_LEARNED, REFERENCES, FEEDBACK_CONTROLS
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
     seeds = [int(s) for s in a.seeds.split(',')]
     modes, devices = a.modes.split(','), a.devices.split(',')
     gpu_devices = [device for device in devices if device != 'cpu']
-    if (set(modes) - set(LEARNED) or len(set(modes)) != len(modes) or len(set(seeds)) != len(seeds)
+    if (set(modes) - set(ALL_LEARNED) or len(set(modes)) != len(modes) or len(set(seeds)) != len(seeds)
             or len(set(gpu_devices)) != len(gpu_devices) or min(a.width, a.slots, a.batch, a.starts, a.updates) < 1
             or a.width % 4):
         p.error('Use unique modes, seeds and GPU devices and positive sizes (width divisible by four)')
@@ -71,7 +71,7 @@ def main():
                     raise ValueError(f'Existing run has different training settings: {run}')
             split = 'test' if a.stage == 'test' else 'dev'
             call('eval', '--split', split)
-            if mode in ('conditional', 'cdm'):
+            if mode in FEEDBACK_CONTROLS:
                 call('eval', '--split', split, '--without-readings')
             print(f'{device}: {run.name} {split} finished', flush=True)
 
