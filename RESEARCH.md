@@ -135,6 +135,12 @@ During quiet intervals, replay can improve prediction, imagined rollouts can com
 
 Experiments separate memory retention from parameter learning. They measure behavior on revisited and unfamiliar tasks, and use separate reset comparisons to determine where an acquired ability is stored. A continuously running evaluation retains state across requests and scenario changes. Parallel training may pool experience; a single-instance adaptation evaluation uses only that instance's experience and parameters. Collective learning is reported as a separate setting.
 
+### Does experience improve how the model learns?
+
+The [native actor–critic](experiments/discoveryworld/finetune.py) updates the action policy from its own interactions. The [process controller](experiments/lifetime/RESULTS.md#what-the-instances-own-learning-contributes) can improve a local predictor while it runs. Neither result shows that the model improves the procedure it uses for its next round of learning.
+
+One proposed experiment gives CDM a choice of which past measurements to replay. The resulting replay policy persists and selects training experience for both the task policy and its own next revision. No teacher or researcher selects the revision between rounds. To test each revision, copy the same starting task policy twice, clear task memory, and give one copy the initial replay policy and the other the revised one. On unfamiliar laws, compare the interactions needed to reach a prespecified success rate at equal compute and interaction limits; also report runs that never reach it. Test retention of earlier laws separately. Improvement that transfers with the replay policy across successive rounds would isolate a change in how CDM learns. This experiment has not yet been run.
+
 ## Applications
 
 Robots need current control while a long task continues. Instruments need active measurements and reasoning during delayed experiments. Edge devices need bounded memory and useful output within a power budget. Digital researchers need tool use, persistent investigations, and the ability to resume earlier work.
