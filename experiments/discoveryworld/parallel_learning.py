@@ -1,82 +1,18 @@
 """Batched on-policy learning with independent native simulator processes."""
-from contextlib import redirect_stdout
 from dataclasses import asdict
 import json
-import multiprocessing as mp
 from pathlib import Path
-import random
 from time import perf_counter
-import traceback
+import subprocess
+import sys
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 
 from cdm.digital import PublicObjectMemory, public_candidates
-from .adapter import TrajectoryWriter
 from .features import batch_features, load_features
-from .structured_observation import StructuredDiscoveryWorldEnv
+from .native_worker import JsonConnection
 from .train import create_measurement_log, with_measurement_records
-
-
-def _environment(pipe):
-    torch.set_num_threads(1)
-    env = writer = log = None
-    started = 0.
-    try:
-        while True:
-            command, payload = pipe.recv()
-            if command == 'close':
-                return
-            if command == 'reset':
-                if writer:
-                    writer.close()
-                    log.close()
-                case, folder, settings = payload
-                theme, difficulty, seed, limit = case
-                random.seed(settings['environment_rng'])
-                np.random.seed(settings['environment_rng'] % (2**32))
-                folder = Path(folder)
-                folder.mkdir(parents=True, exist_ok=True)
-                log = (folder / 'simulator.log').open('w')
-                started = perf_counter()
-                with redirect_stdout(log):
-                    env = StructuredDiscoveryWorldEnv(folder, limit)
-                    observation = env.reset(theme, difficulty, seed)
-                    env.save_initial_rng(folder / 'initial_rng.json.gz')
-                    configuration = dict(env.configuration, policy='batched_on_policy_actor_critic',
-                        action_descriptions=env.actions, teleport_locations=env.teleports,
-                        initial_task_metrics=env.metrics, **settings)
-                    writer = TrajectoryWriter(folder, configuration)
-                pipe.send({'observation': observation})
-            else:
-                action, behavior = payload
-                with redirect_stdout(log):
-                    transition = env.step(action)
-                    writer.append({**transition, **behavior})
-                reply = {key: transition[key] for key in
-                         ('action', 'action_result', 'index', 'training_reward', 'terminated', 'truncated')}
-                reply['observation'] = env.policy_input()
-                reply['done'] = env.ended
-                if env.ended:
-                    summary = dict(scenario=case[0], difficulty=case[1], seed=case[2], steps=env.steps,
-                        completed_successfully=all(m['completed_successfully'] for m in env.metrics),
-                        task_metrics=env.metrics, elapsed_seconds=perf_counter()-started)
-                    (folder / 'summary.json').write_text(json.dumps(summary, indent=2)+'\n')
-                    reply['summary'] = summary
-                    writer.close(); writer = None
-                    log.close(); log = None
-                pipe.send(reply)
-    except EOFError:
-        return  # The training process has closed its end of the connection.
-    except (Exception, SystemExit):
-        pipe.send({'error': traceback.format_exc()})
-    finally:
-        if writer:
-            writer.close()
-        if log:
-            log.close()
-        pipe.close()
 
 
 def _receive(worker):
@@ -89,7 +25,6 @@ def _receive(worker):
 def train_parallel(model, critic, optimizer, cache, source, schedule, args, arguments, source_hash):
     """Every sampled action receives its own on-policy return; no teacher is used."""
     from .finetune import save_checkpoint
-    ctx = mp.get_context('spawn')
     device = next(model.parameters()).device
     count = min(args.workers, len(schedule))
     state = model.initial(count, device)
@@ -141,10 +76,11 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
     started = perf_counter()
     try:
         for _ in range(count):
-            parent, child = ctx.Pipe()
-            process = ctx.Process(target=_environment, args=(child,))
-            process.start(); child.close()
-            workers.append(dict(pipe=parent, process=process, active=False))
+            process = subprocess.Popen(
+                [sys.executable, '-u', '-m', 'experiments.discoveryworld.native_worker'],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
+            workers.append(dict(pipe=JsonConnection(process.stdout, process.stdin),
+                                process=process, active=False))
         assign(range(count))
         with (args.output / 'training.jsonl').open('x') as log, (args.output / 'updates.jsonl').open('x') as update_log:
             while any(w['active'] for w in workers):
@@ -229,13 +165,19 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
             save_checkpoint(model,critic,optimizer,source,args.output,episodes,arguments,source_hash)
     finally:
         for worker in workers:
-            if worker['process'].is_alive():
+            if worker['process'].poll() is None:
                 try:
                     worker['pipe'].send(('close',None))
                 except (BrokenPipeError, EOFError):
                     pass  # Preserve the simulator exception already received.
         for worker in workers:
-            worker['process'].join(timeout=30)
-            worker['pipe'].close()
+            # Drain an outstanding observation as the worker exits. Without
+            # this, an error in another world can leave a writer blocked on a
+            # full stdout pipe while the trainer waits for that writer.
+            try:
+                worker['process'].communicate(timeout=30)
+            except subprocess.TimeoutExpired:
+                worker['process'].terminate()
+                worker['process'].communicate()
     return dict(episodes=len(episodes),interactions=interactions,updates=updates,
                 elapsed_seconds=perf_counter()-started)

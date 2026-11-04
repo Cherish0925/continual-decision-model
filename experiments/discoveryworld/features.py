@@ -55,14 +55,21 @@ def canonical_action(action: dict) -> str:
     return json.dumps(action, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
+@lru_cache(maxsize=65536)
+def _lexical_term(term: str) -> tuple[int, int]:
+    digest = sha256(term.encode()).digest()
+    return int.from_bytes(digest[:4], "little"), 1 if digest[4] & 1 else -1
+
+
 def lexical_features(text: str, width: int = 256) -> torch.Tensor:
     """Stable signed feature hashing of received words and adjacent word pairs."""
     words = re.findall(r"[\w.-]+|[^\w\s]", text.lower())
     terms = words + [a + " " + b for a, b in zip(words, words[1:])]
-    result = torch.zeros(width)
+    counts = [0] * width
     for term in terms:
-        digest = sha256(term.encode()).digest()
-        result[int.from_bytes(digest[:4], "little") % width] += 1 if digest[4] & 1 else -1
+        index, sign = _lexical_term(term)
+        counts[index % width] += sign
+    result = torch.tensor(counts, dtype=torch.float32)
     return F.normalize(result, dim=0)
 
 
@@ -138,7 +145,7 @@ def load_features(path: str) -> dict:
     return torch.load(path, map_location="cpu", weights_only=True)
 
 
-@lru_cache(maxsize=4096)
+@lru_cache(maxsize=65536)
 def _load_text(path: str) -> torch.Tensor:
     # Action descriptions recur across successive observations. Content-addressed
     # text tensors are immutable; reuse them instead of reopening hundreds of

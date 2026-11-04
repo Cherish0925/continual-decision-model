@@ -2,7 +2,7 @@
 import json
 import os
 from time import sleep
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from .native_teacher import NativeTeacher
@@ -124,6 +124,12 @@ class DeepSeekFlashTeacher(NativeTeacher):
                     raise
                 delay = error.headers.get("Retry-After", "")
                 sleep(float(delay) if delay.replace(".", "", 1).isdigit() else min(2 ** attempt, 30))
+            except (URLError, TimeoutError, ConnectionError):
+                # The observation is unchanged and no native action has run.
+                # A retry requests another proposal, not another world action.
+                if attempt == 5:
+                    raise
+                sleep(min(2 ** attempt, 30))
         choice, usage = response["choices"][0], response["usage"]
         raw = choice["message"].get("content") or ""
         details = dict(provider_model=response["model"], provider_created=response.get("created"),

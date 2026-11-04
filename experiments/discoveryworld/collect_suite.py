@@ -6,15 +6,17 @@ from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import redirect_stdout
 from copy import deepcopy
 import json
-import multiprocessing as mp
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 from time import perf_counter
 import traceback
 
 from .adapter import TrajectoryWriter
 from .full_suite import THEMES, SKILLS, LIMITS, simulator_build, write_json
 from .structured_observation import StructuredDiscoveryWorldEnv
+from .native_worker import JsonConnection
 
 
 def training_cases(seeds, difficulties=tuple(LIMITS), themes=THEMES, max_steps=None, small_skills=False):
@@ -32,8 +34,6 @@ def training_cases(seeds, difficulties=tuple(LIMITS), themes=THEMES, max_steps=N
 
 
 def environment_worker(pipe):
-    import torch
-    torch.set_num_threads(1)
     env = writer = log = None
     case = path = None
     started = 0.
@@ -185,9 +185,56 @@ def collect(args):
         interrupted_episodes=interrupted,
         split="new native instances; law disjointness not asserted"))
     args.collection_started = True
-    ctx = mp.get_context("spawn")
     workers = []
     next_case = 0
+
+    def start_worker():
+        process = subprocess.Popen(
+            [sys.executable, '-u', '-m', 'experiments.discoveryworld.native_worker', '--collection'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
+        return dict(pipe=JsonConnection(process.stdout, process.stdin), process=process)
+
+    def close_worker(worker):
+        process = worker['process']
+        if process.poll() is None:
+            try:
+                worker['pipe'].send(('close',))
+            except (BrokenPipeError, EOFError):
+                pass
+        try:
+            process.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            process.terminate()
+            process.communicate()
+
+    def receive(worker):
+        try:
+            return worker['pipe'].recv()
+        except (EOFError, BrokenPipeError, ConnectionResetError) as error:
+            # One crashed simulator does not discard other independent worlds.
+            # Keep its trace as interrupted data, never as a policy failure.
+            case = worker['case']
+            folder = args.output / case['id']
+            folder.mkdir(parents=True, exist_ok=True)
+            trajectory = folder / 'trajectory.jsonl'
+            records = trajectory.read_text().splitlines() if trajectory.exists() else []
+            last = json.loads(records[-1]) if records else {}
+            metrics = last.get('task_metrics', [])
+            row = dict(case, status='environment_error', steps=len(records),
+                task_metrics=metrics, progress=None, success=False,
+                error=f'{type(error).__name__}: simulator subprocess disconnected',
+                exit_code=worker['process'].poll())
+            write_json(folder / 'summary.json', row)
+            close_worker(worker)
+            worker.update(start_worker())
+            return dict(done=True, summary=row)
+
+    def send(worker, message):
+        try:
+            worker['pipe'].send(message)
+        except BrokenPipeError:
+            # receive() records the closed simulator and retains its episode.
+            pass
 
     def assign(worker):
         nonlocal next_case
@@ -196,8 +243,9 @@ def collect(args):
             return
         case = pending[next_case]
         next_case += 1
-        worker["pipe"].send(("reset", case, str(args.output), args.resume, rng_source))
-        message = worker["pipe"].recv()
+        worker['case'] = case
+        send(worker, ("reset", case, str(args.output), args.resume, rng_source))
+        message = receive(worker)
         if "error" in message:
             raise RuntimeError(message["error"])
         if message['done']:
@@ -214,15 +262,11 @@ def collect(args):
 
     try:
         for _ in range(min(args.workers, len(pending))):
-            parent, child = ctx.Pipe()
-            process = ctx.Process(target=environment_worker, args=(child,))
-            process.start()
-            child.close()
-            worker = dict(pipe=parent, process=process)
+            worker = start_worker()
             workers.append(worker)
             assign(worker)
         def consume(w, result):
-            response = w['pipe'].recv()
+            response = receive(w)
             if 'error' in response:
                 raise RuntimeError(response['error'])
             if 'transition' in response:
@@ -259,7 +303,7 @@ def collect(args):
                             # other independent environments; no action is invented.
                             result = {'error': f'{type(error).__name__}: {error}',
                                       'prompt_version': teacher.configuration['prompt_version']}
-                        w['pipe'].send(('step', result))
+                        send(w, ('step', result))
                         consume(w, result)
                         submit(w)
                         decisions += 1
@@ -271,7 +315,7 @@ def collect(args):
             while active := [w for w in workers if w['active']]:
                 generated = teacher.batch([w['observation'] for w in active], [w['state'] for w in active])
                 for w, result in zip(active, generated):
-                    w['pipe'].send(('step', result))
+                    send(w, ('step', result))
                 for w, result in zip(active, generated):
                     consume(w, result)
                 batches += 1
@@ -280,10 +324,7 @@ def collect(args):
                         generation_seconds=generated[0]['batch_seconds'], active=len(active))), flush=True)
     finally:
         for w in workers:
-            if w["process"].is_alive():
-                w["pipe"].send(("close",))
-            w["process"].join(timeout=10)
-            w["pipe"].close()
+            close_worker(w)
     return rows
 
 

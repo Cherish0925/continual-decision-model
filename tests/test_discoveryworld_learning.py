@@ -11,7 +11,7 @@ import torch
 
 from cdm.core import ContinualCore, CoreConfig
 from cdm.digital import DigitalConfig, DigitalPolicy, public_candidates
-from experiments.discoveryworld.features import FeatureCache, FeatureConfig, batch_features, load_features
+from experiments.discoveryworld.features import FeatureCache, FeatureConfig, batch_features, load_features, lexical_features
 from experiments.discoveryworld.train import (Episode, prepare_episodes, public_observation,
                                              run_epoch, validate_split, outcome_target, received_outcome_loss,
                                              initialize_training, parse_args, main, load_checkpoint, action_run_weights)
@@ -42,6 +42,19 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         torch.set_num_threads(1)
+
+    def test_lexical_encoding_preserves_existing_checkpoint_inputs(self):
+        # Reference vectors from the original encoder, including collisions,
+        # adjacent-word pairs, punctuation, numbers and Unicode measurements.
+        examples = [
+            ("", [0, 0, 0, 0, 0, 0, 0, 0]),
+            ("A B A B", [-2, 0, -2, 0, 0, 0, -3, 0]),
+            ("23.5 Hz — 温度 20°C", [0, 0, 2, -2, 0, -2, 0, 1]),
+        ]
+        for text, counts in examples:
+            with self.subTest(text=text):
+                expected = torch.nn.functional.normalize(torch.tensor(counts, dtype=torch.float32), dim=0)
+                self.assertTrue(torch.equal(lexical_features(text, 8), expected))
 
     def test_failed_teacher_action_remains_in_history_without_an_imitation_label(self):
         with TemporaryDirectory() as folder:

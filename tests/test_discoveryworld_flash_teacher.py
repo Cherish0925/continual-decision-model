@@ -4,11 +4,30 @@ import json
 import os
 import unittest
 from unittest.mock import patch
+from urllib.error import URLError
 
 from experiments.discoveryworld.deepseek_teacher import DeepSeekFlashTeacher
 
 
 class HostedTeacherTests(unittest.TestCase):
+    def test_closed_api_connection_retries_without_executing_an_extra_action(self):
+        obs = {'ui': {}, 'actions': {'WAIT': {'args': []}}, 'teleport_locations': {}}
+        with patch.dict(os.environ, {'DASHSCOPE_API_KEY': 'bailian-test-only'}):
+            teacher = DeepSeekFlashTeacher(provider='bailian', max_input_tokens=4096,
+                max_new_tokens=1024, reasoning_effort='high', temperature=.7)
+        response = {'model': teacher.served_model,
+            'usage': {'prompt_tokens': 200, 'completion_tokens': 20},
+            'choices': [{'message': {'content': '{"action":"WAIT","memory":""}'},
+                         'finish_reason': 'stop'}]}
+        with patch('experiments.discoveryworld.deepseek_teacher.urlopen',
+                   side_effect=[URLError('connection closed'), io.BytesIO(json.dumps(response).encode())]) as request, \
+             patch('experiments.discoveryworld.deepseek_teacher.sleep'):
+            rows = teacher.batch([obs], [teacher.initial()])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['action'], {'action': 'WAIT'})
+        self.assertEqual(rows[0]['transport_retries'], 1)
+        self.assertEqual(request.call_args_list[0].args[0].data, request.call_args_list[1].args[0].data)
+
     def test_public_object_and_dialogue_domains_reject_unobserved_arguments(self):
         with patch.dict(os.environ, {"DASHSCOPE_API_KEY": "bailian-test-only"}):
             teacher = DeepSeekFlashTeacher(provider="bailian", max_input_tokens=4096,

@@ -4,9 +4,10 @@
 now compares autonomous interaction learning, basic-operation instruction and
 complete-solution distillation, each with CDM and GRU. Bailian demonstrations
 are running; both basic-operation students completed eight supervised epochs
-and entered interaction learning. Native-library crashes interrupted three
-first reinforcement attempts; their records are preserved and replacements
-are running. No new official-case student score is available.
+and entered interaction learning. Native-library crashes interrupted several
+reinforcement attempts; equivalent lexical encoding and CPU-only simulator
+workers support replacement runs. Their earlier records are preserved. No new
+official-case student score is available.
 [Current execution](HANDOFF.md).
 
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)

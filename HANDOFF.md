@@ -21,24 +21,32 @@ development cases for each student. All evaluation runs without a teacher.
 These new policies use fixed
 lexical/numeric features; the earlier SigLIP comparison below is separate.
 
-Three first interaction-learning attempts exited with native-library
-segmentation faults. Their trajectories and checkpoints remain available;
-replacement runs start from the same initial or completed imitation weights
-with one CPU thread and native stack reporting. The cause is still being
-investigated. This interruption is not a task failure or a completed model
-comparison. Final reinforcement and official-case scores are pending.
-The parallel Flash collector also encountered a native reference-library crash.
-Its finite public-action checks now run directly without that dependency.
-Nineteen completed cases were retained; 48 interrupted attempts were preserved
-separately before fresh collection because one native world could not be
-replayed exactly. Full-solution training waits for the resulting complete collection.
+Several interaction-learning attempts exited with native-library faults.
+Two recorded stacks stopped inside scalar lexical-feature operations;
+the equivalent batched encoding preserves all 98 checked observation vectors
+and reduces that encoding sample from 2.30 to 0.064 seconds. A subsequent
+simulator startup failed while loading CUDA, so new simulator workers run as
+independent CPU programs without importing Torch. Replacement trainings retain
+the original initialization, curriculum and budgets. Failed attempts and
+checkpoints remain available. Final reinforcement and official-case scores
+are pending; the runtime changes are not model-performance results.
+The parallel Flash collector also encountered native-library crashes. Its
+finite public-action checks run directly without the crashing reference
+dependency, and its simulators now use the CPU-only worker. A disconnected
+world is recorded as an environment error; independent worlds continue.
+Completed cases are retained. Interrupted trajectories are archived before a
+fresh attempt when exact native replay cannot be used. Full-solution training
+waits for the resulting complete collection.
 
 Continue under `runs/discoveryworld/full_suite_20261104/native/`:
 `flash_skills` and `flash_skills_development` are complete;
 `flash_science_corrected` and `flash_development_corrected` record the new
 collections with public format-error feedback. `autonomous`,
 `basic_operations` and `complete_solutions` hold the three student routes.
-The retry folders preserve the failed first attempts separately.
+The retry folders preserve interrupted attempts separately. The restored pure
+learning runs are `autonomous/cdm301-encoding` and
+`autonomous/gru301-native-worker`; post-imitation learning continues in
+`basic_operations/cdm301/reinforcement` and `basic_operations/gru301-retry`.
 `evaluation_initializations` holds common official-case initial random streams.
 Use `updates.jsonl` for actual student interactions and optimizer updates,
 and native case records for task results. No final score has selected a model.

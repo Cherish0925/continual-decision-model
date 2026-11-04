@@ -1,8 +1,12 @@
 """Shared weights must not leak state or answers between scientific instances."""
 from dataclasses import asdict
+from importlib.util import find_spec
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -10,12 +14,45 @@ import torch
 
 from cdm.core import ContinualCore, CoreConfig
 from experiments.discoveryworld import full_suite
-from experiments.discoveryworld.collect_suite import training_cases
+from experiments.discoveryworld.collect_suite import training_cases, collect
 from experiments.discoveryworld.native_teacher import NativeTeacher
 from experiments.discoveryworld.train import create_model
 
 
 class FullSuiteTests(unittest.TestCase):
+    @unittest.skipUnless(find_spec('discoveryworld'), 'Install the pinned native simulator')
+    def test_lost_simulator_is_recorded_and_other_native_cases_continue(self):
+        class Teacher:
+            endpoint = 'test'
+            configuration = {'prompt_version': 'test'}
+            def initial(self): return {}
+            def observe(self, *args): pass
+            def batch(self, observations, states):
+                return [dict(action={'action': 'ROTATE_DIRECTION', 'arg1': 'north'}, memory='')]
+        start = subprocess.Popen
+        launched = []
+        def launch(command, **kwargs):
+            if not launched:
+                command = [sys.executable, '-c', 'raise SystemExit(9)']
+            process = start(command, **kwargs)
+            launched.append(process)
+            return process
+        with TemporaryDirectory() as folder:
+            args = SimpleNamespace(output=Path(folder), seeds=[1000], difficulties=['Easy'],
+                themes=full_suite.THEMES[:2], max_steps=2, small_skills=False, resume=False,
+                workers=1, max_new_tokens=100, max_input_tokens=1000, temperature=0,
+                reasoning_effort='none', model='test', device='cpu', dequantize=False,
+                attention=None, endpoint='test', served_model='test', model_source='test',
+                api_style='chat')
+            with patch('experiments.discoveryworld.native_teacher.NativeTeacher', return_value=Teacher()), \
+                 patch('experiments.discoveryworld.collect_suite.subprocess.Popen', side_effect=launch):
+                rows = collect(args)
+            self.assertEqual([r['status'] for r in rows], ['environment_error', 'evaluated'])
+            self.assertEqual([r['steps'] for r in rows], [0, 2])
+            trace = Path(folder)/rows[1]['id']/'trajectory.jsonl'
+            self.assertEqual(len([json.loads(line) for line in trace.read_text().splitlines()]), 2)
+            self.assertTrue(all(p.poll() is not None for p in launched))
+
     def test_basic_skill_demonstrations_exclude_scientific_solutions(self):
         cases = training_cases([1000, 1001], small_skills=True)
         self.assertEqual(len(cases), 20)
