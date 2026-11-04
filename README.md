@@ -15,10 +15,12 @@ An observation can become outdated while inference is still running. The researc
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
 The current [eight-theme study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
-trains one native-action policy and a recurrent comparison, with a separate
-whole-theme holdout. Initial sequence training has completed; broader trajectory
-collection is underway. The [initial model](experiments/discoveryworld/results/native_pipeline.json)
-completed 0/8 Easy development tasks; the complete comparison is pending.
+compares one native-action CDM and a recurrent policy. New runs separate
+autonomous learning, basic-operation instruction and complete-solution
+distillation. Basic-operation supervision has completed; students are learning
+from their own actions while broader scientific demonstrations are collected.
+Student task results from this comparison are pending; the
+[progress record](HANDOFF.md) includes interrupted runs and current execution.
 The task scores below remain the v0.17.0 results.
 
 The completed [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)

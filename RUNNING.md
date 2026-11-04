@@ -3,7 +3,10 @@
 The [eight-theme native policy study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
 provides collection, shared-core training and full-benchmark execution commands.
 Its [protocol](experiments/discoveryworld/native_learning.json) distinguishes
-new instances from whole-theme transfer. Data collection is ongoing.
+new instances from whole-theme transfer. The [teacher comparison and batched
+interaction trainer](experiments/discoveryworld/FULL_SUITE.md#hosted-demonstrations-and-teacher-free-learning)
+add Bailian collection, reward-only basic-operation curricula and separate
+demonstration-to-reinforcement pipelines. Live studies are listed in [HANDOFF.md](HANDOFF.md).
 
 For the latest response-function models and comparisons, start with the
 [v0.17.0 download and evaluation commands](experiments/discoveryworld/RELEASE.md#joint-prediction-and-action-training-v0170).

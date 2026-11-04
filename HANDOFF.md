@@ -2,6 +2,50 @@
 
 ## 4 November: native actions across eight scientific themes
 
+The new [teacher and architecture comparison](experiments/discoveryworld/FULL_SUITE.md#separating-teacher-and-architecture-effects)
+keeps autonomous learning, basic-operation instruction and complete-solution
+distillation separate. Each has CDM and GRU conditions from the same random
+initialization. Bailian Flash is collecting demonstrations through the public
+native interface. The first eight Easy teacher cases give 7/8 completions;
+the basic-operation training/development collections give 65/80 and 15/20.
+[The records](experiments/discoveryworld/results/flash_demonstrations.json)
+include unsuccessful attempts and operation counts.
+
+Both basic-operation students have completed eight supervised epochs on the
+same 2,457 training operations. Autonomous and post-imitation actor–critic
+learning now run against eight simulator processes per policy. The two
+complete-solution pipelines wait for their separate scientific collections,
+then train and evaluate both their imitation and reinforcement endpoints.
+Independent execution after basic-operation imitation completed 0/8 Easy
+development cases for each student. All evaluation runs without a teacher.
+These new policies use fixed
+lexical/numeric features; the earlier SigLIP comparison below is separate.
+
+Three first interaction-learning attempts exited with native-library
+segmentation faults. Their trajectories and checkpoints remain available;
+replacement runs start from the same initial or completed imitation weights
+with one CPU thread and native stack reporting. The cause is still being
+investigated. This interruption is not a task failure or a completed model
+comparison. Final reinforcement and official-case scores are pending.
+
+Continue under `runs/discoveryworld/full_suite_20261104/native/`:
+`flash_skills` and `flash_skills_development` are complete;
+`flash_science_corrected` and `flash_development_corrected` record the new
+collections with public format-error feedback. `autonomous`,
+`basic_operations` and `complete_solutions` hold the three student routes.
+The retry folders preserve the failed first attempts separately.
+`evaluation_initializations` holds common official-case initial random streams.
+Use `updates.jsonl` for actual student interactions and optimizer updates,
+and native case records for task results. No final score has selected a model.
+The final endpoints are queued for independent native evaluation after their
+training finishes. The [learning-procedure comparison](RESEARCH.md#does-experience-improve-how-the-model-learns)
+is the next distinct research question: fixed starting task weights and empty
+task memory must isolate what transfers with an acquired experience-selection
+rule. The present actor–critic uses a fixed curriculum and update rule; it has
+not implemented that experiment or demonstrated recursive self-improvement.
+
+### Earlier inherited-core comparison
+
 The [full-suite study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
 now has mixed-theme trajectory collection, a dynamic native-action policy,
 source-core loading and a complete training queue. The
@@ -10,7 +54,7 @@ coverage from a whole-theme holdout of Plant Nutrients and Lost in Translation.
 Both compare CDM with a separately trained recurrent policy; two initial cores
 give eight declared trainings. No new official-case CDM score is available.
 
-A separate [teacher-free training run and hosted teacher option](experiments/discoveryworld/FULL_SUITE.md#hosted-demonstrations-and-teacher-free-learning) now use the same native action interface. In the [random-initialization run](experiments/discoveryworld/results/native_actor_cold_start.json), only one of 256 actions changed task progress; 32 policy updates produced no completed task. The next comparison is whether demonstrations help the student reach informative experiments and improve subsequent independent performance.
+The earlier [random-initialization integration run](experiments/discoveryworld/results/native_actor_cold_start.json) had only one progress-changing action out of 256; 32 policy updates produced no completed task. The parallel comparison above now studies learning beyond that short run.
 
 Initial local teacher collection reached all eight themes but yielded many
 interrupted or ineffective trajectories. These are data-collection attempts,

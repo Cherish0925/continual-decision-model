@@ -1,10 +1,13 @@
 # CDM: objective, implementation, and results
 
 **In progress, 4 November:** [native policy learning across eight themes](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
-has a shared action interface, mixed-theme sequence training and a fixed
-whole-theme holdout comparison. Initial sequence training completed; the first
-model completed 0/8 Easy development tasks. The full comparison and official-case
-scores remain pending. [Current execution](HANDOFF.md).
+now compares autonomous interaction learning, basic-operation instruction and
+complete-solution distillation, each with CDM and GRU. Bailian demonstrations
+are running; both basic-operation students completed eight supervised epochs
+and entered interaction learning. Native-library crashes interrupted three
+first reinforcement attempts; their records are preserved and replacements
+are running. No new official-case student score is available.
+[Current execution](HANDOFF.md).
 
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
 includes twelve full shared-core continuations, four predictor initializations,

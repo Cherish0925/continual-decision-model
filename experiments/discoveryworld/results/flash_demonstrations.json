@@ -1,0 +1,1304 @@
+{
+  "date": "2026-11-04",
+  "scope": "Demonstration collection; no student benchmark score",
+  "teacher_comparison": {
+    "prompt": "native_public_domains_v7",
+    "observation": "public text and received measurements",
+    "shared_initial_rng": true,
+    "action_limit": 100,
+    "local_model": "unsloth/gpt-oss-20b",
+    "hosted_model": "deepseek-v4.1-flash-1017",
+    "local_max_output_tokens": 2048,
+    "hosted_max_output_tokens": 16384,
+    "comparison": "Different model and token budgets; demonstration utility, not compute-matched capability",
+    "local": [
+      {
+        "theme": "Combinatorial Chemistry",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.75
+      },
+      {
+        "theme": "Archaeology Dating",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 58,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Plant Nutrients",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.75
+      },
+      {
+        "theme": "Reactor Lab",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.45454545454545453
+      },
+      {
+        "theme": "Lost in Translation",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 99,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Space Sick",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.75
+      },
+      {
+        "theme": "Proteomics",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.8333333333333334
+      },
+      {
+        "theme": "It's (not) Rocket Science!",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "policy_error",
+        "steps": 31,
+        "success": false,
+        "progress": 0.6666666666666666
+      }
+    ],
+    "hosted": [
+      {
+        "theme": "Combinatorial Chemistry",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 16,
+        "success": true,
+        "progress": 0.6666666666666666
+      },
+      {
+        "theme": "Archaeology Dating",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 12,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Plant Nutrients",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 90,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Reactor Lab",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.5454545454545454
+      },
+      {
+        "theme": "Lost in Translation",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 11,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Space Sick",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 30,
+        "success": true,
+        "progress": 0.875
+      },
+      {
+        "theme": "Proteomics",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 17,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "It's (not) Rocket Science!",
+        "difficulty": "Easy",
+        "seed": 1000,
+        "status": "evaluated",
+        "steps": 35,
+        "success": true,
+        "progress": 1.0
+      }
+    ],
+    "local_max_input_tokens": 22000,
+    "hosted_max_input_tokens": 65536,
+    "local_reasoning_effort": "low",
+    "hosted_reasoning_effort": "high"
+  },
+  "basic_operations": {
+    "training": [
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 94,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.375
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "policy_error",
+        "steps": 45,
+        "success": false,
+        "progress": 0.125
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 77,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.75
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 76,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 66,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "policy_error",
+        "steps": 33,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 40,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 49,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 45,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 40,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 58,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 34,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 27,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 37,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 83,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 51,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 8,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 24,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 14,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 9,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 2,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 16,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 78,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 11,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 56,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 9,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4000,
+        "status": "policy_error",
+        "steps": 40,
+        "success": false,
+        "progress": 0.3333333333333333
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4001,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.3333333333333333
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4002,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.6666666666666666
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4003,
+        "status": "evaluated",
+        "steps": 53,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4004,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.3333333333333333
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4005,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.6666666666666666
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4006,
+        "status": "evaluated",
+        "steps": 73,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 4007,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.6666666666666666
+      }
+    ],
+    "development": [
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Dialog Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Place Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 4,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Pick and Give Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 7,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Instrument Measurement Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 6,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Doors Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 46,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Doors with Keys Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 37,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 18,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Navigation in a House Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 98,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 14,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Search Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Discovery Feed Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 5,
+        "success": true,
+        "progress": 1.0
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 5000,
+        "status": "evaluated",
+        "steps": 100,
+        "success": false,
+        "progress": 0.3333333333333333
+      },
+      {
+        "theme": "Small Skills: Moving Agents Test",
+        "difficulty": "Normal",
+        "seed": 5001,
+        "status": "evaluated",
+        "steps": 59,
+        "success": true,
+        "progress": 1.0
+      }
+    ],
+    "train_actions": 2457,
+    "development_actions": 728,
+    "imitation": "Valid represented actions from successful episodes only; all received outcomes retained"
+  },
+  "student_initialization": {
+    "parameters": 55504931,
+    "width": 1024,
+    "pretrained_weights": false,
+    "features": "fixed lexical and numerical features",
+    "mode_comparison": "CDM versus GRU without workspace",
+    "refinements": 1
+  },
+  "basic_operation_students": {
+    "cdm301": {
+      "epoch": 8,
+      "training": {
+        "imitation_loss": 2.442269036912754,
+        "outcome_loss": 0.07900273891438511,
+        "immediate_loss": 0.0,
+        "raw_imitation_loss": 2.2175623575846353,
+        "loss": 2.4817704063699466,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.23809523809523808,
+        "raw_event_imitation_accuracy": 0.23809523809523808,
+        "action_run_weighted_accuracy": 0.23009763924131285,
+        "repeated_run_exit_accuracy": 0.1476510067114094,
+        "repeated_run_exits": 149,
+        "transitions": 2457,
+        "supervised_actions": 1176,
+        "observed_outcomes": 2429
+      },
+      "validation": {
+        "imitation_loss": 2.8363239928942257,
+        "outcome_loss": 0.08266506185599698,
+        "immediate_loss": 0.0,
+        "raw_imitation_loss": 2.61943112886869,
+        "loss": 2.8776565238222243,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.23076923076923078,
+        "raw_event_imitation_accuracy": 0.23076923076923078,
+        "action_run_weighted_accuracy": 0.2204819272699083,
+        "repeated_run_exit_accuracy": 0.09090909090909091,
+        "repeated_run_exits": 22,
+        "transitions": 728,
+        "supervised_actions": 208,
+        "observed_outcomes": 719
+      },
+      "development_cases": [
+        {
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.18181818181818182
+        },
+        {
+          "theme": "Lost in Translation",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Space Sick",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "It's (not) Rocket Science!",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        }
+      ]
+    },
+    "gru301": {
+      "epoch": 8,
+      "training": {
+        "imitation_loss": 2.416097842253046,
+        "outcome_loss": 0.12277895817188059,
+        "immediate_loss": 0.0,
+        "raw_imitation_loss": 2.1840293520972844,
+        "loss": 2.4774873213389865,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.2857142857142857,
+        "raw_event_imitation_accuracy": 0.2857142857142857,
+        "action_run_weighted_accuracy": 0.2407216696114577,
+        "repeated_run_exit_accuracy": 0.18791946308724833,
+        "repeated_run_exits": 149,
+        "transitions": 2457,
+        "supervised_actions": 1176,
+        "observed_outcomes": 2429
+      },
+      "validation": {
+        "imitation_loss": 2.8425283004863116,
+        "outcome_loss": 0.09664302512968376,
+        "immediate_loss": 0.0,
+        "raw_imitation_loss": 2.637545658991887,
+        "loss": 2.8908498130511533,
+        "imitation_reduction": "action_run",
+        "imitation_accuracy": 0.30288461538461536,
+        "raw_event_imitation_accuracy": 0.30288461538461536,
+        "action_run_weighted_accuracy": 0.26204819258695583,
+        "repeated_run_exit_accuracy": 0.13636363636363635,
+        "repeated_run_exits": 22,
+        "transitions": 728,
+        "supervised_actions": 208,
+        "observed_outcomes": 719
+      },
+      "development_cases": [
+        {
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.18181818181818182
+        },
+        {
+          "theme": "Lost in Translation",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Space Sick",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        },
+        {
+          "theme": "It's (not) Rocket Science!",
+          "difficulty": "Easy",
+          "seed": 2001,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "progress": 0.0
+        }
+      ]
+    }
+  }
+}

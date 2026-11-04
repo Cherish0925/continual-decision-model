@@ -16,6 +16,13 @@ from experiments.discoveryworld.train import create_model
 
 
 class FullSuiteTests(unittest.TestCase):
+    def test_basic_skill_demonstrations_exclude_scientific_solutions(self):
+        cases = training_cases([1000, 1001], small_skills=True)
+        self.assertEqual(len(cases), 20)
+        self.assertTrue(all(row['theme'].startswith('Small Skills:') for row in cases))
+        self.assertTrue(all(row['difficulty'] == 'Normal' and row['max_steps'] == 100 for row in cases))
+        self.assertFalse(set(full_suite.THEMES) & {row['theme'] for row in cases})
+
     def test_one_model_resets_between_instances_and_training_is_disjoint(self):
         class Policy:
             state = 0

@@ -135,7 +135,7 @@ In this comparison, the [trainer](train.py) learns from the recorded actions and
 
 ### Hosted demonstrations and teacher-free learning
 
-[DeepSeek-V4.1-Flash-1017](https://api-docs.deepseek.com/news/news261017/) can be selected as a demonstration teacher. The hosted and local collectors present the same public observations, action arguments, and measurement history. The hosted collector uses the official `deepseek-flash` alias, validates each returned JSON action against the displayed choices, and records the service's model identifier, token use, and finish reason. The input-token cap is applied to the count returned by the service; an over-budget call is recorded without executing its action. Install the `hosted-teacher` extra and provide `DEEPSEEK_API_KEY` in the process environment. For example:
+[DeepSeek-V4.1-Flash-1017](https://api-docs.deepseek.com/news/news261017/) can be selected as a demonstration teacher through DeepSeek or [Alibaba Cloud Bailian](https://help.aliyun.com/zh/model-studio/deepseek-api). Both collectors present the same public observations, action arguments, and measurement history. Install the `hosted-teacher` extra. Set `DEEPSEEK_API_KEY` for the direct API; set `DASHSCOPE_API_KEY` and your `DASHSCOPE_BASE_URL` for Bailian. Credentials are read from the process environment and excluded from collection metadata. The direct API uses `deepseek-flash`; Bailian defaults to `deepseek-v4.1-flash-1017` and uses its `enable_thinking` option.
 
 ```sh
 python -m experiments.discoveryworld.collect_suite --deepseek-flash \
@@ -143,7 +143,18 @@ python -m experiments.discoveryworld.collect_suite --deepseek-flash \
   --max-steps 60 --workers 2 --output runs/native_teachers/flash
 ```
 
-For a paired teacher comparison, run the local teacher on the same cases and cap first, then add `--rng-from runs/native_teachers/local` to the hosted command. Use separate output directories. Compare tasks completed and actions used, then test whether the resulting demonstrations help the **student acting alone**. No hosted-teacher task score is reported here.
+For parallel Bailian collection across all themes and difficulties:
+
+```sh
+python -m experiments.discoveryworld.collect_suite --bailian-flash \
+  --seeds 1000 1001 1002 1003 --workers 48 --reasoning-effort high \
+  --max-input-tokens 65536 --max-new-tokens 32768 --action-corrections 2 \
+  --output runs/native_teachers/science
+```
+
+Each returned action must match the public interface. `--action-corrections 2` returns a malformed proposal to the teacher up to twice, without executing an action or supplying a solution. Every response and its token use are retained. Transport retries handle rate limits and transient service errors. The provider-reported input count enforces the input-token budget; a call beyond it does not execute an action. Concurrent environments advance independently.
+
+For a paired teacher comparison, run the local teacher on the same cases and cap first, then add `--rng-from runs/native_teachers/local` to the hosted command. On the first eight Easy training cases, Flash completed **7/8**, compared with **1/8** for the local teacher. Both had a 100-action limit and shared initial random streams, but their model and generation budgets differed: 16,384 versus 2,048 output tokens per call. These are demonstration results, not student scores or a compute-matched teacher comparison. [Per-case records](results/flash_demonstrations.json).
 
 The [on-policy trainer](finetune.py) samples an action, executes it, and updates the shared policy using subsequent changes in simulator task progress. One policy, critic, and optimizer span the entire schedule; episode-specific state resets at each new world. A compatible native checkpoint can start the run without further demonstrations:
 
@@ -155,10 +166,49 @@ python -m experiments.discoveryworld.finetune --checkpoint "$NATIVE_POLICY" \
 
 `--native-suite holdout` omits Plant Nutrients and Lost in Translation; start from the corresponding six-theme checkpoint for a transfer comparison. To learn without *any* demonstrations or pretrained weights, replace the checkpoint argument with `--random-native-width 32`: this initializes the policy and critic randomly and uses fixed lexical and numeric features. The [eight-theme CPU run](results/native_actor_cold_start.json) records all case totals and the change in action weights. It tests learning directly from interactions; it does not measure a trained model's benchmark performance.
 
+The batched trainer runs multiple native environments around one shared policy and optimizer. `--small-skills-first` begins with the ten official basic-operation tasks, using environment rewards alone. For example:
+
+```sh
+python -m experiments.discoveryworld.finetune --random-native-width 1024 \
+  --native-suite all --small-skills-first --seeds 1000 1001 1002 1003 \
+  --workers 8 --sequence-length 8 --threads 1 --mode cdm --random-seed 301 \
+  --device cuda:0 --lr 0.0001 --feature-cache runs/native_rl/features \
+  --output runs/native_rl/autonomous-cdm
+```
+
+The initial checkpoint is saved before the first action. Pass that checkpoint with `--checkpoint` and `--mode gru` to train the recurrent reference from the same weights. Each scheduled case has the same maximum action budget; actual interactions can differ when a task terminates early. Record those interactions and compute separately. This structured-input policy has **55,504,931 parameters**, including parameters inactive in GRU mode. It uses fixed lexical/numeric features, no pretrained encoder, and one fixed workspace refinement per action. Activity scheduling and cross-instance hidden-state retention are separate capabilities.
+
 An experiment generator would add a different capability. For example, let a proposer find two candidate laws that agree on the measurements so far; let the solver choose the experiment that separates them. The training world supplies the outcome. Compare this learned curriculum against a fixed one by how quickly the next policy learns new laws at the same interaction budget. The current trainer does not change its curriculum or learning rule.
 
 ### Separating teacher and architecture effects
 
-Proposed comparison: train CDM and a recurrent policy without the workspace (GRU) both with and without the same fixed set of instrument-use demonstrations. Match prior training exposure, public observations, action access and student interaction budgets. Report the teacher's collection cost separately. Demonstrations may show how to read an instrument. A hint about which sample to measure already supervises experiment selection. Report imitation of complete solutions separately. Evaluate the student alone; any teacher-assisted evaluation is a distinct result.
+The running comparison has three routes, each with CDM and a recurrent policy without the workspace (GRU):
+
+| Route | Demonstrations | Subsequent learning |
+| --- | --- | --- |
+| Autonomous | None; random initialization and fixed lexical/numeric inputs | Student actions and returned task-progress rewards |
+| Basic operations | The same fixed set of ten official small-skills tasks | The same student interaction curriculum |
+| Complete solutions | Basic skills and eight-theme scientific demonstrations | The same student interaction curriculum; reported separately |
+
+The basic-operation collection completed **65/80** training and **15/20** development cases. It contains 2,457 and 728 actual operations respectively. It teaches navigation, object use, dialogue and observation; these demonstrations still guide action selection within those elementary tasks. No eight-theme solution enters this route. Both students completed eight supervised epochs on the same files, with 1,176 represented valid action labels from successful training episodes. Failed trajectories retain their observed outcomes. Independent execution after this fixed endpoint completed **0/8 Easy development cases** for each student (seed 2001). This fits basic operations but has not yet taught scientific task completion. The per-theme results are included in the same record.
+
+To collect basic-operation demonstrations, use `collect_suite --bailian-flash --small-skills --seeds 4000 4001 4002 4003 4004 4005 4006 4007`; collect development with seeds 5000 and 5001. Then run:
+
+```sh
+python -m experiments.discoveryworld.train_demonstrations \
+  --initial-checkpoint runs/native_rl/autonomous-cdm/initial.pt \
+  --train-collections runs/native_teachers/skills \
+  --development-collections runs/native_teachers/skills-development \
+  --scope basic_operations --mode cdm --epochs 8 --seed 301 --workers 8 \
+  --learning-seeds 1000 1001 1002 1003 --device cuda:0 \
+  --feature-cache runs/native_rl/features --output runs/native_rl/basic-cdm \
+  --wait-for-collections --evaluate
+```
+
+Use the same files and initial checkpoint for GRU. `--scope basic_operations` rejects scientific solution trajectories. For the complete-solution comparison, choose `--scope complete_solutions` and include scientific collections. The pipeline snapshots completed data, trains eight imitation epochs, learns from the student's actions, and optionally evaluates both final endpoints on all 120 official cases with no teacher. Checkpoints are chosen by the declared endpoint, not test performance. `full_suite probe` also saves initial simulator random streams; `--evaluation-rng-from` reuses them across models.
+
+The first pair of eight-epoch basic-operation fits is complete; autonomous and post-imitation interaction learning are in progress. Three initial reinforcement runs exited with native-library segmentation faults. Their records and checkpoints are retained, and replacements use the same starting weights with one CPU thread. The final reinforcement and official-case scores remain pending. The complete-solution pair waits for its separate scientific collection. These are one-initialization feasibility runs, not an established architecture result.
+
+Within each route, match source weights, received observations, action access, scheduled cases and maximum interaction budgets. Report actual student interactions, teacher operations, API tokens and compute separately. The pure-learning route preserves the question of learning without a teacher. The basic-operation route asks whether instruction helps the student reach useful experiments. The complete-solution route measures distillation. The [DiscoveryWorld training settings](https://arxiv.org/html/2406.06769v2#A3.S2) permit training on separate instances, but such scores are task-trained and must retain that distinction from the published zero-shot agents. Different seeds may still share scientific laws, as documented above.
 
 Reserve pairs of unseen laws that give the same initial readings but require different final decisions. In each pair, make both laws equally likely and offer a measurement whose outcomes distinguish them. With a single final choice, a policy that ignores all distinguishing observations can succeed on at most half the pair on average. Compare completion and measurement cost across the four conditions. This tests what the student does with a new observation, even if both architectures learned the same instrument skills.

@@ -15,11 +15,41 @@ from cdm.digital import DigitalConfig, DigitalPolicy
 from experiments.discoveryworld.adapter import DiscoveryWorldEnv
 from experiments.discoveryworld.features import FeatureCache, FeatureConfig
 from experiments.discoveryworld.finetune import (StateCritic, discounted_returns, parse_args,
-                                                run_episode, save_checkpoint, training_schedule)
+                                                run_episode, save_checkpoint, training_schedule, main)
 from experiments.discoveryworld.train import load_checkpoint
 
 
 class FineTuneTests(unittest.TestCase):
+    @unittest.skipUnless(find_spec("discoveryworld"), "Install the pinned DiscoveryWorld simulator")
+    def test_parallel_native_feedback_trains_one_model_without_losing_episodes(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            with contextlib.redirect_stdout(io.StringIO()):
+                main(['--random-native-width','16','--output',str(root/'model'),
+                      '--feature-cache',str(root/'features'),'--native-suite','all',
+                      '--difficulty','Easy','--seeds','1000','--max-steps','3',
+                      '--sequence-length','2','--workers','2','--threads','1'])
+            initial,_=load_checkpoint(root/'model/initial.pt','cpu')
+            trained,saved=load_checkpoint(root/'model/last.pt','cpu')
+            self.assertFalse(torch.equal(initial.score[-1].weight,trained.score[-1].weight))
+            episodes=saved['finetune']['episodes']
+            self.assertEqual(len(episodes),8)
+            self.assertEqual(len({r['scenario'] for r in episodes}),8)
+            self.assertEqual(sum(r['steps'] for r in episodes),24)
+            updates=[json.loads(row) for row in (root/'model/updates.jsonl').read_text().splitlines()]
+            self.assertEqual(updates[-1]['interactions'],24)
+            self.assertTrue(all(torch.isfinite(torch.tensor(r['policy_loss'])) for r in updates))
+
+    def test_reward_only_curriculum_starts_with_basic_operations(self):
+        with TemporaryDirectory() as folder:
+            args = parse_args(['--random-native-width', '32', '--output', folder,
+                               '--feature-cache', folder, '--native-suite', 'holdout',
+                               '--small-skills-first', '--seeds', '3008', '--difficulty', 'Easy'])
+            schedule = training_schedule(args, {})
+            self.assertEqual(len(schedule), 16)
+            self.assertTrue(all(t.startswith('Small Skills:') for t, _, _, _ in schedule[:10]))
+            self.assertFalse({'Plant Nutrients', 'Lost in Translation'} & {t for t, _, _, _ in schedule})
+
     def test_suite_training_excludes_held_themes_and_preserves_native_limits(self):
         with TemporaryDirectory() as folder:
             common = ["--checkpoint", "source.pt", "--output", folder, "--feature-cache", folder,

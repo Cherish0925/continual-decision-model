@@ -23,7 +23,7 @@ from torch import Tensor, nn
 from cdm.digital import DigitalPolicy, PublicObjectMemory, public_candidates
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .features import FeatureCache, FeatureConfig, batch_features, load_features
-from .full_suite import LIMITS, THEMES
+from .full_suite import LIMITS, SKILLS, THEMES
 from .structured_observation import StructuredDiscoveryWorldEnv
 from .train import create_measurement_log, create_model, load_checkpoint, with_measurement_records
 
@@ -186,6 +186,9 @@ def training_schedule(args, source):
         cases = [(t, d, seed, min(LIMITS[d], args.max_steps or LIMITS[d]))
                  for seed in args.seeds for d in (LIMITS if args.difficulty is None else [args.difficulty])
                  for t in THEMES if t not in held_out]
+        if args.small_skills_first:
+            cases = [(t, "Normal", seed, min(100, args.max_steps or 100))
+                     for seed in args.seeds for t in SKILLS] + cases
     else:
         cases = [(args.scenario or "Reactor Lab", args.difficulty or "Normal",
                   args.seeds[i % len(args.seeds)], args.max_steps or 100) for i in range(args.episodes or 1)]
@@ -208,6 +211,8 @@ def parse_args(argv=None):
     route.add_argument("--scenario", help="One scenario (default: Reactor Lab)")
     route.add_argument("--native-suite", choices=("all", "holdout"),
                        help="Train one shared policy across eight themes or the six non-held-out themes")
+    parser.add_argument("--small-skills-first", action="store_true",
+                        help="Learn the ten basic-operation tasks from environment rewards before the scientific suite")
     parser.add_argument("--difficulty", choices=tuple(LIMITS), help="Default: all difficulties for a suite, Normal otherwise")
     parser.add_argument("--seeds", nargs="+", type=int, required=True, help="Training seeds; official 0--4 are reserved")
     parser.add_argument("--episodes", type=int, help="Single scenario only: cycle through supplied training seeds")
@@ -216,6 +221,7 @@ def parse_args(argv=None):
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--feature-device")
     parser.add_argument("--threads", type=int, default=4)
+    parser.add_argument("--workers", type=int, default=1, help="Independent native worlds per batched policy update")
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--gamma", type=float, default=.99)
     parser.add_argument("--value-weight", type=float, default=.5)
@@ -227,13 +233,17 @@ def parse_args(argv=None):
     args = parser.parse_args(argv)
     if args.random_native_width is not None and (args.random_native_width < 4 or args.random_native_width % 4):
         parser.error("Use a positive width divisible by the four attention heads")
-    if any(x is not None and x <= 0 for x in (args.episodes, args.max_steps, args.sequence_length, args.threads)):
+    if any(x is not None and x <= 0 for x in (args.episodes, args.max_steps, args.sequence_length, args.threads, args.workers)):
         parser.error("Episodes, steps, sequence length and threads must be positive")
     if any(seed < 5 for seed in args.seeds):
         parser.error("Training seeds must be >= 5; official evaluation seeds 0--4 are reserved")
     if args.native_suite and (args.episodes is not None or {2000, 2001}.intersection(args.seeds)
                               or len(set(args.seeds)) != len(args.seeds)):
         parser.error("A suite runs once per distinct training seed; omit --episodes and development seeds 2000/2001")
+    if args.small_skills_first and not args.native_suite:
+        parser.error("--small-skills-first requires --native-suite")
+    if args.workers > 1 and not args.native_suite:
+        parser.error("Parallel learning requires --native-suite")
     if not 0 <= args.gamma <= 1 or args.lr <= 0 or min(args.value_weight, args.entropy_weight) < 0:
         parser.error("Use gamma in [0,1], positive learning rate and nonnegative loss weights")
     if any((args.output / name).exists() for name in ("training.jsonl", "last.pt", "initial.pt")):
@@ -242,6 +252,8 @@ def parse_args(argv=None):
 
 
 def main(argv=None):
+    import faulthandler
+    faulthandler.enable()
     args = parse_args(argv)
     torch.set_num_threads(args.threads)
     torch.manual_seed(args.random_seed)
@@ -260,6 +272,9 @@ def main(argv=None):
     else:
         model, source = load_checkpoint(source_path, args.device)
     training = source["training_args"]
+    if args.workers > 1 or training.get('disable_cudnn_attention', False):
+        torch.backends.cuda.enable_cudnn_sdp(False)
+        source['training_args']['disable_cudnn_attention'] = True
     args.mode = args.mode or training["mode"]
     args.restart_state = training.get("restart_state", False) if args.restart_state is None else args.restart_state
     args.restart_workspace = training.get("restart_workspace", False) if args.restart_workspace is None else args.restart_workspace
@@ -285,6 +300,12 @@ def main(argv=None):
     (args.output / "config.json").write_text(json.dumps(metadata, indent=2) + "\n")
     episodes = []
     try:
+        if args.workers > 1:
+            from .parallel_learning import train_parallel
+            summary = train_parallel(model, critic, optimizer, cache, source, schedule,
+                                     args, arguments, source_hash)
+            print(json.dumps(summary), flush=True)
+            return
         with (args.output / "training.jsonl").open("x") as log:
             for index, (theme, difficulty, seed, limit) in enumerate(schedule):
                 output = args.output / "episodes" / f"episode{index:04d}_seed{seed}"

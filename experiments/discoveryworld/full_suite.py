@@ -22,6 +22,11 @@ THEMES = ("Combinatorial Chemistry", "Archaeology Dating", "Plant Nutrients",
           "Reactor Lab", "Lost in Translation", "Space Sick", "Proteomics",
           "It's (not) Rocket Science!")
 LIMITS = {"Easy": 100, "Normal": 1000, "Challenge": 1000}
+SKILLS = ("Small Skills: Dialog Test", "Small Skills: Pick and Place Test",
+          "Small Skills: Pick and Give Test", "Small Skills: Instrument Measurement Test",
+          "Small Skills: Doors Test", "Small Skills: Doors with Keys Test",
+          "Small Skills: Navigation in a House Test", "Small Skills: Search Test",
+          "Small Skills: Discovery Feed Test", "Small Skills: Moving Agents Test")
 
 
 def official_cases(seeds=range(5)):
@@ -99,6 +104,7 @@ def run_case(job):
                 raise ValueError("No task scorecard after reset")
             start = obs["ui"]["world_steps"]
             if cfg["mode"] == "probe":
+                env.save_initial_rng(path / "initial_rng.json.gz")
                 action = "DISCOVERY_FEED_GET_UPDATES"
                 step = env.step({"action": action})
                 end = step["next_observation"]["ui"]["world_steps"]

@@ -1,4 +1,4 @@
-"""Collect mixed-theme native trajectories with one batched local teacher."""
+"""Collect mixed-theme native trajectories with a local or hosted teacher."""
 from __future__ import annotations
 
 import argparse
@@ -12,15 +12,19 @@ from time import perf_counter
 import traceback
 
 from .adapter import TrajectoryWriter
-from .full_suite import THEMES, LIMITS, simulator_build, write_json
+from .full_suite import THEMES, SKILLS, LIMITS, simulator_build, write_json
 from .structured_observation import StructuredDiscoveryWorldEnv
 
 
-def training_cases(seeds, difficulties=tuple(LIMITS), themes=THEMES, max_steps=None):
+def training_cases(seeds, difficulties=tuple(LIMITS), themes=THEMES, max_steps=None, small_skills=False):
     if any(seed < 100 for seed in seeds):
         raise ValueError("Collection seeds must be outside the official 0--4 evaluation set")
     if max_steps is not None and max_steps < 1:
         raise ValueError("The per-episode action cap must be positive")
+    if small_skills:
+        return [dict(id=f"skill{i:02d}-normal-{seed}", theme=theme, difficulty="Normal",
+                     seed=seed, max_steps=min(max_steps or 100, 100))
+                for seed in seeds for i, theme in enumerate(SKILLS, 1)]
     return [dict(id=f"{i:02d}-{difficulty.lower()}-{seed}", theme=theme, difficulty=difficulty,
                  seed=seed, max_steps=min(max_steps or LIMITS[difficulty], LIMITS[difficulty]))
             for seed in seeds for difficulty in difficulties for i, theme in enumerate(THEMES, 1) if theme in themes]
@@ -124,7 +128,7 @@ def environment_worker(pipe):
 def collect(args):
     from .native_teacher import NativeTeacher
     cases = training_cases(args.seeds, args.difficulties, getattr(args, "themes", THEMES),
-                           getattr(args, "max_steps", None))
+                           getattr(args, "max_steps", None), getattr(args, "small_skills", False))
     args.output.mkdir(parents=True, exist_ok=True)
     rows = []
     pending = []
@@ -136,9 +140,13 @@ def collect(args):
             pending.append(case)
     shared = dict(max_new_tokens=args.max_new_tokens, max_input_tokens=args.max_input_tokens,
                   temperature=args.temperature, reasoning_effort=args.reasoning_effort)
-    if getattr(args, "deepseek_flash", False):
+    hosted = getattr(args, "deepseek_flash", False) or getattr(args, "bailian_flash", False)
+    if hosted:
         from .deepseek_teacher import DeepSeekFlashTeacher
-        teacher = DeepSeekFlashTeacher(**shared)
+        teacher = DeepSeekFlashTeacher(**shared,
+            provider="bailian" if getattr(args, "bailian_flash", False) else "deepseek",
+            model=getattr(args, "teacher_model", None),
+            action_corrections=getattr(args, "action_corrections", 0))
     else:
         teacher = NativeTeacher(args.model, device=args.device, dequantize=args.dequantize, attention=args.attention,
                                 endpoint=args.endpoint, served_model=args.served_model,
@@ -146,7 +154,8 @@ def collect(args):
     collection = args.output / "collection.json"
     earlier = json.loads(collection.read_text()) if collection.exists() else {}
     rng_source = str(args.rng_from.resolve()) if getattr(args, "rng_from", None) else None
-    if earlier and "DeepSeek API" in (earlier.get("teacher", {}).get("inference_backend"), teacher.configuration["inference_backend"]):
+    if earlier and (hosted or earlier.get("teacher", {}).get("inference_backend") in
+                    ("DeepSeek API", "Alibaba Cloud Bailian API")):
         if (not args.resume or earlier.get("teacher") != teacher.configuration
                 or earlier.get("cases") != cases or earlier.get("rng_from") != rng_source):
             raise ValueError("Use a separate collection for a different teacher, case list or hosted configuration")
@@ -268,7 +277,9 @@ def main():
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--seeds", type=int, nargs="+", default=[1000,1001,1002,1003])
     p.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), default=list(LIMITS))
-    p.add_argument("--themes", nargs="+", choices=THEMES, default=THEMES)
+    tasks = p.add_mutually_exclusive_group()
+    tasks.add_argument("--themes", nargs="+", choices=THEMES, default=THEMES)
+    tasks.add_argument("--small-skills", action="store_true", help="Collect the ten native basic-operation tasks, capped at 100 actions")
     p.add_argument("--max-steps", type=int, help="Optional collection cap below the native per-episode limit")
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--max-new-tokens", type=int, default=1024)
@@ -278,9 +289,13 @@ def main():
     backend = p.add_mutually_exclusive_group()
     backend.add_argument("--endpoint", help="Local completion-server URL, including /v1")
     backend.add_argument("--deepseek-flash", action="store_true", help="Use the official DeepSeek chat API")
+    backend.add_argument("--bailian-flash", action="store_true", help="Use Flash through Alibaba Cloud Bailian")
+    p.add_argument("--teacher-model", help="Hosted model ID; defaults to the provider's Flash model")
+    p.add_argument("--action-corrections", type=int, default=0,
+                   help="Return malformed hosted proposals to the teacher before ending an episode; all calls are recorded")
     p.add_argument("--served-model", default="teacher")
     p.add_argument("--api-style", choices=('chat', 'completion'), default='chat')
-    p.add_argument("--reasoning-effort", choices=('none', 'low', 'medium', 'high'), default='low')
+    p.add_argument("--reasoning-effort", choices=('none', 'low', 'medium', 'high', 'max'), default='low')
     p.add_argument("--model-source", default="unsloth/gpt-oss-20b")
     p.add_argument("--temperature", type=float, default=.7)
     p.add_argument("--resume", action="store_true")
