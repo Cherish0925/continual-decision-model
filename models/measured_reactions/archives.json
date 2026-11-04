@@ -1,0 +1,34 @@
+{
+  "seed109.tar.gz": {
+    "bytes": 1206639,
+    "sha256": "4a7a61f0a3064b9fa2ac6b42712fd9e440361253c82c4291feab97ebb4b967ae"
+  },
+  "seed127.tar.gz": {
+    "bytes": 1206327,
+    "sha256": "6a905249d2f28d50bbcad854cc8bcdbc5a3ea2e8486b487d925b8f8e83cb8c68"
+  },
+  "seed149.tar.gz": {
+    "bytes": 1206629,
+    "sha256": "b784a054c1f270a25a8af53ac590d651f368db0456d698f0a66d8e632b2b4e5e"
+  },
+  "seed173.tar.gz": {
+    "bytes": 1206691,
+    "sha256": "91435f6709ff39ad27e0ea9b6ccc011ed775707e84727d49969cef071849afb9"
+  },
+  "seed197.tar.gz": {
+    "bytes": 1206499,
+    "sha256": "2451ad1f03f74a3b4fa5c46fe0656887706c152d63a648fa1ae14852026eed0d"
+  },
+  "seed223.tar.gz": {
+    "bytes": 1206347,
+    "sha256": "92e94c79cf525c01a1961f21f0e8ac64c1b04eb68a03a1e2df552262e5206230"
+  },
+  "seed41.tar.gz": {
+    "bytes": 1206508,
+    "sha256": "70e4a400d148b67d468cbf0131006255854ee2823275d1fd57c1a659921c5723"
+  },
+  "seed73.tar.gz": {
+    "bytes": 1206330,
+    "sha256": "9050f7b32a72f0e6c8ba4b7a8744da093e7d5ccdcda58013dba0d5136d67ae63"
+  }
+}
