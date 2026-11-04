@@ -16,6 +16,7 @@ neural = ["torch>=2.11,<2.15"]
 multimodal = ["torch>=2.11,<2.15", "torchvision>=0.26", "transformers==5.4.0", "sentencepiece>=0.2,<0.3", "pillow>=10"]
 discoveryworld = ["discoveryworld @ git+https://github.com/allenai/discoveryworld.git@fd591323920be0d3786ef350955de1945aa571e5"]
 plots = ["matplotlib>=3.8"]
+measured-reactions = ["pyarrow>=14", "openpyxl>=3.1"]
 
 [tool.setuptools.packages.find]
 include = ["cdm*"]

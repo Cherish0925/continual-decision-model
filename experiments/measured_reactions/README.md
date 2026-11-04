@@ -1,0 +1,74 @@
+# Choosing measurements on experimental reaction screens
+
+Can a small policy use the result of one experiment to choose a better next one on an unfamiliar reaction? Given the reagents on a recorded screen, choose eight distinct conditions. After each choice, only the selected measurement is returned. The objective is the best measured response found within the eight choices. This is retrospective selection among measured conditions: it does not simulate an unrecorded reaction or operate laboratory hardware.
+
+## Data and separation
+
+The [Roche study](https://doi.org/10.1021/acscentsci.5c02031) reports experimental screening on drug-like molecules. We use [the authors' v1 table](https://github.com/georg-wuitschik-Roche/zScore-App/blob/a7fa5d0311218cfa7e4a743be92be05bb6fb8824/frontend/public/data/v1.parquet): 67,202 rows and 42 reaction types. The response is reduced product peak area on a 0–100 scale, not isolated chemical yield. Each screen holds the notebook, plate, reaction type, two functional-group annotations and readout field fixed. Conditions describe base, catalyst, ligand, additive, coupling reagent and up to three solvents. Indistinguishable conditions are represented by the median recorded response. We keep screens with at least 12 distinct conditions, including flat screens.
+
+| Split | Reaction types | Notebooks | Screens |
+| --- | ---: | ---: | ---: |
+| Train | 22 | 297 | 877 |
+| Development | 8 | 134 | 350 |
+| Final | 7 | 50 | 173 |
+
+The 1,400 retained screens contain 48,586 condition values from 53,647 measurement rows. Whole reaction types and notebooks are disjoint. The split depends on names and notebook counts, never responses. No model input contains a notebook ID, well position, reaction type, full-screen rank, z-score or unrequested measurement. All policies get the same first random probe and shuffled menu for a given screen and start. Source rows are historical and available menus were chosen by chemists; this protocol does not estimate performance on arbitrary reagents.
+
+## What is trained
+
+The neural policies use the repository's [GRU and Transformer workspace](../../cdm/core.py) and [experimental action interface](../../cdm/active_experiment.py). A fixed hash encodes each public reagent name and role, without fitting a vocabulary to target responses. The policy learns from its own selected measurements. Actor–critic training uses the increase in the best response; an auxiliary target is the response to the next selected experiment, predicted before it is revealed. No demonstration teacher or unselected outcome is used for these neural losses.
+
+| Policy | Access to returned measurements |
+| --- | --- |
+| CDM | The GRU and workspace ingest each new event. The workspace can read earlier events from this screen. |
+| GRU | Same stream of actions and readings, separate training, no workspace or retrieval. |
+| CDM, no readings | Same CDM architecture, trained separately with the response amplitudes hidden. Actions, remaining budget and selection reward during training are retained. |
+| Conditional CDM | The same core plus a [learned action similarity and prior](../../cdm/conditional_measurement.py). A ridge solve propagates measured residuals to other candidates. The predicted mean and remaining uncertainty directly affect scores; the core learns the additional value for later choices. |
+| Conditional CDM, no readings | The same conditional architecture, separately trained. Pending uncertainty can depend on selected locations, but no response amplitude enters the policy. |
+
+For the same-weight comparison, also run each trained CDM unmodified with response amplitudes hidden. The classical references are random selection, a static reagent prior estimated from all source training labels, categorical kernel UCB with that prior, the same kernel with its mean updates disabled (diversity alone), and a local kernel starting at a constant mean and using no training labels. The methods share public reagent descriptions. The neural policies use hashed descriptions; the classical kernel tests literal equality. Recurrent and workspace policies share a query budget; their compute costs differ.
+
+## Source development results
+
+Eight seeds, five separately trained policies per seed, width 32 and four slots. Each ran 160 updates of 16 screens with eight measurements: **819,200 training lookups across 40 checkpoints**. Repeated selections are not new laboratory measurements. Within each screen, best-so-far peak area is averaged over four common starts; screens are averaged within notebook, then notebooks within reaction type, then types equally.
+
+| Policy | Best after 4 | Best after 8 |
+| --- | ---: | ---: |
+| Random | 27.89 | 31.67 |
+| Static source prior | 28.73 | 32.49 |
+| Kernel UCB, source prior | 27.29 | 32.63 |
+| Local kernel, no source training | 27.23 | **32.74** |
+| GRU | 26.98 | 31.01 |
+| CDM | 26.88 | 30.95 |
+| Conditional CDM | 27.03 | **31.92** |
+
+Hiding readings at deployment changed the original CDM's final score by less than 0.001 points on average. With the learned conditioning path, exposing the readings gained **0.60 points** over the very same weights without readings (7 of 8 seeds). The first two seeds motivated that comparison; the six further seeds averaged +0.63. The equal-budget separately trained conditional model without readings scored 30.31. These are development results. Useful feedback does not establish superiority to a simpler optimizer: the local kernel still leads here.
+
+[Per-seed and per-family results](results/development.json) · [All matched curves](results/development_curves.npz) · [Frozen checkpoint digests](results/endpoints.json). The curve array is ordered by condition, matched screen/start, then measurement.
+
+## Frozen transfer to other laboratories
+
+Use the same forty fitted policies, fixed condition encoder, eight-query budget and four common starts. Evaluate two distinct source workbooks from the [reaction-yields archive](https://github.com/rxn4chemistry/rxn_yields/tree/d9e6b87ce1b881978490d68bfc00021e3b48127a/data):
+
+- [Ahneman et al.](https://doi.org/10.1126/science.aar5169): one screen per aryl halide, actions described by ligand, base and additive; use the reported yield. Read only `FullCV_01`; the other shuffled sheets repeat records.
+- [Perera et al.](https://doi.org/10.1126/science.aap9112): one screen per reactant pair, actions described by catalyst, ligand, base and solvent; use the reported UV product-area response.
+
+The adapter maps published columns to existing reagent roles, trims outer whitespace and does not learn reagent identities or transform chemical structures. Neither weights, source priors nor hyperparameters are fit on these datasets; a reading may change predictions within a screen. Reagent nomenclature and response scales differ, so report each study separately. These are new laboratories and screens, not a claim that both reaction families were absent from source training.
+
+## Run
+
+From the repository root, install the `neural` and `measured-reactions` extras and obtain the two upstream repositories at the revisions linked above. The preparation and transfer commands check the source file hashes. Raw experimental tables are not redistributed.
+
+```bash
+python -m experiments.measured_reactions.prepare /path/to/zScore-App/frontend/public/data/v1.parquet runs/measured_reactions/table.npz
+python -m experiments.measured_reactions.campaign train-dev --data runs/measured_reactions/table.npz --out runs/measured_reactions/development --devices cpu,cpu,cpu,cpu --seeds 41,73,109,127,149,173,197,223 --width 32 --slots 4 --batch 16 --updates 160
+python -m experiments.measured_reactions.report --runs runs/measured_reactions/development --data runs/measured_reactions/table.npz --out runs/measured_reactions/results
+python -m experiments.measured_reactions.external --source-table runs/measured_reactions/table.npz --runs runs/measured_reactions/development --ahneman /path/to/rxn_yields/data/Buchwald-Hartwig/Dreher_and_Doyle_input_data.xlsx --perera /path/to/rxn_yields/data/Suzuki-Miyaura/aap9112_Data_File_S1.xlsx --out runs/measured_reactions/results
+```
+
+The GPU campaign defaults to width 128, eight slots and eight seeds, with 1,000 updates of 64 parallel screens per policy: **40 independent jobs, 20,480,000 training lookups**. `plan` prints the budget without launching work; `train-dev` trains or reuses matching completed jobs and scores development only. `test` is a separate command for a fixed set of endpoints. Keep the seven final source families out of policy and hyperparameter selection. For two servers, assign disjoint `--seeds` and let each name its own GPUs; only one machine needs to run the classical references. A native checkpoint may initialize the shared core with `--init-native`; the experimental readout is then trained on the source screens, so this is a different study from the randomly initialized one above.
+
+```bash
+python -m experiments.measured_reactions.campaign plan --data runs/measured_reactions/table.npz --out runs/measured_reactions/scale
+python -m experiments.measured_reactions.campaign train-dev --data runs/measured_reactions/table.npz --out runs/measured_reactions/scale --devices cuda:0,cuda:1
+```
