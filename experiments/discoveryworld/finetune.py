@@ -23,7 +23,9 @@ from torch import Tensor, nn
 from cdm.digital import DigitalPolicy, PublicObjectMemory, public_candidates
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .features import FeatureCache, FeatureConfig, batch_features, load_features
-from .train import create_measurement_log, load_checkpoint, with_measurement_records
+from .full_suite import LIMITS, THEMES
+from .structured_observation import StructuredDiscoveryWorldEnv
+from .train import create_measurement_log, create_model, load_checkpoint, with_measurement_records
 
 
 class StateCritic(nn.Module):
@@ -173,17 +175,43 @@ def save_checkpoint(model: DigitalPolicy, critic: StateCritic, optimizer, source
                 "width": model.config.width, "episodes": len(episodes)}, output / "critic.pt")
 
 
+def training_schedule(args, source):
+    """One pass over native training worlds, or the original single-scenario run."""
+    held_out = set()
+    if args.native_suite:
+        protocol = json.loads(Path(__file__).with_name("native_learning.json").read_text())
+        held_out = set(protocol["theme_holdout"]) if args.native_suite == "holdout" else set()
+        if held_out.intersection(row[0] for row in source.get("train_instances", [])):
+            raise ValueError("The source policy already trained on an excluded theme; use its six-theme counterpart")
+        cases = [(t, d, seed, min(LIMITS[d], args.max_steps or LIMITS[d]))
+                 for seed in args.seeds for d in (LIMITS if args.difficulty is None else [args.difficulty])
+                 for t in THEMES if t not in held_out]
+    else:
+        cases = [(args.scenario or "Reactor Lab", args.difficulty or "Normal",
+                  args.seeds[i % len(args.seeds)], args.max_steps or 100) for i in range(args.episodes or 1)]
+    reserved = {tuple(identity) for identity in source.get("validation_instances", [])}
+    if any((t, d, seed) in reserved for t, d, seed, _ in cases):
+        raise ValueError("Fine-tuning seeds overlap the checkpoint's held-out validation instances")
+    return cases
+
+
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", required=True, type=Path)
+    start = parser.add_mutually_exclusive_group(required=True)
+    start.add_argument("--checkpoint", type=Path, help="A compatible native-action policy")
+    start.add_argument("--random-native-width", type=int, metavar="WIDTH",
+                       help="Random native policy, fixed lexical inputs, no demonstrations or pretrained encoder")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--feature-cache", required=True, type=Path)
     parser.add_argument("--encoder-path", type=Path)
-    parser.add_argument("--scenario", default="Reactor Lab")
-    parser.add_argument("--difficulty", default="Normal")
+    route = parser.add_mutually_exclusive_group()
+    route.add_argument("--scenario", help="One scenario (default: Reactor Lab)")
+    route.add_argument("--native-suite", choices=("all", "holdout"),
+                       help="Train one shared policy across eight themes or the six non-held-out themes")
+    parser.add_argument("--difficulty", choices=tuple(LIMITS), help="Default: all difficulties for a suite, Normal otherwise")
     parser.add_argument("--seeds", nargs="+", type=int, required=True, help="Training seeds; official 0--4 are reserved")
-    parser.add_argument("--episodes", type=int, default=1, help="Cycle through supplied training seeds")
-    parser.add_argument("--max-steps", type=int, default=100)
+    parser.add_argument("--episodes", type=int, help="Single scenario only: cycle through supplied training seeds")
+    parser.add_argument("--max-steps", type=int, help="Per-episode cap (default: native suite limits, or 100 for one scenario)")
     parser.add_argument("--sequence-length", type=int, default=16)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--feature-device")
@@ -197,13 +225,18 @@ def parse_args(argv=None):
     parser.add_argument("--restart-state", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--restart-workspace", action=argparse.BooleanOptionalAction, default=None)
     args = parser.parse_args(argv)
-    if min(args.episodes, args.max_steps, args.sequence_length, args.threads) <= 0:
+    if args.random_native_width is not None and (args.random_native_width < 4 or args.random_native_width % 4):
+        parser.error("Use a positive width divisible by the four attention heads")
+    if any(x is not None and x <= 0 for x in (args.episodes, args.max_steps, args.sequence_length, args.threads)):
         parser.error("Episodes, steps, sequence length and threads must be positive")
     if any(seed < 5 for seed in args.seeds):
         parser.error("Training seeds must be >= 5; official evaluation seeds 0--4 are reserved")
+    if args.native_suite and (args.episodes is not None or {2000, 2001}.intersection(args.seeds)
+                              or len(set(args.seeds)) != len(args.seeds)):
+        parser.error("A suite runs once per distinct training seed; omit --episodes and development seeds 2000/2001")
     if not 0 <= args.gamma <= 1 or args.lr <= 0 or min(args.value_weight, args.entropy_weight) < 0:
         parser.error("Use gamma in [0,1], positive learning rate and nonnegative loss weights")
-    if (args.output / "training.jsonl").exists() or (args.output / "last.pt").exists():
+    if any((args.output / name).exists() for name in ("training.jsonl", "last.pt", "initial.pt")):
         parser.error("Choose a new fine-tuning output directory")
     return args
 
@@ -212,14 +245,25 @@ def main(argv=None):
     args = parse_args(argv)
     torch.set_num_threads(args.threads)
     torch.manual_seed(args.random_seed)
-    model, source = load_checkpoint(args.checkpoint, args.device)
+    source_path = args.checkpoint
+    if source_path is None:
+        feature_config = FeatureConfig(mode="lexical", measurement_memory=True, object_relations=True)
+        specification = argparse.Namespace(width=args.random_native_width, slots=8, heads=4, refinements=1,
+            initial_checkpoint=None, measurement_memory=True, object_relations=True)
+        model = create_model(specification, feature_config.lexical_dim, feature_config.lexical_dim).to(args.device)
+        source = dict(model=model.state_dict(), core_config=asdict(model.core.config), digital_config=asdict(model.config),
+                      features=asdict(feature_config), training_args={"mode": args.mode or "cdm"},
+                      train_instances=[], validation_instances=[], epoch=0)
+        args.output.mkdir(parents=True, exist_ok=True)
+        source_path = args.output / "initial.pt"
+        torch.save(source, source_path)
+    else:
+        model, source = load_checkpoint(source_path, args.device)
     training = source["training_args"]
     args.mode = args.mode or training["mode"]
     args.restart_state = training.get("restart_state", False) if args.restart_state is None else args.restart_state
     args.restart_workspace = training.get("restart_workspace", False) if args.restart_workspace is None else args.restart_workspace
-    reserved = {tuple(identity) for identity in source.get("validation_instances", [])}
-    if any((args.scenario, args.difficulty, seed) in reserved for seed in args.seeds):
-        raise ValueError("Fine-tuning seeds overlap the checkpoint's held-out validation instances")
+    schedule = training_schedule(args, source)
     critic = StateCritic(model.config.width).to(args.device)
     optimizer = torch.optim.AdamW([*model.parameters(), *critic.parameters()], lr=args.lr)
     # Legacy checkpoints predate explicit clock metadata. Keep their original
@@ -229,9 +273,11 @@ def main(argv=None):
                          args.feature_device or args.device, args.encoder_path)
     source = {**source, "features": asdict(feature_config)}
     args.output.mkdir(parents=True, exist_ok=True)
-    source_hash = sha256(args.checkpoint.read_bytes()).hexdigest()
+    source_hash = sha256(source_path.read_bytes()).hexdigest()
     arguments = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
     metadata = {"args": arguments, "source_sha256": source_hash,
+                "schedule": [dict(theme=t, difficulty=d, seed=s, action_limit=a) for t, d, s, a in schedule],
+                "observation": "structured" if args.native_suite else "png",
                 "features": asdict(feature_config),
                 "training_phase": "on_policy_actor_critic", "policy_updates_per_window": 1,
                 "refinements": model.config.refinements, "critic": "separate_training_state_head",
@@ -240,13 +286,12 @@ def main(argv=None):
     episodes = []
     try:
         with (args.output / "training.jsonl").open("x") as log:
-            for index in range(args.episodes):
-                seed = args.seeds[index % len(args.seeds)]
+            for index, (theme, difficulty, seed, limit) in enumerate(schedule):
                 output = args.output / "episodes" / f"episode{index:04d}_seed{seed}"
-                environment = DiscoveryWorldEnv(output, args.max_steps)
+                environment = (StructuredDiscoveryWorldEnv if args.native_suite else DiscoveryWorldEnv)(output, limit)
                 with (output / "simulator.log").open("w") as simulator_log, contextlib.redirect_stdout(simulator_log):
                     result = run_episode(model, critic, optimizer, cache, environment,
-                                         scenario=args.scenario, difficulty=args.difficulty, seed=seed,
+                                         scenario=theme, difficulty=difficulty, seed=seed,
                                          sequence_length=args.sequence_length, gamma=args.gamma,
                                          value_weight=args.value_weight, entropy_weight=args.entropy_weight,
                                          mode=args.mode, persistent=not args.restart_state,

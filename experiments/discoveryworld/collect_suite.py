@@ -16,12 +16,14 @@ from .full_suite import THEMES, LIMITS, simulator_build, write_json
 from .structured_observation import StructuredDiscoveryWorldEnv
 
 
-def training_cases(seeds, difficulties=tuple(LIMITS)):
+def training_cases(seeds, difficulties=tuple(LIMITS), themes=THEMES, max_steps=None):
     if any(seed < 100 for seed in seeds):
         raise ValueError("Collection seeds must be outside the official 0--4 evaluation set")
-    return [dict(id=f"{i:02d}-{difficulty.lower()}-{seed}", theme=theme,
-                 difficulty=difficulty, seed=seed, max_steps=LIMITS[difficulty])
-            for seed in seeds for difficulty in difficulties for i, theme in enumerate(THEMES, 1)]
+    if max_steps is not None and max_steps < 1:
+        raise ValueError("The per-episode action cap must be positive")
+    return [dict(id=f"{i:02d}-{difficulty.lower()}-{seed}", theme=theme, difficulty=difficulty,
+                 seed=seed, max_steps=min(max_steps or LIMITS[difficulty], LIMITS[difficulty]))
+            for seed in seeds for difficulty in difficulties for i, theme in enumerate(THEMES, 1) if theme in themes]
 
 
 def environment_worker(pipe):
@@ -54,7 +56,7 @@ def environment_worker(pipe):
             if command[0] == "close":
                 break
             if command[0] == "reset":
-                case, root, resume = command[1:]
+                case, root, resume, rng_source = command[1:]
                 path = Path(root) / case["id"]
                 path.mkdir(parents=True, exist_ok=resume)
                 recorded = path / 'trajectory.jsonl'
@@ -75,6 +77,8 @@ def environment_worker(pipe):
                         env.restore_initial_rng(path / "initial_rng.json.gz")
                         env.episode_id = prior_metadata['episode_id']
                     else:
+                        if rng_source:
+                            env.restore_initial_rng(Path(rng_source) / case["id"] / "initial_rng.json.gz")
                         env.save_initial_rng(path / "initial_rng.json.gz")
                     for row in prior:
                         replayed = env.step(row['action'])
@@ -119,7 +123,8 @@ def environment_worker(pipe):
 
 def collect(args):
     from .native_teacher import NativeTeacher
-    cases = training_cases(args.seeds, args.difficulties)
+    cases = training_cases(args.seeds, args.difficulties, getattr(args, "themes", THEMES),
+                           getattr(args, "max_steps", None))
     args.output.mkdir(parents=True, exist_ok=True)
     rows = []
     pending = []
@@ -129,19 +134,31 @@ def collect(args):
             rows.append(row)
         else:
             pending.append(case)
-    teacher = NativeTeacher(args.model, device=args.device, max_new_tokens=args.max_new_tokens,
-                            max_input_tokens=args.max_input_tokens,
-                            dequantize=args.dequantize, attention=args.attention,
-                            endpoint=args.endpoint, served_model=args.served_model,
-                            temperature=args.temperature, model_source=args.model_source,
-                            reasoning_effort=args.reasoning_effort, api_style=args.api_style)
+    shared = dict(max_new_tokens=args.max_new_tokens, max_input_tokens=args.max_input_tokens,
+                  temperature=args.temperature, reasoning_effort=args.reasoning_effort)
+    if getattr(args, "deepseek_flash", False):
+        from .deepseek_teacher import DeepSeekFlashTeacher
+        teacher = DeepSeekFlashTeacher(**shared)
+    else:
+        teacher = NativeTeacher(args.model, device=args.device, dequantize=args.dequantize, attention=args.attention,
+                                endpoint=args.endpoint, served_model=args.served_model,
+                                model_source=args.model_source, api_style=args.api_style, **shared)
     collection = args.output / "collection.json"
-    earlier = json.loads(collection.read_text()) if args.resume and collection.exists() else {}
+    earlier = json.loads(collection.read_text()) if collection.exists() else {}
+    rng_source = str(args.rng_from.resolve()) if getattr(args, "rng_from", None) else None
+    if earlier and "DeepSeek API" in (earlier.get("teacher", {}).get("inference_backend"), teacher.configuration["inference_backend"]):
+        if (not args.resume or earlier.get("teacher") != teacher.configuration
+                or earlier.get("cases") != cases or earlier.get("rng_from") != rng_source):
+            raise ValueError("Use a separate collection for a different teacher, case list or hosted configuration")
+    if not args.resume:
+        earlier = {}
     attempts = earlier.get('previous_attempts', [])
     if earlier:
         attempts.append({key: value for key, value in earlier.items() if key != 'previous_attempts'})
     write_json(collection, dict(teacher=teacher.configuration, previous_attempts=attempts,
-        cases=cases, status='running', simulator=simulator_build(), split="new native instances; law disjointness not asserted"))
+        cases=cases, status='running', simulator=simulator_build(), rng_from=rng_source,
+        split="new native instances; law disjointness not asserted"))
+    args.collection_started = True
     ctx = mp.get_context("spawn")
     workers = []
     next_case = 0
@@ -153,7 +170,7 @@ def collect(args):
             return
         case = pending[next_case]
         next_case += 1
-        worker["pipe"].send(("reset", case, str(args.output), args.resume))
+        worker["pipe"].send(("reset", case, str(args.output), args.resume, rng_source))
         message = worker["pipe"].recv()
         if "error" in message:
             raise RuntimeError(message["error"])
@@ -192,7 +209,7 @@ def collect(args):
             else:
                 w['observation'] = response['observation']
 
-        if args.endpoint:
+        if teacher.endpoint:
             # Each environment advances as soon as its own action is ready.
             # The inference server batches requests continuously; a long
             # generation does not hold up all the other scientific episodes.
@@ -251,24 +268,29 @@ def main():
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--seeds", type=int, nargs="+", default=[1000,1001,1002,1003])
     p.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), default=list(LIMITS))
+    p.add_argument("--themes", nargs="+", choices=THEMES, default=THEMES)
+    p.add_argument("--max-steps", type=int, help="Optional collection cap below the native per-episode limit")
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--max-new-tokens", type=int, default=1024)
     p.add_argument("--max-input-tokens", type=int, default=22000)
     p.add_argument("--dequantize", action="store_true")
     p.add_argument("--attention", default="flex_attention")
-    p.add_argument("--endpoint", help="Local completion-server URL, including /v1")
+    backend = p.add_mutually_exclusive_group()
+    backend.add_argument("--endpoint", help="Local completion-server URL, including /v1")
+    backend.add_argument("--deepseek-flash", action="store_true", help="Use the official DeepSeek chat API")
     p.add_argument("--served-model", default="teacher")
     p.add_argument("--api-style", choices=('chat', 'completion'), default='chat')
     p.add_argument("--reasoning-effort", choices=('none', 'low', 'medium', 'high'), default='low')
     p.add_argument("--model-source", default="unsloth/gpt-oss-20b")
     p.add_argument("--temperature", type=float, default=.7)
     p.add_argument("--resume", action="store_true")
+    p.add_argument("--rng-from", type=Path, help="Use another teacher collection's initial simulator RNG snapshots")
     args=p.parse_args()
     try:
         collect(args)
     except Exception as error:
         path = args.output / 'collection.json'
-        if path.exists():
+        if getattr(args, "collection_started", False) and path.exists():
             metadata = json.loads(path.read_text())
             write_json(path, {**metadata, 'status': 'error', 'error': f'{type(error).__name__}: {error}'})
         raise

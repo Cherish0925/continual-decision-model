@@ -10,6 +10,8 @@ coverage from a whole-theme holdout of Plant Nutrients and Lost in Translation.
 Both compare CDM with a separately trained recurrent policy; two initial cores
 give eight declared trainings. No new official-case CDM score is available.
 
+A separate [teacher-free training run and hosted teacher option](experiments/discoveryworld/FULL_SUITE.md#hosted-demonstrations-and-teacher-free-learning) now use the same native action interface. In the [random-initialization run](experiments/discoveryworld/results/native_actor_cold_start.json), only one of 256 actions changed task progress; 32 policy updates produced no completed task. The next comparison is whether demonstrations help the student reach informative experiments and improve subsequent independent performance.
+
 Initial local teacher collection reached all eight themes but yielded many
 interrupted or ineffective trajectories. These are data-collection attempts,
 not model results. Actual feedback and failed operations remain in the records;

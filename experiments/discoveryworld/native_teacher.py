@@ -157,9 +157,10 @@ class NativeTeacher:
         else:
             text = self.tokenizer.apply_chat_template(messages, tokenize=False,
                 add_generation_prompt=True, reasoning_effort=self.reasoning_effort)
-        count = len(self.tokenizer.encode(text, add_special_tokens=False))
-        if count > self.max_input_tokens:
-            raise ValueError(f"Public input needs {count} tokens, exceeding {self.max_input_tokens}")
+        if self.tokenizer is not None:
+            count = len(self.tokenizer.encode(text, add_special_tokens=False))
+            if count > self.max_input_tokens:
+                raise ValueError(f"Public input needs {count} tokens, exceeding {self.max_input_tokens}")
         return text
 
     @staticmethod
@@ -257,6 +258,9 @@ class NativeTeacher:
             row = dict(raw_output=raw, generated_tokens=length, batch_seconds=seconds,
                        batch_size=len(prompts), model_source=self.configuration['model_source'],
                        prompt_version=self.configuration['prompt_version'], **details)
+            if "error" in row:
+                result.append(row)
+                continue
             try:
                 row["action"], row["memory"] = self.parse(raw)
                 if self.candidate_actions:

@@ -15,11 +15,26 @@ from cdm.digital import DigitalConfig, DigitalPolicy
 from experiments.discoveryworld.adapter import DiscoveryWorldEnv
 from experiments.discoveryworld.features import FeatureCache, FeatureConfig
 from experiments.discoveryworld.finetune import (StateCritic, discounted_returns, parse_args,
-                                                run_episode, save_checkpoint)
+                                                run_episode, save_checkpoint, training_schedule)
 from experiments.discoveryworld.train import load_checkpoint
 
 
 class FineTuneTests(unittest.TestCase):
+    def test_suite_training_excludes_held_themes_and_preserves_native_limits(self):
+        with TemporaryDirectory() as folder:
+            common = ["--checkpoint", "source.pt", "--output", folder, "--feature-cache", folder,
+                      "--seeds", "3001", "--native-suite", "holdout"]
+            args = parse_args(common)
+            schedule = training_schedule(args, {})
+            self.assertEqual(len(set(schedule)), 18)
+            self.assertFalse({"Plant Nutrients", "Lost in Translation"} & {t for t, _, _, _ in schedule})
+            self.assertTrue(all(limit == (100 if d == "Easy" else 1000) for _, d, _, limit in schedule))
+            with self.assertRaises(ValueError):
+                training_schedule(args, {"train_instances": [["Lost in Translation", "Easy", 1000]]})
+            t, d, seed, _ = schedule[0]
+            with self.assertRaises(ValueError):
+                training_schedule(args, {"validation_instances": [[t, d, seed]]})
+
     def test_terminal_and_time_limit_returns_are_distinct_and_targets_detached(self):
         bootstrap = torch.tensor(4.0, requires_grad=True)
         limited = discounted_returns([1.0, 2.0], [False, False], bootstrap, .9)

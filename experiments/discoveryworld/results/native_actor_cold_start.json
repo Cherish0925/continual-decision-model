@@ -1,0 +1,89 @@
+{
+  "purpose": "Native teacher-free actor-critic execution, not a held-out performance comparison",
+  "simulator": "fd591323920be0d3786ef350955de1945aa571e5 (Python 3.12 rocket integer-bounds patch)",
+  "initialization": "Random action policy and critic, fixed lexical/numeric observations, no pretrained weights or demonstrations",
+  "command": "python -m experiments.discoveryworld.finetune --random-native-width 32 --native-suite all --difficulty Easy --seeds 3007 --max-steps 32 --sequence-length 8 --threads 2 --device cpu --random-seed 707 --feature-cache runs/native_rl/features --output runs/native_rl/cold",
+  "capacity": {
+    "width": 32,
+    "workspace_slots": 8,
+    "attention_heads": 4
+  },
+  "totals": {
+    "episodes": 8,
+    "native_actions": 256,
+    "policy_updates": 32,
+    "nonzero_progress_steps": 1,
+    "completions": 0
+  },
+  "action_head": {
+    "tensor": "score.3.weight",
+    "l2_weight_change": 0.0010497684124857187
+  },
+  "initial_checkpoint_sha256": "1f0743c41e61efd810ccbb93422d659a1f987f4b9fed808c3d34390563c048f5",
+  "per_theme": [
+    {
+      "theme": "Combinatorial Chemistry",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 1,
+      "net_progress": 0.08333333333333333,
+      "completed": false
+    },
+    {
+      "theme": "Archaeology Dating",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "Plant Nutrients",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "Reactor Lab",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "Lost in Translation",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "Space Sick",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "Proteomics",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    },
+    {
+      "theme": "It's (not) Rocket Science!",
+      "actions": 32,
+      "updates": 4,
+      "nonzero_progress_steps": 0,
+      "net_progress": 0.0,
+      "completed": false
+    }
+  ]
+}

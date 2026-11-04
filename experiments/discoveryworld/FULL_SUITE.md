@@ -131,4 +131,28 @@ The queue waits for the declared collection attempts to end, retains nonempty tr
 
 The [initial pipeline result](results/native_pipeline.json) used incomplete teacher traces for one training epoch. Of 741 training transitions, 385 supplied an action to imitate. On 342 development transitions the policy matched 52 of 156 labeled actions. Executing the policy independently at development seed 2001 gave **0/8** Easy completions: seven themes had zero procedural progress, and Reactor Lab reached 0.18. The eight formal training runs are a separate comparison.
 
-In this comparison, the [trainer](train.py) learns from the recorded actions and their observed consequences. During [independent execution](evaluate.py), observations change the policy's recurrent state and measurement history, but the weights remain fixed. Learning a better policy from the consequences of the student's own actions would require a separate training stage; it is not part of the eight-run queue.
+In this comparison, the [trainer](train.py) learns from the recorded actions and their observed consequences. During [independent execution](evaluate.py), observations change the policy's recurrent state and measurement history, but the weights remain fixed. The optional actor–critic stage below uses the student's own actions. It runs separately from the eight-run imitation comparison.
+
+### Hosted demonstrations and teacher-free learning
+
+[DeepSeek-V4.1-Flash-1017](https://api-docs.deepseek.com/news/news261017/) can be selected as a demonstration teacher. The hosted and local collectors present the same public observations, action arguments, and measurement history. The hosted collector uses the official `deepseek-flash` alias, validates each returned JSON action against the displayed choices, and records the service's model identifier, token use, and finish reason. The input-token cap is applied to the count returned by the service; an over-budget call is recorded without executing its action. Install the `hosted-teacher` extra and provide `DEEPSEEK_API_KEY` in the process environment. For example:
+
+```sh
+python -m experiments.discoveryworld.collect_suite --deepseek-flash \
+  --themes "Archaeology Dating" "Proteomics" --difficulties Easy --seeds 3011 \
+  --max-steps 60 --workers 2 --output runs/native_teachers/flash
+```
+
+For a paired teacher comparison, run the local teacher on the same cases and cap first, then add `--rng-from runs/native_teachers/local` to the hosted command. Use separate output directories. Compare tasks completed and actions used, then test whether the resulting demonstrations help the **student acting alone**. No hosted-teacher task score is reported here.
+
+The [on-policy trainer](finetune.py) samples an action, executes it, and updates the shared policy using subsequent changes in simulator task progress. One policy, critic, and optimizer span the entire schedule; episode-specific state resets at each new world. A compatible native checkpoint can start the run without further demonstrations:
+
+```sh
+python -m experiments.discoveryworld.finetune --checkpoint "$NATIVE_POLICY" \
+  --native-suite all --seeds 3008 3009 --device cuda:0 --encoder-path data/cache/siglip2 \
+  --feature-cache runs/native_rl/features --output runs/native_rl/warm
+```
+
+`--native-suite holdout` omits Plant Nutrients and Lost in Translation; start from the corresponding six-theme checkpoint for a transfer comparison. To learn without *any* demonstrations or pretrained weights, replace the checkpoint argument with `--random-native-width 32`: this initializes the policy and critic randomly and uses fixed lexical and numeric features. The [eight-theme CPU run](results/native_actor_cold_start.json) records all case totals and the change in action weights. It tests learning directly from interactions; it does not measure a trained model's benchmark performance.
+
+An experiment generator would add a different capability. For example, let a proposer find two candidate laws that agree on the measurements so far; let the solver choose the experiment that separates them. The training world supplies the outcome. Compare this learned curriculum against a fixed one by how quickly the next policy learns new laws at the same interaction budget. The current trainer does not change its curriculum or learning rule.
