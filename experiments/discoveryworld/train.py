@@ -150,7 +150,7 @@ def action_run_weights(transitions: list[dict]) -> tuple[list[float], list[bool]
         start = stop
     return weights, exits
 
-def prepare_episodes(episodes: list[Episode], cache: FeatureCache) -> list[PreparedEpisode]:
+def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_failed_actions=False) -> list[PreparedEpisode]:
     prepared = []
     for episode in episodes:
         steps = []
@@ -161,16 +161,20 @@ def prepare_episodes(episodes: list[Episode], cache: FeatureCache) -> list[Prepa
             observation = with_measurement_records(memory.observe(public_observation(episode, row)), measurement_log,
                                                    object_relations=cache.config.object_relations)
             candidates = public_candidates(observation)
+            failed = not row.get("action_result", {}).get("success", False)
             def candidate_index(action: dict, label: str) -> int:
                 target = canonical_action(action)
                 matches = [i for i, candidate in enumerate(candidates) if canonical_action(candidate.action) == target]
+                if not matches and allow_failed_actions and label == "executed":
+                    return -1
                 if len(matches) != 1:
                     raise ValueError(f"{episode.path}:{row['index']}: {label} action {target} has "
                                      f"{len(matches)} public candidates; fix the shared action generator")
                 return matches[0]
 
             executed = candidate_index(row["action"], "executed")
-            expert = candidate_index(row.get("expert_action", row["action"]), "expert")
+            expert = -100 if allow_failed_actions and (failed or executed < 0) and "expert_action" not in row else \
+                candidate_index(row.get("expert_action", row["action"]), "expert")
             feature_path = cache.encode(observation, candidates, episode.path.parent)
             steps.append(PreparedStep(str(feature_path), expert, executed, outcome_target(row),
                                       run_weights[row_index], exits[row_index]))
@@ -216,7 +220,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
     order = list(range(len(episodes)))
     if training:
         random.Random(shuffle_seed).shuffle(order)
-    totals = {key: 0.0 for key in ("imitation_loss", "outcome_loss", "immediate_loss", "correct", "count",
+    totals = {key: 0.0 for key in ("imitation_loss", "outcome_loss", "immediate_loss", "correct", "count", "supervised_count", "outcome_count",
                                   "raw_imitation_loss", "run_correct", "run_mass", "exit_correct", "exit_count", "ce_mass")}
     device = torch.device(device)
     for start in range(0, len(order), batch_size):
@@ -226,12 +230,15 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
         # Normalize each full episode's effective CE weights to mean one.
         # A fixed CE denominator across its windows avoids canceling a long
         # run's downweighting or overweighting a short final BPTT window.
-        run_scales = torch.tensor([len(episode.steps) / sum(step.run_weight for step in episode.steps)
+        run_scales = torch.tensor([sum(step.expert_target >= 0 for step in episode.steps) /
+                                  max(sum(step.run_weight for step in episode.steps if step.expert_target >= 0), 1e-8)
                                    for episode in batch], device=device)
-        ce_window_count = sum(len(episode.steps) for episode in batch) / math.ceil(max_length / sequence_length)
+        ce_window_count = max(1, sum(step.expert_target >= 0 for episode in batch for step in episode.steps)) / math.ceil(max_length / sequence_length)
         for window in range(0, max_length, sequence_length):
             stop = min(window + sequence_length, max_length)
             count = sum(min(stop, len(episode.steps)) - min(window, len(episode.steps)) for episode in batch)
+            ce_count = max(1, sum(step.expert_target >= 0 for episode in batch for step in episode.steps[window:stop]))
+            outcome_count = max(1, sum(step.executed_target >= 0 for episode in batch for step in episode.steps[window:stop]))
             if training:
                 optimizer.zero_grad(set_to_none=True)
             window_loss = None
@@ -242,13 +249,14 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     obs, candidates = batch_features([load_features(step.feature_path) for step in steps], device)
                     targets = torch.tensor([step.expert_target for step in steps], device=device)
                     executed = torch.tensor([step.executed_target for step in steps], device=device)
+                    supervised, observed = alive & (targets >= 0), alive & (executed >= 0)
                     outcomes = torch.tensor([step.outcome for step in steps], device=device)
                     run_weights = torch.tensor([step.run_weight for step in steps], device=device)
                     ce_weights = run_weights * run_scales if imitation_reduction == "action_run" else torch.ones_like(run_weights)
                     exit_mask = torch.tensor([step.repeated_run_exit for step in steps], device=device) & alive
                     logits, next_state, predicted = model(obs, candidates, state,
                                                           persistent=persistent, mode=mode, restart_workspace=restart_workspace,
-                                                          outcome_indices=executed)
+                                                          outcome_indices=executed.clamp_min(0))
                     imitation = F.cross_entropy(logits, targets, reduction="none")
                     outcome = received_outcome_loss(predicted, outcomes)
                     immediate = torch.zeros_like(imitation)
@@ -258,45 +266,48 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                                             predict_outcomes=False)
                         immediate = F.cross_entropy(early, targets, reduction="none")
                     if imitation_reduction == "event":
-                        loss = ((imitation + outcome_weight * outcome + immediate_weight * immediate) * alive).sum() / count
+                        loss = ((imitation + immediate_weight * immediate) * supervised).sum() / ce_count
                     else:
-                        loss = ((imitation + immediate_weight * immediate) * ce_weights * alive).sum() / ce_window_count
-                        loss = loss + outcome_weight * (outcome * alive).sum() / count
+                        loss = ((imitation + immediate_weight * immediate) * ce_weights * supervised).sum() / ce_window_count
+                    loss = loss + outcome_weight * (outcome * observed).sum() / outcome_count
                     window_loss = loss if window_loss is None else window_loss + loss
                     # Finished episodes contribute neither loss nor artificial state updates.
                     state = {key: torch.where(alive.reshape((-1,) + (1,) * (value.ndim - 1)), value, state[key])
                              for key, value in next_state.items()}
-                    totals["imitation_loss"] += float((imitation.detach() * ce_weights)[alive].sum())
-                    totals["raw_imitation_loss"] += float(imitation.detach()[alive].sum())
-                    totals["ce_mass"] += float(ce_weights[alive].sum())
-                    totals["outcome_loss"] += float(outcome.detach()[alive].sum())
-                    totals["immediate_loss"] += float((immediate.detach() * ce_weights)[alive].sum())
+                    totals["imitation_loss"] += float((imitation.detach() * ce_weights)[supervised].sum())
+                    totals["raw_imitation_loss"] += float(imitation.detach()[supervised].sum())
+                    totals["ce_mass"] += float(ce_weights[supervised].sum())
+                    totals["outcome_loss"] += float(outcome.detach()[observed].sum())
+                    totals["immediate_loss"] += float((immediate.detach() * ce_weights)[supervised].sum())
                     correct = logits.argmax(-1) == targets
-                    totals["correct"] += int(correct[alive].sum())
-                    totals["run_correct"] += float((correct * run_weights)[alive].sum())
-                    totals["run_mass"] += float(run_weights[alive].sum())
-                    totals["exit_correct"] += int(correct[exit_mask].sum())
-                    totals["exit_count"] += int(exit_mask.sum())
+                    totals["correct"] += int(correct[supervised].sum())
+                    totals["run_correct"] += float((correct * run_weights)[supervised].sum())
+                    totals["run_mass"] += float(run_weights[supervised].sum())
+                    totals["exit_correct"] += int(correct[exit_mask & supervised].sum())
+                    totals["exit_count"] += int((exit_mask & supervised).sum())
                     totals["count"] += int(alive.sum())
+                    totals["supervised_count"] += int(supervised.sum())
+                    totals["outcome_count"] += int(observed.sum())
                 if training:
                     window_loss.backward()
                     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                     optimizer.step()
             # This is truncated BPTT, not an episode reset: values of h/z survive.
             state = _detach(state)
-    count = totals["count"]
-    result = {"imitation_loss": totals["imitation_loss"] / totals["ce_mass"],
-              "outcome_loss": totals["outcome_loss"] / count,
-              "immediate_loss": totals["immediate_loss"] / totals["ce_mass"],
+    count, ce_mass = max(1, totals["supervised_count"]), max(1e-8, totals["ce_mass"])
+    result = {"imitation_loss": totals["imitation_loss"] / ce_mass,
+              "outcome_loss": totals["outcome_loss"] / max(1, totals["outcome_count"]),
+              "immediate_loss": totals["immediate_loss"] / ce_mass,
               "raw_imitation_loss": totals["raw_imitation_loss"] / count}
     return {**result, "loss": result["imitation_loss"] + outcome_weight * result["outcome_loss"]
                             + immediate_weight * result["immediate_loss"],
             "imitation_reduction": imitation_reduction,
             "imitation_accuracy": totals["correct"] / count,
             "raw_event_imitation_accuracy": totals["correct"] / count,
-            "action_run_weighted_accuracy": totals["run_correct"] / totals["run_mass"],
+            "action_run_weighted_accuracy": totals["run_correct"] / max(1e-8, totals["run_mass"]),
             "repeated_run_exit_accuracy": totals["exit_correct"] / totals["exit_count"] if totals["exit_count"] else None,
-            "repeated_run_exits": int(totals["exit_count"]), "transitions": int(count)}
+            "repeated_run_exits": int(totals["exit_count"]), "transitions": int(totals["count"]),
+            "supervised_actions": int(totals["supervised_count"]), "observed_outcomes": int(totals["outcome_count"])}
 
 
 def create_model(args, text_dim: int, image_dim: int):
@@ -305,8 +316,15 @@ def create_model(args, text_dim: int, image_dim: int):
                             object_relations=args.object_relations)
     if args.initial_checkpoint:
         saved = torch.load(args.initial_checkpoint, map_location="cpu", weights_only=True)
-        digital = DigitalConfig(**{**asdict(digital), "width": saved["config"]["width"]})
-        model = DigitalPolicy.from_lifetime_checkpoint(saved, digital)
+        if saved.get("kind") == "shared_experiment_core_v1":
+            core_config, core_weights = saved["core_config"], saved["core"]
+            digital = replace(digital, width=core_config["width"])
+            core = ContinualCore(CoreConfig(**core_config), core_weights["action_values"])
+            core.load_state_dict(core_weights, strict=True)
+            model = DigitalPolicy(digital, core)
+        else:
+            digital = replace(digital, width=saved["config"]["width"])
+            model = DigitalPolicy.from_lifetime_checkpoint(saved, digital)
         if args.measurement_memory and model.core.config.record_dim != 8:
             raise ValueError("Measurement memory requires a source core with record_dim=8; checkpoint weights are unchanged")
         return model
@@ -352,13 +370,16 @@ def parse_args(argv=None):
     parser.add_argument("--restart-state", action=argparse.BooleanOptionalAction, default=None, help="Train a matched state-reset intervention")
     parser.add_argument("--restart-workspace", action=argparse.BooleanOptionalAction, default=None, help="Reset z only; keep recurrent h and public object memory")
     initialization = parser.add_mutually_exclusive_group()
-    initialization.add_argument("--initial-checkpoint", type=Path, help="Released lifetime core; its width takes precedence")
+    initialization.add_argument("--initial-checkpoint", type=Path,
+                                help="Released lifetime or shared scientific core; retains its configuration and weights")
     initialization.add_argument("--resume-checkpoint", type=Path, help="Continue saved DigitalPolicy weights and feature/config schema with a fresh optimizer")
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--sequence-length", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--imitation-reduction", choices=("event", "action_run"), default="event")
+    parser.add_argument("--allow-failed-actions", action="store_true",
+                        help="Carry failed or unrepresented teacher actions as history; do not imitate them. Predict represented outcomes.")
     parser.add_argument("--outcome-weight", type=float, default=.5)
     parser.add_argument("--immediate-weight", type=float, default=.25)
     parser.add_argument("--seed", type=int, default=0)
@@ -434,7 +455,8 @@ def main(argv=None):
     cache = FeatureCache(args.feature_cache, feature_config, args.feature_device,
                          args.encoder_path, args.feature_batch_size)
     start = perf_counter()
-    train_prepared, validation_prepared = prepare_episodes(train, cache), prepare_episodes(validation, cache)
+    train_prepared = prepare_episodes(train, cache, allow_failed_actions=args.allow_failed_actions)
+    validation_prepared = prepare_episodes(validation, cache, allow_failed_actions=args.allow_failed_actions)
     cache.close()
     model = (model if model is not None else create_model(args, cache.text_dim, cache.image_dim)).to(args.device)
     resume = None if source is None else {"path": str(args.resume_checkpoint.resolve()),
@@ -459,6 +481,7 @@ def main(argv=None):
                                    + [f"received_numeric_{i}_present" for i in range(5)],
                 "state_training": "episode_ordered_truncated_bptt", "task_completion_metric": False,
                 "imitation_target": "expert_action when provided, otherwise executed action",
+                "failed_action_treatment": "history only; represented outcomes still learned" if args.allow_failed_actions else "imitated",
                 "outcome_action": "executed action only",
                 "imitation_reduction": args.imitation_reduction,
                 "action_run_weighting": "1/run_length over full episode; CE weights normalized to episode mean one",

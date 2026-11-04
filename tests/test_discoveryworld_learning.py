@@ -43,6 +43,30 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
     def setUpClass(cls):
         torch.set_num_threads(1)
 
+    def test_failed_teacher_action_remains_in_history_without_an_imitation_label(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            data = episode(root / "a", 100, 3)
+            data.transitions[0]["action"] = {"action": "USE", "arg1": 987, "arg2": 654}
+            data.transitions[0]["action_result"] = {"success": False, "errors": ["not accessible"]}
+            cache = FeatureCache(root / "cache", FeatureConfig(mode="lexical"))
+            prepared = prepare_episodes([data], cache, allow_failed_actions=True)
+            self.assertEqual(len(prepared[0].steps), 3)
+            self.assertEqual(prepared[0].steps[0].expert_target, -100)
+            self.assertEqual(prepared[0].steps[0].executed_target, -1)
+            config = CoreConfig(event_dim=16, record_dim=16, actions=1, width=16,
+                                heads=2, slots=2, hidden=16, action_width=16)
+            model = DigitalPolicy(DigitalConfig(width=16, text_dim=256, image_dim=256, outcome_dim=14),
+                                  ContinualCore(config, torch.zeros(1, 1)))
+            optimizer = torch.optim.AdamW(model.parameters(), lr=.001)
+            before = model.core.gru.weight_hh_l0.detach().clone()
+            result = run_epoch(model, prepared, batch_size=1, sequence_length=1, device="cpu", optimizer=optimizer)
+            self.assertEqual(result["transitions"], 3)
+            self.assertEqual(result["supervised_actions"], 2)
+            self.assertEqual(result["observed_outcomes"], 2)
+            self.assertTrue(torch.isfinite(torch.tensor(result["loss"])))
+            self.assertGreater(float((model.core.gru.weight_hh_l0.detach() - before).abs().sum()), 0)
+
     def test_split_is_by_instance_and_features_exclude_score_supervision(self):
         with TemporaryDirectory() as folder:
             root = Path(folder)
