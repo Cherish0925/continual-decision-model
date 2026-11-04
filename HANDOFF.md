@@ -1,5 +1,47 @@
 # Research progress
 
+## 4 November: native actions across eight scientific themes
+
+The [full-suite study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
+now has mixed-theme trajectory collection, a dynamic native-action policy,
+source-core loading and a complete training queue. The
+[protocol](experiments/discoveryworld/native_learning.json) separates eight-theme
+coverage from a whole-theme holdout of Plant Nutrients and Lost in Translation.
+Both compare CDM with a separately trained recurrent policy; two initial cores
+give eight declared trainings. No new official-case CDM score is available.
+
+Initial local teacher collection reached all eight themes but yielded many
+interrupted or ineffective trajectories. These are data-collection attempts,
+not model results. Actual feedback and failed operations remain in the records;
+failed operations receive no imitation label. Both use the native public API;
+out-of-reach teacher proposals remain recorded failures. There is no
+task-specific solver or hidden answer. The declared comparison imitates valid
+actions from successful episodes and learns received outcomes from all episodes.
+Collection is text/structured-only. The native policy has 55,360,574 parameters,
+excluding its frozen feature encoder.
+
+An initial sequence-training run completed on fixed copies of 741 training and
+342 development transitions, covering all eight themes. The
+[run record](experiments/discoveryworld/results/native_pipeline.json) records
+source initialization, features and losses. That first model completed **0/8**
+Easy development tasks at seed 2001. These incomplete teacher episodes
+have not taught scientific task competence. The full comparison requires completed data collection, trajectory
+selection, declared training endpoints and native execution. Source and runtime
+records are under `runs/discoveryworld/full_suite_20261104/`; this work remains
+in progress. Current collection uses `native/train_a`,
+`native/train_b` and `native/development`. Earlier collection
+attempts remain separate; the local Gemma checkpoint was pretrained rather than
+instruction-tuned and its attempted demonstrations are excluded. The older
+v0.17.0 result below is unchanged.
+
+The local teachers are GPT-OSS-20B instruction models. Forty environments run
+concurrently across two inference servers. Their shared public interface now
+defines observed object handles once, preserves intended action arguments and
+retains received numerical measurements separately from authored notes. The
+training queue is waiting for these collections and will then fit all eight endpoints
+and execute their full suites; commands are in the study document. Neither
+the teacher's successes nor the initial imitation accuracy is a CDM task score.
+
 ## 4 November: completed joint learning and broader task transfer
 
 The [joint continuation](experiments/continual_experiment/FUNCTION_BELIEF.md#joint-prediction-and-action-learning)

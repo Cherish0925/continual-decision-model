@@ -1,0 +1,116 @@
+{
+  "kind": "native_sequence_training_pipeline",
+  "task_completion_evaluated": true,
+  "parameters": 55360574,
+  "frozen_encoder": "google/siglip2-base-patch16-224",
+  "initial_core": "v0.17.0 inherited201",
+  "seed": 301,
+  "epoch": 1,
+  "training": {
+    "imitation_loss": 3.0738418049676963,
+    "outcome_loss": 1.626862729682642,
+    "immediate_loss": 0.0,
+    "raw_imitation_loss": 2.9264813311688314,
+    "loss": 3.887273169809017,
+    "imitation_reduction": "action_run",
+    "imitation_accuracy": 0.2935064935064935,
+    "raw_event_imitation_accuracy": 0.2935064935064935,
+    "action_run_weighted_accuracy": 0.2912152998154287,
+    "repeated_run_exit_accuracy": 0.22413793103448276,
+    "repeated_run_exits": 58,
+    "transitions": 741,
+    "supervised_actions": 385,
+    "observed_outcomes": 425
+  },
+  "development": {
+    "imitation_loss": 2.7295198507383556,
+    "outcome_loss": 0.4835196343953149,
+    "immediate_loss": 0.0,
+    "raw_imitation_loss": 2.66396233974359,
+    "loss": 2.971279667936013,
+    "imitation_reduction": "action_run",
+    "imitation_accuracy": 0.3333333333333333,
+    "raw_event_imitation_accuracy": 0.3333333333333333,
+    "action_run_weighted_accuracy": 0.32683486209889295,
+    "repeated_run_exit_accuracy": 0.45,
+    "repeated_run_exits": 20,
+    "transitions": 342,
+    "supervised_actions": 156,
+    "observed_outcomes": 171
+  },
+  "theme_coverage": [
+    "Archaeology Dating",
+    "Combinatorial Chemistry",
+    "It's (not) Rocket Science!",
+    "Lost in Translation",
+    "Plant Nutrients",
+    "Proteomics",
+    "Reactor Lab",
+    "Space Sick"
+  ],
+  "training_episodes": 27,
+  "development_episodes": 18,
+  "observations": "public text, objects and received numbers; no images",
+  "data_scope": "initial incomplete local teacher trajectories; not the final comparison dataset",
+  "training_seconds_including_cached_feature_preparation": 19.60057072713971,
+  "precision": "bfloat16",
+  "cudnn_attention": false,
+  "result_scope": "The first sequence-trained policy executed eight development instances and completed none. The initial incomplete teacher data establishes the training path, not scientific competence. The complete study has not been trained or evaluated.",
+  "development_execution": {
+    "seed": 2001,
+    "difficulty": "Easy",
+    "action_limit": 100,
+    "official_test": false,
+    "successes": 0,
+    "cases": [
+      {
+        "theme": "Combinatorial Chemistry",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "Archaeology Dating",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "Plant Nutrients",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "Reactor Lab",
+        "success": false,
+        "progress": 0.18181818181818182,
+        "steps": 100
+      },
+      {
+        "theme": "Lost in Translation",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "Space Sick",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "Proteomics",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      },
+      {
+        "theme": "It's (not) Rocket Science!",
+        "success": false,
+        "progress": 0.0,
+        "steps": 100
+      }
+    ]
+  }
+}

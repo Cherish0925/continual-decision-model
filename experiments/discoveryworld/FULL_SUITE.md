@@ -62,3 +62,69 @@ All three scored 0/15 on Reactor Lab. Finishing only Reactor Lab and Combinatori
 The [v0.17.0 native evaluator](../continual_experiment/evaluate_shared_tasks.py) uses separate physics and chemistry action interfaces. Its checkpoint is not a drop-in checkpoint for the native-action factory above. The next training target is a single policy over public actions and their arguments: select a visible object, read or use it, choose a dialogue option, move, or wait. Use the shared core to predict how candidate experiments would change the next observation and to choose an action. Keep the published evaluation instances out of training; changing seeds alone does not guarantee a new law.
 
 Freeze the resulting weights and evaluate all 120 cases, including failures. Compare with the [published language-agent results](https://github.com/allenai/discoveryworld/tree/fd591323920be0d3786ef350955de1945aa571e5/data) using the corresponding observation access and action budget. Record per-decision time as well as scientific results if claiming a speed advantage. To study continual learning, separately compare carrying or clearing experience on matched streams of returning problems; do not mix those scores into the fresh-start benchmark.
+
+## Native policy training
+
+The [training protocol](native_learning.json) now compares a shared CDM with a recurrent policy using the same received observations, candidate actions, source core, trajectories and epoch budget. Each condition is trained from two source cores. The recurrent policy uses less internal computation; this comparison matches training exposure rather than FLOPs.
+
+Two separate questions determine the data split:
+
+| Question | Training and development | Final evaluation |
+| --- | --- | --- |
+| Can one weight set act across the eight themes? | All themes; training seeds 1000–1003, development seed 2000 | All 120 official cases, reported by theme and difficulty |
+| Can that policy transfer to an untrained kind of problem? | Exclude **Plant Nutrients** and **Lost in Translation** from both training and development | Report these two themes separately from the other six |
+
+There are 96 planned training episodes and 24 development episodes before theme exclusion. These are instance splits, not evidence of disjoint scientific laws. The [response-table analysis](../continual_experiment/FUNCTION_BELIEF.md#response-functions-in-training-and-test) shows why changing seeds is insufficient. The theme comparison excludes those themes from this policy's adaptation; it does not establish absence of related material in pretrained encoders or language teachers.
+
+The eight-theme condition is task-trained. Its official-case score must retain
+that training exposure when compared with the published zero-shot LLM agents.
+
+The native action interface covers public objects, navigation, instruments and dialogue without a scenario-specific solver. The teacher may propose actions using previously observed object handles; the simulator decides whether those objects are currently accessible. The learned policy enumerates accessible interactions and navigation to observed objects. Out-of-reach teacher proposals are recorded as failures, not silently replaced with different objects. The teacher sees received feedback and a compact, model-authored notebook. Task scorecards, generator parameters and solutions are excluded from its input. Current collection uses text and structured observations; it does not supply images. Its successes are teacher results, not CDM results.
+
+```sh
+python -m experiments.discoveryworld.collect_suite \
+  --model data/cache/teacher --model-source PROVIDER/MODEL \
+  --endpoint http://127.0.0.1:8000/v1 --served-model teacher \
+  --workers 16 --seeds 1000 1001 1002 1003 --output runs/dw-native/train
+python -m experiments.discoveryworld.collect_suite \
+  --model data/cache/teacher --model-source PROVIDER/MODEL \
+  --endpoint http://127.0.0.1:8000/v1 --served-model teacher \
+  --workers 16 --seeds 2000 --output runs/dw-native/development
+```
+
+The local server must support structured chat responses and the checkpoint's chat template. Collection records the teacher identity, prompt version, actual actions and returned outcomes. Unfinished or malformed teacher generations remain visible in the records. `--resume` replays a saved prefix and requires identical public feedback before appending; initial RNG snapshots alone do not guarantee whole-world replay in every theme. A changed prefix requires a fresh episode, not continuation with mismatched observations.
+
+This collection uses the instruction-tuned GPT-OSS-20B checkpoint distributed
+as [`unsloth/gpt-oss-20b`](https://huggingface.co/unsloth/gpt-oss-20b). Download it
+to `data/cache/gpt-oss-20b`. The tested inference environment is separate from
+the training environment: vLLM 0.33.0 with its PyTorch 2.14.0 and Transformers
+5.20.2 dependencies. One tested H100 server command is:
+
+```sh
+CUDA_VISIBLE_DEVICES=0 vllm serve data/cache/gpt-oss-20b \
+  --host 127.0.0.1 --port 8000 --served-model-name teacher \
+  --max-model-len 24576 --max-num-seqs 32 \
+  --gpu-memory-utilization 0.65 --enforce-eager
+```
+
+Use `--max-new-tokens 2048 --max-input-tokens 22000` in the collection commands.
+The teacher retains received numerical measurements separately from its own
+notebook. Object-argument definitions are shared within the output schema, so
+observing more objects does not repeat their handles for every operation.
+
+The learned native policy imports the continual core of the released inherited-continuation models and trains a shared dynamic action head. It does not import the specialist chemistry and physics controllers. The first implementation has **55,360,574 parameters**, excluding its frozen SigLIP feature encoder. Numeric measurements remain tied to their observed objects. Sequence training carries state through the complete episode. The declared comparison imitates valid actions from successful teacher episodes; unsuccessful episodes still supply received-outcome training. Failed or unavailable actions remain in history without imitation labels. Predicting outcomes uses only actions actually executed and represented by the policy. Teacher task completion is used for offline label selection, never supplied as a policy input.
+
+After collection and trajectory selection, the complete eight-run comparison is launched with:
+
+```sh
+python -m experiments.discoveryworld.train_suite \
+  --train-trajectories runs/dw-native/train \
+  --validation-trajectories runs/dw-native/development \
+  --source-root runs/continual_physics/joint_belief_20261103 \
+  --encoder-path data/cache/siglip2 --feature-cache runs/dw-native/features \
+  --output runs/dw-native/models --gpus 0 1 --wait-for-collections --evaluate
+```
+
+The queue waits for the declared collection attempts to end, retains nonempty traces, and records supervision coverage by theme. The declared endpoint is the eighth epoch's `last.pt`, not the best final-test score. Training accuracy and outcome loss describe imitation and prediction; task ability requires subsequent native execution. With `--evaluate`, each final endpoint executes all 120 official cases. The full-suite runner loads each weight set once per worker, resets task state between instances and records decision time separately from simulator time.
+
+The [initial pipeline result](results/native_pipeline.json) used incomplete teacher traces: 741 training transitions and 342 development transitions, with one training epoch. The resulting policy completed **0/8** Easy tasks at development seed 2001. This run established executable training and evaluation paths; it did not produce a capable eight-theme policy. The complete comparison is still in progress.

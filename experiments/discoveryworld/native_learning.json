@@ -1,0 +1,42 @@
+{
+  "study": "one native-action policy across scientific themes",
+  "training_seeds": [1000, 1001, 1002, 1003],
+  "development_seeds": [2000],
+  "evaluation_seeds": [0, 1, 2, 3, 4],
+  "difficulties": ["Easy", "Normal", "Challenge"],
+  "action_limits": {"Easy": 100, "Normal": 1000, "Challenge": 1000},
+  "theme_holdout": ["Plant Nutrients", "Lost in Translation"],
+  "initializations": [
+    {"seed": 301, "source": "train/inherited201/last.pt"},
+    {"seed": 302, "source": "train/inherited202/last.pt"}
+  ],
+  "conditions": [
+    {"name": "all_cdm", "mode": "cdm", "holdout": false},
+    {"name": "all_gru", "mode": "gru", "holdout": false},
+    {"name": "holdout_cdm", "mode": "cdm", "holdout": true},
+    {"name": "holdout_gru", "mode": "gru", "holdout": true}
+  ],
+  "training": {
+    "epochs": 8,
+    "batch_size": 8,
+    "sequence_length": 16,
+    "lr": 0.0003,
+    "core_lr": 0.00003,
+    "precision": "bfloat16",
+    "disable_cudnn_attention": true,
+    "refinements": 1,
+    "features": "siglip",
+    "measurement_memory": true,
+    "object_relations": true,
+    "imitation_reduction": "action_run",
+    "allow_failed_actions": true,
+    "imitate_successful_episodes": true,
+    "outcome_weight": 0.5,
+    "immediate_weight": 0.0
+  },
+  "final_checkpoint": "last.pt",
+  "observations": "public text, objects and received numeric feedback; no images in this collection",
+  "comparability": "same trajectories, initialization, epochs and action interfaces; recurrent control uses less internal computation",
+  "generalization": "new instances and a separate whole-theme holdout; response-law disjointness is not inferred from seeds",
+  "status": "training protocol; no new model result yet"
+}

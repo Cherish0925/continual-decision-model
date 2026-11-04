@@ -87,6 +87,22 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
             self.assertNotIn("image", features["observation"])
             self.assertGreater(features["observation"]["text"].abs().sum(), 0)
 
+    def test_unsuccessful_episodes_train_outcomes_without_teaching_their_actions(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            success, failure = episode(root / 'success', 100), episode(root / 'failure', 101)
+            success.transitions[-1]['task_metrics'] = [{'completed_successfully': True}]
+            failure.transitions[-1]['task_metrics'] = [{'completed_successfully': False}]
+            cache = FeatureCache(root / 'cache', FeatureConfig(mode='lexical'))
+            a, b = prepare_episodes([success, failure], cache,
+                                    allow_failed_actions=True, imitate_successful_episodes=True)
+            self.assertTrue(all(step.expert_target >= 0 for step in a.steps))
+            self.assertTrue(all(step.expert_target == -100 for step in b.steps))
+            self.assertTrue(all(step.executed_target >= 0 for step in b.steps))
+            # Later completion changes the supervised label, never what the
+            # policy sees at an earlier otherwise identical observation.
+            self.assertEqual([step.feature_path for step in a.steps], [step.feature_path for step in b.steps])
+
     def test_sequence_training_updates_core_and_carries_state_across_windows(self):
         with TemporaryDirectory() as folder:
             root = Path(folder)

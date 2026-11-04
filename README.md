@@ -14,6 +14,13 @@ An observation can become outdated while inference is still running. The researc
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
 
+The current [eight-theme study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
+trains one native-action policy and a recurrent comparison, with a separate
+whole-theme holdout. Initial sequence training has completed; broader trajectory
+collection is underway. The [initial model](experiments/discoveryworld/results/native_pipeline.json)
+completed 0/8 Easy development tasks; the complete comparison is pending.
+The task scores below remain the v0.17.0 results.
+
 The completed [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
 trains response hypotheses from subsequent action returns together with the
 shared core and both task interfaces. Twelve full continuations compare three

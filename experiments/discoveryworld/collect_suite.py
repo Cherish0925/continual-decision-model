@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import redirect_stdout
 from copy import deepcopy
 import json
@@ -29,6 +30,7 @@ def environment_worker(pipe):
     env = writer = log = None
     case = path = None
     started = 0.
+    restored_steps = 0
 
     def finish(status, error=None):
         nonlocal writer, log
@@ -38,7 +40,7 @@ def environment_worker(pipe):
         row = dict(case, status=status, steps=env.steps, task_metrics=env.metrics,
             progress=sum(r["progress"] for r in env.metrics)/len(env.metrics),
             success=all(r["completed_successfully"] for r in env.metrics),
-            seconds=perf_counter()-started)
+            seconds=perf_counter()-started, resumed_prefix_steps=restored_steps)
         if error:
             row["error"] = error
         write_json(path / "summary.json", row)
@@ -52,20 +54,43 @@ def environment_worker(pipe):
             if command[0] == "close":
                 break
             if command[0] == "reset":
-                case, root = command[1:]
+                case, root, resume = command[1:]
                 path = Path(root) / case["id"]
-                path.mkdir(parents=True, exist_ok=False)
-                log = (path / "environment.log").open("w")
+                path.mkdir(parents=True, exist_ok=resume)
+                recorded = path / 'trajectory.jsonl'
+                prior = [json.loads(line) for line in recorded.read_text().splitlines()] if resume and recorded.exists() else []
+                reuse = resume and (path / 'run.json').exists()
+                prior_metadata = json.loads((path / 'run.json').read_text()) if reuse else None
+                teacher_rows = {}
+                if prior:
+                    teacher_rows = {row['step']: row for line in (path / 'teacher.jsonl').read_text().splitlines()
+                                    if 'action' in (row := json.loads(line)) and 'error' not in row}
+                log = (path / "environment.log").open("a" if resume else "w")
                 started = perf_counter()
+                restored_steps = len(prior)
                 with redirect_stdout(log):
                     env = StructuredDiscoveryWorldEnv(path, case["max_steps"])
                     observation = env.reset(case["theme"], case["difficulty"], case["seed"])
-                    env.save_initial_rng(path / "initial_rng.json.gz")
+                    if reuse:
+                        env.restore_initial_rng(path / "initial_rng.json.gz")
+                        env.episode_id = prior_metadata['episode_id']
+                    else:
+                        env.save_initial_rng(path / "initial_rng.json.gz")
+                    for row in prior:
+                        replayed = env.step(row['action'])
+                        if replayed['action_result'] != row['action_result'] or replayed['next_observation']['ui'] != row['next_observation']['ui']:
+                            raise ValueError(f"Native replay differs at {case['id']} step {row['index']}")
+                    observation = env.policy_input()
                     config = dict(env.configuration, policy="frozen_batched_language_teacher",
                         action_descriptions=env.actions, teleport_locations=env.teleports,
                         initial_task_metrics=env.metrics)
-                    writer = TrajectoryWriter(path, config)
-                pipe.send(dict(observation=observation, done=False))
+                    writer = TrajectoryWriter(path, config, resume=reuse)
+                replay = [dict(transition={key: row[key] for key in ('observation','action','action_result','next_observation')},
+                               generated=teacher_rows[row['index']]) for row in prior]
+                response = dict(observation=observation, done=env.ended, replay=replay)
+                if env.ended:
+                    response['summary'] = finish('evaluated')
+                pipe.send(response)
             elif command[0] == "step":
                 generated = command[1]
                 with (path / "teacher.jsonl").open("a") as stream:
@@ -100,14 +125,23 @@ def collect(args):
     pending = []
     for case in cases:
         path = args.output / case["id"] / "summary.json"
-        if args.resume and path.exists():
-            rows.append(json.loads(path.read_text()))
+        if args.resume and path.exists() and (row := json.loads(path.read_text()))['status'] == 'evaluated':
+            rows.append(row)
         else:
             pending.append(case)
     teacher = NativeTeacher(args.model, device=args.device, max_new_tokens=args.max_new_tokens,
-                            dequantize=args.dequantize, attention=args.attention)
-    write_json(args.output / "collection.json", dict(teacher=teacher.configuration,
-        cases=cases, simulator=simulator_build(), split="new native instances; law disjointness not asserted"))
+                            max_input_tokens=args.max_input_tokens,
+                            dequantize=args.dequantize, attention=args.attention,
+                            endpoint=args.endpoint, served_model=args.served_model,
+                            temperature=args.temperature, model_source=args.model_source,
+                            reasoning_effort=args.reasoning_effort, api_style=args.api_style)
+    collection = args.output / "collection.json"
+    earlier = json.loads(collection.read_text()) if args.resume and collection.exists() else {}
+    attempts = earlier.get('previous_attempts', [])
+    if earlier:
+        attempts.append({key: value for key, value in earlier.items() if key != 'previous_attempts'})
+    write_json(collection, dict(teacher=teacher.configuration, previous_attempts=attempts,
+        cases=cases, status='running', simulator=simulator_build(), split="new native instances; law disjointness not asserted"))
     ctx = mp.get_context("spawn")
     workers = []
     next_case = 0
@@ -119,11 +153,21 @@ def collect(args):
             return
         case = pending[next_case]
         next_case += 1
-        worker["pipe"].send(("reset", case, str(args.output)))
+        worker["pipe"].send(("reset", case, str(args.output), args.resume))
         message = worker["pipe"].recv()
         if "error" in message:
             raise RuntimeError(message["error"])
-        worker.update(active=True, case=case, observation=message["observation"], state=teacher.initial())
+        if message['done']:
+            rows.append(message['summary'])
+            print(json.dumps(message['summary']), flush=True)
+            write_json(args.output / 'summary.json', rows)
+            assign(worker)
+            return
+        state = teacher.initial()
+        for item in message.get('replay', []):
+            state['objects'].observe(item['transition']['observation'])
+            teacher.observe(state, item['transition'], item['generated'])
+        worker.update(active=not message['done'], case=case, observation=message["observation"], state=state)
 
     try:
         for _ in range(min(args.workers, len(pending))):
@@ -134,28 +178,63 @@ def collect(args):
             worker = dict(pipe=parent, process=process)
             workers.append(worker)
             assign(worker)
-        batches = 0
-        while active := [w for w in workers if w["active"]]:
-            generated = teacher.batch([w["observation"] for w in active], [w["state"] for w in active])
-            for w, result in zip(active, generated):
-                w["pipe"].send(("step", result))
-            for w, result in zip(active, generated):
-                response = w["pipe"].recv()
-                if "error" in response:
-                    raise RuntimeError(response["error"])
-                if "transition" in response:
-                    teacher.observe(w["state"], response["transition"], result)
-                if response["done"]:
-                    rows.append(response["summary"])
-                    print(json.dumps(response["summary"]), flush=True)
-                    write_json(args.output / "summary.json", rows)
-                    assign(w)
-                else:
-                    w["observation"] = response["observation"]
-            batches += 1
-            if batches % 10 == 0:
-                print(json.dumps(dict(batches=batches, completed=len(rows), total=len(cases),
-                    generation_seconds=generated[0]["batch_seconds"], active=len(active))), flush=True)
+        def consume(w, result):
+            response = w['pipe'].recv()
+            if 'error' in response:
+                raise RuntimeError(response['error'])
+            if 'transition' in response:
+                teacher.observe(w['state'], response['transition'], result)
+            if response['done']:
+                rows.append(response['summary'])
+                print(json.dumps(response['summary']), flush=True)
+                write_json(args.output / 'summary.json', rows)
+                assign(w)
+            else:
+                w['observation'] = response['observation']
+
+        if args.endpoint:
+            # Each environment advances as soon as its own action is ready.
+            # The inference server batches requests continuously; a long
+            # generation does not hold up all the other scientific episodes.
+            with ThreadPoolExecutor(args.workers) as pool:
+                futures = {}
+                def submit(w):
+                    if w['active']:
+                        future = pool.submit(teacher.batch, [w['observation']], [w['state']])
+                        futures[future] = w
+                for w in workers:
+                    submit(w)
+                decisions = 0
+                while futures:
+                    finished, _ = wait(futures, return_when=FIRST_COMPLETED)
+                    for future in finished:
+                        w = futures.pop(future)
+                        try:
+                            result = future.result()[0]
+                        except Exception as error:
+                            # Preserve a failed policy attempt and continue the
+                            # other independent environments; no action is invented.
+                            result = {'error': f'{type(error).__name__}: {error}',
+                                      'prompt_version': teacher.configuration['prompt_version']}
+                        w['pipe'].send(('step', result))
+                        consume(w, result)
+                        submit(w)
+                        decisions += 1
+                    if decisions // 100 != (decisions - len(finished)) // 100:
+                        print(json.dumps(dict(decisions=decisions, completed=len(rows),
+                                              total=len(cases), active=len(futures))), flush=True)
+        else:
+            batches = 0
+            while active := [w for w in workers if w['active']]:
+                generated = teacher.batch([w['observation'] for w in active], [w['state'] for w in active])
+                for w, result in zip(active, generated):
+                    w['pipe'].send(('step', result))
+                for w, result in zip(active, generated):
+                    consume(w, result)
+                batches += 1
+                if batches % 10 == 0:
+                    print(json.dumps(dict(batches=batches, completed=len(rows), total=len(cases),
+                        generation_seconds=generated[0]['batch_seconds'], active=len(active))), flush=True)
     finally:
         for w in workers:
             if w["process"].is_alive():
@@ -174,11 +253,28 @@ def main():
     p.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), default=list(LIMITS))
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--max-new-tokens", type=int, default=1024)
+    p.add_argument("--max-input-tokens", type=int, default=22000)
     p.add_argument("--dequantize", action="store_true")
     p.add_argument("--attention", default="flex_attention")
+    p.add_argument("--endpoint", help="Local completion-server URL, including /v1")
+    p.add_argument("--served-model", default="teacher")
+    p.add_argument("--api-style", choices=('chat', 'completion'), default='chat')
+    p.add_argument("--reasoning-effort", choices=('none', 'low', 'medium', 'high'), default='low')
+    p.add_argument("--model-source", default="unsloth/gpt-oss-20b")
+    p.add_argument("--temperature", type=float, default=.7)
     p.add_argument("--resume", action="store_true")
     args=p.parse_args()
-    collect(args)
+    try:
+        collect(args)
+    except Exception as error:
+        path = args.output / 'collection.json'
+        if path.exists():
+            metadata = json.loads(path.read_text())
+            write_json(path, {**metadata, 'status': 'error', 'error': f'{type(error).__name__}: {error}'})
+        raise
+    path = args.output / 'collection.json'
+    metadata = json.loads(path.read_text())
+    write_json(path, {**metadata, 'status': 'completed'})
 
 
 if __name__ == "__main__":

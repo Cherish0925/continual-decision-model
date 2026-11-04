@@ -1,5 +1,11 @@
 # CDM: objective, implementation, and results
 
+**In progress, 4 November:** [native policy learning across eight themes](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
+has a shared action interface, mixed-theme sequence training and a fixed
+whole-theme holdout comparison. Initial sequence training completed; the first
+model completed 0/8 Easy development tasks. The full comparison and official-case
+scores remain pending. [Current execution](HANDOFF.md).
+
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
 includes twelve full shared-core continuations, four predictor initializations,
 1,008 primary test instances, 144 paired naming replays and 5,760 native

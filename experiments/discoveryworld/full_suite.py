@@ -76,7 +76,9 @@ def simulator_build():
 
 
 def write_json(path, data):
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
+    temporary.replace(path)
 
 
 def run_case(job):
@@ -171,13 +173,15 @@ def main():
     p.add_argument("--threads", type=int, default=1)
     p.add_argument("--seeds", type=int, nargs="+", default=list(range(5)),
                    help="Official evaluation uses 0--4; use separate seeds for development")
+    p.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), default=list(LIMITS),
+                   help="Development may use a subset; the official suite includes all three")
     p.add_argument("--observation", choices=("structured", "png"), default="structured")
     p.add_argument("--policy", help="module:factory; weights load once per worker, state resets per case")
     p.add_argument("--policy-config", type=Path, help="JSON passed to the factory")
     p.add_argument("--policy-id", help="Checkpoint revision or run name recorded with the results")
     p.add_argument("--rng-from", type=Path, help="Reuse an earlier scored run's initial simulator RNG snapshots")
     args = p.parse_args()
-    cases = official_cases(args.seeds)
+    cases = [case for case in official_cases(args.seeds) if case['difficulty'] in args.difficulties]
     if args.mode == "list":
         print(json.dumps(cases, indent=2))
         return
@@ -198,7 +202,7 @@ def main():
     cfg = dict(mode=args.mode, output=str(path), observation=args.observation, policy=args.policy,
                config=config, rng_from=str(args.rng_from.resolve()) if args.rng_from else None)
     meta = dict(mode=args.mode, simulator=build, target_revision=UPSTREAM_REVISION,
-                official_instances=args.seeds == list(range(5)),
+                official_instances=args.seeds == list(range(5)) and set(args.difficulties) == set(LIMITS),
                 observation=args.observation, policy=args.policy, policy_id=args.policy_id,
                 policy_config_sha256=sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(),
                 rng_from=cfg["rng_from"], cases=cases)

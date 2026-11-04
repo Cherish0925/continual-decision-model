@@ -213,14 +213,15 @@ class DiscoveryWorldEnv:
 class TrajectoryWriter:
     """Append complete transitions; store PNG bytes once per distinct image."""
 
-    def __init__(self, output: str | Path, configuration: dict):
+    def __init__(self, output: str | Path, configuration: dict, *, resume: bool = False):
         self.output = Path(output)
         self.output.mkdir(parents=True, exist_ok=True)
         (self.output / "images").mkdir(exist_ok=True)
         # Each collection run has its own directory, preserving earlier runs.
-        self.stream = (self.output / "trajectory.jsonl").open("x", encoding="utf-8")
-        (self.output / "run.json").write_text(
-            json.dumps(configuration, indent=2) + "\n", encoding="utf-8")
+        self.stream = (self.output / "trajectory.jsonl").open("a" if resume else "x", encoding="utf-8")
+        if not resume:
+            (self.output / "run.json").write_text(
+                json.dumps(configuration, indent=2) + "\n", encoding="utf-8")
 
     def _observation(self, observation: dict) -> dict:
         record = deepcopy(observation)

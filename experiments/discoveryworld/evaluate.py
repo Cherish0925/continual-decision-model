@@ -31,6 +31,8 @@ class LearnedPolicy:
                  temperature: float = 0.0):
         self.model, self.checkpoint = load_checkpoint(checkpoint, device)
         self.model.eval()
+        if self.checkpoint['training_args'].get('disable_cudnn_attention', False):
+            torch.backends.cuda.enable_cudnn_sdp(False)
         self.device = torch.device(device)
         self.features = FeatureCache(feature_cache, FeatureConfig(**{"schema": 1, "time_basis": "wall_clock", **self.checkpoint["features"]}),
                                      feature_device or device, encoder_path)

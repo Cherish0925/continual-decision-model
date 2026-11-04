@@ -150,10 +150,14 @@ def action_run_weights(transitions: list[dict]) -> tuple[list[float], list[bool]
         start = stop
     return weights, exits
 
-def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_failed_actions=False) -> list[PreparedEpisode]:
+def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_failed_actions=False,
+                     imitate_successful_episodes=False) -> list[PreparedEpisode]:
     prepared = []
     for episode in episodes:
         steps = []
+        final_metrics = episode.transitions[-1].get('task_metrics', [])
+        completed_successfully = bool(final_metrics) and all(
+            task.get('completed_successfully', False) for task in final_metrics)
         memory = PublicObjectMemory()
         measurement_log = create_measurement_log(public_observation(episode, episode.transitions[0]), cache.config)
         run_weights, exits = action_run_weights(episode.transitions)
@@ -175,6 +179,8 @@ def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_fail
             executed = candidate_index(row["action"], "executed")
             expert = -100 if allow_failed_actions and (failed or executed < 0) and "expert_action" not in row else \
                 candidate_index(row.get("expert_action", row["action"]), "expert")
+            if imitate_successful_episodes and not completed_successfully:
+                expert = -100
             feature_path = cache.encode(observation, candidates, episode.path.parent)
             steps.append(PreparedStep(str(feature_path), expert, executed, outcome_target(row),
                                       run_weights[row_index], exits[row_index]))
@@ -212,7 +218,7 @@ def _detach(state):
 def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_size: int,
               sequence_length: int, device: str | torch.device, mode: str = "cdm",
               persistent: bool = True, restart_workspace: bool = False, outcome_weight: float = .5, immediate_weight: float = .25,
-              optimizer=None, shuffle_seed: int = 0, imitation_reduction: str = "event") -> dict:
+              optimizer=None, shuffle_seed: int = 0, imitation_reduction: str = "event", precision="float32") -> dict:
     if imitation_reduction not in ("event", "action_run"):
         raise ValueError("imitation_reduction must be event or action_run")
     training = optimizer is not None
@@ -242,7 +248,8 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
             if training:
                 optimizer.zero_grad(set_to_none=True)
             window_loss = None
-            with torch.set_grad_enabled(training):
+            with torch.set_grad_enabled(training), torch.autocast(
+                    device.type, dtype=torch.bfloat16, enabled=precision == 'bfloat16'):
                 for t in range(window, stop):
                     alive = torch.tensor([t < len(episode.steps) for episode in batch], device=device)
                     steps = [episode.steps[min(t, len(episode.steps) - 1)] for episode in batch]
@@ -348,6 +355,8 @@ def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--train-trajectories", nargs="+", type=Path, required=True)
     parser.add_argument("--validation-trajectories", nargs="+", type=Path, required=True)
+    parser.add_argument("--exclude-themes", nargs="*", default=[],
+                        help="Remove these complete themes from both training and development data")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--features", choices=("siglip", "lexical"), help="Defaults to checkpoint mode on resume, otherwise siglip")
     parser.add_argument("--measurement-memory", action=argparse.BooleanOptionalAction, default=None,
@@ -377,9 +386,15 @@ def parse_args(argv=None):
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--sequence-length", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--core-lr", type=float, help="Optional separate learning rate for the inherited continual core")
+    parser.add_argument("--precision", choices=('float32', 'bfloat16'), default='float32')
+    parser.add_argument("--disable-cudnn-attention", action='store_true',
+                        help="Use the other PyTorch attention backends for variable-length native observations")
     parser.add_argument("--imitation-reduction", choices=("event", "action_run"), default="event")
     parser.add_argument("--allow-failed-actions", action="store_true",
                         help="Carry failed or unrepresented teacher actions as history; do not imitate them. Predict represented outcomes.")
+    parser.add_argument("--imitate-successful-episodes", action="store_true",
+                        help="Use imitation targets only from successfully completed episodes; retain all received-outcome training.")
     parser.add_argument("--outcome-weight", type=float, default=.5)
     parser.add_argument("--immediate-weight", type=float, default=.25)
     parser.add_argument("--seed", type=int, default=0)
@@ -440,10 +455,18 @@ def initialize_training(args):
 def main(argv=None):
     args = parse_args(argv)
     torch.set_num_threads(args.threads)
+    if args.disable_cudnn_attention:
+        torch.backends.cuda.enable_cudnn_sdp(False)
     torch.manual_seed(args.seed)
     model, source, feature_config = initialize_training(args)
     train = load_episodes(args.train_trajectories)
     validation = load_episodes(args.validation_trajectories)
+    if args.exclude_themes:
+        excluded = set(args.exclude_themes)
+        train = [episode for episode in train if episode.metadata['scenario'] not in excluded]
+        validation = [episode for episode in validation if episode.metadata['scenario'] not in excluded]
+        if not train or not validation:
+            raise ValueError('Theme exclusion removed the complete training or development split')
     validate_split(train, validation)
     historical_train = {tuple(identity) for identity in source.get("train_instances", [])} if source else set()
     historical_validation = {tuple(identity) for identity in source.get("validation_instances", [])} if source else set()
@@ -455,8 +478,10 @@ def main(argv=None):
     cache = FeatureCache(args.feature_cache, feature_config, args.feature_device,
                          args.encoder_path, args.feature_batch_size)
     start = perf_counter()
-    train_prepared = prepare_episodes(train, cache, allow_failed_actions=args.allow_failed_actions)
-    validation_prepared = prepare_episodes(validation, cache, allow_failed_actions=args.allow_failed_actions)
+    preparation = dict(allow_failed_actions=args.allow_failed_actions,
+                       imitate_successful_episodes=args.imitate_successful_episodes)
+    train_prepared = prepare_episodes(train, cache, **preparation)
+    validation_prepared = prepare_episodes(validation, cache, **preparation)
     cache.close()
     model = (model if model is not None else create_model(args, cache.text_dim, cache.image_dim)).to(args.device)
     resume = None if source is None else {"path": str(args.resume_checkpoint.resolve()),
@@ -481,6 +506,7 @@ def main(argv=None):
                                    + [f"received_numeric_{i}_present" for i in range(5)],
                 "state_training": "episode_ordered_truncated_bptt", "task_completion_metric": False,
                 "imitation_target": "expert_action when provided, otherwise executed action",
+                "imitation_episode_selection": "successful completion only" if args.imitate_successful_episodes else "all episodes",
                 "failed_action_treatment": "history only; represented outcomes still learned" if args.allow_failed_actions else "imitated",
                 "outcome_action": "executed action only",
                 "imitation_reduction": args.imitation_reduction,
@@ -495,11 +521,16 @@ def main(argv=None):
     (args.output / "config.json").write_text(json.dumps(metadata, indent=2) + "\n")
     if args.prepare_only:
         return
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
+    parameters = model.parameters() if args.core_lr is None else [
+        {'params': model.core.parameters(), 'lr': args.core_lr},
+        {'params': [parameter for name, parameter in model.named_parameters() if not name.startswith('core.')],
+         'lr': args.lr}]
+    optimizer = torch.optim.AdamW(parameters, lr=args.lr)
     kwargs = dict(batch_size=args.batch_size, sequence_length=args.sequence_length, device=args.device,
                   mode=args.mode, persistent=not args.restart_state, restart_workspace=args.restart_workspace,
                   outcome_weight=args.outcome_weight,
-                  immediate_weight=args.immediate_weight, imitation_reduction=args.imitation_reduction)
+                  immediate_weight=args.immediate_weight, imitation_reduction=args.imitation_reduction,
+                  precision=args.precision)
     best = float("inf")
     source_epoch = source["epoch"] if source else 0
     train_instances = historical_train | {episode.identity for episode in train}

@@ -74,6 +74,28 @@ class FullSuiteTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             NativeTeacher.parse('<|channel|>analysis<|message|>{"action":"READ","arg1":99}')
 
+    def test_teacher_keeps_observed_argument_handles_when_they_leave_reach(self):
+        teacher = NativeTeacher.__new__(NativeTeacher)
+        teacher.candidate_actions, teacher.endpoint, teacher.api_style = True, 'local', 'chat'
+        teacher.max_input_tokens = 10000
+        teacher.tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split())
+        state = teacher.initial()
+        state['objects'].observe({'ui': {'accessibleEnvironmentObjects': [
+            {'uuid': 12, 'name': 'instrument'}, {'uuid': 34, 'name': 'sample'}]}})
+        # Only the sample is in reach now. A two-object action is absent from
+        # the student's candidate set, but the teacher's intended instrument
+        # must not be silently replaced by the sample in structured decoding.
+        observation = {'ui': {'accessibleEnvironmentObjects': [{'uuid': 34, 'name': 'sample'}]},
+                       'actions': {'USE': {'args': ['arg1', 'arg2']},
+                                   'TELEPORT_TO_OBJECT': {'args': ['arg1']}}}
+        teacher.prompt(observation, state)
+        use = next(row for row in state['output_schema']['anyOf']
+                   if row['properties'].get('action', {}).get('enum') == ['USE'])
+        self.assertEqual(use['properties']['arg1'], {'$ref': '#/$defs/observed_object'})
+        self.assertEqual(use['properties']['arg2'], {'$ref': '#/$defs/observed_object'})
+        self.assertEqual(set(state['output_schema']['$defs']['observed_object']['enum']), {12, 34})
+        self.assertFalse(any(action.get('action') == 'USE' for action in state['candidates']))
+
 
 if __name__ == '__main__':
     unittest.main()
