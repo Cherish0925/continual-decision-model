@@ -495,6 +495,19 @@ not added by this comparison.
 contains all initial/final models, training inputs and completed experiment
 records. [Download and replay](../discoveryworld/RELEASE.md#joint-prediction-and-action-training-v0170).
 
+### Operations on tasks both policies complete
+
+The primary comparison counts every task, including failures. To separate solving more tasks from using fewer operations on tasks both methods solve, pair the [task rows](results/joint_belief_instances.csv) by stream and task index, exclude renamed replays, and keep the shared successes for each pair. Differences below are joint minus reference. The subset changes with the reference.
+
+| Run | Both complete: original parent | Mean operation difference | Both complete: inherited continuation | Mean operation difference |
+| --- | ---: | ---: | ---: | ---: |
+| 201 | 841 | −23.64 | 933 | +6.02 |
+| 202 | 857 | −27.42 | 941 | +0.28 |
+| 203 | 845 | −25.31 | 943 | −5.72 |
+| 204 | 855 | −32.46 | 941 | +6.30 |
+
+The joint models save operations on shared successes against both original parents. Against independently continued policies, three of four joint endpoints use more operations on shared successes. The pattern also appears early in the recorded trajectories: by operation 100 the joint endpoints have completed **462, 465, 460, 458** tasks, versus **470, 478, 453, 478** for inherited continuation. These counts describe the recorded policies at a common action count; they are not reruns under a shorter deadline or measurements of wall-clock latency.
+
 ### Running the fixed comparison
 
 The four pretrained response models use seeds 201--204 and 24,000 updates with
