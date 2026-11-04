@@ -38,7 +38,9 @@ improved scientific action selection. Their models and records are in the
 
 ## Application and comparison settings
 
-Use **Reactor Lab**, **Combinatorial Chemistry**, and **Plant Nutrients** as the initial application families. They provide instrument use and quantitative relations, multistep interventions, and delayed experimental outcomes. Expand to the remaining official discovery topics after the same model can learn and act across these families.
+The v0.17.0 native model comparisons cover **Reactor Lab** and **Combinatorial Chemistry**. Its digital experiment variants widen the range of laws and recipes within the experimental interface. Neither the variants nor repeated executions add new official themes. **Plant Nutrients** was an initial target; it has no comparable published CDM score in this release.
+
+The [full-suite runner and results](FULL_SUITE.md) cover the eight published discovery themes, all three difficulties and seeds 0–4. The environment has executed a native action on all 120 instances. The runner can now evaluate one compatible native-action policy across the 120; the v0.17.0 two-task checkpoint has not completed this evaluation.
 
 Two settings answer different questions:
 

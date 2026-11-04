@@ -1,0 +1,11 @@
+diff --git a/discoveryworld/scenarios/not_rocket_science.py b/discoveryworld/scenarios/not_rocket_science.py
+index 2e83047..3b340e6 100644
+--- a/discoveryworld/scenarios/not_rocket_science.py
++++ b/discoveryworld/scenarios/not_rocket_science.py
+@@ -334,4 +334,4 @@ def makeScenarioNotRocketScience(world, numUserAgents=1, difficulty="easy"):
+     # Rocket mass
+-    MIN_ROCKET_MASS = 1e3  # kg
+-    MAX_ROCKET_MASS = 1e4  # kg
++    MIN_ROCKET_MASS = 1000  # kg
++    MAX_ROCKET_MASS = 10000  # kg
+     rocketMass = float(world.rng.randint(MIN_ROCKET_MASS, MAX_ROCKET_MASS))  # kg
