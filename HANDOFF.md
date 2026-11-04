@@ -1,6 +1,26 @@
 # Research progress
 
-The [measured-reaction study](experiments/measured_reactions/README.md) trained 40 small policies on laboratory records and evaluated their frozen weights on two further experimental datasets. Returning readings to the conditional update helped the same weights, but simpler acquisition rules still led overall. The [parallel training priorities](research/CONTINUAL_AGENT.md#parallel-training-priorities) distinguish the running native study, the executable reaction campaign and the timed-control and durable-learning experiments.
+## 4 November: 80 additional measured-reaction trainings completed
+
+The [measured-reaction study](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)
+completed two 40-model campaigns across 32 A100 GPUs, with 40,960,000 total
+training lookups. The first scales the existing five policies. The second
+compares named inputs with relation-only CDM, GRU, no-readings and learned-kernel
+alternatives. Both retain all eight seeds and include external-laboratory
+comparisons. The seven final Roche reaction families remain unused.
+
+The relation-only CDM uses feedback: exposing actual readings adds 1.37 points
+on Roche development and 7.68 on Perera, with paired intervals above zero.
+Its Ahneman effect remains uncertain. Neither a reliable advantage over the
+matched GRU nor an overall advantage over the learned kernel is established.
+[Complete curves and paired comparisons](experiments/measured_reactions/results/comparison.json)
+separate these results. These are separate small instances of the shared core
+implementation; a common all-application model has not been trained.
+
+The next model question is how the possible consequence of a measurement and
+the time spent obtaining it change the best subsequent action. The existing
+[parallel priorities](research/CONTINUAL_AGENT.md#parallel-training-priorities)
+retain timed operation and durable learning alongside the native tasks.
 
 ## 4 November: native actions across eight scientific themes
 
@@ -25,11 +45,21 @@ lexical/numeric features; the earlier SigLIP comparison below is separate.
 
 Several interaction-learning attempts using Torch 2.11.0+cu128 exited with
 native-library faults, including during model initialization. Their records
-and checkpoints remain available. The four current trainings use one separate
+and checkpoints remain available. The four local trainings used one separate
 Torch 2.14.0+cu130 / NumPy 2.3.5 runtime and retain the original initial or
 completed imitation weights, curriculum and budgets. Earlier attempts are
 separate from this common-runtime comparison. A short GPU run completed all
 eight native themes before these trainings started; full results are pending.
+
+The local autonomous CDM subsequently stopped with a segmentation fault at
+32,608 interactions. Its last checkpoint, completed episodes and unfinished
+trajectory records remain intact. Two matched cloud CDM runs (autonomous and
+basic-operation initialization) have begun updating under independent resources.
+Transfers for their GRU counterparts are pending. The cloud schedule retains
+the same initial weights, 136 training episodes, eight worlds per update and
+fixed training budget. Each completed endpoint is queued for the 120 official
+cases with the common saved initial world states. Keep cloud and local results
+separate until the full paired cloud comparison is complete.
 
 Lexical encoding now accumulates and normalizes features before creating a
 Torch tensor. It preserves all 98 checked observation vectors, including the
@@ -49,11 +79,13 @@ Continue under `runs/discoveryworld/full_suite_20261104/native/`:
 `flash_science_corrected` and `flash_development_corrected` record the new
 collections with public format-error feedback. `autonomous`,
 `basic_operations` and `complete_solutions` hold the three student routes.
-The retry folders preserve interrupted attempts separately. Current students
+The retry folders preserve interrupted attempts separately. Local students
 are listed in `current_students.json`; their runs end in `301-torch214` under
 `autonomous` and `basic_operations`. The complete-solution pair uses the same
 runtime after collection completes and GPU memory becomes available.
 `evaluation_initializations` holds common official-case initial random streams.
+Cloud run records are under `runs/discoveryworld/cloud_20261104/`; `run.json`
+and `updates.jsonl` distinguish an active worker from a queued transfer.
 Use `updates.jsonl` for actual student interactions and optimizer updates,
 and native case records for task results. No final score has selected a model.
 The final endpoints are queued for independent native evaluation after their

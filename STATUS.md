@@ -1,13 +1,22 @@
 # CDM: objective, implementation, and results
 
+**Completed, 4 November:** [80 additional measured-reaction models](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)
+were trained across 32 A100 GPUs, using 40,960,000 recorded-data lookups.
+All endpoints have development and external-laboratory comparisons. Replacing
+reagent-name features with observed condition relationships makes decisions
+invariant to consistent renaming and produces useful feedback effects on
+Roche and Perera. Stable superiority over the matched GRU or the learned
+kernel remains unestablished. The seven final source reaction types are
+reserved. [Paired results](experiments/measured_reactions/results/comparison.json).
+
 **In progress, 4 November:** [native policy learning across eight themes](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
 now compares autonomous interaction learning, basic-operation instruction and
 complete-solution distillation, each with CDM and GRU. Bailian demonstrations
 are running; both basic-operation students completed eight supervised epochs
 and entered interaction learning. Native-library crashes interrupted several
-reinforcement attempts. The four current runs share a separate Torch 2.14
-runtime, equivalent lexical encoding and CPU-only simulator workers. Earlier
-records are preserved. No new
+reinforcement attempts, including the local autonomous CDM under Torch 2.14.
+Two matched cloud CDM reruns are updating; their GRU counterparts await data
+transfer. Local records and the remaining workers are preserved. No new
 official-case student score is available.
 [Current execution](HANDOFF.md).
 

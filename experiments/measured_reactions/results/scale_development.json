@@ -1,0 +1,1506 @@
+{
+  "condition_values": 48586,
+  "development_evaluations": 85400,
+  "matched_dev_rollouts_per_condition": 1400,
+  "measured_training_queries": 20480000,
+  "raw_rows": 67202,
+  "retained_rows": 53647,
+  "runs": {
+    "blind101": {
+      "best_1": 15.965,
+      "best_4": 27.983,
+      "best_8": 32.167,
+      "by_family": {
+        "Alkylation": 46.22,
+        "CS-Coupling": 49.118,
+        "Cyclization": 44.105,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.624,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.708
+      }
+    },
+    "blind102": {
+      "best_1": 15.965,
+      "best_4": 28.88,
+      "best_8": 32.069,
+      "by_family": {
+        "Alkylation": 46.319,
+        "CS-Coupling": 48.627,
+        "Cyclization": 43.67,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.983,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.397
+      }
+    },
+    "blind103": {
+      "best_1": 15.965,
+      "best_4": 28.016,
+      "best_8": 31.686,
+      "by_family": {
+        "Alkylation": 46.253,
+        "CS-Coupling": 46.291,
+        "Cyclization": 43.259,
+        "Dimerization, reductive": 23.167,
+        "Heck": 18.284,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 48.848
+      }
+    },
+    "blind104": {
+      "best_1": 15.965,
+      "best_4": 27.528,
+      "best_8": 32.009,
+      "by_family": {
+        "Alkylation": 46.511,
+        "CS-Coupling": 47.459,
+        "Cyclization": 44.76,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.777,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.008
+      }
+    },
+    "blind105": {
+      "best_1": 15.965,
+      "best_4": 28.412,
+      "best_8": 32.162,
+      "by_family": {
+        "Alkylation": 46.518,
+        "CS-Coupling": 49.118,
+        "Cyclization": 43.414,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.983,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.706
+      }
+    },
+    "blind106": {
+      "best_1": 15.965,
+      "best_4": 27.874,
+      "best_8": 32.139,
+      "by_family": {
+        "Alkylation": 46.5,
+        "CS-Coupling": 49.118,
+        "Cyclization": 43.555,
+        "Dimerization, reductive": 23.167,
+        "Heck": 18.073,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.307
+      }
+    },
+    "blind107": {
+      "best_1": 15.965,
+      "best_4": 27.235,
+      "best_8": 32.12,
+      "by_family": {
+        "Alkylation": 46.716,
+        "CS-Coupling": 49.21,
+        "Cyclization": 43.676,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.328,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.471
+      }
+    },
+    "blind108": {
+      "best_1": 15.965,
+      "best_4": 28.354,
+      "best_8": 32.07,
+      "by_family": {
+        "Alkylation": 46.31,
+        "CS-Coupling": 49.264,
+        "Cyclization": 43.345,
+        "Dimerization, reductive": 23.167,
+        "Heck": 17.772,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.316
+      }
+    },
+    "cdm101": {
+      "best_1": 15.965,
+      "best_4": 27.325,
+      "best_8": 31.697,
+      "by_family": {
+        "Alkylation": 46.493,
+        "CS-Coupling": 52.987,
+        "Cyclization": 40.97,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.448,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.069
+      }
+    },
+    "cdm101_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.893,
+      "best_8": 31.587,
+      "by_family": {
+        "Alkylation": 46.274,
+        "CS-Coupling": 52.987,
+        "Cyclization": 41.576,
+        "Dimerization, reductive": 19.103,
+        "Heck": 16.285,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.082
+      }
+    },
+    "cdm102": {
+      "best_1": 15.965,
+      "best_4": 27.898,
+      "best_8": 32.546,
+      "by_family": {
+        "Alkylation": 46.051,
+        "CS-Coupling": 55.323,
+        "Cyclization": 42.438,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.611,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.136
+      }
+    },
+    "cdm102_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.053,
+      "best_8": 32.489,
+      "by_family": {
+        "Alkylation": 45.903,
+        "CS-Coupling": 55.323,
+        "Cyclization": 43.097,
+        "Dimerization, reductive": 21.71,
+        "Heck": 17.064,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.422
+      }
+    },
+    "cdm103": {
+      "best_1": 15.965,
+      "best_4": 26.992,
+      "best_8": 29.771,
+      "by_family": {
+        "Alkylation": 40.46,
+        "CS-Coupling": 43.626,
+        "Cyclization": 40.751,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.673,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.053
+      }
+    },
+    "cdm103_without_readings": {
+      "best_1": 15.965,
+      "best_4": 26.203,
+      "best_8": 30.467,
+      "by_family": {
+        "Alkylation": 45.03,
+        "CS-Coupling": 43.907,
+        "Cyclization": 41.836,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.538,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.815
+      }
+    },
+    "cdm104": {
+      "best_1": 15.965,
+      "best_4": 27.513,
+      "best_8": 30.886,
+      "by_family": {
+        "Alkylation": 41.521,
+        "CS-Coupling": 52.987,
+        "Cyclization": 40.116,
+        "Dimerization, reductive": 17.786,
+        "Heck": 17.656,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.629
+      }
+    },
+    "cdm104_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.234,
+      "best_8": 31.068,
+      "by_family": {
+        "Alkylation": 42.412,
+        "CS-Coupling": 53.078,
+        "Cyclization": 41.221,
+        "Dimerization, reductive": 18.13,
+        "Heck": 17.054,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.259
+      }
+    },
+    "cdm105": {
+      "best_1": 15.965,
+      "best_4": 27.234,
+      "best_8": 31.735,
+      "by_family": {
+        "Alkylation": 46.673,
+        "CS-Coupling": 50.878,
+        "Cyclization": 40.396,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.152,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.973
+      }
+    },
+    "cdm105_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.266,
+      "best_8": 32.154,
+      "by_family": {
+        "Alkylation": 46.806,
+        "CS-Coupling": 53.148,
+        "Cyclization": 41.756,
+        "Dimerization, reductive": 21.71,
+        "Heck": 16.456,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.964
+      }
+    },
+    "cdm106": {
+      "best_1": 15.965,
+      "best_4": 27.44,
+      "best_8": 30.998,
+      "by_family": {
+        "Alkylation": 46.66,
+        "CS-Coupling": 46.243,
+        "Cyclization": 41.853,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.881,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.739
+      }
+    },
+    "cdm106_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.537,
+      "best_8": 30.626,
+      "by_family": {
+        "Alkylation": 46.218,
+        "CS-Coupling": 44.068,
+        "Cyclization": 41.43,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.667,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.022
+      }
+    },
+    "cdm107": {
+      "best_1": 15.965,
+      "best_4": 27.974,
+      "best_8": 32.021,
+      "by_family": {
+        "Alkylation": 46.058,
+        "CS-Coupling": 52.987,
+        "Cyclization": 41.036,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.563,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.714
+      }
+    },
+    "cdm107_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.242,
+      "best_8": 32.182,
+      "by_family": {
+        "Alkylation": 45.782,
+        "CS-Coupling": 52.987,
+        "Cyclization": 41.977,
+        "Dimerization, reductive": 22.417,
+        "Heck": 17.29,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.614
+      }
+    },
+    "cdm108": {
+      "best_1": 15.965,
+      "best_4": 27.274,
+      "best_8": 32.492,
+      "by_family": {
+        "Alkylation": 46.713,
+        "CS-Coupling": 55.323,
+        "Cyclization": 42.5,
+        "Dimerization, reductive": 21.957,
+        "Heck": 16.522,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.527
+      }
+    },
+    "cdm108_without_readings": {
+      "best_1": 15.965,
+      "best_4": 26.919,
+      "best_8": 31.821,
+      "by_family": {
+        "Alkylation": 46.434,
+        "CS-Coupling": 57.659,
+        "Cyclization": 40.155,
+        "Dimerization, reductive": 17.155,
+        "Heck": 16.917,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 48.857
+      }
+    },
+    "conditional101": {
+      "best_1": 15.965,
+      "best_4": 27.256,
+      "best_8": 33.338,
+      "by_family": {
+        "Alkylation": 47.566,
+        "CS-Coupling": 58.803,
+        "Cyclization": 43.694,
+        "Dimerization, reductive": 21.637,
+        "Heck": 16.143,
+        "Mitsunobu": 26.972,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.89
+      }
+    },
+    "conditional101_without_readings": {
+      "best_1": 15.965,
+      "best_4": 26.561,
+      "best_8": 32.315,
+      "by_family": {
+        "Alkylation": 46.495,
+        "CS-Coupling": 53.148,
+        "Cyclization": 43.394,
+        "Dimerization, reductive": 22.961,
+        "Heck": 15.451,
+        "Mitsunobu": 26.553,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.516
+      }
+    },
+    "conditional102": {
+      "best_1": 15.965,
+      "best_4": 29.983,
+      "best_8": 33.022,
+      "by_family": {
+        "Alkylation": 46.171,
+        "CS-Coupling": 58.803,
+        "Cyclization": 42.825,
+        "Dimerization, reductive": 22.255,
+        "Heck": 15.65,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.083
+      }
+    },
+    "conditional102_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.574,
+      "best_8": 32.814,
+      "by_family": {
+        "Alkylation": 46.675,
+        "CS-Coupling": 58.643,
+        "Cyclization": 41.329,
+        "Dimerization, reductive": 23.505,
+        "Heck": 15.046,
+        "Mitsunobu": 26.972,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.34
+      }
+    },
+    "conditional103": {
+      "best_1": 15.965,
+      "best_4": 26.897,
+      "best_8": 31.843,
+      "by_family": {
+        "Alkylation": 45.957,
+        "CS-Coupling": 50.937,
+        "Cyclization": 43.35,
+        "Dimerization, reductive": 19.17,
+        "Heck": 16.821,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.123
+      }
+    },
+    "conditional103_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.236,
+      "best_8": 30.887,
+      "by_family": {
+        "Alkylation": 45.24,
+        "CS-Coupling": 45.282,
+        "Cyclization": 43.23,
+        "Dimerization, reductive": 19.363,
+        "Heck": 16.407,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.183
+      }
+    },
+    "conditional104": {
+      "best_1": 15.965,
+      "best_4": 28.658,
+      "best_8": 32.389,
+      "by_family": {
+        "Alkylation": 46.153,
+        "CS-Coupling": 57.76,
+        "Cyclization": 40.241,
+        "Dimerization, reductive": 20.57,
+        "Heck": 16.639,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.36
+      }
+    },
+    "conditional104_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.582,
+      "best_8": 31.54,
+      "by_family": {
+        "Alkylation": 43.247,
+        "CS-Coupling": 56.346,
+        "Cyclization": 40.414,
+        "Dimerization, reductive": 20.57,
+        "Heck": 15.141,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.211
+      }
+    },
+    "conditional105": {
+      "best_1": 15.965,
+      "best_4": 29.418,
+      "best_8": 33.444,
+      "by_family": {
+        "Alkylation": 47.793,
+        "CS-Coupling": 58.021,
+        "Cyclization": 43.203,
+        "Dimerization, reductive": 23.056,
+        "Heck": 16.88,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.212
+      }
+    },
+    "conditional105_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.947,
+      "best_8": 32.377,
+      "by_family": {
+        "Alkylation": 47.498,
+        "CS-Coupling": 51.724,
+        "Cyclization": 42.757,
+        "Dimerization, reductive": 23.505,
+        "Heck": 17.075,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.064
+      }
+    },
+    "conditional106": {
+      "best_1": 15.965,
+      "best_4": 28.475,
+      "best_8": 32.637,
+      "by_family": {
+        "Alkylation": 47.271,
+        "CS-Coupling": 55.49,
+        "Cyclization": 42.196,
+        "Dimerization, reductive": 19.949,
+        "Heck": 16.894,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.906
+      }
+    },
+    "conditional106_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.052,
+      "best_8": 32.362,
+      "by_family": {
+        "Alkylation": 46.883,
+        "CS-Coupling": 57.76,
+        "Cyclization": 40.653,
+        "Dimerization, reductive": 19.078,
+        "Heck": 16.744,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.387
+      }
+    },
+    "conditional107": {
+      "best_1": 15.965,
+      "best_4": 28.267,
+      "best_8": 33.286,
+      "by_family": {
+        "Alkylation": 46.331,
+        "CS-Coupling": 58.27,
+        "Cyclization": 41.807,
+        "Dimerization, reductive": 25.153,
+        "Heck": 16.611,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.729
+      }
+    },
+    "conditional107_without_readings": {
+      "best_1": 15.965,
+      "best_4": 27.302,
+      "best_8": 32.529,
+      "by_family": {
+        "Alkylation": 47.069,
+        "CS-Coupling": 52.987,
+        "Cyclization": 41.306,
+        "Dimerization, reductive": 25.153,
+        "Heck": 17.158,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.167
+      }
+    },
+    "conditional108": {
+      "best_1": 15.965,
+      "best_4": 29.298,
+      "best_8": 33.307,
+      "by_family": {
+        "Alkylation": 46.818,
+        "CS-Coupling": 58.021,
+        "Cyclization": 42.019,
+        "Dimerization, reductive": 22.916,
+        "Heck": 17.883,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 51.409
+      }
+    },
+    "conditional108_without_readings": {
+      "best_1": 15.965,
+      "best_4": 28.429,
+      "best_8": 32.191,
+      "by_family": {
+        "Alkylation": 46.428,
+        "CS-Coupling": 57.379,
+        "Cyclization": 40.139,
+        "Dimerization, reductive": 19.568,
+        "Heck": 17.109,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.512
+      }
+    },
+    "conditional_blind101": {
+      "best_1": 15.965,
+      "best_4": 29.242,
+      "best_8": 32.781,
+      "by_family": {
+        "Alkylation": 45.969,
+        "CS-Coupling": 57.659,
+        "Cyclization": 43.09,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.615,
+        "Mitsunobu": 26.553,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.941
+      }
+    },
+    "conditional_blind102": {
+      "best_1": 15.965,
+      "best_4": 28.446,
+      "best_8": 32.047,
+      "by_family": {
+        "Alkylation": 46.31,
+        "CS-Coupling": 49.902,
+        "Cyclization": 43.606,
+        "Dimerization, reductive": 22.971,
+        "Heck": 16.66,
+        "Mitsunobu": 27.181,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.747
+      }
+    },
+    "conditional_blind103": {
+      "best_1": 15.965,
+      "best_4": 27.311,
+      "best_8": 30.888,
+      "by_family": {
+        "Alkylation": 43.877,
+        "CS-Coupling": 45.121,
+        "Cyclization": 43.814,
+        "Dimerization, reductive": 21.085,
+        "Heck": 16.032,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.788
+      }
+    },
+    "conditional_blind104": {
+      "best_1": 15.965,
+      "best_4": 27.678,
+      "best_8": 30.745,
+      "by_family": {
+        "Alkylation": 42.606,
+        "CS-Coupling": 53.148,
+        "Cyclization": 38.03,
+        "Dimerization, reductive": 20.58,
+        "Heck": 15.95,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 48.255
+      }
+    },
+    "conditional_blind105": {
+      "best_1": 15.965,
+      "best_4": 27.621,
+      "best_8": 32.206,
+      "by_family": {
+        "Alkylation": 47.298,
+        "CS-Coupling": 52.105,
+        "Cyclization": 42.35,
+        "Dimerization, reductive": 22.191,
+        "Heck": 17.075,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.237
+      }
+    },
+    "conditional_blind106": {
+      "best_1": 15.965,
+      "best_4": 27.818,
+      "best_8": 32.655,
+      "by_family": {
+        "Alkylation": 46.95,
+        "CS-Coupling": 58.643,
+        "Cyclization": 41.8,
+        "Dimerization, reductive": 20.176,
+        "Heck": 16.906,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.375
+      }
+    },
+    "conditional_blind107": {
+      "best_1": 15.965,
+      "best_4": 27.175,
+      "best_8": 31.977,
+      "by_family": {
+        "Alkylation": 46.384,
+        "CS-Coupling": 55.815,
+        "Cyclization": 40.901,
+        "Dimerization, reductive": 20.939,
+        "Heck": 16.364,
+        "Mitsunobu": 26.553,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 48.862
+      }
+    },
+    "conditional_blind108": {
+      "best_1": 15.965,
+      "best_4": 28.209,
+      "best_8": 32.181,
+      "by_family": {
+        "Alkylation": 46.285,
+        "CS-Coupling": 57.379,
+        "Cyclization": 38.463,
+        "Dimerization, reductive": 22.647,
+        "Heck": 17.075,
+        "Mitsunobu": 26.553,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.043
+      }
+    },
+    "gru101": {
+      "best_1": 15.965,
+      "best_4": 27.503,
+      "best_8": 31.85,
+      "by_family": {
+        "Alkylation": 46.253,
+        "CS-Coupling": 52.987,
+        "Cyclization": 42.389,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.448,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.119
+      }
+    },
+    "gru102": {
+      "best_1": 15.965,
+      "best_4": 27.328,
+      "best_8": 31.411,
+      "by_family": {
+        "Alkylation": 45.765,
+        "CS-Coupling": 46.573,
+        "Cyclization": 42.419,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.489,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.237
+      }
+    },
+    "gru103": {
+      "best_1": 15.965,
+      "best_4": 26.935,
+      "best_8": 29.875,
+      "by_family": {
+        "Alkylation": 40.46,
+        "CS-Coupling": 45.05,
+        "Cyclization": 40.447,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.366,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.075
+      }
+    },
+    "gru104": {
+      "best_1": 15.965,
+      "best_4": 26.912,
+      "best_8": 30.947,
+      "by_family": {
+        "Alkylation": 41.332,
+        "CS-Coupling": 53.148,
+        "Cyclization": 40.06,
+        "Dimerization, reductive": 19.216,
+        "Heck": 16.56,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.872
+      }
+    },
+    "gru105": {
+      "best_1": 15.965,
+      "best_4": 27.086,
+      "best_8": 31.237,
+      "by_family": {
+        "Alkylation": 46.856,
+        "CS-Coupling": 46.404,
+        "Cyclization": 40.741,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.538,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.552
+      }
+    },
+    "gru106": {
+      "best_1": 15.965,
+      "best_4": 27.377,
+      "best_8": 30.822,
+      "by_family": {
+        "Alkylation": 46.307,
+        "CS-Coupling": 46.243,
+        "Cyclization": 40.484,
+        "Dimerization, reductive": 19.216,
+        "Heck": 17.113,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.825
+      }
+    },
+    "gru107": {
+      "best_1": 15.965,
+      "best_4": 27.925,
+      "best_8": 32.275,
+      "by_family": {
+        "Alkylation": 46.045,
+        "CS-Coupling": 55.323,
+        "Cyclization": 41.036,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.227,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.765
+      }
+    },
+    "gru108": {
+      "best_1": 15.965,
+      "best_4": 27.587,
+      "best_8": 32.566,
+      "by_family": {
+        "Alkylation": 46.797,
+        "CS-Coupling": 55.323,
+        "Cyclization": 42.5,
+        "Dimerization, reductive": 22.417,
+        "Heck": 16.666,
+        "Mitsunobu": 27.39,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 49.432
+      }
+    },
+    "kernel_diverse": {
+      "best_1": 15.965,
+      "best_4": 27.844,
+      "best_8": 32.338,
+      "by_family": {
+        "Alkylation": 45.18,
+        "CS-Coupling": 54.012,
+        "Cyclization": 43.73,
+        "Dimerization, reductive": 23.062,
+        "Heck": 16.262,
+        "Mitsunobu": 26.073,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.388
+      }
+    },
+    "kernel_local": {
+      "best_1": 15.965,
+      "best_4": 27.227,
+      "best_8": 32.74,
+      "by_family": {
+        "Alkylation": 46.841,
+        "CS-Coupling": 52.552,
+        "Cyclization": 45.412,
+        "Dimerization, reductive": 22.072,
+        "Heck": 15.904,
+        "Mitsunobu": 26.282,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 52.859
+      }
+    },
+    "kernel_ucb": {
+      "best_1": 15.965,
+      "best_4": 27.287,
+      "best_8": 32.628,
+      "by_family": {
+        "Alkylation": 47.077,
+        "CS-Coupling": 53.417,
+        "Cyclization": 43.768,
+        "Dimerization, reductive": 22.5,
+        "Heck": 17.127,
+        "Mitsunobu": 24.695,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 52.442
+      }
+    },
+    "prior": {
+      "best_1": 15.965,
+      "best_4": 28.729,
+      "best_8": 32.493,
+      "by_family": {
+        "Alkylation": 45.496,
+        "CS-Coupling": 58.36,
+        "Cyclization": 42.6,
+        "Dimerization, reductive": 25.3,
+        "Heck": 15.929,
+        "Mitsunobu": 23.797,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 48.465
+      }
+    },
+    "random": {
+      "best_1": 15.965,
+      "best_4": 27.888,
+      "best_8": 31.671,
+      "by_family": {
+        "Alkylation": 45.478,
+        "CS-Coupling": 54.648,
+        "Cyclization": 41.974,
+        "Dimerization, reductive": 20.746,
+        "Heck": 16.532,
+        "Mitsunobu": 23.897,
+        "Sandmeyer": 0.0,
+        "Suzuki-Miyaura": 50.092
+      }
+    }
+  },
+  "source_revision": "a7fa5d0311218cfa7e4a743be92be05bb6fb8824",
+  "source_sha256": "50ff92f35ab983cfe211613bcfc420a0eeac75befdea7d15a6d09f5023abdac0",
+  "splits": {
+    "dev": {
+      "families": [
+        "Alkylation",
+        "CS-Coupling",
+        "Cyclization",
+        "Dimerization, reductive",
+        "Heck",
+        "Mitsunobu",
+        "Sandmeyer",
+        "Suzuki-Miyaura"
+      ],
+      "notebooks": 134,
+      "screens": 350
+    },
+    "test": {
+      "families": [
+        "Amide coupling",
+        "Borylation, C-H",
+        "CH-Activation",
+        "Chlorination",
+        "Negishi, in-situ",
+        "Oxidation",
+        "Wittig"
+      ],
+      "notebooks": 50,
+      "screens": 173
+    },
+    "train": {
+      "families": [
+        "Activation",
+        "Addition",
+        "Arylation, acidic C-H",
+        "Borylation, Miyaura",
+        "Buchwald-Hartwig",
+        "CC-Coupling",
+        "CN-Coupling",
+        "CO-Coupling",
+        "Condensation",
+        "Cyanation",
+        "Dehydration",
+        "Deprotection",
+        "Hydration",
+        "Hydrolysis",
+        "Negishi",
+        "Protection",
+        "Reduction",
+        "SNAr",
+        "Sonogashira",
+        "Stannylation",
+        "Stetter",
+        "Suzuki-Miyaura, in situ"
+      ],
+      "notebooks": 297,
+      "screens": 877
+    }
+  },
+  "training": {
+    "blind101": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:2",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 101,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind102": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:7",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 102,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind103": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:2",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 103,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind104": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:7",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 104,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind105": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:2",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 105,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind106": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:7",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 106,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind107": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:2",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 107,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "blind108": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:7",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "blind",
+      "queries": 512000,
+      "seed": 108,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm101": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 101,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm102": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:5",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 102,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm103": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 103,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm104": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:5",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 104,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm105": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 105,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm106": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:5",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 106,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm107": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 107,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "cdm108": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:5",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "cdm",
+      "queries": 512000,
+      "seed": 108,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional101": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:3",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 101,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional102": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 102,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional103": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:3",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 103,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional104": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 104,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional105": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:3",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 105,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional106": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 106,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional107": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:3",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 107,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional108": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:0",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional",
+      "queries": 512000,
+      "seed": 108,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind101": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:4",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 101,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind102": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 102,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind103": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:4",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 103,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind104": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 104,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind105": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:4",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 105,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind106": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 106,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind107": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:4",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 107,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "conditional_blind108": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "conditional_blind",
+      "queries": 512000,
+      "seed": 108,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru101": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 101,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru102": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:6",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 102,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru103": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 103,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru104": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:6",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 104,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru105": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 105,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru106": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:6",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 106,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru107": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:1",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 107,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    },
+    "gru108": {
+      "batch": 64,
+      "budget": 8,
+      "device": "cuda:6",
+      "init_native": null,
+      "lr": 0.0003,
+      "mode": "gru",
+      "queries": 512000,
+      "seed": 108,
+      "slots": 8,
+      "updates": 1000,
+      "width": 128
+    }
+  }
+}

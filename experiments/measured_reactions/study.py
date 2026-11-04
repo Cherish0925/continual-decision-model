@@ -277,7 +277,7 @@ def main():
     p.add_argument('--starts', type=int, default=4)
     p.add_argument('--split', choices=['dev', 'test'], default='dev')
     p.add_argument('--without-readings', action='store_true',
-                   help='Evaluate the same CDM or conditional checkpoint without returned signals')
+                   help='Evaluate the same learned checkpoint without returned signals')
     p.add_argument('--init-native', type=Path, help='Optional DigitalPolicy native checkpoint (core only)')
     a = p.parse_args()
     if a.without_readings and (a.action != 'eval' or a.mode not in FEEDBACK_CONTROLS):

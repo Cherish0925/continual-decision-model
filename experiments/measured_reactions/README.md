@@ -73,9 +73,7 @@ Enabling actual measurements in the **same trained conditional weights** added 2
 
 [All external scores](results/external.json) · [Matched per-screen curves](results/external_curves.npz).
 
-## Run
-
-### Larger training and a representation comparison
+## Larger training and a representation comparison
 
 The 4 November GPU campaign completed the declared 40 trainings: width 128,
 eight slots, 1,000 updates of 64 screens and 20,480,000 total training lookups.
@@ -102,7 +100,7 @@ transfer performance therefore remain distinct. Width, batch size, update
 count and seeds all changed from the earlier study; this is not an isolated
 training-duration intervention. The seven final reaction families remain unused.
 
-The next comparison fixes this larger training budget and tests whether
+The second completed comparison fixes this larger training budget and tests whether
 reagent-name representations contribute to poor transfer. Five alternatives
 use the same source screens and seeds: a learned categorical kernel with the
 named policy; a relation-only CDM; a relation-only GRU; a separately trained
@@ -122,9 +120,68 @@ arbitrary name dependence improves transfer. The two external datasets have
 already informed this redesign and now serve as external development
 comparisons. Final source-family evaluation remains separate.
 
+| Policy, eight training seeds | Roche development | Ahneman | Perera |
+| --- | ---: | ---: | ---: |
+| Categorical kernel, named CDM inputs | 32.58 | 58.19 | 68.52 |
+| Relation-only CDM | 32.89 | 57.63 | 73.07 |
+| Relation-only GRU | 32.57 | 58.08 | 72.69 |
+| Relation-only CDM trained without readings | 32.03 | 58.59 | 70.68 |
+| Learned kernel without a recurrent action scorer | 32.63 | 60.17 | 74.20 |
+
+Enabling readings in the same relation-only CDM improves the Roche endpoint
+by **1.37 points** (95% paired interval 0.43–2.45), Ahneman by **0.57**
+(−1.58–2.32), and Perera by **7.68** (3.74–12.60). All eight seeds improve
+on Roche and Perera. Relative to the named conditional CDM, Perera increases
+by 3.74 points, but the interval spans −2.92–11.26. Neither the CDM–GRU
+comparison nor the CDM–learned-kernel comparison establishes a stable gain.
+Removing name dependence is therefore insufficient to produce an overall
+advantage. The strongest classical reference remains competitive on Roche
+and leads on the two external datasets; the learned no-readings portfolio
+also remains particularly strong on Ahneman.
+
+The intervals resample training seeds and whole experimental groups: reaction
+types on Roche and substrate screens in each external study. They retain
+paired starts and average screens within notebooks before averaging Roche
+types. They describe this study's variation, not the entire space of chemistry.
+
+![Response curves across three measured datasets](results/comparison.svg)
+
+Lines average eight seeds and four common starts. Each panel retains its own
+published response scale. The classical curve is the strongest original
+reference for that dataset. All ten trained policies, individual seeds,
+feedback-removal comparisons and intervals are in the
+[paired comparison](results/comparison.json). The
+[first GPU campaign](results/scale_development.json) and
+[representation campaign](results/relations_development.json) each completed
+40 models and 20,480,000 training lookups. Their external results are retained
+[separately](results/scale_external.json) for
+[both comparisons](results/relations_external.json).
+
+These experiments identify a useful observation-to-prediction pathway.
+Extra persistent computation has not yet improved it reliably beyond a GRU
+or a learned kernel. The next decision experiment must make the consequence
+of a measurement and the cost of waiting part of the same objective; more
+passes over these fixed tables cannot establish that capability.
+
+## Run
+
 ```bash
 python -m experiments.measured_reactions.campaign train-dev --data runs/measured_reactions/table.npz --out runs/measured_reactions/relations --devices cuda:0,cuda:1 --modes categorical,relational,relational_gru,relational_blind,relational_kernel
 ```
+
+Pass the same `--modes` and `--seeds` to `report` and `external` for this
+comparison. When external evaluation is split across machines,
+`python -m experiments.measured_reactions.merge_external --input part1 --input part2 --out merged`
+combines disjoint seed results and checks their common starts.
+`python -m experiments.measured_reactions.compare --input scale_results --input relation_results --out comparison --plot`
+recreates the paired intervals and figure. All eight final endpoints are used;
+development scores do not select one checkpoint per method.
+
+Both GPU campaigns used Python 3.12.13, Torch 2.11.0+cu128 and NumPy 2.2.6.
+Source preparation used PyArrow 25.0.0 on the training hosts. A separate local
+Torch 2.14 evaluation was interrupted by a native-library fault; the second
+campaign's external results were completed with the cloud runtime. No failed
+evaluation contributes a partial model score.
 
 From the repository root, install the `neural` and `measured-reactions` extras and obtain the two upstream repositories at the revisions linked above. The preparation and transfer commands check the source file hashes. Raw experimental tables are not redistributed.
 

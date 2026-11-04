@@ -10,6 +10,14 @@ An observation can become outdated while inference is still running. The researc
 
 ## Current research
 
+The [measured-reaction comparison](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)
+adds 80 trained models on 32 A100 GPUs and evaluations on three published
+laboratory datasets. It tests how an observed result changes untried actions,
+including policies invariant to reagent renaming. Feedback produces useful
+decisions on Roche and Perera; the persistent core has not yet gained a stable
+advantage over its recurrent and kernel alternatives.
+[Models and reproduction](models/measured_reactions/README.md).
+
 **[Current model and research direction](research/CONTINUAL_AGENT.md)** ·
 [Results and corrected calculations](research/MEMORY_AND_EXPERIMENTS.md) ·
 [Closest methods and comparisons](ref/BELIEF_AND_COMPUTATION.md)
