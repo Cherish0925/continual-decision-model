@@ -21,15 +21,19 @@ development cases for each student. All evaluation runs without a teacher.
 These new policies use fixed
 lexical/numeric features; the earlier SigLIP comparison below is separate.
 
-Several interaction-learning attempts exited with native-library faults.
-Two recorded stacks stopped inside scalar lexical-feature operations;
-the equivalent batched encoding preserves all 98 checked observation vectors
-and reduces that encoding sample from 2.30 to 0.064 seconds. A subsequent
-simulator startup failed while loading CUDA, so new simulator workers run as
-independent CPU programs without importing Torch. Replacement trainings retain
-the original initialization, curriculum and budgets. Failed attempts and
-checkpoints remain available. Final reinforcement and official-case scores
-are pending; the runtime changes are not model-performance results.
+Several interaction-learning attempts using Torch 2.11.0+cu128 exited with
+native-library faults, including during model initialization. Their records
+and checkpoints remain available. The four current trainings use one separate
+Torch 2.14.0+cu130 / NumPy 2.3.5 runtime and retain the original initial or
+completed imitation weights, curriculum and budgets. Earlier attempts are
+separate from this common-runtime comparison. A short GPU run completed all
+eight native themes before these trainings started; full results are pending.
+
+Lexical encoding now accumulates and normalizes features before creating a
+Torch tensor. It preserves all 98 checked observation vectors, including the
+numeric and Unicode cases, and reduces that encoding sample from 2.30 to
+0.064 seconds. Simulator workers run independently without importing Torch or
+CUDA. These runtime changes are not model-performance results.
 The parallel Flash collector also encountered native-library crashes. Its
 finite public-action checks run directly without the crashing reference
 dependency, and its simulators now use the CPU-only worker. A disconnected
@@ -43,10 +47,10 @@ Continue under `runs/discoveryworld/full_suite_20261104/native/`:
 `flash_science_corrected` and `flash_development_corrected` record the new
 collections with public format-error feedback. `autonomous`,
 `basic_operations` and `complete_solutions` hold the three student routes.
-The retry folders preserve interrupted attempts separately. The restored pure
-learning runs are `autonomous/cdm301-encoding` and
-`autonomous/gru301-native-worker`; post-imitation learning continues in
-`basic_operations/cdm301/reinforcement` and `basic_operations/gru301-retry`.
+The retry folders preserve interrupted attempts separately. Current students
+are listed in `current_students.json`; their runs end in `301-torch214` under
+`autonomous` and `basic_operations`. The complete-solution pair uses the same
+runtime after collection completes and GPU memory becomes available.
 `evaluation_initializations` holds common official-case initial random streams.
 Use `updates.jsonl` for actual student interactions and optimizer updates,
 and native case records for task results. No final score has selected a model.

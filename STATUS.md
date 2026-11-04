@@ -5,8 +5,9 @@ now compares autonomous interaction learning, basic-operation instruction and
 complete-solution distillation, each with CDM and GRU. Bailian demonstrations
 are running; both basic-operation students completed eight supervised epochs
 and entered interaction learning. Native-library crashes interrupted several
-reinforcement attempts; equivalent lexical encoding and CPU-only simulator
-workers support replacement runs. Their earlier records are preserved. No new
+reinforcement attempts. The four current runs share a separate Torch 2.14
+runtime, equivalent lexical encoding and CPU-only simulator workers. Earlier
+records are preserved. No new
 official-case student score is available.
 [Current execution](HANDOFF.md).
 

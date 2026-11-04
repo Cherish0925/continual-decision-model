@@ -17,6 +17,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 import re
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 
@@ -69,8 +70,9 @@ def lexical_features(text: str, width: int = 256) -> torch.Tensor:
     for term in terms:
         index, sign = _lexical_term(term)
         counts[index % width] += sign
-    result = torch.tensor(counts, dtype=torch.float32)
-    return F.normalize(result, dim=0)
+    result = np.asarray(counts, dtype=np.float32)
+    result /= np.maximum(np.linalg.norm(result), np.float32(1e-12))
+    return torch.from_numpy(result)
 
 
 def _digest(value) -> str:

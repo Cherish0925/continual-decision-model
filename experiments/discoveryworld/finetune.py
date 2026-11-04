@@ -12,6 +12,7 @@ import argparse
 import contextlib
 from dataclasses import asdict
 from hashlib import sha256
+from importlib.metadata import version as package_version
 import json
 from pathlib import Path
 from time import perf_counter
@@ -170,9 +171,11 @@ def save_checkpoint(model: DigitalPolicy, critic: StateCritic, optimizer, source
                   "training_args": {**source["training_args"], "mode": args["mode"],
                                     "restart_state": args["restart_state"],
                                     "restart_workspace": args["restart_workspace"]}}
-    torch.save(checkpoint, output / "last.pt")
+    torch.save(checkpoint, output / "last.pt.tmp")
+    (output / 'last.pt.tmp').replace(output / 'last.pt')
     torch.save({"critic": critic.state_dict(), "optimizer": optimizer.state_dict(),
-                "width": model.config.width, "episodes": len(episodes)}, output / "critic.pt")
+                "width": model.config.width, "episodes": len(episodes)}, output / "critic.pt.tmp")
+    (output / 'critic.pt.tmp').replace(output / 'critic.pt')
 
 
 def training_schedule(args, source):
@@ -291,6 +294,7 @@ def main(argv=None):
     source_hash = sha256(source_path.read_bytes()).hexdigest()
     arguments = {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}
     metadata = {"args": arguments, "source_sha256": source_hash,
+                "software": {"torch": str(torch.__version__), "numpy": package_version('numpy')},
                 "schedule": [dict(theme=t, difficulty=d, seed=s, action_limit=a) for t, d, s, a in schedule],
                 "observation": "structured" if args.native_suite else "png",
                 "features": asdict(feature_config),
