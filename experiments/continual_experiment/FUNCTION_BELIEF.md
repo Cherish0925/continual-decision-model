@@ -563,6 +563,29 @@ python -m experiments.continual_experiment.response_split_overlap \
   --output /tmp/cdm-response-splits.json
 ```
 
+### Response functions after ingredient relabeling
+
+Two hidden targets can have different parameters or different ingredient names and still give exactly the same feedback for every available experiment. We compared the full tables for all 55 three-ingredient and all 161 four-ingredient recipes on the six-part menus, applying **one common permutation of ingredients to every recipe**. The training pool is the released predictor training set and the twelve continuation streams above, including possible open episodes. The separate renamed replays are excluded. This analysis classifies existing test instances; it does not measure whether a policy itself is invariant to renaming.
+
+Of the 720 primary positions on these menus, 314 match training at the original indices, another **85** match only after relabeling, and **321** have no match under any permutation. Counting only the first time an unmatched class occurs within each test stream leaves **193 positions, 138 distinct response classes, 39 streams**. These are not 193 independent laws. Earlier parent training and any exposure through validation are outside the comparison.
+
+| On the 193 first encounters: completed / mean operations (failures included) | Run 201 | Run 202 | Run 203 | Run 204 |
+| --- | ---: | ---: | ---: | ---: |
+| Parent for that run | 175 / 385.58 | 179 / 382.92 | 175 / 385.58 | 179 / 382.92 |
+| Equal-budget inherited continuation | 186 / 271.26 | 186 / 279.84 | 186 / 288.70 | 187 / 270.84 |
+| Joint belief-to-action continuation | 186 / 290.36 | 188 / 268.03 | 189 / 267.81 | 185 / 278.55 |
+
+Both continuations solve more tasks at lower cost than their parents even on this subset. The joint variant beats the inherited continuation on completions and cost in runs 202 and 203; run 201 ties on completions at higher cost, and run 204 loses on both. Both continuations already use the CDM core. This comparison isolates neither its value over a recurrent baseline nor transfer to a different domain. A function without an exact match can still be close to a familiar function or share its best action.
+
+[Recomputation script](response_permutations.py) · [All conditions and strata](results/response_permutations.json). With the same two archives as above:
+
+```bash
+python -m experiments.continual_experiment.response_permutations \
+  --data runs/continual_physics/function_belief_20261103/data \
+  --training-root runs/continual_physics/joint_belief_20261103 \
+  --output /tmp/cdm-response-permutations.json
+```
+
 ### Operations on tasks both policies complete
 
 The primary comparison counts every task, including failures. To separate solving more tasks from using fewer operations on tasks both methods solve, pair the [task rows](results/joint_belief_instances.csv) by stream and task index, exclude renamed replays, and keep the shared successes for each pair. Differences below are joint minus reference. The subset changes with the reference.

@@ -1,0 +1,322 @@
+{
+  "same_menu_positions": 720,
+  "scope": "Primary three- and four-ingredient menus, at most six parts. Exact intrinsic responses on all candidate recipes, allowing any one permutation of ingredients. Training pool: predictor training data and all twelve continuation training streams, including possible open episodes. Earlier parent training and validation exposure are outside this pool. First in stream means first occurrence of that response equivalence class in the evaluated stream, not statistically independent trials.",
+  "strata": {
+    "indexed_match": {
+      "distinct_classes": 126,
+      "models": {
+        "information201": {
+          "completed": 288,
+          "mean_operations_including_failures": 262.911
+        },
+        "information202": {
+          "completed": 286,
+          "mean_operations_including_failures": 268.102
+        },
+        "information203": {
+          "completed": 285,
+          "mean_operations_including_failures": 234.605
+        },
+        "information204": {
+          "completed": 286,
+          "mean_operations_including_failures": 260.22
+        },
+        "inherited201": {
+          "completed": 304,
+          "mean_operations_including_failures": 193.882
+        },
+        "inherited202": {
+          "completed": 306,
+          "mean_operations_including_failures": 184.997
+        },
+        "inherited203": {
+          "completed": 303,
+          "mean_operations_including_failures": 194.318
+        },
+        "inherited204": {
+          "completed": 307,
+          "mean_operations_including_failures": 189.191
+        },
+        "joint201": {
+          "completed": 301,
+          "mean_operations_including_failures": 185.197
+        },
+        "joint202": {
+          "completed": 307,
+          "mean_operations_including_failures": 191.029
+        },
+        "joint203": {
+          "completed": 302,
+          "mean_operations_including_failures": 188.207
+        },
+        "joint204": {
+          "completed": 305,
+          "mean_operations_including_failures": 197.347
+        },
+        "parent911": {
+          "completed": 267,
+          "mean_operations_including_failures": 288.513
+        },
+        "parent912": {
+          "completed": 273,
+          "mean_operations_including_failures": 277.417
+        },
+        "prediction_only201": {
+          "completed": 300,
+          "mean_operations_including_failures": 180.898
+        },
+        "prediction_only202": {
+          "completed": 303,
+          "mean_operations_including_failures": 187.268
+        },
+        "prediction_only203": {
+          "completed": 302,
+          "mean_operations_including_failures": 190.105
+        },
+        "prediction_only204": {
+          "completed": 306,
+          "mean_operations_including_failures": 193.455
+        }
+      },
+      "positions": 314,
+      "streams": 39
+    },
+    "permutation_only_match": {
+      "distinct_classes": 46,
+      "models": {
+        "information201": {
+          "completed": 85,
+          "mean_operations_including_failures": 169.553
+        },
+        "information202": {
+          "completed": 84,
+          "mean_operations_including_failures": 193.812
+        },
+        "information203": {
+          "completed": 83,
+          "mean_operations_including_failures": 155.894
+        },
+        "information204": {
+          "completed": 80,
+          "mean_operations_including_failures": 216.447
+        },
+        "inherited201": {
+          "completed": 83,
+          "mean_operations_including_failures": 166.271
+        },
+        "inherited202": {
+          "completed": 84,
+          "mean_operations_including_failures": 168.035
+        },
+        "inherited203": {
+          "completed": 84,
+          "mean_operations_including_failures": 166.859
+        },
+        "inherited204": {
+          "completed": 82,
+          "mean_operations_including_failures": 158.706
+        },
+        "joint201": {
+          "completed": 83,
+          "mean_operations_including_failures": 158.976
+        },
+        "joint202": {
+          "completed": 83,
+          "mean_operations_including_failures": 185.047
+        },
+        "joint203": {
+          "completed": 84,
+          "mean_operations_including_failures": 169.541
+        },
+        "joint204": {
+          "completed": 81,
+          "mean_operations_including_failures": 174.271
+        },
+        "parent911": {
+          "completed": 80,
+          "mean_operations_including_failures": 187.106
+        },
+        "parent912": {
+          "completed": 80,
+          "mean_operations_including_failures": 190.024
+        },
+        "prediction_only201": {
+          "completed": 83,
+          "mean_operations_including_failures": 152.624
+        },
+        "prediction_only202": {
+          "completed": 83,
+          "mean_operations_including_failures": 162.588
+        },
+        "prediction_only203": {
+          "completed": 84,
+          "mean_operations_including_failures": 155.047
+        },
+        "prediction_only204": {
+          "completed": 80,
+          "mean_operations_including_failures": 183.929
+        }
+      },
+      "positions": 85,
+      "streams": 23
+    },
+    "unmatched": {
+      "distinct_classes": 138,
+      "models": {
+        "information201": {
+          "completed": 290,
+          "mean_operations_including_failures": 312.308
+        },
+        "information202": {
+          "completed": 302,
+          "mean_operations_including_failures": 273.523
+        },
+        "information203": {
+          "completed": 301,
+          "mean_operations_including_failures": 284.231
+        },
+        "information204": {
+          "completed": 298,
+          "mean_operations_including_failures": 252.713
+        },
+        "inherited201": {
+          "completed": 309,
+          "mean_operations_including_failures": 228.308
+        },
+        "inherited202": {
+          "completed": 310,
+          "mean_operations_including_failures": 238.019
+        },
+        "inherited203": {
+          "completed": 310,
+          "mean_operations_including_failures": 244.819
+        },
+        "inherited204": {
+          "completed": 313,
+          "mean_operations_including_failures": 232.371
+        },
+        "joint201": {
+          "completed": 309,
+          "mean_operations_including_failures": 250.953
+        },
+        "joint202": {
+          "completed": 314,
+          "mean_operations_including_failures": 228.012
+        },
+        "joint203": {
+          "completed": 313,
+          "mean_operations_including_failures": 229.495
+        },
+        "joint204": {
+          "completed": 309,
+          "mean_operations_including_failures": 243.464
+        },
+        "parent911": {
+          "completed": 291,
+          "mean_operations_including_failures": 334.773
+        },
+        "parent912": {
+          "completed": 301,
+          "mean_operations_including_failures": 328.402
+        },
+        "prediction_only201": {
+          "completed": 310,
+          "mean_operations_including_failures": 235.296
+        },
+        "prediction_only202": {
+          "completed": 311,
+          "mean_operations_including_failures": 230.726
+        },
+        "prediction_only203": {
+          "completed": 312,
+          "mean_operations_including_failures": 242.897
+        },
+        "prediction_only204": {
+          "completed": 309,
+          "mean_operations_including_failures": 238.115
+        }
+      },
+      "positions": 321,
+      "streams": 39
+    },
+    "unmatched_first_in_stream": {
+      "distinct_classes": 138,
+      "models": {
+        "information201": {
+          "completed": 179,
+          "mean_operations_including_failures": 315.342
+        },
+        "information202": {
+          "completed": 185,
+          "mean_operations_including_failures": 278.378
+        },
+        "information203": {
+          "completed": 181,
+          "mean_operations_including_failures": 310.523
+        },
+        "information204": {
+          "completed": 183,
+          "mean_operations_including_failures": 263.632
+        },
+        "inherited201": {
+          "completed": 186,
+          "mean_operations_including_failures": 271.264
+        },
+        "inherited202": {
+          "completed": 186,
+          "mean_operations_including_failures": 279.839
+        },
+        "inherited203": {
+          "completed": 186,
+          "mean_operations_including_failures": 288.699
+        },
+        "inherited204": {
+          "completed": 187,
+          "mean_operations_including_failures": 270.839
+        },
+        "joint201": {
+          "completed": 186,
+          "mean_operations_including_failures": 290.358
+        },
+        "joint202": {
+          "completed": 188,
+          "mean_operations_including_failures": 268.026
+        },
+        "joint203": {
+          "completed": 189,
+          "mean_operations_including_failures": 267.808
+        },
+        "joint204": {
+          "completed": 185,
+          "mean_operations_including_failures": 278.549
+        },
+        "parent911": {
+          "completed": 175,
+          "mean_operations_including_failures": 385.58
+        },
+        "parent912": {
+          "completed": 179,
+          "mean_operations_including_failures": 382.917
+        },
+        "prediction_only201": {
+          "completed": 187,
+          "mean_operations_including_failures": 284.959
+        },
+        "prediction_only202": {
+          "completed": 187,
+          "mean_operations_including_failures": 270.492
+        },
+        "prediction_only203": {
+          "completed": 189,
+          "mean_operations_including_failures": 280.347
+        },
+        "prediction_only204": {
+          "completed": 186,
+          "mean_operations_including_failures": 268.622
+        }
+      },
+      "positions": 193,
+      "streams": 39
+    }
+  }
+}
