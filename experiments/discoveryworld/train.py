@@ -372,6 +372,7 @@ def parse_args(argv=None):
     parser.add_argument("--mask-object-relations", action=argparse.BooleanOptionalAction, default=None,
                         help="Zero object identity relations with the same record reader; requires object relations; inherit checkpoint setting")
     parser.add_argument("--feature-cache", type=Path, required=True)
+    parser.add_argument("--prepare-only", action="store_true", help="Populate shared frozen features without training")
     parser.add_argument("--action-history", type=int, default=None,
                         help="Number of executed action/feedback records; inherit checkpoint setting by default")
     parser.add_argument("--encoder-path", type=Path)
@@ -492,6 +493,12 @@ def main(argv=None):
     train_prepared = prepare_episodes(train, cache, **preparation)
     validation_prepared = prepare_episodes(validation, cache, **preparation)
     cache.close()
+    if args.prepare_only:
+        result = dict(training_episodes=len(train_prepared), validation_episodes=len(validation_prepared),
+                      transitions=sum(len(row.steps) for row in train_prepared + validation_prepared),
+                      feature_seconds=perf_counter() - start, features=asdict(feature_config))
+        (args.output / "prepared.json").write_text(json.dumps(result, indent=2) + "\n")
+        return result
     model = (model if model is not None else create_model(args, cache.text_dim, cache.image_dim)).to(args.device)
     resume = None if source is None else {"path": str(args.resume_checkpoint.resolve()),
                                          "sha256": sha256(args.resume_checkpoint.read_bytes()).hexdigest(),
