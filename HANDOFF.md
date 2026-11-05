@@ -1,5 +1,26 @@
 # Research progress
 
+## 5 November: what the completed native measurements decide
+
+Summing the 32-condition study by factor gives GRU 39 against CDM 24, lexical
+features 47 against frozen SigLIP text 16, inherited core 31 against random 32,
+and action history 31 against 32. Every factor is null or against the current
+design, consistently across cells.
+
+Zero-shot GPT-4o scores 29/120 on this benchmark, and 0/15 on Reactor Lab, from
+pretraining alone. The binding constraint here is world knowledge and
+procedural competence, not the choice of next observation. A 35.9 M-parameter
+policy reading lexical features from 150 demonstrations cannot reach that
+constraint by any architecture, so the end-to-end native route cannot attribute
+its outcome to CDM's mechanism either way.
+
+The queued 32-way continuation and interaction curriculum therefore cannot
+answer the project's question. The comparison that can holds a competent
+executor fixed and varies only experiment selection and belief across returned
+results, on the five themes with that structure, against the same executor
+alone. Argument, factor table and protocol:
+[research/WHERE_ADAPTATION_PAYS.md](research/WHERE_ADAPTATION_PAYS.md).
+
 ## 5 November: decoding and state effects measured; action-conditioned learning implemented
 
 All 32 input/initialization trainings are complete. Each final checkpoint was

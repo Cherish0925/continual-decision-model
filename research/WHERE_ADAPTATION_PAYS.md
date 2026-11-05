@@ -60,6 +60,28 @@ instead. And CDM's additional machinery — workspace refinement, instance
 adapters, outcome prediction — adds optimization burden against a constraint it
 does not address, so the plain recurrent policy does better.
 
+## What the table does and does not say about the selected architecture
+
+Two entries bear directly on choices recorded in [DESIGN.md](../DESIGN.md), and
+they must be read at their actual scope.
+
+**Reusing a released CDM core gives nothing here** (31 against 32). The cores
+were trained on instrument response dynamics under a different action schema;
+only the core weights transfer, while input projections and action heads are
+new. For a task whose constraint is procedural competence there is nothing for
+those weights to carry. This is evidence against inheritance as a default for a
+new action schema, not against inheritance within a task family, where the
+process-lifetime results already show it working.
+
+**The frozen encoder arm used SigLIP text features on trajectories containing
+no images.** It therefore tests a frozen semantic text encoder at this data
+scale, where it loses to lexical features 16 to 47. It says nothing about
+SigLIP as an image encoder, which is the role DESIGN.md actually assigns it.
+The usable conclusion is narrower and still worth acting on: with 16,015
+training actions, a 768-dimensional frozen text embedding is a worse input than
+features that key directly on object names. Pretrained representations need
+either more data or a task where their structure is the relevant one.
+
 ## The consequence for the benchmark choice
 
 DiscoveryWorld was selected to test proactive scientific behaviour. Its
