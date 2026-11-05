@@ -54,9 +54,12 @@ def discounted_returns(rewards: list[float], terminated: list[bool], bootstrap: 
     return torch.stack(list(reversed(returns)))
 
 
-def _features(observation: dict, memory: PublicObjectMemory, cache: FeatureCache, device, measurement_log=None):
+def _features(observation: dict, memory: PublicObjectMemory, cache: FeatureCache, device, measurement_log=None,
+              action_history=None):
     observation = with_measurement_records(memory.observe(observation), measurement_log,
                                            object_relations=cache.config.object_relations)
+    if action_history is not None:
+        observation = action_history.augment(observation)
     candidates = public_candidates(observation)
     path = cache.encode(observation, candidates)
     obs, actions = batch_features([load_features(str(path))], device)
@@ -80,6 +83,8 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
     observation = environment.reset(scenario, difficulty, seed)
     state = model.initial(1, device)
     memory = PublicObjectMemory()
+    from cdm.digital import PublicActionHistory
+    action_history = PublicActionHistory(cache.config.action_history)
     measurement_log = create_measurement_log(observation, cache.config)
     kwargs = {"mode": mode, "persistent": persistent, "restart_workspace": restart_workspace}
     configuration = {**environment.configuration, "policy": "on_policy_recurrent_actor_critic",
@@ -95,7 +100,7 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
             optimizer.zero_grad(set_to_none=True)
             log_probabilities, entropies, values, rewards, terminals = [], [], [], [], []
             for _ in range(sequence_length):
-                candidates, obs, actions = _features(observation, memory, cache, device, measurement_log)
+                candidates, obs, actions = _features(observation, memory, cache, device, measurement_log, action_history)
                 logits, state, _ = model(obs, actions, state, **kwargs)
                 distribution = torch.distributions.Categorical(logits=logits[0])
                 selected = distribution.sample()
@@ -111,6 +116,7 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
                 episode_reward += reward
                 writer.append({**transition, "behavior_log_probability": float(log_probability.detach()),
                                "critic_value": float(value.detach()), "policy_update": len(windows)})
+                action_history.append_transition(transition, {**observation, "remembered_objects": list(memory.objects.values())})
                 observation = environment.policy_input()
                 if measurement_log is not None:
                     measurement_log.observe(transition["action"], transition["action_result"], observation,
@@ -122,7 +128,7 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
             bootstrap = torch.zeros((), device=device)
             if not terminals[-1]:
                 with torch.no_grad():
-                    _, obs, actions = _features(observation, memory, cache, device, measurement_log)
+                    _, obs, actions = _features(observation, memory, cache, device, measurement_log, action_history)
                     _, next_state, _ = model(obs, actions, state, **kwargs)
                     bootstrap = critic(model, next_state, mode)[0]
             returns = discounted_returns(rewards, terminals, bootstrap, gamma)

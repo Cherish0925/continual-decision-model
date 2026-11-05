@@ -9,7 +9,7 @@ import sys
 import torch
 import torch.nn.functional as F
 
-from cdm.digital import PublicObjectMemory, public_candidates
+from cdm.digital import PublicActionHistory, PublicObjectMemory, public_candidates
 from .features import batch_features, load_features
 from .native_worker import JsonConnection
 from .train import create_measurement_log, with_measurement_records
@@ -51,7 +51,8 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
             worker['pipe'].send(('reset', (case, str(folder),
                 {**settings, 'environment_rng': args.random_seed * 100000 + job})))
             worker.update(active=True, done=False, job=job, reward=0., updates=0,
-                          memory=PublicObjectMemory(), records=None)
+                          memory=PublicObjectMemory(), records=None,
+                          action_history=PublicActionHistory(cache.config.action_history))
             assigned.append(index)
         for index in assigned:
             worker = workers[index]
@@ -68,6 +69,8 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
             worker = workers[index]
             observation = with_measurement_records(worker['memory'].observe(worker['observation']),
                 worker['records'], object_relations=cache.config.object_relations)
+            worker['feature_observation'] = observation
+            observation = worker['action_history'].augment(observation)
             choices = public_candidates(observation)
             features.append(load_features(str(cache.encode(observation, choices))))
             candidates.append(choices)
@@ -113,6 +116,9 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                              'critic_value':float(value[position].detach()),'policy_update':updates})))
                     for index in active:
                         worker=workers[index]; reply=_receive(worker)
+                        worker['action_history'].append_transition(
+                            dict(action=reply['action'], action_result=reply['action_result'], next_observation=reply['observation']),
+                            worker['feature_observation'])
                         worker['observation']=reply['observation']
                         worker['done']=reply['done']
                         worker['reward']+=float(reply['training_reward'])

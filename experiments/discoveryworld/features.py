@@ -44,8 +44,11 @@ class FeatureConfig:
     measurement_memory: bool = False
     object_relations: bool = False
     mask_object_relations: bool = False
+    action_history: int = 0
 
     def __post_init__(self):
+        if self.action_history < 0:
+            raise ValueError("action_history must be nonnegative")
         if self.object_relations and not self.measurement_memory:
             raise ValueError("object_relations requires measurement_memory")
         if self.mask_object_relations and not self.object_relations:
@@ -174,8 +177,10 @@ class FeatureCache:
             identity.pop("object_relations")
         if not config.mask_object_relations:
             identity.pop("mask_object_relations")
+        if not config.action_history:
+            identity.pop("action_history")
         tower_identity = {key: value for key, value in identity.items()
-                          if key not in ("measurement_memory", "object_relations", "mask_object_relations")}
+                          if key not in ("measurement_memory", "object_relations", "mask_object_relations", "action_history")}
         self.tower_directory = Path(directory) / _digest(tower_identity)[:20]
         self.tower_directory.mkdir(parents=True, exist_ok=True)
         self.directory = Path(directory) / _digest(identity)[:20]
@@ -278,6 +283,7 @@ class FeatureCache:
 
     def encode(self, observation: dict, candidates: list, root: Path | None = None) -> Path:
         text = observation_text(observation)
+        history = observation.get("action_history", [])[-self.config.action_history:] if self.config.action_history else []
         numeric = observation_numeric(observation)
         payload = _image_bytes(observation, root) if self.config.mode == "siglip" else None
         capture = max(float(observation.get("capture_seconds", 0)), 0)
@@ -308,6 +314,8 @@ class FeatureCache:
                     "candidates": [(c.text, c.numeric, canonical_action(c.action)) for c in candidates]}
         if self.config.measurement_memory:
             identity["measurements"] = measurements
+        if self.config.action_history:
+            identity["action_history"] = history
         relations = None
         if self.config.object_relations:
             relations = _measurement_relations(observation, candidates, rows)
@@ -320,6 +328,8 @@ class FeatureCache:
             observation_features = {"numeric": torch.tensor(numeric, dtype=torch.float32),
                                     "timing": torch.tensor(timing, dtype=torch.float32),
                                     "text": encoded_text[0]}
+            if history:
+                observation_features["text"] = torch.cat([encoded_text[0], *self.texts(history)], dim=0)
             image = self.image(payload)
             if image is not None:
                 observation_features["image"] = image

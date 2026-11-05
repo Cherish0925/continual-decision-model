@@ -16,7 +16,7 @@ from time import perf_counter
 import numpy as np
 import torch
 
-from cdm.digital import PublicObjectMemory, public_candidates
+from cdm.digital import PublicActionHistory, PublicObjectMemory, public_candidates
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .features import FeatureCache, FeatureConfig, batch_features, load_features
 from .train import load_checkpoint
@@ -48,6 +48,8 @@ class LearnedPolicy:
         self.generator = None if self.sampling_seed is None else \
             torch.Generator(device=self.device).manual_seed(self.sampling_seed)
         self.memory = PublicObjectMemory()
+        self.action_history = PublicActionHistory(self.features.config.action_history)
+        self.previous_observation = None
         self.measurements = None
         if self.features.config.measurement_memory:
             from .measurements import MeasurementLog
@@ -58,6 +60,7 @@ class LearnedPolicy:
         """Receive the action actually executed, including teacher interventions."""
         if self.measurements is not None:
             self.measurements.append_transition(transition)
+        self.action_history.append_transition(transition, self.previous_observation)
 
     def action_logits(self, logits, observation, candidates, features):
         """Optional learned readout over the state just updated by this action."""
@@ -72,6 +75,8 @@ class LearnedPolicy:
             if self.features.config.object_relations:
                 observation["measurement_dialog_owner"] = self.measurements.dialog_owner
         observation = self.memory.observe(observation)
+        self.previous_observation = observation
+        observation = self.action_history.augment(observation)
         candidates = public_candidates(observation)
         path = self.features.encode(observation, candidates)
         obs, actions = batch_features([load_features(str(path))], self.device)

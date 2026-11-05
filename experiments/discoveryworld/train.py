@@ -159,11 +159,14 @@ def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_fail
         completed_successfully = bool(final_metrics) and all(
             task.get('completed_successfully', False) for task in final_metrics)
         memory = PublicObjectMemory()
+        from cdm.digital import PublicActionHistory
+        action_history = PublicActionHistory(cache.config.action_history)
         measurement_log = create_measurement_log(public_observation(episode, episode.transitions[0]), cache.config)
         run_weights, exits = action_run_weights(episode.transitions)
         for row_index, row in enumerate(episode.transitions):
             observation = with_measurement_records(memory.observe(public_observation(episode, row)), measurement_log,
                                                    object_relations=cache.config.object_relations)
+            observation = action_history.augment(observation)
             candidates = public_candidates(observation)
             failed = not row.get("action_result", {}).get("success", False)
             def candidate_index(action: dict, label: str) -> int:
@@ -181,9 +184,12 @@ def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_fail
                 candidate_index(row.get("expert_action", row["action"]), "expert")
             if imitate_successful_episodes and not completed_successfully:
                 expert = -100
+            if not row.get("imitate_action", True):
+                expert = -100
             feature_path = cache.encode(observation, candidates, episode.path.parent)
             steps.append(PreparedStep(str(feature_path), expert, executed, outcome_target(row),
                                       run_weights[row_index], exits[row_index]))
+            action_history.append_transition(row, observation)
             if measurement_log is not None:
                 # This feedback belongs to the executed action, not the expert
                 # label. It becomes available only to the next decision.
@@ -366,6 +372,8 @@ def parse_args(argv=None):
     parser.add_argument("--mask-object-relations", action=argparse.BooleanOptionalAction, default=None,
                         help="Zero object identity relations with the same record reader; requires object relations; inherit checkpoint setting")
     parser.add_argument("--feature-cache", type=Path, required=True)
+    parser.add_argument("--action-history", type=int, default=None,
+                        help="Number of executed action/feedback records; inherit checkpoint setting by default")
     parser.add_argument("--encoder-path", type=Path)
     parser.add_argument("--feature-device", default="cpu")
     parser.add_argument("--feature-batch-size", type=int, default=32)
@@ -434,13 +442,14 @@ def initialize_training(args):
             raise ValueError(f"Resumed checkpoint dimensions do not match this feature/target schema: {incompatible}")
     else:
         feature_config = FeatureConfig(mode=args.features or "siglip")
-    overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations")
-                 if getattr(args, key) is not None}
+    overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations", "action_history")
+                 if getattr(args, key, None) is not None}
     if overrides:
         feature_config = replace(feature_config, **overrides)
     args.measurement_memory = getattr(feature_config, "measurement_memory", False)
     args.object_relations = feature_config.object_relations
     args.mask_object_relations = feature_config.mask_object_relations
+    args.action_history = feature_config.action_history
     if model is not None and args.measurement_memory and model.core.config.record_dim != 8:
         raise ValueError("Measurement memory requires a source core with record_dim=8; checkpoint weights are unchanged")
     if model is not None and model.config.object_relations != args.object_relations:

@@ -35,6 +35,8 @@ class TracedPolicy(LearnedPolicy):
             if self.features.config.object_relations:
                 observation['measurement_dialog_owner'] = self.measurements.dialog_owner
         observation = self.memory.observe(observation)
+        self.previous_observation = observation
+        observation = self.action_history.augment(observation)
         if not carry_state:
             # Preserve the public object and measurement histories while leaving
             # the GRU and workspace at their initial values for the handoff.

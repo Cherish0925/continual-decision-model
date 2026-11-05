@@ -9,6 +9,7 @@ GRU, workspace, state normalization and checkpoint tensors remain intact.
 from __future__ import annotations
 
 from copy import deepcopy
+from collections import deque
 from dataclasses import dataclass, replace
 import math
 from os import PathLike
@@ -81,6 +82,58 @@ class PublicObjectMemory:
         remembered = list(self.objects.values())
         self.objects.update(current)
         return {**observation, "remembered_objects": remembered}
+
+
+class PublicActionHistory:
+    """Bind executed actions to their received feedback, without expert labels.
+
+    Names, dialogue text and locations come from the observation available when
+    the action was selected. Object handles are only used to resolve those names.
+    A record enters the next decision, never the decision that produced it.
+    """
+
+    def __init__(self, capacity: int = 0):
+        if capacity < 0:
+            raise ValueError("Action history capacity must be nonnegative")
+        self.rows = deque(maxlen=capacity)
+
+    def append_transition(self, transition: dict, observation: dict | None = None):
+        if self.rows.maxlen == 0:
+            return
+        before = observation if observation is not None else transition["observation"]
+        action = transition["action"]
+        objects = _objects(before)
+        if "chosen_dialog_option_int" in action:
+            options = before["ui"].get("dialog_box", {}).get("dialogOptions", {})
+            option = action["chosen_dialog_option_int"]
+            label = options.get(str(option), options.get(option, "unknown reply")) if isinstance(options, dict) else options[option - 1]
+            description = "DIALOG: " + _text(label)
+        else:
+            parts = [str(action.get("action", "unknown action"))]
+            for key in ("arg1", "arg2"):
+                if key not in action:
+                    continue
+                value = action[key]
+                if value in objects:
+                    obj = objects[value]
+                    parts.append(f"{key} {_text(obj.get('name', 'object'))}: {_text(obj.get('description', ''))}")
+                elif isinstance(value, str):
+                    parts.append(f"{key} {_text(value)}")
+                else:
+                    parts.append(f"{key} previously observed object")
+            description = "; ".join(parts)
+        result = transition["action_result"]
+        after = transition["next_observation"]["ui"]
+        location = lambda ui: str({key: value for key, value in ui.get("agentLocation", {}).items()
+                                   if key in ("x", "y", "faceDirection")})
+        feedback = " ".join(_text(value) for value in (
+            result.get("message", ""), after.get("lastActionMessage", ""), after.get("extended_action_message", "")) if value)
+        self.rows.append(f"Executed {description}. Accepted {bool(result.get('success', False))}. "
+                         f"From {location(before['ui'])} to {location(after)}. Received {feedback}")
+
+    def augment(self, observation: dict) -> dict:
+        return {**observation, "action_history": [f"{len(self.rows)-index} actions ago: {row}"
+                for index, row in enumerate(self.rows)]}
 
 
 def _object_text(obj: dict) -> str:

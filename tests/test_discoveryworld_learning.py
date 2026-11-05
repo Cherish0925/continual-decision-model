@@ -10,7 +10,7 @@ import unittest
 import torch
 
 from cdm.core import ContinualCore, CoreConfig
-from cdm.digital import DigitalConfig, DigitalPolicy, public_candidates
+from cdm.digital import DigitalConfig, DigitalPolicy, PublicActionHistory, public_candidates
 from experiments.discoveryworld.features import FeatureCache, FeatureConfig, batch_features, load_features, lexical_features
 from experiments.discoveryworld.train import (Episode, prepare_episodes, public_observation,
                                              run_epoch, validate_split, outcome_target, received_outcome_loss,
@@ -42,6 +42,49 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         torch.set_num_threads(1)
+
+    def test_action_feedback_history_uses_executed_action_and_only_past_feedback(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            data = episode(root / "history", 100, 3)
+            data.transitions[0]["expert_action"] = {"action": "ROTATE_DIRECTION", "arg1": "west"}
+            data.transitions[0]["action_result"] = {"success": False, "message": "rotation was blocked"}
+            cache = FeatureCache(root / "cache", FeatureConfig(mode="lexical", action_history=2))
+            prepared = prepare_episodes([data], cache, allow_failed_actions=True)[0]
+            history = PublicActionHistory(2)
+            for row, step in zip(data.transitions, prepared.steps):
+                obs = history.augment(public_observation(data, row))
+                live_path = cache.encode(obs, public_candidates(obs))
+                self.assertEqual(step.feature_path, str(live_path))
+                history.append_transition(row, obs)
+            first = load_features(prepared.steps[0].feature_path)["observation"]["text"]
+            second = load_features(prepared.steps[1].feature_path)["observation"]["text"]
+            self.assertEqual(second.shape[0], first.shape[0] + 1)
+            past = PublicActionHistory(2)
+            past.append_transition(data.transitions[0])
+            text = past.augment({})["action_history"][0]
+            self.assertIn("east", text)
+            self.assertIn("rotation was blocked", text)
+            self.assertNotIn("west", text)
+            self.assertEqual(PublicActionHistory(2).augment({})["action_history"], [])
+            legacy = FeatureCache(root / "cache", FeatureConfig(mode="lexical"))
+            obs = public_observation(data, data.transitions[1])
+            self.assertEqual(legacy.encode(obs, public_candidates(obs)),
+                             legacy.encode(past.augment(obs), public_candidates(obs)))
+
+    def test_action_feedback_preserves_dialogue_meaning_without_handle_values(self):
+        before = {"ui": {"dialog_box": {"dialogOptions": {"7": "frequency decrease by 1 Hz"}},
+                          "inventoryObjects": [{"uuid": 987654, "name": "thermometer", "description": "instrument"}]}}
+        after = {"ui": {"lastActionMessage": "done", "agentLocation": {"x": 3, "y": 4}}}
+        history = PublicActionHistory(2)
+        history.append_transition(dict(observation=before, action={"chosen_dialog_option_int": 7},
+                                       action_result={"success": True}, next_observation=after))
+        history.append_transition(dict(observation=before, action={"action": "USE", "arg1": 987654},
+                                       action_result={"success": False}, next_observation=after))
+        text = " ".join(history.augment({})["action_history"])
+        self.assertIn("frequency decrease by 1 Hz", text)
+        self.assertIn("thermometer", text)
+        self.assertNotIn("987654", text)
 
     def test_lexical_encoding_preserves_existing_checkpoint_inputs(self):
         # Reference vectors from the original encoder, including collisions,
@@ -106,10 +149,12 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
             success, failure = episode(root / 'success', 100), episode(root / 'failure', 101)
             success.transitions[-1]['task_metrics'] = [{'completed_successfully': True}]
             failure.transitions[-1]['task_metrics'] = [{'completed_successfully': False}]
+            success.transitions[0]['imitate_action'] = False
             cache = FeatureCache(root / 'cache', FeatureConfig(mode='lexical'))
             a, b = prepare_episodes([success, failure], cache,
                                     allow_failed_actions=True, imitate_successful_episodes=True)
-            self.assertTrue(all(step.expert_target >= 0 for step in a.steps))
+            self.assertEqual(a.steps[0].expert_target, -100)
+            self.assertTrue(all(step.expert_target >= 0 for step in a.steps[1:]))
             self.assertTrue(all(step.expert_target == -100 for step in b.steps))
             self.assertTrue(all(step.executed_target >= 0 for step in b.steps))
             # Later completion changes the supervised label, never what the

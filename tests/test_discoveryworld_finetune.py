@@ -95,7 +95,7 @@ class FineTuneTests(unittest.TestCase):
         handle = model.core.gru.register_forward_pre_hook(lambda _, args: inputs.append(args[1].detach().clone()))
         with TemporaryDirectory() as folder:
             root = Path(folder)
-            cache = FeatureCache(root / "features", FeatureConfig(mode="lexical"))
+            cache = FeatureCache(root / "features", FeatureConfig(mode="lexical", action_history=2))
             env = DiscoveryWorldEnv(root / "episode", max_steps=3)
             with contextlib.redirect_stdout(io.StringIO()):
                 result = run_episode(model, critic, optimizer, cache, env, scenario="Reactor Lab",
