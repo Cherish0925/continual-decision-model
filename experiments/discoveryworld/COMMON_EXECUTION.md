@@ -6,7 +6,9 @@ instrument, sample, recipe component and control-menu answer. A deterministic
 executor reaches and acquires the declared objects. Every underlying operation
 consumes the native action budget and remains in the recorded trajectory.
 
-**Status, 5 November 2026:** collection and training are running. Supervised
+**Status, 6 November 2026:** the autonomous comparison and full-data supervised
+endpoints are complete; demonstration-initialized interaction training is running.
+It resumed after a data-delivery interruption. Supervised
 learning, autonomous gradient updates and independent learned-policy execution
 have run in the native simulator. All sixteen self-learning runs finished
 their interaction schedules on four compute nodes. All sixteen paired demonstration runs completed
@@ -71,19 +73,45 @@ including recorded unsuccessful or interrupted prefixes. Selection is by
 difficulty, not success. This fixed early snapshot permits training while Normal
 collection continues. The complete data subsequently includes resumed prefixes.
 
+The full demonstration stage uses a fixed snapshot containing 5,542 requests
+from eighty training instances and 1,420 requests from twenty development
+instances. It retains five training and three development trajectories whose
+teacher calls stopped early. Their executed operations and returned observations
+remain valid training examples. Later teacher continuations do not change this
+snapshot or any model's training data.
+
+Data delivery initially failed while restarting a removed temporary service,
+leaving the demonstration jobs waiting. Collection and delivery are now
+independent: the same snapshot was delivered to all four training nodes before
+the common ready marker was created on each node.
+
 The submitted interaction command selected all three difficulties. Its
 120-instance schedule is retained for every arm. The earlier description of
 this stage as eighty instances was incorrect; difficulty selection is now
 explicit in the configuration and command.
 
-## Initial development execution
+## Completed autonomous comparison and initial demonstration execution
 
 The sixteen self-learning runs completed 1,920 training episodes, 446,727 native
 operations and 8,075 optimizer updates. Seven training episodes completed their
-scientific task. Greedy execution on twenty fresh Easy/Normal instances per
-initialization completes 0/160 for CDM and 0/160 for GRU. Sampled and state-reset
-evaluations are still running. This autonomous curriculum has not produced
-reliable task completion within its fixed interaction budget.
+scientific task. Every training took 47.6–51.0 minutes; the sixteen runs were
+parallel. All fixed-weight evaluations are complete:
+
+| Model without demonstrations | Greedy | Sampled | Greedy, state reset |
+| --- | ---: | ---: | ---: |
+| CDM | 0/160 | 0/160 | 0/160 |
+| GRU | 0/160 | 0/160 | 1/160 |
+
+Each column repeats twenty fresh Easy/Normal instances across eight
+initializations. This autonomous curriculum has not produced reliable task
+completion within its fixed interaction budget.
+
+All sixteen demonstration models subsequently completed eight epochs on the
+fixed full collection. Independent greedy execution gives CDM 0/160 and GRU
+0/160 on the same twenty evaluation instances. CDM's mean task progress is
+0.0617; GRU's is 0.0371. Task completion remains absent at this supervised
+endpoint. Autonomous interaction training from these weights is running;
+its final evaluations have not completed.
 
 All sixteen demonstration models finished four epochs on the same 678 training requests.
 Each then executed the same ten Easy development instances with two decoding
@@ -105,6 +133,21 @@ neural state between requests is a same-weight intervention. Demonstration arms
 also evaluate the fixed final supervised checkpoint. These repeated executions
 do not increase the count of unique tasks. Language-planner inference usage is
 recorded separately from student inference and shared execution cost.
+
+The supervised endpoint is evaluated as soon as its fixed checkpoint is saved,
+in parallel with interaction training on separate devices. Two seed-401
+endpoints also execute the same instances on H100 to measure the complete
+runtime path. These hardware repetitions do not add model initializations or
+test instances to the scientific comparison.
+
+The completed H100 repetitions took 271.6 seconds for CDM and 253.3 seconds for
+GRU across twenty instances each, both completing 0/20. Environment execution
+accounted for 138.2 and 143.2 seconds; the decision path, including input
+processing, accounted for 115.6 and 94.3 seconds. These measurements explain
+why GPU capacity alone does not determine end-to-end throughput. See the
+[runtime records](results/common_execution_runtime.json) for the corresponding
+A100 repetitions and conditions. Concurrent host work differs, so these are
+not controlled hardware speed comparisons.
 
 Instance identities are disjoint; scientific response laws may repeat across
 seeds. Unseen-law transfer, returning-rule memory, real-time operation, adaptive
@@ -130,7 +173,9 @@ python -m experiments.discoveryworld.collect_suite \
 Collect development seeds 6300 and 6301 with identical settings. Copy the first
 finished-attempt Easy records to `runs/common/initial_data/{train,development}`
 and mark the snapshot with `runs/common/initial-data-ready.json`. Mark the
-finished full collection with `runs/common/data-ready.json`. For each mode
+fixed full collection with `runs/common/data-ready.json`. All model jobs must
+receive identical copied trajectories before that marker appears; subsequent
+collection continues outside this snapshot. For each mode
 and seed in the configuration, launch on separate devices:
 
 ```sh

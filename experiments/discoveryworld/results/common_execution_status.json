@@ -1,10 +1,10 @@
 {
-  "as_of_utc": "2026-11-05T13:37:14.652930+00:00",
+  "as_of_utc": "2026-11-05T16:44:10.858493+00:00",
   "status": "running",
   "planned_models": 32,
   "models_with_recorded_updates": 32,
   "completed_initial_imitation": 16,
-  "completed_models": 0,
+  "completed_models": 16,
   "models": [
     {
       "model": "self_cdm_s401",
@@ -16,7 +16,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 1,
       "native_actions_in_finished_episodes": 27793,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s402",
@@ -28,7 +28,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s403",
@@ -40,7 +40,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 1,
       "native_actions_in_finished_episodes": 27826,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s404",
@@ -52,7 +52,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s405",
@@ -64,7 +64,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 1,
       "native_actions_in_finished_episodes": 27930,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s406",
@@ -76,7 +76,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s407",
@@ -88,7 +88,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_cdm_s408",
@@ -100,102 +100,102 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 27955,
-      "complete": false
+      "complete": true
     },
     {
       "model": "demonstrations_cdm_s401",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 268,
+      "sampled_requests": 8391,
+      "finished_interaction_episodes": 55,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 5,
+      "native_actions_in_finished_episodes": 10289,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s402",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 270,
+      "sampled_requests": 8465,
+      "finished_interaction_episodes": 54,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 3,
+      "native_actions_in_finished_episodes": 10672,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s403",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 221,
+      "sampled_requests": 6937,
+      "finished_interaction_episodes": 41,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 3,
+      "native_actions_in_finished_episodes": 8659,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s404",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 231,
+      "sampled_requests": 7245,
+      "finished_interaction_episodes": 44,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 2,
+      "native_actions_in_finished_episodes": 8954,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s405",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 257,
+      "sampled_requests": 8067,
+      "finished_interaction_episodes": 51,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 6,
+      "native_actions_in_finished_episodes": 9629,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s406",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 193,
+      "sampled_requests": 6005,
+      "finished_interaction_episodes": 41,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 3,
+      "native_actions_in_finished_episodes": 8518,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s407",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 226,
+      "sampled_requests": 7074,
+      "finished_interaction_episodes": 47,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 2,
+      "native_actions_in_finished_episodes": 9488,
       "complete": false
     },
     {
       "model": "demonstrations_cdm_s408",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 230,
+      "sampled_requests": 7198,
+      "finished_interaction_episodes": 40,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 3,
+      "native_actions_in_finished_episodes": 8306,
       "complete": false
     },
     {
@@ -208,7 +208,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 2,
       "native_actions_in_finished_episodes": 27788,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s402",
@@ -220,7 +220,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 27808,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s403",
@@ -232,7 +232,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 1,
       "native_actions_in_finished_episodes": 27928,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s404",
@@ -244,7 +244,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 1,
       "native_actions_in_finished_episodes": 27921,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s405",
@@ -256,7 +256,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s406",
@@ -268,7 +268,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 28000,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s407",
@@ -280,7 +280,7 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 27861,
-      "complete": false
+      "complete": true
     },
     {
       "model": "self_gru_s408",
@@ -292,124 +292,154 @@
       "interaction_training_complete": true,
       "interaction_training_successes": 0,
       "native_actions_in_finished_episodes": 27917,
-      "complete": false
+      "complete": true
     },
     {
       "model": "demonstrations_gru_s401",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 298,
+      "sampled_requests": 9278,
+      "finished_interaction_episodes": 65,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 4,
+      "native_actions_in_finished_episodes": 12069,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s402",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 263,
+      "sampled_requests": 8231,
+      "finished_interaction_episodes": 53,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 11310,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s403",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 254,
+      "sampled_requests": 7972,
+      "finished_interaction_episodes": 50,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 10416,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s404",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 260,
+      "sampled_requests": 8130,
+      "finished_interaction_episodes": 51,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 5,
+      "native_actions_in_finished_episodes": 10660,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s405",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 286,
+      "sampled_requests": 8909,
+      "finished_interaction_episodes": 59,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 4,
+      "native_actions_in_finished_episodes": 12206,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s406",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 268,
+      "sampled_requests": 8382,
+      "finished_interaction_episodes": 55,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 5,
+      "native_actions_in_finished_episodes": 11429,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s407",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 234,
+      "sampled_requests": 7324,
+      "finished_interaction_episodes": 50,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 2,
+      "native_actions_in_finished_episodes": 10639,
       "complete": false
     },
     {
       "model": "demonstrations_gru_s408",
       "initial_imitation_epochs": 4,
-      "full_imitation_epochs": 0,
-      "optimizer_updates": 0,
-      "sampled_requests": 0,
-      "finished_interaction_episodes": 0,
+      "full_imitation_epochs": 8,
+      "optimizer_updates": 264,
+      "sampled_requests": 8313,
+      "finished_interaction_episodes": 54,
       "interaction_training_complete": false,
-      "interaction_training_successes": 0,
-      "native_actions_in_finished_episodes": 0,
+      "interaction_training_successes": 4,
+      "native_actions_in_finished_episodes": 11193,
       "complete": false
     }
   ],
   "collections": {
     "train": {
       "planned_instances": 80,
-      "latest_recorded_attempts": 79,
-      "successful_instances": 38,
-      "policy_errors": 34
+      "latest_recorded_attempts": 80,
+      "successful_instances": 61,
+      "policy_errors": 3
     },
     "development": {
       "planned_instances": 20,
       "latest_recorded_attempts": 20,
-      "successful_instances": 15,
-      "policy_errors": 5
+      "successful_instances": 17,
+      "policy_errors": 1
     },
     "reference": {
       "planned_instances": 20,
-      "latest_recorded_attempts": 18,
-      "successful_instances": 12,
-      "policy_errors": 4
+      "latest_recorded_attempts": 20,
+      "successful_instances": 15,
+      "policy_errors": 1
     }
   },
-  "scope": "Teacher completions are not student scores. Repeated model executions share instance identities. Counts may lag running processes."
+  "scope": "Teacher completions are not student scores. Repeated model executions share instance identities. Counts may lag running processes.",
+  "training_dataset": {
+    "created_at_utc": "2026-11-05T16:08:21.409807+00:00",
+    "collections": [
+      {
+        "name": "train",
+        "cases": 80,
+        "requests": 5542,
+        "successful_episodes": 61,
+        "interrupted_cases": [
+          "04-easy-6204",
+          "04-normal-6201",
+          "04-normal-6203",
+          "04-normal-6206",
+          "04-normal-6207"
+        ]
+      },
+      {
+        "name": "development",
+        "cases": 20,
+        "requests": 1420,
+        "successful_episodes": 15,
+        "interrupted_cases": [
+          "04-normal-6301",
+          "07-normal-6300",
+          "07-normal-6301"
+        ]
+      }
+    ],
+    "selection": "All recorded instances, including valid prefixes from unsuccessful or API-interrupted episodes. Later acquisition does not modify this training snapshot."
+  }
 }

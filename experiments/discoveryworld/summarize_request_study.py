@@ -70,6 +70,9 @@ def summarize(records, collections):
         completed_initial_imitation=sum(m['initial_imitation_epochs']==4 for m in models),
         completed_models=completed, models=models, collections=data,
         scope='Teacher completions are not student scores. Repeated model executions share instance identities. Counts may lag running processes.')
+    snapshot=collections/'student_data/data-ready.json'
+    if snapshot.exists():
+        status['training_dataset']=json.loads(snapshot.read_text())
     results = dict(groups=groups, cases=outcomes,
         timing='Elapsed time was measured during concurrent training and evaluation; these runs do not isolate inference latency.',
         endpoint='Initial development scores use fixed four-epoch weights. Full imitation and interaction endpoints use their fixed final weights.')

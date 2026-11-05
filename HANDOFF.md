@@ -1,5 +1,39 @@
 # Research progress
 
+## 6 November: demonstration endpoints evaluated; interaction training running
+
+All sixteen autonomous runs completed training and three fixed evaluations.
+CDM completes 0/160 with greedy actions, 0/160 with sampled actions and 0/160
+with state reset. GRU completes 0/160, 0/160 and 1/160 respectively. Every entry
+repeats the same twenty fresh instances across eight initializations. The
+training duration was 47.6–51.0 minutes per parallel run; model capability has
+not improved reliably under this curriculum.
+
+The demonstration continuation was delayed by a failed data-delivery handover.
+The waiting jobs now have the same fixed collection: 5,542 training requests
+across eighty instances and 1,420 development requests across twenty instances.
+Valid prefixes from five interrupted training and three interrupted development
+episodes are retained. Later teacher continuations run separately and cannot
+change these training inputs. All four nodes received the same snapshot and
+resumed the sixteen jobs. All sixteen completed eight full-data epochs. Their
+fixed supervised endpoints each complete 0/160 with greedy execution (CDM and
+GRU); subsequent autonomous interaction training is running. Completed epochs
+and optimizer updates remain in the
+[dated status](experiments/discoveryworld/results/common_execution_status.json).
+
+Input preparation uses spare CPU workers. Fixed imitation endpoints are
+evaluated concurrently with interaction training on the other sixteen devices;
+two H100 runs completed seed-401 runtime repetitions. Twenty instances took
+271.6 seconds for CDM and 253.3 seconds for GRU, both completing 0/20. These
+repetitions do not increase the number of unique scientific test instances.
+The [timing records](experiments/discoveryworld/results/common_execution_runtime.json)
+include environment execution and input processing; they are not isolated
+GPU latency measurements. Lightweight progress transfer now runs independently
+of full checkpoint and trajectory transfers.
+
+[Method and completed comparisons](experiments/discoveryworld/COMMON_EXECUTION.md)
+· [per-instance results](experiments/discoveryworld/results/common_execution.json).
+
 ## 5 November: shared execution implemented; paired planner training running
 
 The common executor performs declared object operations, returns actual feedback
