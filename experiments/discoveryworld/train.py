@@ -21,7 +21,7 @@ import torch
 import torch.nn.functional as F
 
 from cdm.core import ContinualCore, CoreConfig
-from cdm.digital import DigitalConfig, DigitalPolicy, PublicObjectMemory, observed_numbers, public_candidates
+from cdm.digital import DigitalConfig, DigitalPolicy, PublicObjectMemory, observed_numbers, observation_numeric, public_candidates
 from .features import FeatureCache, FeatureConfig, batch_features, canonical_action, load_features
 
 
@@ -44,6 +44,7 @@ class PreparedStep:
     outcome: list[float]
     run_weight: float = 1.0
     repeated_run_exit: bool = False
+    next_numeric: list[float] | None = None
 
 
 @dataclass
@@ -128,6 +129,15 @@ def outcome_target(row: dict) -> list[float]:
         transformed + [0.0] * (5 - len(values)) + presence
 
 
+def next_numeric_target(observation: dict, memory: PublicObjectMemory) -> list[float]:
+    """Next received values with the already observed object registry.
+
+    Reading this target does not advance memory and never supplies an input to
+    the action that produced it. Scorecards and rewards are not numeric inputs.
+    """
+    return observation_numeric({**observation, "remembered_objects": list(memory.objects.values())})
+
+
 
 def action_run_weights(transitions: list[dict]) -> tuple[list[float], list[bool]]:
     """One unit of imitation mass per consecutive expert-action run.
@@ -188,7 +198,8 @@ def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_fail
                 expert = -100
             feature_path = cache.encode(observation, candidates, episode.path.parent)
             steps.append(PreparedStep(str(feature_path), expert, executed, outcome_target(row),
-                                      run_weights[row_index], exits[row_index]))
+                                      run_weights[row_index], exits[row_index],
+                                      next_numeric_target(row["next_observation"], memory)))
             action_history.append_transition(row, observation)
             if measurement_log is not None:
                 # This feedback belongs to the executed action, not the expert
@@ -224,7 +235,8 @@ def _detach(state):
 def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_size: int,
               sequence_length: int, device: str | torch.device, mode: str = "cdm",
               persistent: bool = True, restart_workspace: bool = False, outcome_weight: float = .5, immediate_weight: float = .25,
-              optimizer=None, shuffle_seed: int = 0, imitation_reduction: str = "event", precision="float32") -> dict:
+              optimizer=None, shuffle_seed: int = 0, imitation_reduction: str = "event", precision="float32",
+              transition_weight: float = .25) -> dict:
     if imitation_reduction not in ("event", "action_run"):
         raise ValueError("imitation_reduction must be event or action_run")
     training = optimizer is not None
@@ -233,7 +245,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
     if training:
         random.Random(shuffle_seed).shuffle(order)
     totals = {key: 0.0 for key in ("imitation_loss", "outcome_loss", "immediate_loss", "correct", "count", "supervised_count", "outcome_count",
-                                  "raw_imitation_loss", "run_correct", "run_mass", "exit_correct", "exit_count", "ce_mass")}
+                                  "raw_imitation_loss", "run_correct", "run_mass", "exit_correct", "exit_count", "ce_mass", "transition_loss")}
     device = torch.device(device)
     for start in range(0, len(order), batch_size):
         batch = [episodes[i] for i in order[start:start + batch_size]]
@@ -283,6 +295,12 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     else:
                         loss = ((imitation + immediate_weight * immediate) * ce_weights * supervised).sum() / ce_window_count
                     loss = loss + outcome_weight * (outcome * observed).sum() / outcome_count
+                    next_state, forecast = model.commit_action(obs, candidates, next_state, executed, mode=mode)
+                    transition_loss = torch.zeros_like(imitation)
+                    if forecast is not None:
+                        numeric_target = torch.tensor([step.next_numeric for step in steps], device=device)
+                        transition_loss = F.smooth_l1_loss(forecast, numeric_target, reduction="none").mean(-1)
+                        loss = loss + transition_weight * (transition_loss * observed).sum() / outcome_count
                     window_loss = loss if window_loss is None else window_loss + loss
                     # Finished episodes contribute neither loss nor artificial state updates.
                     state = {key: torch.where(alive.reshape((-1,) + (1,) * (value.ndim - 1)), value, state[key])
@@ -291,6 +309,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     totals["raw_imitation_loss"] += float(imitation.detach()[supervised].sum())
                     totals["ce_mass"] += float(ce_weights[supervised].sum())
                     totals["outcome_loss"] += float(outcome.detach()[observed].sum())
+                    totals["transition_loss"] += float(transition_loss.detach()[observed].sum())
                     totals["immediate_loss"] += float((immediate.detach() * ce_weights)[supervised].sum())
                     correct = logits.argmax(-1) == targets
                     totals["correct"] += int(correct[supervised].sum())
@@ -310,10 +329,11 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
     count, ce_mass = max(1, totals["supervised_count"]), max(1e-8, totals["ce_mass"])
     result = {"imitation_loss": totals["imitation_loss"] / ce_mass,
               "outcome_loss": totals["outcome_loss"] / max(1, totals["outcome_count"]),
+              "transition_loss": totals["transition_loss"] / max(1, totals["outcome_count"]),
               "immediate_loss": totals["immediate_loss"] / ce_mass,
               "raw_imitation_loss": totals["raw_imitation_loss"] / count}
     return {**result, "loss": result["imitation_loss"] + outcome_weight * result["outcome_loss"]
-                            + immediate_weight * result["immediate_loss"],
+                            + immediate_weight * result["immediate_loss"] + transition_weight * result["transition_loss"],
             "imitation_reduction": imitation_reduction,
             "imitation_accuracy": totals["correct"] / count,
             "raw_event_imitation_accuracy": totals["correct"] / count,
@@ -326,7 +346,9 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
 def create_model(args, text_dim: int, image_dim: int):
     digital = DigitalConfig(width=args.width, text_dim=text_dim, image_dim=image_dim,
                             refinements=args.refinements, outcome_dim=14,
-                            object_relations=args.object_relations)
+                            object_relations=args.object_relations,
+                            candidate_read=bool(getattr(args, "candidate_read", False)),
+                            action_conditioned=bool(getattr(args, "action_conditioned", False)))
     if args.initial_checkpoint:
         saved = torch.load(args.initial_checkpoint, map_location="cpu", weights_only=True)
         if saved.get("kind") == "shared_experiment_core_v1":
@@ -406,6 +428,12 @@ def parse_args(argv=None):
                         help="Use imitation targets only from successfully completed episodes; retain all received-outcome training.")
     parser.add_argument("--outcome-weight", type=float, default=.5)
     parser.add_argument("--immediate-weight", type=float, default=.25)
+    parser.add_argument("--transition-weight", type=float, default=.25,
+                        help="Received next-observation loss for action-conditioned state updates")
+    parser.add_argument("--candidate-read", action=argparse.BooleanOptionalAction, default=None,
+                        help="Let each candidate read received tokens and workspace slots")
+    parser.add_argument("--action-conditioned", action=argparse.BooleanOptionalAction, default=None,
+                        help="Use executed actions for state prediction and feed predicted results into decisions")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args(argv)
     if min(args.epochs, args.batch_size, args.sequence_length, args.threads, args.feature_batch_size) <= 0:
@@ -454,6 +482,12 @@ def initialize_training(args):
         raise ValueError("Measurement memory requires a source core with record_dim=8; checkpoint weights are unchanged")
     if model is not None and model.config.object_relations != args.object_relations:
         model = DigitalPolicy.with_object_relations(model, enabled=args.object_relations)
+    if model is not None:
+        if args.candidate_read is not None or args.action_conditioned is not None:
+            model = DigitalPolicy.with_action_connections(model, candidate_read=args.candidate_read,
+                                                          action_conditioned=args.action_conditioned)
+        args.candidate_read = model.config.candidate_read
+        args.action_conditioned = model.config.action_conditioned
     args.features = feature_config.mode
     for key, value in defaults.items():
         if getattr(args, key) is None:
@@ -545,7 +579,7 @@ def main(argv=None):
                   mode=args.mode, persistent=not args.restart_state, restart_workspace=args.restart_workspace,
                   outcome_weight=args.outcome_weight,
                   immediate_weight=args.immediate_weight, imitation_reduction=args.imitation_reduction,
-                  precision=args.precision)
+                  precision=args.precision, transition_weight=args.transition_weight)
     best = float("inf")
     source_epoch = source["epoch"] if source else 0
     train_instances = historical_train | {episode.identity for episode in train}

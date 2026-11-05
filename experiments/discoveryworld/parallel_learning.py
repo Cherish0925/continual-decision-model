@@ -12,7 +12,8 @@ import torch.nn.functional as F
 from cdm.digital import PublicActionHistory, PublicObjectMemory, public_candidates
 from .features import batch_features, load_features
 from .native_worker import JsonConnection
-from .train import create_measurement_log, with_measurement_records
+from .train import (create_measurement_log, with_measurement_records, next_numeric_target,
+                    outcome_target, received_outcome_loss)
 
 
 def _receive(worker):
@@ -32,7 +33,7 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
     next_case = updates = interactions = 0
     model.train(); critic.train()
     kwargs = dict(mode=args.mode, persistent=not args.restart_state,
-                  restart_workspace=args.restart_workspace, predict_outcomes=False)
+                  restart_workspace=args.restart_workspace, predict_outcomes=bool(args.outcome_weight))
     settings = dict(features=asdict(cache.config), mode=args.mode,
                     refinements=model.config.refinements, supervision='returned_training_reward')
 
@@ -89,6 +90,7 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
             while any(w['active'] for w in workers):
                 optimizer.zero_grad(set_to_none=True)
                 log_probs, values, entropies, rewards, terminals, masks = [], [], [], [], [], []
+                prediction_losses = []
                 participating = [i for i,w in enumerate(workers) if w['active']]
                 for _ in range(args.sequence_length):
                     active = [i for i in participating if not workers[i]['done']]
@@ -97,11 +99,12 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                     indices = torch.tensor(active, device=device)
                     choices, (obs, actions) = inputs(active)
                     selected_state = {k:v.index_select(0,indices) for k,v in state.items()}
-                    logits, next_state, _ = model(obs, actions, selected_state, **kwargs)
+                    logits, next_state, predicted = model(obs, actions, selected_state, **kwargs)
                     distribution = torch.distributions.Categorical(logits=logits)
                     selected = distribution.sample()
                     logp = distribution.log_prob(selected)
                     value = critic(model, next_state, args.mode)
+                    next_state, forecast = model.commit_action(obs, actions, next_state, selected, mode=args.mode)
                     state = {k:v.index_copy(0,indices,next_state[k]) for k,v in state.items()}
                     zero = value.new_zeros(count)
                     log_probs.append(zero.index_copy(0,indices,logp))
@@ -114,8 +117,17 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                         workers[index]['pipe'].send(('step', (dict(choices[position][int(selected[position])].action),
                             {'behavior_log_probability':float(logp[position].detach()),
                              'critic_value':float(value[position].detach()),'policy_update':updates})))
-                    for index in active:
+                    for position, index in enumerate(active):
                         worker=workers[index]; reply=_receive(worker)
+                        prediction_loss = logp.new_zeros(())
+                        if args.outcome_weight:
+                            target = torch.tensor([outcome_target({**reply, 'next_observation':reply['observation']})], device=device)
+                            prediction_loss = args.outcome_weight * received_outcome_loss(
+                                predicted[position, selected[position]][None], target).mean()
+                        if forecast is not None:
+                            target = torch.tensor(next_numeric_target(reply['observation'], worker['memory']), device=device)
+                            prediction_loss = prediction_loss + args.transition_weight * F.smooth_l1_loss(forecast[position], target)
+                        prediction_losses.append(prediction_loss)
                         worker['action_history'].append_transition(
                             dict(action=reply['action'], action_result=reply['action_result'], next_observation=reply['observation']),
                             worker['feature_observation'])
@@ -145,7 +157,8 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                 policy_loss=-(torch.stack(log_probs)*(returns-predicted.detach()))[valid].mean()
                 value_loss=F.mse_loss(predicted[valid],returns[valid])
                 entropy=torch.stack(entropies)[valid].mean()
-                loss=policy_loss+args.value_weight*value_loss-args.entropy_weight*entropy
+                prediction_loss=torch.stack(prediction_losses).mean()
+                loss=policy_loss+args.value_weight*value_loss-args.entropy_weight*entropy+prediction_loss
                 loss.backward()
                 norm=torch.nn.utils.clip_grad_norm_([*model.parameters(),*critic.parameters()],1.)
                 optimizer.step()
@@ -154,6 +167,7 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                 row=dict(update=updates,interactions=interactions,active_environments=len(participating),
                     reward=float(torch.stack(rewards).sum()),policy_loss=float(policy_loss.detach()),
                     value_loss=float(value_loss.detach()),entropy=float(entropy.detach()),
+                    prediction_loss=float(prediction_loss.detach()),
                     gradient_norm=float(norm),elapsed_seconds=perf_counter()-started)
                 update_log.write(json.dumps(row)+'\n');update_log.flush()
                 completed=[]

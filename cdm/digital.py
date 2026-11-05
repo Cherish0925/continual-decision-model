@@ -16,6 +16,7 @@ from os import PathLike
 import re
 
 import torch
+import torch.nn.functional as F
 from torch import Tensor, nn
 
 from cdm.core import ContinualCore, CoreConfig
@@ -282,6 +283,8 @@ class DigitalConfig:
     outcome_dim: int = 4
     refinements: int = 1
     object_relations: bool = False
+    candidate_read: bool = False
+    action_conditioned: bool = False
 
 
 class DigitalPolicy(nn.Module):
@@ -321,6 +324,50 @@ class DigitalPolicy(nn.Module):
         self.outcome = nn.Sequential(nn.Linear(3 * w, w), nn.GELU(), nn.Linear(w, c.outcome_dim))
         if c.object_relations:
             self._init_object_relations()
+        if c.candidate_read:
+            self._init_candidate_read()
+        if c.action_conditioned:
+            self._init_action_conditioned()
+
+    def _init_candidate_read(self):
+        w = self.config.width
+        self.candidate_attention = nn.MultiheadAttention(w, self.core.config.heads, batch_first=True)
+        self.candidate_read_output = nn.Linear(w, w, bias=False)
+        nn.init.zeros_(self.candidate_read_output.weight)
+
+    def _init_action_conditioned(self):
+        w, d = self.config.width, self.config.numeric_dim
+        hidden = min(w, 256)
+        self.transition_state = nn.Linear(2 * w, hidden)
+        self.transition_action = nn.Linear(w, hidden, bias=False)
+        self.transition_numeric = nn.Linear(hidden, d)
+        self.transition_hidden = nn.Linear(hidden, w, bias=False)
+        self.innovation = nn.Linear(d, w, bias=False)
+        self.prediction_read = nn.Linear(d + self.config.outcome_dim, w, bias=False)
+        # An explicit migration preserves the loaded policy before learning.
+        for module in (self.transition_hidden, self.innovation, self.prediction_read):
+            nn.init.zeros_(module.weight)
+
+    @classmethod
+    def with_action_connections(cls, source: DigitalPolicy, *, candidate_read=None,
+                                action_conditioned=None) -> DigitalPolicy:
+        model = deepcopy(source)
+        groups = {
+            "candidate_read": ("candidate_attention", "candidate_read_output"),
+            "action_conditioned": ("transition_state", "transition_action", "transition_numeric",
+                                   "transition_hidden", "innovation", "prediction_read"),
+        }
+        for key, enabled in (("candidate_read", candidate_read), ("action_conditioned", action_conditioned)):
+            if enabled is None or enabled == getattr(source.config, key):
+                continue
+            model.config = replace(model.config, **{key: enabled})
+            if enabled:
+                getattr(model, "_init_" + key)()
+            else:
+                for name in groups[key]:
+                    delattr(model, name)
+        model.to(device=source.candidate_text.weight.device, dtype=source.candidate_text.weight.dtype)
+        return model.train(source.training)
 
     _relation_modules = ("measurement_key", "measurement_value", "measurement_relation_bias", "measurement_output")
 
@@ -381,7 +428,13 @@ class DigitalPolicy(nn.Module):
         return cls(config, core)
 
     def initial(self, batch: int, device) -> dict[str, Tensor]:
-        return self.core.initial(batch, device)
+        state = self.core.initial(batch, device)
+        if self.config.action_conditioned:
+            state.update(pending_delta=torch.zeros(batch, self.config.width, device=device),
+                         expected_numeric=torch.zeros(batch, self.config.numeric_dim, device=device),
+                         observed_numeric=torch.zeros(batch, self.config.numeric_dim, device=device),
+                         pending_action=torch.zeros(batch, dtype=torch.bool, device=device))
+        return state
 
     def encode(self, features: dict[str, Tensor]) -> EncodedEvent:
         numeric = features["numeric"]
@@ -414,7 +467,7 @@ class DigitalPolicy(nn.Module):
             tokens.append(record + label + self.modality[0])
             masks.append(features["measurement_present"].bool())
         present = torch.cat(masks, 1)
-        return EncodedEvent(self.token_norm(torch.cat(tokens, 1)).masked_fill(~present[..., None], 0), present)
+        return EncodedEvent(self.token_norm(torch.cat(tokens, 1)).masked_fill(~present[..., None], 0), present, numeric)
 
     def forward(self, observation_features: dict[str, Tensor] | EncodedEvent,
                 candidate_features: dict[str, Tensor], state: dict[str, Tensor], *,
@@ -426,8 +479,9 @@ class DigitalPolicy(nn.Module):
 
         Outcomes default to [B,C,outcome_dim]. Long outcome_indices [B] select
         one candidate per row before the outcome MLP, returning [B,outcome_dim].
-        predict_outcomes=False skips that MLP and returns None, ignoring indices.
-        These options do not change logits or continuing state.
+        predict_outcomes=False returns None. The action-conditioned variant
+        still computes predictions used by its decision readout. Return options
+        never change logits or continuing state.
 
         Candidate text is [B,C,text_dim]; numeric is [B,C,candidate_numeric_dim].
         Optional ``present`` masks padding. Observations contain numeric [B,N]
@@ -468,9 +522,20 @@ class DigitalPolicy(nn.Module):
         if not persistent or restart_workspace:
             state = {**state, "h": state["h"] if persistent else torch.zeros_like(state["h"]),
                      "z": self.core.slots.unsqueeze(0).expand(batch, -1, -1)}
-        summary = self.ingest(self.query_norm(state["h"])[:, None], event.tokens, event.tokens,
+        prior = state["h"]
+        if self.config.action_conditioned:
+            if event.numeric is None:
+                raise ValueError("Action-conditioned updates require the received numeric observation")
+            pending = state["pending_action"] & persistent
+            prior = prior + state["pending_delta"] * pending[:, None]
+        summary = self.ingest(self.query_norm(prior)[:, None], event.tokens, event.tokens,
                               key_padding_mask=~event.present, need_weights=False)[0][:, 0]
-        h = self.core.fast(state["h"], self.input_bridge(self.summary_norm(summary)))
+        if self.config.action_conditioned:
+            residual = event.numeric.to(prior.dtype) - state["expected_numeric"]
+            summary = summary + self.innovation(residual) * pending[:, None]
+            state = {**state, "observed_numeric": event.numeric.to(prior.dtype),
+                     "pending_action": torch.zeros_like(pending)}
+        h = self.core.fast(prior, self.input_bridge(self.summary_norm(summary)))
         return event, {**state, "h": h}
 
     def refine_state(self, event, state, refinements, *, records=None):
@@ -485,10 +550,8 @@ class DigitalPolicy(nn.Module):
         z = self.core.refine(z, h, records, counts, event.tokens, event.present)
         return {**state, "z": z}
 
-    def readout(self, event, candidate_features, state, *, mode="cdm", predict_outcomes=True, outcome_indices=None):
-        """Score public actions using the current state without changing it."""
+    def _candidate_state(self, event, candidate_features, state, mode):
         h, z = state["h"], state["z"]
-        batch = h.shape[0]
         features = self.core.state_features(h, z) if mode == "cdm" else \
             torch.cat((self.core.norm_h(h), torch.zeros_like(h)), -1)
         candidate = self.candidate_norm(self.candidate_text(candidate_features["text"].detach().to(h.dtype))
@@ -502,17 +565,76 @@ class DigitalPolicy(nn.Module):
             measurement_present = event.present[:, -count:] if count else event.present[:, :0]
             query = self.state_query(features)[:, None] + candidate
             candidate = candidate + self._measurement_read(query, measurement_tokens, measurement_present, relations)
-        logits = self.score(self.state_query(features)[:, None] + candidate).squeeze(-1)
+        if self.config.candidate_read:
+            # Each action can read a different part of the received observation
+            # and workspace. GRU comparisons do not read workspace slots.
+            context = event.tokens
+            present = event.present
+            if mode == "cdm":
+                context = torch.cat((context, self.core.norm_z(z)), 1)
+                present = torch.cat((present, torch.ones(z.shape[:2], dtype=torch.bool, device=z.device)), 1)
+            query = self.state_query(features)[:, None] + candidate
+            read = self.candidate_attention(query, context, context, key_padding_mask=~present,
+                                            need_weights=False)[0]
+            candidate = candidate + self.candidate_read_output(read)
+        return features, candidate
+
+    def _transition(self, features, candidate, state):
+        hidden = F.gelu(self.transition_state(features)[:, None] + self.transition_action(candidate))
+        change = self.transition_numeric(hidden)
+        return hidden, state["observed_numeric"][:, None] + change, change
+
+    def commit_action(self, observation_features, candidate_features, state, indices, *, mode="cdm"):
+        """Predict after the command actually executed, before reading its result.
+
+        An expert target or a proposed action is not a state transition. Negative
+        indices mark commands outside the recorded menu and clear the pending
+        transition. Public observations will still be assimilated normally.
+        """
+        if not self.config.action_conditioned:
+            return state, None
+        valid = indices >= 0
+        rows = torch.arange(indices.shape[0], device=indices.device)
+        chosen = {key: value[rows, indices.clamp_min(0)][:, None] for key, value in candidate_features.items()}
+        event = observation_features if isinstance(observation_features, EncodedEvent) else self.encode(observation_features)
+        features, candidate = self._candidate_state(event, chosen, state, mode)
+        hidden, prediction, _ = self._transition(features, candidate, state)
+        pending = self.transition_hidden(hidden[:, 0]).to(state["h"].dtype)
+        prediction = prediction[:, 0].to(state["h"].dtype)
+        return {**state, "pending_delta": pending * valid[:, None], "expected_numeric": prediction,
+                "pending_action": valid}, prediction
+
+    def readout(self, event, candidate_features, state, *, mode="cdm", predict_outcomes=True, outcome_indices=None):
+        """Score public actions using the current state without changing it."""
+        features, candidate = self._candidate_state(event, candidate_features, state, mode)
+        batch = features.shape[0]
+        decision = self.state_query(features)[:, None] + candidate
+        all_outcomes = None
+        if self.config.action_conditioned:
+            _, _, change = self._transition(features, candidate, state)
+            # Factor the first affine layer instead of copying state for every
+            # candidate. This is the same retained outcome head and parameters.
+            first, activation, last = self.outcome
+            width = self.config.width
+            hidden = F.linear(features, first.weight[:, :2 * width], first.bias)[:, None]
+            hidden = hidden + F.linear(candidate, first.weight[:, 2 * width:])
+            all_outcomes = last(activation(hidden))
+            decision = decision + self.prediction_read(torch.cat((change, all_outcomes), -1))
+        logits = self.score(decision).squeeze(-1)
         if "present" in candidate_features:
             logits = logits.masked_fill(~candidate_features["present"].bool(), -torch.inf)
         outcome = None
         if predict_outcomes:
-            if outcome_indices is None:
+            if all_outcomes is not None:
+                outcome = all_outcomes if outcome_indices is None else all_outcomes[
+                    torch.arange(batch, device=features.device), outcome_indices]
+            elif outcome_indices is None:
                 outcome_input = torch.cat((features[:, None].expand(-1, candidate.shape[1], -1), candidate), -1)
             else:
                 if outcome_indices.shape != (batch,):
                     raise ValueError("outcome_indices must have shape [batch]")
                 selected = candidate.gather(1, outcome_indices[:, None, None].expand(-1, 1, candidate.shape[-1]))[:, 0]
                 outcome_input = torch.cat((features, selected), -1)
-            outcome = self.outcome(outcome_input)
+            if all_outcomes is None:
+                outcome = self.outcome(outcome_input)
         return logits, outcome

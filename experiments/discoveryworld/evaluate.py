@@ -18,7 +18,7 @@ import torch
 
 from cdm.digital import PublicActionHistory, PublicObjectMemory, public_candidates
 from .adapter import DiscoveryWorldEnv, TrajectoryWriter
-from .features import FeatureCache, FeatureConfig, batch_features, load_features
+from .features import FeatureCache, FeatureConfig, batch_features, load_features, canonical_action
 from .train import load_checkpoint
 
 
@@ -50,17 +50,28 @@ class LearnedPolicy:
         self.memory = PublicObjectMemory()
         self.action_history = PublicActionHistory(self.features.config.action_history)
         self.previous_observation = None
+        self.previous_features = None
+        self.previous_candidates = None
         self.measurements = None
         if self.features.config.measurement_memory:
             from .measurements import MeasurementLog
             self.measurements = MeasurementLog()
         self.decisions = []
 
+    @torch.no_grad()
     def observe(self, transition: dict):
         """Receive the action actually executed, including teacher interventions."""
         if self.measurements is not None:
             self.measurements.append_transition(transition)
         self.action_history.append_transition(transition, self.previous_observation)
+        if self.model.config.action_conditioned and self.previous_features is not None:
+            key = canonical_action(transition['action'])
+            indices = [i for i, candidate in enumerate(self.previous_candidates)
+                       if canonical_action(candidate.action) == key]
+            selected = torch.tensor([indices[0] if indices else -1], device=self.device)
+            obs, actions = self.previous_features
+            self.state, _ = self.model.commit_action(obs, actions, self.state, selected, mode=self.mode)
+            self.previous_features = None
 
     def action_logits(self, logits, observation, candidates, features):
         """Optional learned readout over the state just updated by this action."""
@@ -80,6 +91,8 @@ class LearnedPolicy:
         candidates = public_candidates(observation)
         path = self.features.encode(observation, candidates)
         obs, actions = batch_features([load_features(str(path))], self.device)
+        if self.model.config.action_conditioned:
+            self.previous_features, self.previous_candidates = (obs, actions), candidates
         features_done = perf_counter()
         logits, self.state, _ = self.model(obs, actions, self.state,
                                                    persistent=self.persistent, mode=self.mode,

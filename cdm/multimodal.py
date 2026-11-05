@@ -25,6 +25,7 @@ ENCODER_REVISION = "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2"
 class EncodedEvent:
     tokens: Tensor             # [batch, tokens, width]
     present: Tensor            # [batch, tokens], True for received inputs
+    numeric: Tensor | None = None  # Optional received values for next-observation prediction.
 
 
 def join_events(*events: EncodedEvent) -> EncodedEvent:

@@ -86,7 +86,8 @@ class FineTuneTests(unittest.TestCase):
         torch.set_num_threads(1)
         core_config = CoreConfig(event_dim=16, record_dim=16, actions=1, width=16,
                                  slots=2, heads=2, hidden=16, action_width=16)
-        config = DigitalConfig(width=16, text_dim=256, image_dim=256, outcome_dim=14)
+        config = DigitalConfig(width=16, text_dim=256, image_dim=256, outcome_dim=14,
+                               candidate_read=True, action_conditioned=True)
         model = DigitalPolicy(config, ContinualCore(core_config, torch.zeros(1, 1)))
         critic = StateCritic(16)
         optimizer = torch.optim.AdamW([*model.parameters(), *critic.parameters()], lr=.001)
@@ -99,7 +100,7 @@ class FineTuneTests(unittest.TestCase):
             env = DiscoveryWorldEnv(root / "episode", max_steps=3)
             with contextlib.redirect_stdout(io.StringIO()):
                 result = run_episode(model, critic, optimizer, cache, env, scenario="Reactor Lab",
-                                     difficulty="Normal", seed=100, sequence_length=2)
+                                     difficulty="Normal", seed=100, sequence_length=2, outcome_weight=.5)
             handle.remove()
             self.assertEqual(result["steps"], 3)
             self.assertEqual(result["updates"], 2)

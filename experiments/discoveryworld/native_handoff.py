@@ -43,9 +43,13 @@ class TracedPolicy(LearnedPolicy):
             return
         # Candidate features are separate from observation tokens. Use one real candidate
         # to obtain the same observation encoding without evaluating an unused action menu.
-        candidate = public_candidates(observation)[0]
-        path = self.features.encode(observation, [candidate])
-        obs, _ = batch_features([load_features(str(path))], self.device)
+        candidates = public_candidates(observation)
+        if not self.model.config.action_conditioned:
+            candidates = candidates[:1]
+        path = self.features.encode(observation, candidates)
+        obs, actions = batch_features([load_features(str(path))], self.device)
+        if self.model.config.action_conditioned:
+            self.previous_features, self.previous_candidates = (obs, actions), candidates
         event, self.state = self.model.assimilate(obs, self.state, persistent=self.persistent,
                                                   restart_workspace=self.restart_workspace)
         if self.mode == 'cdm':

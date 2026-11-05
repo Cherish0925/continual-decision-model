@@ -200,7 +200,8 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
             self.assertNotEqual(step.expert_target, step.executed_target)
             config = CoreConfig(event_dim=16, record_dim=16, actions=1, width=16,
                                 heads=2, slots=2, hidden=16, action_width=16)
-            model = DigitalPolicy(DigitalConfig(width=16, text_dim=256, image_dim=256, outcome_dim=14),
+            model = DigitalPolicy(DigitalConfig(width=16, text_dim=256, image_dim=256, outcome_dim=14,
+                                                candidate_read=True, action_conditioned=True),
                                   ContinualCore(config, torch.zeros(1, 1)))
             captured = []
 

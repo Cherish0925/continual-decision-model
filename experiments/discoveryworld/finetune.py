@@ -26,7 +26,8 @@ from .adapter import DiscoveryWorldEnv, TrajectoryWriter
 from .features import FeatureCache, FeatureConfig, batch_features, load_features
 from .full_suite import LIMITS, SKILLS, THEMES
 from .structured_observation import StructuredDiscoveryWorldEnv
-from .train import create_measurement_log, create_model, load_checkpoint, with_measurement_records
+from .train import (create_measurement_log, create_model, load_checkpoint, with_measurement_records,
+                    next_numeric_target, outcome_target, received_outcome_loss)
 
 
 class StateCritic(nn.Module):
@@ -70,7 +71,8 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
                 environment: DiscoveryWorldEnv, *, scenario: str, difficulty: str, seed: int,
                 sequence_length: int = 16, gamma: float = .99, value_weight: float = .5,
                 entropy_weight: float = .01, mode: str = "cdm", persistent: bool = True,
-                restart_workspace: bool = False, provenance: dict | None = None) -> dict:
+                restart_workspace: bool = False, provenance: dict | None = None,
+                outcome_weight: float = 0., transition_weight: float = .25) -> dict:
     """Collect and train on fresh windows, carrying h/z across their boundaries.
 
     Bootstrap evaluates the next public observation without advancing the
@@ -99,14 +101,25 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
         while not environment.ended:
             optimizer.zero_grad(set_to_none=True)
             log_probabilities, entropies, values, rewards, terminals = [], [], [], [], []
+            prediction_losses = []
             for _ in range(sequence_length):
                 candidates, obs, actions = _features(observation, memory, cache, device, measurement_log, action_history)
-                logits, state, _ = model(obs, actions, state, **kwargs)
+                logits, state, predicted = model(obs, actions, state, **kwargs,
+                                                 predict_outcomes=bool(outcome_weight))
                 distribution = torch.distributions.Categorical(logits=logits[0])
                 selected = distribution.sample()
                 log_probability = distribution.log_prob(selected)
                 value = critic(model, state, mode)[0]
+                state, forecast = model.commit_action(obs, actions, state, selected.reshape(1), mode=mode)
                 transition = environment.step(dict(candidates[int(selected)].action))
+                prediction_loss = logits.new_zeros(())
+                if outcome_weight:
+                    target = torch.tensor([outcome_target(transition)], device=device)
+                    prediction_loss = outcome_weight * received_outcome_loss(predicted[:, selected], target).mean()
+                if forecast is not None:
+                    target = torch.tensor([next_numeric_target(transition["next_observation"], memory)], device=device)
+                    prediction_loss = prediction_loss + transition_weight * F.smooth_l1_loss(forecast, target)
+                prediction_losses.append(prediction_loss)
                 reward = float(transition["training_reward"])
                 log_probabilities.append(log_probability)
                 entropies.append(distribution.entropy())
@@ -137,7 +150,8 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
             policy_loss = -(torch.stack(log_probabilities) * advantages).mean()
             value_loss = F.mse_loss(value_predictions, returns)
             entropy = torch.stack(entropies).mean()
-            loss = policy_loss + value_weight * value_loss - entropy_weight * entropy
+            prediction_loss = torch.stack(prediction_losses).mean()
+            loss = policy_loss + value_weight * value_loss - entropy_weight * entropy + prediction_loss
             loss.backward()
             gradient_norm = torch.nn.utils.clip_grad_norm_(
                 [*model.parameters(), *critic.parameters()], 1.0)
@@ -148,6 +162,7 @@ def run_episode(model: DigitalPolicy, critic: StateCritic, optimizer, cache: Fea
             windows.append({"update": len(windows), "steps": len(rewards), "reward": sum(rewards),
                             "policy_loss": float(policy_loss.detach()), "value_loss": float(value_loss.detach()),
                             "entropy": float(entropy.detach()), "gradient_norm": float(gradient_norm),
+                            "prediction_loss": float(prediction_loss.detach()),
                             "bootstrap": float(bootstrap), "terminated": terminals[-1],
                             "truncated": bool(transition["truncated"])})
     summary = {"scenario": scenario, "difficulty": difficulty, "seed": seed,
@@ -235,6 +250,8 @@ def parse_args(argv=None):
     parser.add_argument("--gamma", type=float, default=.99)
     parser.add_argument("--value-weight", type=float, default=.5)
     parser.add_argument("--entropy-weight", type=float, default=.01)
+    parser.add_argument("--outcome-weight", type=float, default=0., help="Learn returned outcomes during interaction")
+    parser.add_argument("--transition-weight", type=float, default=.25, help="Train the action-conditioned next-observation predictor")
     parser.add_argument("--random-seed", type=int, default=0)
     parser.add_argument("--mode", choices=("cdm", "gru"))
     parser.add_argument("--restart-state", action=argparse.BooleanOptionalAction, default=None)
@@ -325,6 +342,7 @@ def main(argv=None):
                                          scenario=theme, difficulty=difficulty, seed=seed,
                                          sequence_length=args.sequence_length, gamma=args.gamma,
                                          value_weight=args.value_weight, entropy_weight=args.entropy_weight,
+                                         outcome_weight=args.outcome_weight, transition_weight=args.transition_weight,
                                          mode=args.mode, persistent=not args.restart_state,
                                          restart_workspace=args.restart_workspace,
                                          provenance={"source_sha256": source_hash, "episode": index})
