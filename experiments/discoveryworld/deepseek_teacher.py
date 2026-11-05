@@ -120,7 +120,7 @@ class DeepSeekFlashTeacher(NativeTeacher):
                     response = json.load(stream)
                 break
             except HTTPError as error:
-                if error.code not in (429, 502, 503, 504) or attempt == 5:
+                if error.code not in (429, 500, 502, 503, 504) or attempt == 5:
                     raise
                 delay = error.headers.get("Retry-After", "")
                 sleep(float(delay) if delay.replace(".", "", 1).isdigit() else min(2 ** attempt, 30))

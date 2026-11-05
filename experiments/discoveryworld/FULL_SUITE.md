@@ -173,6 +173,10 @@ difficulty, with training seeds 1100–1101 and caps of 100/500 actions. One Roc
 Easy world at seed 1100 fails during simulator construction; it is retained as an
 environment error. Seed 1102 also fails its construction check. Seed 1103 creates
 successfully and supplies the replacement, chosen before any policy evaluation.
+One Lost in Translation Normal attempt stopped on a provider HTTP 500 after
+219 teacher actions. The original trace is retained; a separate attempt uses
+the same training instance. HTTP 500 now follows the existing bounded transport
+retry policy before any environment action executes.
 
 Every transition records its actual controller. Student actions receive outcome
 supervision but no imitation label, even if the teacher later completes the task.
@@ -204,8 +208,10 @@ semantic input uses SigLIP2 text features; these trajectories contain no images.
 All conditions receive the same 150/38 trajectories and optimizer-window budget.
 CDM and GRU have different internal computation costs. The existing
 [`train_suite`](train_suite.py) accepts this protocol and generates the matched
-random initializations. Cloud preparation and training are scheduled; a result
-table will be added after independent execution finishes.
+random initializations. All four eight-GPU workers have finished feature
+preparation and entered training. Final weights, curves and native execution
+records are collected automatically. A result table will be added after
+independent execution finishes.
 
 ### What the four frozen policies actually did
 

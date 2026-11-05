@@ -4,7 +4,7 @@ import json
 import os
 import unittest
 from unittest.mock import patch
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 
 from experiments.discoveryworld.deepseek_teacher import DeepSeekFlashTeacher
 
@@ -19,14 +19,17 @@ class HostedTeacherTests(unittest.TestCase):
             'usage': {'prompt_tokens': 200, 'completion_tokens': 20},
             'choices': [{'message': {'content': '{"action":"WAIT","memory":""}'},
                          'finish_reason': 'stop'}]}
-        with patch('experiments.discoveryworld.deepseek_teacher.urlopen',
-                   side_effect=[URLError('connection closed'), io.BytesIO(json.dumps(response).encode())]) as request, \
-             patch('experiments.discoveryworld.deepseek_teacher.sleep'):
-            rows = teacher.batch([obs], [teacher.initial()])
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]['action'], {'action': 'WAIT'})
-        self.assertEqual(rows[0]['transport_retries'], 1)
-        self.assertEqual(request.call_args_list[0].args[0].data, request.call_args_list[1].args[0].data)
+        for error in (URLError('connection closed'),
+                      HTTPError('https://provider.example', 500, 'Internal Server Error', {}, None)):
+            with self.subTest(error=type(error).__name__), \
+                 patch('experiments.discoveryworld.deepseek_teacher.urlopen',
+                       side_effect=[error, io.BytesIO(json.dumps(response).encode())]) as request, \
+                 patch('experiments.discoveryworld.deepseek_teacher.sleep'):
+                rows = teacher.batch([obs], [teacher.initial()])
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(rows[0]['action'], {'action': 'WAIT'})
+                self.assertEqual(rows[0]['transport_retries'], 1)
+                self.assertEqual(request.call_args_list[0].args[0].data, request.call_args_list[1].args[0].data)
 
     def test_public_object_and_dialogue_domains_reject_unobserved_arguments(self):
         with patch.dict(os.environ, {"DASHSCOPE_API_KEY": "bailian-test-only"}):

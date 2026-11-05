@@ -25,8 +25,8 @@ separate these assisted training trajectories from student performance.
 
 A [32-training comparison](experiments/discoveryworld/native_input_comparison.json)
 also varies inherited versus random cores, lexical versus frozen semantic
-features, action history, and CDM versus GRU, with two training seeds. The lexical-input
-workers have started; semantic-input workers await their frozen encoder transfer.
+features, action history, and CDM versus GRU, with two training seeds. All four
+eight-GPU workers have finished feature preparation and entered training.
 It has no completed capability result. The previous
 official result remains 0/120 for each of the four released native policies.
 
