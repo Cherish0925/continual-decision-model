@@ -9,6 +9,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 | --- | --- |
 | [Current model and implementation direction](CONTINUAL_AGENT.md) | Persistent state, relationship belief, action and computation values, continual training, applications and file-level work sequence |
 | [Eight-theme native policy learning](../experiments/discoveryworld/FULL_SUITE.md#native-policy-training) | Unified public actions, mixed-theme trajectories, whole-theme holdout and separately trained recurrent comparison; in progress |
+| [Why the native policies repeat](NATIVE_EXECUTION_DIAGNOSIS.md) | What the repetition counts conflate, why action feedback had no effect, the two measurements that separate the remaining causes |
 | [Learning response functions](../experiments/continual_experiment/FUNCTION_BELIEF.md) | Learned unfamiliar-law hypotheses, matched conditional predictors, finite-budget planning and native integration |
 | [Response-law transfer and action representations](../experiments/continual_experiment/RESPONSE_FAMILIES.md) | Six joint trainings, frozen-parent memory, two digital cohorts, native retention and selector-removal confirmation |
 | [Memory results and corrected calculations](MEMORY_AND_EXPERIMENTS.md) | Recomputed native costs, a finite planning example, prior assumptions and corrections that change the next experiment |

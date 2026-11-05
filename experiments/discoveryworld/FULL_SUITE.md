@@ -166,6 +166,10 @@ alone does not teach recovery under this data and training budget. The
 [full curves, cases and action counts](results/native_action_feedback.json)
 are reproduced by [`compare_native_feedback`](compare_native_feedback.py).
 
+A separate analysis of what these repetition counts can and cannot attribute,
+and of the two measurements that separate the remaining causes, is in
+[research/NATIVE_EXECUTION_DIAGNOSIS.md](../../research/NATIVE_EXECUTION_DIAGNOSIS.md).
+
 [Recovery collection](collect_recovery.py) executes eight actions from the frozen
 completed-demonstration CDM, then lets Flash attempt the remaining task using the
 actual public history. The collection covers all eight themes at Easy and Normal
