@@ -261,11 +261,11 @@
       5100,
       5101,
       5102,
-      5103,
-      5104,
       5105,
       5106,
-      5107
+      5107,
+      5108,
+      5109
     ],
     "max_steps": 100,
     "sequence_length": 16,
@@ -275,5 +275,17 @@
     "transition_weight": 0.25,
     "random_seed": 911,
     "endpoint": "Final checkpoint after the same 64 training instances per policy; retain the imitation endpoint separately"
+  },
+  "interaction_schedule_correction": {
+    "excluded_seeds": {
+      "5103": "Rocket world creation raises an orbital-speed approximation assertion before the first action.",
+      "5104": "Rocket world creation exceeds the scenario orbital-speed bound before the first action."
+    },
+    "replacement_seeds": [
+      5108,
+      5109
+    ],
+    "selection": "Sequential replacement based only on world construction. All eight themes at the eight selected seeds load successfully.",
+    "restart": "Restart every policy from its fixed imitation endpoint under the corrected 64-instance schedule; preserve interrupted runs separately."
   }
 }

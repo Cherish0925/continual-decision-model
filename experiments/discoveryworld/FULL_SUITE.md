@@ -305,12 +305,20 @@ and both together, for CDM and GRU, lexical and semantic inputs, and two seeds:
 checkpoint. Both decoding rules use new independent-execution seeds 3013–3014.
 These seeds do not establish unseen scientific laws. Each fixed continuation
 endpoint then enters teacher-free actor–critic learning on the same 64 Easy
-training instances (eight themes, seeds 5100–5107, at most 100 actions each).
+training instances (eight themes, seeds 5100, 5101, 5102, 5105, 5106, 5107,
+5108 and 5109, at most 100 actions each).
 Outcome and transition prediction remain jointly trained. The imitation and
 interaction endpoints both receive greedy and sampled execution; neither is
 selected by their development scores. This stage provides up to 204,800 new
 student actions across 32 policies, with all early completions retained.
-Completed results will be reported separately from the fixed-weight study above.
+The original interaction schedule included seeds 5103 and 5104. Rocket Science
+world creation fails at these seeds: the former exceeds the orbital-speed
+approximation tolerance, and the latter exceeds the scenario's orbital-speed
+bound. The failures occur before a policy action. Sequential replacement seeds
+5108 and 5109 were selected by world construction only; all 64 selected worlds
+load. Every condition restarts from its fixed imitation checkpoint under the
+same corrected schedule. Interrupted runs are retained separately. The
+simulator's assertions, observations and task rules are unchanged.
 
 For one interaction continuation, after the declared four-epoch fit:
 
@@ -319,12 +327,80 @@ python -m experiments.discoveryworld.finetune \
   --checkpoint runs/action-state/model/last.pt \
   --output runs/action-state/model-interaction \
   --feature-cache runs/native-features --device cuda:0 --workers 4 \
-  --native-suite all --difficulty Easy --seeds 5100 5101 5102 5103 5104 5105 5106 5107 \
+  --native-suite all --difficulty Easy --seeds 5100 5101 5102 5105 5106 5107 5108 5109 \
   --max-steps 100 --sequence-length 16 --lr 3e-5 --random-seed 911 \
   --outcome-weight 0.5 --transition-weight 0.25
 ```
 
 Semantic-input checkpoints additionally require `--encoder-path`.
+
+#### Completed imitation continuations
+
+All 32 fixed fourth-epoch endpoints completed both execution settings on
+sixteen Easy development instances (3013–3014), for 1,024 executions. The
+instances differ from the earlier input study. Each row below pools eight
+models: two initializations, two representations and CDM/GRU. The denominator
+counts repeated executions of the same sixteen instances.
+
+| Continuation | Greedy completion | Sampled completion | Sampled wins / ties / losses against matched unchanged continuation |
+| --- | ---: | ---: | ---: |
+| Unchanged architecture | 3/128 | 16/128 | — |
+| Candidate-specific reading | 6/128 | 17/128 | 3 / 4 / 1 |
+| Action-conditioned prediction and correction | 3/128 | 22/128 | 5 / 2 / 1 |
+| Both changes | 3/128 | 16/128 | 3 / 1 / 4 |
+
+Action-conditioned updates improve sampled completion in five matched pairs.
+The combination does not preserve that aggregate gain, and greedy completion
+remains low. These results do not establish a broad architecture advantage or
+cross-task learning. The subsequent actor–critic comparison tests whether this
+gain survives learning from the policies' own actions.
+
+[All model curves, per-instance results and paired differences](results/native_action_state.json)
+can be recomputed from the collected endpoint folders:
+
+```sh
+python -m experiments.discoveryworld.compare_native_feedback \
+  --action-state-study runs/action-state/records \
+  --output experiments/discoveryworld/results/native_action_state.json
+```
+
+#### Completed autonomous interaction continuations
+
+All 32 policies completed the corrected 64-instance curriculum: 2,048 training
+episodes, **140,366 actual native actions and 2,583 batched gradient updates**.
+The limit is 100 actions per instance; early terminal outcomes account for the
+difference from the 204,800-action maximum. Each policy then ran both decoding
+settings on the same sixteen development instances used for its imitation
+endpoint, for another 1,024 executions. Training updates use returned reward
+and outcomes; these evaluations have fixed weights and no teacher.
+
+| Continuation after interaction | Greedy completion | Sampled completion | Sampled wins / ties / losses against matched unchanged architecture |
+| --- | ---: | ---: | ---: |
+| Unchanged architecture | 4/128 | 18/128 | — |
+| Candidate-specific reading | 4/128 | 18/128 | 5 / 0 / 3 |
+| Action-conditioned prediction and correction | 2/128 | 16/128 | 2 / 3 / 3 |
+| Both changes | 3/128 | 18/128 | 4 / 1 / 3 |
+
+The action-conditioned variant's imitation-stage advantage disappears after
+this interaction curriculum. No variant establishes an aggregate completion
+advantage over the matched unchanged architecture. This supports changing
+the learning problem rather than expanding this same curriculum. It does not
+identify a universal limit of online adaptation: these runs update a shared
+policy during training, while evaluation keeps its parameters fixed.
+
+[Every training episode, update and evaluation case](results/native_action_state_interaction.json)
+is retained separately from the interrupted attempt and the imitation results.
+Recompute the interaction summary with:
+
+```sh
+python -m experiments.discoveryworld.compare_native_feedback \
+  --action-state-study runs/action-state/interaction_records --interaction \
+  --output experiments/discoveryworld/results/native_action_state_interaction.json
+```
+
+The next [common-executor study](../../research/WHERE_ADAPTATION_PAYS.md#a-common-executor-three-decision-policies)
+separates experimental choice from native operation. It complements these
+results; no fixed-executor CDM score is reported yet.
 
 ### What the four frozen policies actually did
 

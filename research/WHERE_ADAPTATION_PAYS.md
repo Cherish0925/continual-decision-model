@@ -1,156 +1,153 @@
-# Where online adaptation pays, and where it cannot
+# Where to test sustained adaptation
 
-Written 5 November 2026. The same architecture now has two measured outcomes
-that point in opposite directions. This note states what separates them, what
-that implies about the current benchmark choice, and the comparison that would
-settle the project's actual claim.
+Updated 5 November 2026. The next main comparison should hold a capable
+executor fixed while learning which experiment to request and how its result
+changes subsequent decisions. This separates scientific decisions from
+navigation and instrument operation. Native operation learning remains an
+application goal; its current low completion rate has not established the
+limits of CDM or the cause of every failure.
 
-## Two settings, opposite results
+## What the completed studies establish
 
-**Process lifetimes.** Trained through the sequence of learning steps the agent
-actually takes, the instance's own updates carry half of performance: 0.153 ±
-0.003 with the updates against 0.307 when they are discarded at matched
-compute, holding on three held-out families and against a real clock
-([results](../experiments/lifetime/RESULTS.md#second-round-training-through-deployment)).
+In [process lifetimes](../experiments/lifetime/RESULTS.md#second-round-training-through-deployment),
+training through deployed updates produces instrument-control error
+0.153 ± 0.003 across three training seeds. Discarding the same updates while
+still computing them increases error by 0.154 ± 0.013. The benefit also appears
+under slower/narrower responses, noisier readings and faster changes. These
+are three held-out settings of one process family. The separate three-family
+and real-time studies have their own results. A separately trained
+prediction-only model also has rounded mean 0.307; it is a different control.
 
-**DiscoveryWorld native policies.** Across the 32-condition input and
-initialization study, summing successful executions over all cells
-([table](../experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison)):
+The [native input study](../experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison)
+uses 150 training trajectories, 16,015 actions and 3,812 imitation labels.
+Policies contain 53,787,710 or 55,360,574 parameters. Each final checkpoint runs
+the same sixteen Easy development instances. These totals describe sampled
+execution, not the official 120-instance benchmark:
 
-| Factor | | |
-| --- | ---: | ---: |
-| Policy | CDM 24 | GRU 39 |
-| Observation features | lexical 47 | frozen SigLIP text 16 |
-| Action history | 0 steps 32 | 8 steps 31 |
-| Core initialization | inherited 31 | random 32 |
+| Matched factor comparison | Success totals | First setting wins / ties / loses across 16 matched model pairs |
+| --- | --- | --- |
+| CDM / GRU | 24 / 39 | 3 / 5 / 8 |
+| Lexical / frozen SigLIP text | 47 / 16 | 13 / 3 / 0 |
+| Eight-step / no explicit history | 31 / 32 | 6 / 3 / 7 |
+| Inherited / random core | 31 / 32 | 5 / 5 / 6 |
 
-Two seeds per cell on sixteen instances, so no single cell is decisive. The
-pattern across cells is not: the architecture, the inherited core, the
-pretrained text encoder and the explicit feedback input are each null or
-negative. These are not four separate puzzles. They are one fact.
+Frozen text features lose or tie in every matched pair. History and inheritance
+have small aggregate effects with different signs across pairs. CDM has lower
+aggregate completion. These observations do not isolate a common cause. Pairs
+share instances and data; they are not sixteen independent replications.
 
-## What separates the two settings
+The encoder arm contains no images and does not test SigLIP's visual role in
+[DESIGN.md](../DESIGN.md). Inheritance transfers a core learned under a different
+action schema, with new input and action interfaces. Its aggregate result does
+not show that inherited weights contain no useful information or establish a
+minimum amount of training needed by a pretrained representation.
 
-In the process families the per-episode unknown is the instrument's response
-surface. It is continuous, identifiable from a few dozen readings, and it
-determines the optimal action directly. Feedback arrives every tick. Adaptation
-pays because the thing to be learned is learnable within the episode from the
-episode's own data, and because the agent can already act.
+Clearing incoming neural state changes 119 of 1,156 sampled post-failure
+decisions. Clearing explicit history changes none of 593 tested decisions,
+while leaving previous state intact. State can affect choices without
+producing successful tasks; this does not yet show useful sustained reasoning.
 
-In DiscoveryWorld the binding constraint is upstream of any of that. Before an
-agent can benefit from a measurement it must know that a soil sample is carried
-to an instrument, that the instrument is activated, that its readout is read.
-That knowledge is not identifiable from sixteen thousand recorded actions; it
-is world knowledge and procedural competence.
+## The missing causal comparison
 
-The published reference makes the size of that constraint explicit. Zero-shot
-GPT-4o scores 29/120 with ReAct, 20/120 with Plan+Execute, 23/120 with
-Hypothesizer ([Jansen et al., NeurIPS 2024, Table 4](https://papers.nips.cc/paper_files/paper/2024/file/13836f251823945316ae067350a5c366-Paper-Datasets_and_Benchmarks_Track.pdf)).
-That 24% comes from pretraining, not from any adaptation mechanism, and all
-three variants score 0/15 on Reactor Lab. A 35.9 M-parameter model reading
-lexical features, trained on 150 demonstrations, is not short of an
-architecture. It is short of everything GPT-4o brings before the first action.
+Procedural competence is a plausible constraint. Sparse successful examples,
+representation, action scoring, exploration and training objectives remain
+plausible contributors. The factor study did not vary competent execution while
+holding experimental reasoning fixed. It cannot establish procedural knowledge
+as the sole bottleneck or an architecture-independent performance ceiling.
 
-This explains every entry in the factor table at once. The inherited core
-encodes instrument response dynamics, which the bottleneck does not use, so it
-is worth nothing. The semantic encoder needs more data than 16,015 actions to
-beat features that key directly on object names, so it is worth less than
-nothing. Explicit feedback cannot help an agent that does not know what to do
-instead. And CDM's additional machinery — workspace refinement, instance
-adapters, outcome prediction — adds optimization burden against a constraint it
-does not address, so the plain recurrent policy does better.
+The [DiscoveryWorld paper](https://arxiv.org/html/2406.06769v2) reports GPT-4o
+ReAct at 29/120, Plan+Execute at 20/120 and Hypothesizer at 23/120, with all three
+at 0/15 on Reactor Lab. Zero-shot excludes prior task training; these agents
+still use observations within a task. ReAct receives recent thought/action/
+observation history, and Hypothesizer updates its measurement and hypothesis
+notebook after actions. Their scores cannot be attributed to pretraining alone
+or treated as a control without adaptation.
 
-## What the table does and does not say about the selected architecture
+The native input study evaluates fixed network weights with changing recurrent
+state. It does not test the deployed parameter-update mechanism used in the
+lifetime study. The two studies therefore do not establish that online learning
+contributes nothing when procedural knowledge is insufficient. That proposed
+boundary remains a hypothesis requiring a direct intervention.
 
-Two entries bear directly on choices recorded in [DESIGN.md](../DESIGN.md), and
-they must be read at their actual scope.
+## A common executor, three decision policies
 
-**Reusing a released CDM core gives nothing here** (31 against 32). The cores
-were trained on instrument response dynamics under a different action schema;
-only the core weights transfer, while input projections and action heads are
-new. For a task whose constraint is procedural competence there is nothing for
-those weights to carry. This is evidence against inheritance as a default for a
-new action schema, not against inheritance within a task family, where the
-process-lifetime results already show it working.
+Start with Plant Nutrients, Archaeology Dating, Proteomics, Combinatorial
+Chemistry and Reactor Lab. These provide varied experimental outcomes. They
+are an initial subset, not the only themes requiring inference. Retain
+eight-theme native evaluation as the broader application target.
 
-**The frozen encoder arm used SigLIP text features on trajectories containing
-no images.** It therefore tests a frozen semantic text encoder at this data
-scale, where it loses to lexical features 16 to 47. It says nothing about
-SigLIP as an image encoder, which is the role DESIGN.md actually assigns it.
-The usable conclusion is narrower and still worth acting on: with 16,015
-training actions, a 768-dimensional frozen text embedding is a worse input than
-features that key directly on object names. Pretrained representations need
-either more data or a task where their structure is the relevant one.
+Use the same executor model, prompt, tools and action limits in three arms:
 
-## The consequence for the benchmark choice
+| Decision policy | Execution | Question |
+| --- | --- | --- |
+| Frozen language-model planner | Common executor | How well does the capable planner perform with this interface? |
+| Trained recurrent planner | Same executor | What does a simpler learned state achieve on the same experience? |
+| CDM planner | Same executor | Does CDM improve experiment selection and use of feedback? |
 
-DiscoveryWorld was selected to test proactive scientific behaviour. Its
-measured bottleneck at the available data scale is pretrained competence. A
-correct implementation of this project's mechanism would still score near zero
-end to end. Continuing the 32-condition protocol into matched continuations and
-autonomous interaction spends compute on a configuration where all four factors
-are already null, against a ceiling set by something the architecture does not
-contain.
+The executor receives one declared request, such as measuring an identified
+sample with an identified instrument. It may navigate, obtain the tool and
+perform that operation. It returns actual readings, unsuccessful operations,
+elapsed time and action cost. Choosing another sample, another measurement or
+a new scientific hypothesis belongs to the planner. An underspecified or
+unachievable request returns to the planner. Demonstrate request execution
+before treating this component as competent in the comparison.
 
-That is a benchmark–hypothesis mismatch, not an implementation failure. The
-engineering of the last two weeks is sound: the replay is exact across 49,304
-decisions, the interventions are correct, the records are honest about scope.
-The error was in what the measurements were asked to decide.
+All planners receive the same public experiment descriptions, available object
+bindings and measurement record. CDM and GRU receive identical training
+experience and interaction budgets. Keep executor memory within the current
+request, so scientific memory belongs to the compared planners. Record native
+operations to establish what the executor actually contributed. The
+language-model planner's inference cost is measured separately.
 
-## The claim this project can actually settle
+For CDM, also compare the same weights with planner state reset between
+experiments and with past numerical readings withheld. These interventions
+separate state and feedback effects from changing the planner. They complement
+the independently trained recurrent comparison.
 
-CDM's claim is about which observation or experiment to perform next, and how a
-returned result changes the next decision. That claim is separable from
-execution, and five of the eight themes have exactly that structure: Plant
-Nutrients, Archaeology Dating, Proteomics, Combinatorial Chemistry and Reactor
-Lab each require running an experiment, reading a result and revising a
-hypothesis.
+## Train the consequence of information
 
-The comparison that settles the claim holds the executor fixed and varies only
-the part CDM owns:
+A measurement can be useful when one result supports action A and another
+supports action B, even when its average predicted state change is small.
+Preserve these alternatives through prediction, state update and subsequent
+action choice. Train on the actual return after the request, including native
+execution costs; prediction accuracy alone is insufficient.
 
-- a competent executor handles navigation, object handling and instrument
-  operation — the frozen vision-language model already selected in
-  [DESIGN.md](../DESIGN.md), or the existing teacher;
-- the executor alone chooses which experiment to run next, by its own
-  reasoning, as the control;
-- the same executor with CDM selecting the experiment and holding the belief
-  across results, as the treatment;
-- both report completions, number of native actions, and wall-clock decision
-  latency on the same instances.
+Use fresh interactions, unsuccessful requests and continuations from student
+mistakes. Fix development and final instance sets before choosing a model.
+Separate new instances from unseen response rules: different seeds can yield
+the same rule. A returning-rule stream tests experience retention through
+interference. Report completion, native actions, measurement requests and
+elapsed time, including every executor call. Hybrid-model latency includes
+the executor; it is not the latency of the small planner alone.
 
-EvoBelief reports GPT-5.4 completing 10/12 and 7/12 Reactor Lab and 9/12 and
-10/12 Plant Nutrients instances under a stated action and call budget
-([Wang et al.](https://arxiv.org/abs/2610.12789)), which gives an external
-reference on two of the five themes at a matched protocol.
+Existing function-belief and measured-reaction studies supply mechanisms and
+controls for this work. The interface alone does not implement or prove
+cross-task learning, adaptive computation or recursive self-improvement.
+Those remain part of the full CDM objective and require their corresponding
+training and comparisons.
 
-This is a decomposition, not a concession, provided both the decomposed and the
-end-to-end numbers are reported. It measures the mechanism where the mechanism
-applies, against a control that differs in exactly one component.
+[EvoBelief](https://arxiv.org/abs/2610.12789) is a relevant external reference
+for experiment-driven belief revision. Its published scores become a direct
+comparison only when difficulty, instances, tools, observation access and
+action/call budgets are aligned. A shared task name does not establish that match.
 
-## What the two settings together are worth
+## Execution decision
 
-A result that holds everywhere is rarely true. The pair here is more useful than
-either alone, and it is the shape of a complete argument:
+The [specified action-state comparison](../experiments/discoveryworld/FULL_SUITE.md#completed-autonomous-interaction-continuations)
+has now completed both stages. Across eight matched models per variant,
+action-conditioned prediction/correction improves sampled imitation-endpoint
+completion from 16/128 to 22/128. After 140,366 total autonomous training
+actions across all 32 models, its completion is 16/128 against the unchanged
+architecture's 18/128. The other two variants also reach 18/128. The local gain
+does not survive the interaction curriculum. Scaling this same curriculum
+again is not the next main experiment.
 
-> Training a model through its own deployed update sequence makes online
-> adaptation pay when the episode's unknown is identifiable from the episode's
-> own observations and the agent can already act. Where the binding constraint
-> is instead pretrained world knowledge or procedural competence, the same
-> mechanism contributes nothing, and a plain recurrent policy does as well or
-> better.
+These runs change candidate memory access and executed-action prediction;
+they are not repeats of the input-factor study. Their results establish the
+outcomes of those interventions at this budget, not the full CDM claim.
 
-The first clause is established on process lifetimes with matched-compute
-controls. The second is established by the factor table above and calibrated by
-the published GPT-4o scores. Delimiting a mechanism is a result; the negative
-half is not a failure to be repaired before publication.
-
-## Recommended sequence
-
-1. Stop the 32-condition continuation. Record the factor totals as its outcome.
-2. Build the fixed executor interface and run the three-arm comparison above on
-   the five identification themes.
-3. Keep the process families as the controlled setting for the positive result
-   and for any further mechanism work.
-4. Do not add components to the native policy. Nothing in the evidence suggests
-   a missing component; the evidence suggests a missing precondition.
+Prioritize the common-executor comparison for scientific experiment choice,
+alongside measured reactions and process tasks where observations already
+influence decisions. Keep native operation learning as a measured capability
+gap. Do not infer an impossibility result from that gap or narrow the project
+permanently to a high-level experiment selector.

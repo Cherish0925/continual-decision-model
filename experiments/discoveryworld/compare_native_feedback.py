@@ -1,4 +1,4 @@
-"""Compare fixed-data training with and without executed-action history."""
+"""Compare native policy inputs, state updates and fixed training endpoints."""
 import argparse
 from collections import Counter
 from contextlib import redirect_stdout
@@ -246,6 +246,77 @@ def summarize_input_study(root, uniform_roots=()):
         conditions=conditions, uniform_reference=uniform)
 
 
+def summarize_action_state(root, *, interaction=False):
+    """Read every fixed continuation endpoint and pair its native executions."""
+    protocol = json.loads(Path(__file__).with_name('native_action_state.json').read_text())
+    conditions, expected_cases = {}, None
+    for condition in protocol['conditions']:
+        features, mode = condition['training']['features'], condition['mode']
+        node = (2 if features == 'siglip' else 0) + (1 if mode == 'gru' else 0)
+        for initial in protocol['initializations']:
+            name = condition['name'] + str(initial['seed'])
+            folder = root / f'node{node}'
+            training = [json.loads(line) for line in (folder/name/'training.jsonl').read_text().splitlines()]
+            row = dict(features=features, mode=mode, seed=initial['seed'],
+                       candidate_read=condition['training']['candidate_read'],
+                       action_conditioned=condition['training']['action_conditioned'])
+            if interaction:
+                from .full_suite import THEMES
+                settings = protocol['followup_interaction']
+                expected = {(theme, settings['difficulty'], seed) for theme in THEMES for seed in settings['seeds']}
+                actual = {(r['scenario'], r['difficulty'], r['seed']) for r in training}
+                if actual != expected or len(training) != len(expected):
+                    raise ValueError(f'{name}: expected the complete common interaction curriculum')
+                row['interaction_episodes'] = training
+                row['updates'] = [json.loads(line) for line in (folder/name/'updates.jsonl').read_text().splitlines()]
+                row['training_actions'] = sum(r['steps'] for r in training)
+            else:
+                if [e['stage_epoch'] for e in training] != [1, 2, 3, 4]:
+                    raise ValueError(f'{name}: expected the four fixed continuation epochs')
+                row['epochs'] = training
+            for decoding in ('greedy', 'sampled'):
+                cases = json.loads((folder/(name+'-'+decoding)/'cases.json').read_text())
+                identities = {(c['id'], c['theme'], c['difficulty'], c['seed']) for c in cases}
+                if len(identities) != 16 or len(cases) != 16 or any(c['status'] != 'evaluated' for c in cases):
+                    raise ValueError(f'{name}/{decoding}: expected sixteen completed executions')
+                if expected_cases is None:
+                    expected_cases = identities
+                if identities != expected_cases:
+                    raise ValueError('Continuation endpoints must share execution instances')
+                row[decoding] = dict(cases=cases, successes=sum(c['success'] for c in cases),
+                                     mean_progress=sum(c['progress'] for c in cases)/len(cases),
+                                     mean_actions=sum(c['steps'] for c in cases)/len(cases))
+            conditions[name] = row
+    totals, pairs = {}, {}
+    for variant in ('reference', 'candidate_read', 'action_state', 'combined'):
+        group = {n:r for n,r in conditions.items() if n.endswith(f'_{variant}_{r["seed"]}')}
+        totals[variant] = dict(models=len(group), executions_per_decoding=16*len(group),
+            **{d:sum(r[d]['successes'] for r in group.values()) for d in ('greedy','sampled')})
+        if variant == 'reference':
+            continue
+        pairs[variant] = []
+        for name, row in group.items():
+            reference = conditions[f'{row["features"]}_{row["mode"]}_reference_{row["seed"]}']
+            comparison = dict(features=row['features'], mode=row['mode'], seed=row['seed'])
+            for decoding in ('greedy', 'sampled'):
+                original = {c['id']:c for c in reference[decoding]['cases']}
+                actual = row[decoding]['cases']
+                comparison[decoding] = dict(
+                    success_difference=row[decoding]['successes']-reference[decoding]['successes'],
+                    gained_cases=[c['id'] for c in actual if c['success'] and not original[c['id']]['success']],
+                    lost_cases=[c['id'] for c in actual if not c['success'] and original[c['id']]['success']],
+                    mean_action_difference=sum(c['steps']-original[c['id']]['steps'] for c in actual)/16)
+            pairs[variant].append(comparison)
+    return dict(scope='32 fixed '+('actor-critic' if interaction else 'imitation')+
+                      ' endpoints on the same sixteen Easy development instances. '
+                      'No official benchmark or unseen-law claim.',
+                training=protocol['followup_interaction'] if interaction else protocol['data'],
+                stage='actor_critic' if interaction else 'imitation',
+                imitation_continuation_epochs=4,
+                execution_seeds=[3013,3014], sampling_seed=911,
+                totals=totals, matched_comparisons=pairs, conditions=conditions)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline', type=Path)
@@ -260,10 +331,18 @@ def main():
     parser.add_argument('--fixed-steps', type=int, default=32)
     parser.add_argument('--coverage', type=Path)
     parser.add_argument('--input-study', type=Path, help='Completed 32-endpoint study with fixed-weight and sampled records')
+    parser.add_argument('--action-state-study', type=Path, help='Completed four-epoch action/state continuations')
+    parser.add_argument('--interaction', action='store_true', help='Read the subsequent fixed-curriculum actor-critic endpoints')
     parser.add_argument('--uniform-runs', type=Path, nargs='*', default=[])
     parser.add_argument('--data-root', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
+    if args.action_state_study:
+        result = summarize_action_state(args.action_state_study, interaction=args.interaction)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
+        print(json.dumps(result['totals']))
+        return
     if args.input_study:
         result = summarize_input_study(args.input_study, args.uniform_runs)
         args.output.parent.mkdir(parents=True, exist_ok=True)

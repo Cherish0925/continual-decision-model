@@ -9,7 +9,7 @@ objective and the [current execution priority](../RESEARCH.md#current-execution-
 | --- | --- |
 | [Current model and implementation direction](CONTINUAL_AGENT.md) | Persistent state, relationship belief, action and computation values, continual training, applications and file-level work sequence |
 | [Eight-theme native policy learning](../experiments/discoveryworld/FULL_SUITE.md#native-policy-training) | Unified public actions, mixed-theme trajectories, whole-theme holdout and separately trained recurrent comparison; in progress |
-| [Where online adaptation pays](WHERE_ADAPTATION_PAYS.md) | The two settings compared, the factor totals of the 32-condition study, the benchmark–hypothesis mismatch and the three-arm comparison that settles the claim |
+| [Where to test sustained adaptation](WHERE_ADAPTATION_PAYS.md) | Matched input-factor results, the distinction between state and parameter adaptation, and a common-executor comparison of language-model, recurrent and CDM experiment choices |
 | [Why the native policies repeat](NATIVE_EXECUTION_DIAGNOSIS.md) | Completed score and state interventions, feedback-label coverage, and implications for action-conditioned learning |
 | [Learning response functions](../experiments/continual_experiment/FUNCTION_BELIEF.md) | Learned unfamiliar-law hypotheses, matched conditional predictors, finite-budget planning and native integration |
 | [Response-law transfer and action representations](../experiments/continual_experiment/RESPONSE_FAMILIES.md) | Six joint trainings, frozen-parent memory, two digital cohorts, native retention and selector-removal confirmation |

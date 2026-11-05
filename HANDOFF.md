@@ -1,24 +1,43 @@
 # Research progress
 
-## 5 November: what the completed native measurements decide
+## 5 November: both continuation stages completed; experiment-choice comparison defined
 
-Summing the 32-condition study by factor gives GRU 39 against CDM 24, lexical
-features 47 against frozen SigLIP text 16, inherited core 31 against random 32,
-and action history 31 against 32. Every factor is null or against the current
-design, consistently across cells.
+All 32 four-epoch imitation continuations and their 1,024 native executions
+are complete. These repeatedly evaluate sixteen Easy development instances.
+With sampled actions, unchanged continuation completes 16/128 executions,
+candidate-specific reading 17/128, action-conditioned prediction/correction
+22/128, and both changes together 16/128. The action-conditioned version wins
+five, ties two and loses one of its eight matched model comparisons. Greedy
+execution remains poor. There is a direction to investigate, without an
+established overall CDM advantage.
+[Per-model curves and execution records](experiments/discoveryworld/results/native_action_state.json).
 
-Zero-shot GPT-4o scores 29/120 on this benchmark, and 0/15 on Reactor Lab, from
-pretraining alone. The binding constraint here is world knowledge and
-procedural competence, not the choice of next observation. A 35.9 M-parameter
-policy reading lexical features from 150 demonstrations cannot reach that
-constraint by any architecture, so the end-to-end native route cannot attribute
-its outcome to CDM's mechanism either way.
+The initial autonomous interaction attempt stopped at a Rocket Science world
+creation assertion. Training seeds 5103 and 5104 fail before any policy action;
+the corrected common schedule replaces them with 5108 and 5109. All 64 worlds
+in that schedule load. Every policy restarts from its fixed imitation endpoint;
+interrupted training and checkpoints remain separate. All 32 corrected runs
+and both evaluations are now complete: 2,048 training episodes, 140,366 actual
+actions and 2,583 batched gradient updates, followed by 1,024 independent
+executions. Sampled completion is 18/128 for unchanged continuation, 18/128 for
+candidate reading, 16/128 for action-conditioned updates and 18/128 for both.
+The imitation-stage gain does not survive this interaction curriculum.
+[Interaction curves and execution records](experiments/discoveryworld/results/native_action_state_interaction.json).
 
-The queued 32-way continuation and interaction curriculum therefore cannot
-answer the project's question. The comparison that can holds a competent
-executor fixed and varies only experiment selection and belief across returned
-results, on the five themes with that structure, against the same executor
-alone. Argument, factor table and protocol:
+These completed comparisons do not justify scaling the same curriculum again.
+The next main scientific comparison holds execution fixed and compares a
+language-model planner, a trained recurrent planner and CDM choosing experiments
+from the same public information. The executor performs declared operations;
+experiment choice and scientific memory remain with the planner. This separates
+procedural operation from feedback-dependent scientific decisions. It is a
+specified next experiment, not an implemented or measured result.
+
+The earlier input-factor totals do not identify procedural knowledge as the
+sole cause of failure: history and inheritance have mixed signs across paired
+conditions. Official zero-shot agents also reason from within-task history.
+The native study has fixed network weights and therefore does not establish
+that the lifetime study's deployed parameter updates would be ineffective.
+Corrected evidence, three-arm design and the continuing full-model objective:
 [research/WHERE_ADAPTATION_PAYS.md](research/WHERE_ADAPTATION_PAYS.md).
 
 ## 5 November: decoding and state effects measured; action-conditioned learning implemented

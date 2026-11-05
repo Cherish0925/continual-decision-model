@@ -76,7 +76,16 @@ The choice between sensing and computation depends on their achievable improveme
 
 ## Current execution priority
 
-**Updated 3 November 2026 with learned response functions.** The implementation
+**Updated 5 November 2026.** Both stages of the 32-model action-state comparison
+are complete. The local imitation gain did not survive autonomous interaction.
+The next main experiment holds execution fixed and compares language-model,
+recurrent and CDM planners choosing experiments from the same public evidence.
+[Evidence and common-executor protocol](research/WHERE_ADAPTATION_PAYS.md)
+define the allocation of execution, scientific memory and decision making.
+Native operation learning, measured reactions and timed process tasks remain
+part of the full-model objective; the common executor isolates one capability.
+
+**Response-learning direction, 3 November 2026.** The implementation
 sequence is [Continual Agent](research/CONTINUAL_AGENT.md). Its companion
 [result synthesis](research/MEMORY_AND_EXPERIMENTS.md) distinguishes the
 recomputed native results, finite-model calculations and proposed changes.
