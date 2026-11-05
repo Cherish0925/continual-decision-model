@@ -1,6 +1,6 @@
 # Research progress
 
-## 5 November: action feedback and recovery training are running
+## 5 November: action feedback compared; recovery learning is running
 
 The native policy can now receive the last eight executed actions together
 with their public feedback. Training, interaction learning, replay and independent
@@ -8,18 +8,26 @@ execution use the same representation. Existing checkpoints keep their original
 inputs by default. This directly exposes which action produced a failed result,
 including when training samples an action the recurrent state cannot predict.
 
-CDM and GRU are training for eight epochs on the same fixed 150/38 demonstration
-split as the completed reference. In parallel, a frozen student executes eight
+CDM and GRU completed eight epochs on the same fixed 150/38 demonstration
+split as the reference. Both scored **0/16** on independent Easy instances.
+At the fixed final epoch, demonstration action accuracy also did not improve.
+Both continued to repeat their command after every failed action with a following
+step. [Complete curves and execution records](experiments/discoveryworld/results/native_action_feedback.json)
+show that this added input alone did not resolve the competence gap.
+
+In parallel, a frozen student executes eight
 initial actions on new training instances; Flash then attempts to recover and
 complete each task. Student actions supply outcome targets only. After collection,
 four student conditions continue learning and undergo independent execution from
-the initial state. The [implementation and experiment settings](experiments/discoveryworld/FULL_SUITE.md#learning-from-executed-actions-and-student-failures)
+the initial state. An initial fixed snapshot of completed recoveries is already
+training while the longer remaining cases continue. The [implementation and experiment settings](experiments/discoveryworld/FULL_SUITE.md#learning-from-executed-actions-and-student-failures)
 separate these assisted training trajectories from student performance.
 
 A [32-training comparison](experiments/discoveryworld/native_input_comparison.json)
 also varies inherited versus random cores, lexical versus frozen semantic
-features, action history, and CDM versus GRU, with two training seeds. Its cloud
-workers are being prepared; it has no completed capability result. The previous
+features, action history, and CDM versus GRU, with two training seeds. The lexical-input
+workers have started; semantic-input workers await their frozen encoder transfer.
+It has no completed capability result. The previous
 official result remains 0/120 for each of the four released native policies.
 
 ## 5 November: native policies still favor fixed actions

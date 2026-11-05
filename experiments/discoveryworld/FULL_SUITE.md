@@ -146,11 +146,25 @@ of the entire performance failure.
 
 The [public history representation](../../cdm/digital.py) is shared by imitation,
 on-policy training, prefix replay and independent execution. With history disabled,
-previous checkpoint inputs and caches remain unchanged. The two current H100
+previous checkpoint inputs and caches remain unchanged. The two completed H100
 trainings use the fixed 150 training / 38 development trajectories, the original
 initial weights, eight epochs and the same losses as the completed demonstration
 reference. They change only this feedback input. Evaluation uses final weights
 from the declared epoch, including new Easy instances.
+
+| Policy | Demonstration accuracy without history | With history | Independent execution with history |
+| --- | ---: | ---: | ---: |
+| CDM | 29.44% | 28.73% | 0/16 |
+| GRU | 28.99% | 27.95% | 0/16 |
+
+Accuracy is measured on the same 38 development demonstrations. Independent
+execution uses Easy seeds 3002 and 3003; the eight seed-3002 cases are shared
+with the original reference, and both conditions complete none of them. After a
+failed command with a subsequent action, the history-enabled CDM repeats the
+same command in 978/978 cases; GRU does so in 1,114/1,114. Explicit action feedback
+alone does not teach recovery under this data and training budget. The
+[full curves, cases and action counts](results/native_action_feedback.json)
+are reproduced by [`compare_native_feedback`](compare_native_feedback.py).
 
 [Recovery collection](collect_recovery.py) executes eight actions from the frozen
 completed-demonstration CDM, then lets Flash attempt the remaining task using the
@@ -174,7 +188,8 @@ python -m experiments.discoveryworld.collect_recovery \
   --student-steps 8 --max-steps 500 --workers 32 --provider bailian
 ```
 
-This is assisted collection. The queued follow-up trains CDM and GRU with and
+This is assisted collection. A fixed snapshot of already completed recoveries
+starts training before the longer collection cases finish. The full-data follow-up trains CDM and GRU with and
 without action history for four additional epochs on the same augmented data,
 then evaluates them without a teacher from the initial states of seeds 3003–3004.
 The 16 development worlds were created successfully before training. These scores
