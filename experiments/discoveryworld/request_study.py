@@ -38,13 +38,24 @@ def main():
     initial=root/'models'/f'self_{args.mode}_s{args.seed}'/'interaction'/'initial.pt'
     checkpoint=None
     if args.arm=='demonstrations':
-        (job/'waiting.json').write_text(json.dumps({'data':'data-ready.json','initial':str(initial.relative_to(root))})+'\n')
-        while not (root/'data-ready.json').exists() or not initial.exists():
+        (job/'waiting.json').write_text(json.dumps({'data':'initial-data-ready.json','initial':str(initial.relative_to(root))})+'\n')
+        while not (root/'initial-data-ready.json').exists() or not initial.exists():
+            sleep(20)
+        (job/'waiting.json').unlink()
+        run('initial_imitation','experiments.discoveryworld.train',[
+            '--train-trajectories',root/'initial_data/train','--validation-trajectories',root/'initial_data/development',
+            '--resume-checkpoint',initial,'--output',job/'initial_imitation',
+            '--feature-cache',cache,'--device','cuda:0','--threads',2,
+            '--epochs',plan['initial_imitation_epochs'],'--batch-size',plan['imitation_batch_size'],
+            '--sequence-length',plan['sequence_length'],'--allow-failed-actions',
+            '--immediate-weight',0,'--precision','bfloat16','--disable-cudnn-attention','--seed',args.seed])
+        (job/'waiting.json').write_text(json.dumps({'data':'data-ready.json'})+'\n')
+        while not (root/'data-ready.json').exists():
             sleep(20)
         (job/'waiting.json').unlink()
         run('imitation','experiments.discoveryworld.train',[
             '--train-trajectories',root/'train','--validation-trajectories',root/'development',
-            '--resume-checkpoint',initial,'--output',job/'imitation',
+            '--resume-checkpoint',job/'initial_imitation/last.pt','--output',job/'imitation',
             '--feature-cache',cache,'--device','cuda:0','--threads',2,
             '--epochs',plan['imitation_epochs'],'--batch-size',plan['imitation_batch_size'],
             '--sequence-length',plan['sequence_length'],'--allow-failed-actions',

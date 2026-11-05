@@ -10,8 +10,9 @@ execution have run in the native simulator.
 
 The fixed study has four arms (CDM/GRU, with/without demonstrations) and eight
 initializations per arm. Sixteen self-learning runs have produced real updates.
-Sixteen demonstration runs wait for the common 80-instance training and
-20-instance development collection, then automatically train and evaluate.
+Sixteen demonstration runs start with four epochs on the fixed Easy records,
+then eight epochs on the full 80-instance training and 20-instance development
+collection before autonomous learning and evaluation.
 The first teacher collection includes successful chemistry, archaeology, plant
 and proteomics episodes. Student comparative results are pending.
 

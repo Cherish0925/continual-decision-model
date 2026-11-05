@@ -9,8 +9,8 @@ consumes the native action budget and remains in the recorded trajectory.
 **Status, 5 November 2026:** collection and training are running. Supervised
 learning, autonomous gradient updates and independent learned-policy execution
 have run in the native simulator. Sixteen self-learning runs have produced
-updates on four compute nodes. Sixteen paired demonstration runs wait for the
-shared collection. Full comparative scores are pending.
+updates on four compute nodes. Sixteen paired demonstration runs begin with the
+fixed Easy collection while longer tasks continue. Full comparative scores are pending.
 The [dated run snapshot](results/common_execution_status.json) separates actual
 optimizer updates, unfinished teacher attempts and pending model comparisons.
 
@@ -55,7 +55,7 @@ The [configuration](common_execution.json) fixes the study before evaluation:
 | Learned arms | CDM and GRU, each with and without demonstrations |
 | Initializations | Eight per arm; 32 runs |
 | Core | Width 512, four attention heads, eight workspace slots |
-| Demonstration stage | Eight epochs, followed by autonomous interaction |
+| Demonstration stage | Four epochs on the first Easy records, eight on the full collection, then autonomous interaction |
 | Autonomous stage | The same 80 fresh training instances per run |
 | Evaluation | The same 20 fresh instances per fixed endpoint |
 | Native budget | 100 operations for Easy; 300 for Normal |
@@ -64,6 +64,11 @@ Each demonstration arm loads its paired self-learning arm's **initial** weights,
 before interaction updates. CDM and GRU share experience, initialization seeds
 and native interaction limits. Their computation differs; equal interaction
 budgets do not establish equal FLOPs.
+
+The initial course uses all forty training and ten development Easy trajectories,
+including recorded unsuccessful or interrupted prefixes. Selection is by
+difficulty, not success. This fixed early snapshot permits training while Normal
+collection continues. The complete data subsequently includes resumed prefixes.
 
 Final interaction policies use both greedy and sampled decoding. Resetting
 neural state between requests is a same-weight intervention. Demonstration arms
@@ -92,8 +97,10 @@ python -m experiments.discoveryworld.collect_suite \
   --max-new-tokens 16384 --reasoning-effort low --action-corrections 2
 ```
 
-Collect development seeds 6300 and 6301 with identical settings. Mark the
-finished common collection with `runs/common/data-ready.json`. For each mode
+Collect development seeds 6300 and 6301 with identical settings. Copy the first
+finished-attempt Easy records to `runs/common/initial_data/{train,development}`
+and mark the snapshot with `runs/common/initial-data-ready.json`. Mark the
+finished full collection with `runs/common/data-ready.json`. For each mode
 and seed in the configuration, launch on separate devices:
 
 ```sh
@@ -103,8 +110,8 @@ CUDA_VISIBLE_DEVICES=1 python -m experiments.discoveryworld.request_study \
   --root runs/common --arm demonstrations --mode cdm --seed 401
 ```
 
-The demonstration command waits for data and paired initial weights, then runs
-imitation, interaction learning and fixed evaluations. Commands, optimizer
+The demonstration command waits for each common data stage and paired initial
+weights, then runs imitation, interaction learning and fixed evaluations. Commands, optimizer
 curves, checkpoints, requests and native operations remain separate. A failed
 stage stops that job and preserves its files.
 
