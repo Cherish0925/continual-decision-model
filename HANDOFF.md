@@ -84,12 +84,17 @@ Unfinished attempts are retained separately. Independent background jobs now
 continue collection and queue the complete-solution CDM/GRU comparison on two
 GPUs: eight imitation epochs, autonomous interaction learning and teacher-free
 evaluation of both endpoints. This route still awaits its full collection;
-there is no completed complete-solution student result. In parallel, two H100s
-are processing a fixed snapshot of 150 completed training demonstrations
-(16,015 teacher actions) and 38 development demonstrations. CDM and GRU each
-receive eight imitation epochs and independent Easy development evaluation
-at seed 3002. This completed-data comparison is separate from the final
-complete-collection route, and does not select an official-test endpoint.
+there is no completed student result for that full-collection pipeline.
+A fixed snapshot of 150 completed training demonstrations (16,015 teacher
+actions) and 38 development demonstrations has now finished on two H100s.
+After eight imitation epochs, CDM and GRU each scored 0/8 on new Easy instances
+at seed 3002. Their training action accuracy was 30.8% and 31.4%; development
+action accuracy was 29.4% and 29.0%. Both repeatedly selected actions after
+receiving failure feedback. [The completed snapshot comparison](experiments/discoveryworld/results/native_demonstration_snapshot.json)
+is separate from the final complete-collection route and does not select an
+official-test endpoint. The next training change must address how received
+feedback changes actions; additional repetitions of the same setup have not
+yet established competent scientific execution.
 
 Lexical encoding now accumulates and normalizes features before creating a
 Torch tensor. It preserves all 98 checked observation vectors, including the

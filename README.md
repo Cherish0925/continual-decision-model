@@ -28,8 +28,9 @@ autonomous learning, basic-operation instruction and complete-solution
 distillation. The four autonomous/basic-operation models completed training
 and each scored **0/120** in complete native evaluation. The
 [case records](experiments/discoveryworld/results/native_actor_comparison.json)
-include the unsuccessful results. Broader scientific demonstrations and two
-completed-data student trainings are in progress; the
+include the unsuccessful results. A subsequent eight-epoch fit on 150 completed
+demonstrations also scored [0/8 for both policies](experiments/discoveryworld/results/native_demonstration_snapshot.json)
+on new Easy development instances. Broader scientific collection continues; the
 [progress record](HANDOFF.md) distinguishes these from the completed comparison.
 The task scores below remain the v0.17.0 results.
 

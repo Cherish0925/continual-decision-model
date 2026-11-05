@@ -1,0 +1,1434 @@
+{
+  "training_seed": 301,
+  "endpoint": "epoch 8; no selection by executed development score",
+  "training_demonstrations": 150,
+  "development_demonstrations": 38,
+  "teacher_training_actions": 16015,
+  "supervision": "Valid represented actions from successful episodes; received outcomes also use unsuccessful episodes",
+  "evaluation": "Eight Easy development instances at seed 3002; object initialization seed 73105; greedy execution without a teacher",
+  "scope": "Fixed snapshot collected before the full scientific collection completed; imitation only; separate from the queued complete-data imitation plus reinforcement comparison",
+  "conditions": {
+    "cdm": {
+      "training_curve": [
+        {
+          "epoch": 1,
+          "stage_epoch": 1,
+          "training": {
+            "imitation_loss": 3.9208585361241233,
+            "outcome_loss": 0.2762799579785471,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.842878471766789,
+            "loss": 4.058998515113397,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.12670514165792235,
+            "raw_event_imitation_accuracy": 0.12670514165792235,
+            "action_run_weighted_accuracy": 0.10598623667523922,
+            "repeated_run_exit_accuracy": 0.11666666666666667,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.7103753401169675,
+            "outcome_loss": 0.4148829513958545,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.6901062681568755,
+            "loss": 3.917816815814895,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.11168495803744351,
+            "raw_event_imitation_accuracy": 0.11168495803744351,
+            "action_run_weighted_accuracy": 0.10088797822433165,
+            "repeated_run_exit_accuracy": 0.1702127659574468,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 755.0396604890047
+        },
+        {
+          "epoch": 2,
+          "stage_epoch": 2,
+          "training": {
+            "imitation_loss": 3.4208559891395,
+            "outcome_loss": 0.13564028025307318,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.361580719602571,
+            "loss": 3.488676129266037,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.1689401888772298,
+            "raw_event_imitation_accuracy": 0.1689401888772298,
+            "action_run_weighted_accuracy": 0.15526385177229063,
+            "repeated_run_exit_accuracy": 0.13333333333333333,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.412420522938723,
+            "outcome_loss": 0.153128437738903,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.422149874919303,
+            "loss": 3.4889847418081743,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.09489993544222079,
+            "raw_event_imitation_accuracy": 0.09489993544222079,
+            "action_run_weighted_accuracy": 0.09858834242651417,
+            "repeated_run_exit_accuracy": 0.10638297872340426,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 957.9401359360054
+        },
+        {
+          "epoch": 3,
+          "stage_epoch": 3,
+          "training": {
+            "imitation_loss": 3.2156079865993217,
+            "outcome_loss": 0.10183020035615588,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.163390921145396,
+            "loss": 3.2665230867773998,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.1823189926547744,
+            "raw_event_imitation_accuracy": 0.1823189926547744,
+            "action_run_weighted_accuracy": 0.174579168606426,
+            "repeated_run_exit_accuracy": 0.15,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.2141429416715117,
+            "outcome_loss": 0.12787291680255525,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.20257903284377,
+            "loss": 3.2780794000727895,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.12072304712717882,
+            "raw_event_imitation_accuracy": 0.12072304712717882,
+            "action_run_weighted_accuracy": 0.11723588343463437,
+            "repeated_run_exit_accuracy": 0.10638297872340426,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1167.6644939350008
+        },
+        {
+          "epoch": 4,
+          "stage_epoch": 4,
+          "training": {
+            "imitation_loss": 2.9899630247690085,
+            "outcome_loss": 0.09320669210397477,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.946800015780758,
+            "loss": 3.036566370820996,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.23714585519412382,
+            "raw_event_imitation_accuracy": 0.23714585519412382,
+            "action_run_weighted_accuracy": 0.23656402562651616,
+            "repeated_run_exit_accuracy": 0.16111111111111112,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.0053296237752245,
+            "outcome_loss": 0.16152137049409937,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.008426555438993,
+            "loss": 3.086090309022274,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.30277598450613297,
+            "raw_event_imitation_accuracy": 0.30277598450613297,
+            "action_run_weighted_accuracy": 0.30157103828869036,
+            "repeated_run_exit_accuracy": 0.14893617021276595,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1362.513195587002
+        },
+        {
+          "epoch": 5,
+          "stage_epoch": 5,
+          "training": {
+            "imitation_loss": 2.8954632929197714,
+            "outcome_loss": 0.10866483219260034,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.86552667767904,
+            "loss": 2.9497957090160716,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.276495278069255,
+            "raw_event_imitation_accuracy": 0.276495278069255,
+            "action_run_weighted_accuracy": 0.28043369728308043,
+            "repeated_run_exit_accuracy": 0.16666666666666666,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.7768258649867303,
+            "outcome_loss": 0.08313351254164902,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.788486901831827,
+            "loss": 2.818392621257555,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.3014848289218851,
+            "raw_event_imitation_accuracy": 0.3014848289218851,
+            "action_run_weighted_accuracy": 0.30938069212960867,
+            "repeated_run_exit_accuracy": 0.10638297872340426,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1541.3192993449993
+        },
+        {
+          "epoch": 6,
+          "stage_epoch": 6,
+          "training": {
+            "imitation_loss": 2.72362090468575,
+            "outcome_loss": 0.08970126495108172,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.7139423766641526,
+            "loss": 2.7684715371612905,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.28436516264428124,
+            "raw_event_imitation_accuracy": 0.28436516264428124,
+            "action_run_weighted_accuracy": 0.2920608914542221,
+            "repeated_run_exit_accuracy": 0.19444444444444445,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.8506214630500284,
+            "outcome_loss": 0.08364085290060609,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.865867974297934,
+            "loss": 2.8924418895003314,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.30213040671400904,
+            "raw_event_imitation_accuracy": 0.30213040671400904,
+            "action_run_weighted_accuracy": 0.3113387977507137,
+            "repeated_run_exit_accuracy": 0.19148936170212766,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1736.5047761560054
+        },
+        {
+          "epoch": 7,
+          "stage_epoch": 7,
+          "training": {
+            "imitation_loss": 2.6768505527832995,
+            "outcome_loss": 0.0745937536296644,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.668416714743327,
+            "loss": 2.714147429598132,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.2953830010493179,
+            "raw_event_imitation_accuracy": 0.2953830010493179,
+            "action_run_weighted_accuracy": 0.3000198641062986,
+            "repeated_run_exit_accuracy": 0.18888888888888888,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.6708667953191294,
+            "outcome_loss": 0.15119272063277317,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.6757878696941577,
+            "loss": 2.746463155635516,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.3298902517753389,
+            "raw_event_imitation_accuracy": 0.3298902517753389,
+            "action_run_weighted_accuracy": 0.32984972685711017,
+            "repeated_run_exit_accuracy": 0.19148936170212766,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1930.7415427590022
+        },
+        {
+          "epoch": 8,
+          "stage_epoch": 8,
+          "training": {
+            "imitation_loss": 2.5965325006805107,
+            "outcome_loss": 0.07194201035687345,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.5778308480133667,
+            "loss": 2.6325035058589474,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.30823714585519413,
+            "raw_event_imitation_accuracy": 0.30823714585519413,
+            "action_run_weighted_accuracy": 0.3066504582439137,
+            "repeated_run_exit_accuracy": 0.20555555555555555,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.8319461200453824,
+            "outcome_loss": 0.06388381174299786,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.843653482495007,
+            "loss": 2.8638880259168813,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.29438347320852165,
+            "raw_event_imitation_accuracy": 0.29438347320852165,
+            "action_run_weighted_accuracy": 0.2990437157912178,
+            "repeated_run_exit_accuracy": 0.14893617021276595,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 2115.9515456190056
+        }
+      ],
+      "execution_summary": {
+        "mode": "run",
+        "overall": {
+          "cases": 8,
+          "recorded": 8,
+          "errors": 0,
+          "successes": 0,
+          "mean_progress": 0.11126893939393939,
+          "knowledge_score": null
+        },
+        "by_theme": {
+          "Combinatorial Chemistry": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.16666666666666666,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Archaeology Dating": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.16666666666666666,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Plant Nutrients": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.25,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Reactor Lab": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.18181818181818182,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Lost in Translation": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Space Sick": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.125,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Proteomics": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "It's (not) Rocket Science!": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          }
+        },
+        "by_difficulty": {
+          "Easy": {
+            "cases": 8,
+            "recorded": 8,
+            "errors": 0,
+            "successes": 0,
+            "mean_progress": 0.11126893939393939,
+            "knowledge_score": null
+          },
+          "Normal": {
+            "cases": 0,
+            "recorded": 0,
+            "errors": 0
+          },
+          "Challenge": {
+            "cases": 0,
+            "recorded": 0,
+            "errors": 0
+          }
+        }
+      },
+      "case_results": [
+        {
+          "id": "01-easy-3002",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.16666666666666666,
+          "task_metrics": [
+            {
+              "task": "RustedKeyTaskEasy",
+              "progress": 0.16666666666666666,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 6.335357728996314,
+          "decision_seconds": 3.51963045996672,
+          "environment_seconds": 2.6307576449908083,
+          "successful_native_actions": 100,
+          "distinct_actions": 4,
+          "most_frequent_action_count": 97
+        },
+        {
+          "id": "02-easy-3002",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.16666666666666666,
+          "task_metrics": [
+            {
+              "task": "ArchaeologyDigTaskEasy",
+              "progress": 0.16666666666666666,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.727383345001726,
+          "decision_seconds": 1.4955980770027963,
+          "environment_seconds": 3.0649540149679524,
+          "successful_native_actions": 100,
+          "distinct_actions": 4,
+          "most_frequent_action_count": 49
+        },
+        {
+          "id": "03-easy-3002",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.25,
+          "task_metrics": [
+            {
+              "task": "SoilNutrientTaskEasy",
+              "progress": 0.25,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.4351198410004145,
+          "decision_seconds": 1.4563805239668,
+          "environment_seconds": 2.82113806300913,
+          "successful_native_actions": 2,
+          "distinct_actions": 3,
+          "most_frequent_action_count": 98
+        },
+        {
+          "id": "04-easy-3002",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.18181818181818182,
+          "task_metrics": [
+            {
+              "task": "ReactorTaskEasy",
+              "progress": 0.18181818181818182,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.481863965003868,
+          "decision_seconds": 1.3683686679723905,
+          "environment_seconds": 2.957410860050004,
+          "successful_native_actions": 1,
+          "distinct_actions": 2,
+          "most_frequent_action_count": 99
+        },
+        {
+          "id": "05-easy-3002",
+          "theme": "Lost in Translation",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "RosettaStoneTaskEasy",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.435495293000713,
+          "decision_seconds": 1.4287810930109117,
+          "environment_seconds": 2.8515393550042063,
+          "successful_native_actions": 0,
+          "distinct_actions": 1,
+          "most_frequent_action_count": 100
+        },
+        {
+          "id": "06-easy-3002",
+          "theme": "Space Sick",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.125,
+          "task_metrics": [
+            {
+              "task": "SmallSkillsInstrumentMeasurementTask",
+              "progress": 0.125,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.378194942997652,
+          "decision_seconds": 1.4579377570480574,
+          "environment_seconds": 2.7557899579696823,
+          "successful_native_actions": 3,
+          "distinct_actions": 4,
+          "most_frequent_action_count": 97
+        },
+        {
+          "id": "07-easy-3002",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "ProteomicsTaskEasy",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.391768597997725,
+          "decision_seconds": 1.371603091036377,
+          "environment_seconds": 2.8605844419653295,
+          "successful_native_actions": 0,
+          "distinct_actions": 1,
+          "most_frequent_action_count": 100
+        },
+        {
+          "id": "08-easy-3002",
+          "theme": "It's (not) Rocket Science!",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "NotRocketScienceTask",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 5.5123199009976815,
+          "decision_seconds": 2.257734715982224,
+          "environment_seconds": 3.0653590360016096,
+          "successful_native_actions": 100,
+          "distinct_actions": 3,
+          "most_frequent_action_count": 98
+        }
+      ]
+    },
+    "gru": {
+      "training_curve": [
+        {
+          "epoch": 1,
+          "stage_epoch": 1,
+          "training": {
+            "imitation_loss": 3.9076111833444753,
+            "outcome_loss": 0.2507631669458557,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.8291707314073977,
+            "loss": 4.0329927668174035,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.1219832109129066,
+            "raw_event_imitation_accuracy": 0.1219832109129066,
+            "action_run_weighted_accuracy": 0.10687923878973823,
+            "repeated_run_exit_accuracy": 0.12777777777777777,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.6683162914647762,
+            "outcome_loss": 0.28953401243673554,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.6415605834409295,
+            "loss": 3.813083297683144,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.11103938024531956,
+            "raw_event_imitation_accuracy": 0.11103938024531956,
+            "action_run_weighted_accuracy": 0.10020491811518803,
+            "repeated_run_exit_accuracy": 0.1702127659574468,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 715.7331013000003
+        },
+        {
+          "epoch": 2,
+          "stage_epoch": 2,
+          "training": {
+            "imitation_loss": 3.3728772519642347,
+            "outcome_loss": 0.1271364454767943,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.308644473865425,
+            "loss": 3.436445474702632,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.1783840503672613,
+            "raw_event_imitation_accuracy": 0.1783840503672613,
+            "action_run_weighted_accuracy": 0.16713983638600297,
+            "repeated_run_exit_accuracy": 0.14444444444444443,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.3056429653205583,
+            "outcome_loss": 0.11097177295004129,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.3120233820206586,
+            "loss": 3.361128851795579,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.0961910910264687,
+            "raw_event_imitation_accuracy": 0.0961910910264687,
+            "action_run_weighted_accuracy": 0.10040983604411155,
+            "repeated_run_exit_accuracy": 0.1276595744680851,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 874.3151160609996
+        },
+        {
+          "epoch": 3,
+          "stage_epoch": 3,
+          "training": {
+            "imitation_loss": 3.177466283341321,
+            "outcome_loss": 0.1031805201311582,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.1272764255967997,
+            "loss": 3.2290565434069,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.19517313746065057,
+            "raw_event_imitation_accuracy": 0.19517313746065057,
+            "action_run_weighted_accuracy": 0.18923658999828608,
+            "repeated_run_exit_accuracy": 0.14444444444444443,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.1972043521844102,
+            "outcome_loss": 0.12704330308994766,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.191114983457069,
+            "loss": 3.260726003729384,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.12782440284054228,
+            "raw_event_imitation_accuracy": 0.12782440284054228,
+            "action_run_weighted_accuracy": 0.12704918031089096,
+            "repeated_run_exit_accuracy": 0.1702127659574468,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1034.9649343720012
+        },
+        {
+          "epoch": 4,
+          "stage_epoch": 4,
+          "training": {
+            "imitation_loss": 2.965835979361383,
+            "outcome_loss": 0.08628779723263917,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.922905328516445,
+            "loss": 3.0089798779777026,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.24081846799580273,
+            "raw_event_imitation_accuracy": 0.24081846799580273,
+            "action_run_weighted_accuracy": 0.23746762505348076,
+            "repeated_run_exit_accuracy": 0.16666666666666666,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 3.0255870751814733,
+            "outcome_loss": 0.15163245407234358,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 3.034968376775339,
+            "loss": 3.101403302217645,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.2408005164622337,
+            "raw_event_imitation_accuracy": 0.2408005164622337,
+            "action_run_weighted_accuracy": 0.234631147592616,
+            "repeated_run_exit_accuracy": 0.1702127659574468,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1184.5559833939988
+        },
+        {
+          "epoch": 5,
+          "stage_epoch": 5,
+          "training": {
+            "imitation_loss": 2.914127768936826,
+            "outcome_loss": 0.10409498825099552,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.8868161628779183,
+            "loss": 2.9661752630623237,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.2746589716684155,
+            "raw_event_imitation_accuracy": 0.2746589716684155,
+            "action_run_weighted_accuracy": 0.27768259231205583,
+            "repeated_run_exit_accuracy": 0.17222222222222222,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.7852933820285344,
+            "outcome_loss": 0.08450820359244089,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.8034537150984504,
+            "loss": 2.827547483824755,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.29438347320852165,
+            "raw_event_imitation_accuracy": 0.29438347320852165,
+            "action_run_weighted_accuracy": 0.3015938068863893,
+            "repeated_run_exit_accuracy": 0.10638297872340426,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1323.1965970009987
+        },
+        {
+          "epoch": 6,
+          "stage_epoch": 6,
+          "training": {
+            "imitation_loss": 2.7159741791954253,
+            "outcome_loss": 0.08491364364962548,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.7060625010247246,
+            "loss": 2.758431001020238,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.28803777544596015,
+            "raw_event_imitation_accuracy": 0.28803777544596015,
+            "action_run_weighted_accuracy": 0.29278660943644147,
+            "repeated_run_exit_accuracy": 0.18888888888888888,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.8960872331776826,
+            "outcome_loss": 0.10168371601851274,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.9117854828215783,
+            "loss": 2.946929091186939,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.27307940606843123,
+            "raw_event_imitation_accuracy": 0.27307940606843123,
+            "action_run_weighted_accuracy": 0.28210382507631343,
+            "repeated_run_exit_accuracy": 0.1276595744680851,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1473.3098101159994
+        },
+        {
+          "epoch": 7,
+          "stage_epoch": 7,
+          "training": {
+            "imitation_loss": 2.6643690814210914,
+            "outcome_loss": 0.07789116906140167,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.657563184516002,
+            "loss": 2.703314665951792,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.2898740818467996,
+            "raw_event_imitation_accuracy": 0.2898740818467996,
+            "action_run_weighted_accuracy": 0.3014385894092899,
+            "repeated_run_exit_accuracy": 0.18888888888888888,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.6948869422194393,
+            "outcome_loss": 0.19608741837701846,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.7016465622352124,
+            "loss": 2.7929306514079486,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.31375080697224017,
+            "raw_event_imitation_accuracy": 0.31375080697224017,
+            "action_run_weighted_accuracy": 0.31215846996514884,
+            "repeated_run_exit_accuracy": 0.19148936170212766,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1625.0227438209986
+        },
+        {
+          "epoch": 8,
+          "stage_epoch": 8,
+          "training": {
+            "imitation_loss": 2.55446386421969,
+            "outcome_loss": 0.07094987986651728,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.538215397037214,
+            "loss": 2.5899388041529487,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.3142707240293809,
+            "raw_event_imitation_accuracy": 0.3142707240293809,
+            "action_run_weighted_accuracy": 0.31558575086022006,
+            "repeated_run_exit_accuracy": 0.18888888888888888,
+            "repeated_run_exits": 180,
+            "transitions": 16015,
+            "supervised_actions": 3812,
+            "observed_outcomes": 15732
+          },
+          "validation": {
+            "imitation_loss": 2.896435055900591,
+            "outcome_loss": 0.060983325031809366,
+            "immediate_loss": 0.0,
+            "raw_imitation_loss": 2.9125582533085863,
+            "loss": 2.926926718416496,
+            "imitation_reduction": "action_run",
+            "imitation_accuracy": 0.289864428663654,
+            "raw_event_imitation_accuracy": 0.289864428663654,
+            "action_run_weighted_accuracy": 0.2948087431124917,
+            "repeated_run_exit_accuracy": 0.14893617021276595,
+            "repeated_run_exits": 47,
+            "transitions": 5288,
+            "supervised_actions": 1549,
+            "observed_outcomes": 5170
+          },
+          "elapsed_seconds": 1768.5760890279998
+        }
+      ],
+      "execution_summary": {
+        "mode": "run",
+        "overall": {
+          "cases": 8,
+          "recorded": 8,
+          "errors": 0,
+          "successes": 0,
+          "mean_progress": 0.12168560606060606,
+          "knowledge_score": null
+        },
+        "by_theme": {
+          "Combinatorial Chemistry": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.25,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Archaeology Dating": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.16666666666666666,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Plant Nutrients": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.25,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Reactor Lab": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.18181818181818182,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Lost in Translation": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Space Sick": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.125,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "Proteomics": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          },
+          "It's (not) Rocket Science!": {
+            "Easy": {
+              "cases": 1,
+              "recorded": 1,
+              "errors": 0,
+              "successes": 0,
+              "mean_progress": 0.0,
+              "knowledge_score": null
+            },
+            "Normal": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            },
+            "Challenge": {
+              "cases": 0,
+              "recorded": 0,
+              "errors": 0
+            }
+          }
+        },
+        "by_difficulty": {
+          "Easy": {
+            "cases": 8,
+            "recorded": 8,
+            "errors": 0,
+            "successes": 0,
+            "mean_progress": 0.12168560606060606,
+            "knowledge_score": null
+          },
+          "Normal": {
+            "cases": 0,
+            "recorded": 0,
+            "errors": 0
+          },
+          "Challenge": {
+            "cases": 0,
+            "recorded": 0,
+            "errors": 0
+          }
+        }
+      },
+      "case_results": [
+        {
+          "id": "01-easy-3002",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.25,
+          "task_metrics": [
+            {
+              "task": "RustedKeyTaskEasy",
+              "progress": 0.25,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 7.224261849994946,
+          "decision_seconds": 4.046177984972019,
+          "environment_seconds": 2.9912440859843628,
+          "successful_native_actions": 100,
+          "distinct_actions": 6,
+          "most_frequent_action_count": 95
+        },
+        {
+          "id": "02-easy-3002",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.16666666666666666,
+          "task_metrics": [
+            {
+              "task": "ArchaeologyDigTaskEasy",
+              "progress": 0.16666666666666666,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.865512377000414,
+          "decision_seconds": 1.7584441070066532,
+          "environment_seconds": 2.9403465959912864,
+          "successful_native_actions": 100,
+          "distinct_actions": 4,
+          "most_frequent_action_count": 49
+        },
+        {
+          "id": "03-easy-3002",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.25,
+          "task_metrics": [
+            {
+              "task": "SoilNutrientTaskEasy",
+              "progress": 0.25,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.624372569996922,
+          "decision_seconds": 1.890356308023911,
+          "environment_seconds": 2.570767626966699,
+          "successful_native_actions": 2,
+          "distinct_actions": 3,
+          "most_frequent_action_count": 98
+        },
+        {
+          "id": "04-easy-3002",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.18181818181818182,
+          "task_metrics": [
+            {
+              "task": "ReactorTaskEasy",
+              "progress": 0.18181818181818182,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.529976350000652,
+          "decision_seconds": 1.5213618760244572,
+          "environment_seconds": 2.8511129659527796,
+          "successful_native_actions": 1,
+          "distinct_actions": 2,
+          "most_frequent_action_count": 99
+        },
+        {
+          "id": "05-easy-3002",
+          "theme": "Lost in Translation",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "RosettaStoneTaskEasy",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.558149543998297,
+          "decision_seconds": 1.5644510990168783,
+          "environment_seconds": 2.837523791960848,
+          "successful_native_actions": 0,
+          "distinct_actions": 1,
+          "most_frequent_action_count": 100
+        },
+        {
+          "id": "06-easy-3002",
+          "theme": "Space Sick",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.125,
+          "task_metrics": [
+            {
+              "task": "SmallSkillsInstrumentMeasurementTask",
+              "progress": 0.125,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.920392763000564,
+          "decision_seconds": 1.7847136409836821,
+          "environment_seconds": 2.9679080100395367,
+          "successful_native_actions": 3,
+          "distinct_actions": 4,
+          "most_frequent_action_count": 97
+        },
+        {
+          "id": "07-easy-3002",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "ProteomicsTaskEasy",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 4.702895280002849,
+          "decision_seconds": 1.5528934110770933,
+          "environment_seconds": 2.9939931179833366,
+          "successful_native_actions": 0,
+          "distinct_actions": 1,
+          "most_frequent_action_count": 100
+        },
+        {
+          "id": "08-easy-3002",
+          "theme": "It's (not) Rocket Science!",
+          "difficulty": "Easy",
+          "seed": 3002,
+          "max_steps": 100,
+          "status": "evaluated",
+          "steps": 100,
+          "success": false,
+          "terminated": false,
+          "progress": 0.0,
+          "task_metrics": [
+            {
+              "task": "NotRocketScienceTask",
+              "progress": 0.0,
+              "completed": false,
+              "completed_successfully": false
+            }
+          ],
+          "knowledge_score": null,
+          "rollout_seconds": 6.554341447001207,
+          "decision_seconds": 3.204992537976068,
+          "environment_seconds": 3.1583908990141936,
+          "successful_native_actions": 100,
+          "distinct_actions": 6,
+          "most_frequent_action_count": 59
+        }
+      ]
+    }
+  }
+}

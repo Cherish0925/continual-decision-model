@@ -64,7 +64,7 @@ initialization are separate from earlier scored runs.
 | Plan+Execute | text | 7 | 7 | 6 | 20 (16.7%) |
 | Hypothesizer | text and images | 11 | 9 | 3 | 23 (19.2%) |
 
-All three scored 0/15 on Reactor Lab. Finishing only Reactor Lab and Combinatorial Chemistry perfectly would already yield 30/120, one above the best of these three overall. This is why a cross-domain comparison needs the other six themes reported separately. Keep completion, procedural progress and explanatory knowledge as separate measures.
+All three scored 0/15 on Reactor Lab. Reactor Lab and Combinatorial Chemistry together account for 30 of the 120 official instances. This is a count of benchmark instances, **not a measured CDM score of 30/120**. Earlier CDM results of [30/30 on chemistry development instances](../continual_chemistry/README.md#forecasting-the-next-two-experiments) use a separate single-theme set and a specialized execution interface. They cannot be substituted for the corresponding official cases. Report all eight themes, and keep completion, procedural progress and explanatory knowledge as separate measures.
 
 [Wang et al., EvoBelief, Table 3 and Appendix E](https://arxiv.org/abs/2610.12789) offer a different comparison: GPT-5.4, two themes, twelve fresh instances per theme and difficulty, at most 320 environment actions and 1,650 model calls per instance. EvoBelief completed 10/12 Normal and 7/12 Challenge Reactor Lab instances; in Plant Nutrients it completed 9/12 and 10/12. These are four groups of twelve, not scores on the official 120. A direct CDM comparison needs the same instances, observations, tools and action limits. Report training exposure, native action counts and end-to-end decision latency alongside the scores.
 
@@ -114,13 +114,19 @@ used for the sampling comparison. After extracting both native archives,
 recreates the summary. A model's `policy.json` can be passed to `full_suite run`
 with `--object-rng-seed 73105` for the official-case protocol.
 
-Full scientific demonstrations continue to be collected. In parallel, a fixed
-snapshot of 150 completed training demonstrations (16,015 teacher actions)
-and 38 development demonstrations trains CDM and GRU for eight imitation
-epochs. That comparison evaluates new Easy instances at seed 3002 and has no
-completed student result yet. It is separate from the final complete-data
-pipeline, which also evaluates the imitation and subsequent reinforcement
-endpoints independently.
+The fixed snapshot of 150 training demonstrations (16,015 teacher actions)
+and 38 development demonstrations has completed eight imitation epochs for
+both policies. Each scored **0/8** on new Easy development instances at seed
+3002. CDM's action imitation accuracy was 30.8% on training observations and
+29.4% on development observations; GRU's was 31.4% and 29.0%. Only 3,812 training
+actions had valid imitation labels from successful episodes. Both models
+repeated actions despite received feedback: in Reactor Lab, each submitted the
+same unsuccessful OPEN action 99 times. These results show inadequate learned
+execution; they do not establish a single causal explanation or a teacher defect.
+[Training curves and all development cases](results/native_demonstration_snapshot.json)
+retain the unsuccessful outcomes. This imitation-only snapshot is separate
+from the final complete-data pipeline, which awaits the remaining scientific
+demonstrations and evaluates imitation and reinforcement endpoints separately.
 
 ### Earlier inherited-core protocol
 
@@ -271,7 +277,13 @@ python -m experiments.discoveryworld.train_demonstrations \
 
 Use the same files and initial checkpoint for GRU. `--scope basic_operations` rejects scientific solution trajectories. For the complete-solution comparison, choose `--scope complete_solutions` and include scientific collections. The pipeline snapshots completed data, trains eight imitation epochs, learns from the student's actions, and optionally evaluates both final endpoints on all 120 official cases with no teacher. Checkpoints are chosen by the declared endpoint, not test performance. Use the same `--evaluation-object-rng-seed 73105` across endpoints to reproduce native initialization.
 
-The first pair of eight-epoch basic-operation fits is complete; autonomous and post-imitation interaction learning are in progress. Native-library faults interrupted several Torch 2.11.0+cu128 attempts. Their records and checkpoints are retained. The four current trainings share a separate Torch 2.14.0+cu130 / NumPy 2.3.5 runtime, the same starting weights and equivalent lexical features, with independent CPU simulator workers. Earlier attempts are separate from this comparison. The final reinforcement and official-case scores remain pending. The complete-solution pair waits for its separate scientific collection and uses the same runtime. These are one-initialization feasibility runs, not an established architecture result.
+Early local interaction-learning attempts suffered native-library faults under
+Torch 2.11.0+cu128 and were retried in a separate Torch 2.14.0+cu130 environment.
+Their records and checkpoints remain separate from the completed cloud
+comparison above. The four cloud endpoints finished training and each scored
+0/120. The complete-solution imitation-plus-reinforcement pair still awaits its
+full scientific collection. These are one-initialization feasibility runs,
+not an established architecture advantage.
 
 Within each route, match source weights, received observations, action access, scheduled cases and maximum interaction budgets. Report actual student interactions, teacher operations, API tokens and compute separately. The pure-learning route preserves the question of learning without a teacher. The basic-operation route asks whether instruction helps the student reach useful experiments. The complete-solution route measures distillation. The [DiscoveryWorld training settings](https://arxiv.org/html/2406.06769v2#A3.S2) permit training on separate instances, but such scores are task-trained and must retain that distinction from the published zero-shot agents. Different seeds may still share scientific laws, as documented above.
 

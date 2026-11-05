@@ -21,9 +21,11 @@ model scored **0/120**. An exploratory greedy/sampled comparison on eight new
 Easy development instances also produced no completed task.
 [Every case and condition](experiments/discoveryworld/results/native_actor_comparison.json)
 is reported. Hosted collection and the complete-solution training queue
-resumed on 5 November independently of an interactive terminal. Two H100s also
-run a fixed completed-data comparison using 150 training demonstrations, while
-the remaining collections finish. These new student results are pending.
+resumed on 5 November independently of an interactive terminal. The fixed
+150-demonstration comparison on two H100s has also completed: after eight
+imitation epochs, both policies scored 0/8 on new Easy development cases.
+[Curves and case results](experiments/discoveryworld/results/native_demonstration_snapshot.json)
+are retained. The full-collection imitation-plus-reinforcement route remains pending.
 [Current execution](HANDOFF.md).
 
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
