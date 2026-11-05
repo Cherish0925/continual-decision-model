@@ -61,26 +61,47 @@ def commands(args):
     for initial in protocol['initializations']:
         for condition in protocol['conditions']:
             name = f"{condition['name']}{initial['seed']}"
+            checkpoint = (args.output / 'initializations' / f"random{initial['seed']}.pt"
+                          if condition.get('initialization') == 'random' else args.source_root / initial['source'])
             command = [sys.executable, '-m', 'experiments.discoveryworld.train',
                        '--train-trajectories', *map(str, args.train_trajectories),
                        '--validation-trajectories', *map(str, args.validation_trajectories),
-                       '--initial-checkpoint', str(args.source_root / initial['source']),
+                       '--initial-checkpoint', str(checkpoint),
                        '--output', str(args.output / name),
                        '--feature-cache', str(args.feature_cache),
                        '--encoder-path', str(args.encoder_path),
                        '--feature-device', 'cuda:0', '--device', 'cuda:0', '--threads', '2',
                        '--seed', str(initial['seed']), '--mode', condition['mode']]
-            for key, value in protocol['training'].items():
+            for key, value in {**protocol['training'], **condition.get('training', {})}.items():
                 flag = '--' + key.replace('_', '-')
                 if isinstance(value, bool):
                     if value:
                         command.append(flag)
                 else:
                     command.extend((flag, str(value)))
-            if condition['holdout']:
+            if condition.get('holdout', False):
                 command.extend(('--exclude-themes', *protocol['theme_holdout']))
             jobs.append(dict(name=name, command=command))
     return jobs
+
+
+def prepare_random_cores(args, protocol):
+    """Random comparison cores retain the inherited architecture and action grid."""
+    if not any(row.get('initialization') == 'random' for row in protocol['conditions']):
+        return
+    import torch
+    from cdm.core import ContinualCore, CoreConfig
+    directory = args.output / 'initializations'
+    directory.mkdir(exist_ok=True)
+    for initial in protocol['initializations']:
+        source = torch.load(args.source_root / initial['source'], map_location='cpu', weights_only=True)
+        if source.get('kind') != 'shared_experiment_core_v1':
+            raise ValueError('Matched random initialization requires a shared scientific core')
+        torch.manual_seed(initial['seed'])
+        core = ContinualCore(CoreConfig(**source['core_config']), source['core']['action_values'])
+        torch.save(dict(kind='shared_experiment_core_v1', core_config=source['core_config'], core=core.state_dict(),
+                        initialization='random core with the inherited architecture', seed=initial['seed']),
+                   directory / f"random{initial['seed']}.pt")
 
 
 def main():
@@ -112,6 +133,8 @@ def main():
     if args.plan_only:
         print(json.dumps(jobs, indent=2))
         return
+    protocol = json.loads(args.protocol.read_text())
+    prepare_random_cores(args, protocol)
     (args.output / 'plan.json').write_text(json.dumps(jobs, indent=2) + '\n')
 
     def queue(index):
@@ -131,11 +154,15 @@ def main():
                     feature_cache=str(args.feature_cache), device='cuda:0',
                     encoder_path=str(args.encoder_path)), indent=2) + '\n')
                 with (args.output / (job['name'] + '-evaluation.log')).open('x') as log:
-                    evaluation = subprocess.run([sys.executable, '-m', 'experiments.discoveryworld.full_suite',
+                    evaluation_command = [sys.executable, '-m', 'experiments.discoveryworld.full_suite',
                         'run', '--policy', 'experiments.discoveryworld.evaluate:create',
                         '--policy-config', str(policy), '--policy-id', job['name'],
                         '--workers', str(args.evaluation_workers), '--threads', '1',
-                        '--output', str(args.output / (job['name'] + '-evaluation'))],
+                        '--output', str(args.output / (job['name'] + '-evaluation'))]
+                    for key, value in protocol.get('evaluation', {}).items():
+                        evaluation_command += ['--'+key.replace('_','-')]
+                        evaluation_command += list(map(str, value)) if isinstance(value, list) else [str(value)]
+                    evaluation = subprocess.run(evaluation_command,
                         env=env, stdout=log, stderr=subprocess.STDOUT)
                 row['evaluation_exit_code'] = evaluation.returncode
                 if evaluation.returncode:

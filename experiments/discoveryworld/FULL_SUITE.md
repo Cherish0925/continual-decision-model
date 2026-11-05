@@ -128,6 +128,70 @@ retain the unsuccessful outcomes. This imitation-only snapshot is separate
 from the final complete-data pipeline, which awaits the remaining scientific
 demonstrations and evaluates imitation and reinforcement endpoints separately.
 
+### Learning from executed actions and student failures
+
+The next comparison changes the information available to learning and the states
+on which the student receives instruction. It retains the native action interface.
+
+Previously, the recurrent update received the observation, objects and measurement
+records. The chosen native action was not explicitly fed back to that state.
+During stochastic training, two different actions can therefore lead to the same
+generic failure observation without identifying which command failed. The new
+optional `--action-history 8` input keeps the executed command, observed object
+descriptions or dialogue option, location change, and returned feedback for the
+last eight actions. Each record is encoded separately. It is visible only at the
+following decision; expert proposals and scorecard values do not enter it.
+This is an implementation hypothesis being tested, not an established explanation
+of the entire performance failure.
+
+The [public history representation](../../cdm/digital.py) is shared by imitation,
+on-policy training, prefix replay and independent execution. With history disabled,
+previous checkpoint inputs and caches remain unchanged. The two current H100
+trainings use the fixed 150 training / 38 development trajectories, the original
+initial weights, eight epochs and the same losses as the completed demonstration
+reference. They change only this feedback input. Evaluation uses final weights
+from the declared epoch, including new Easy instances.
+
+[Recovery collection](collect_recovery.py) executes eight actions from the frozen
+completed-demonstration CDM, then lets Flash attempt the remaining task using the
+actual public history. The collection covers all eight themes at Easy and Normal
+difficulty, with training seeds 1100–1101 and caps of 100/500 actions. One Rocket
+Easy world at seed 1100 fails during simulator construction; it is retained as an
+environment error. Seed 1102 also fails its construction check. Seed 1103 creates
+successfully and supplies the replacement, chosen before any policy evaluation.
+
+Every transition records its actual controller. Student actions receive outcome
+supervision but no imitation label, even if the teacher later completes the task.
+Only valid teacher actions in completed successful episodes receive imitation
+labels. A real collected chemistry episode was prepared through the training
+path: all eight student actions retained their outcomes and received zero imitation
+labels; 29 teacher actions supplied valid imitation labels.
+
+```sh
+python -m experiments.discoveryworld.collect_recovery \
+  --checkpoint runs/student/last.pt --feature-cache runs/native-features \
+  --output runs/recovery --seeds 1100 1101 --difficulties Easy Normal \
+  --student-steps 8 --max-steps 500 --workers 32 --provider bailian
+```
+
+This is assisted collection. The queued follow-up trains CDM and GRU with and
+without action history for four additional epochs on the same augmented data,
+then evaluates them without a teacher from the initial states of seeds 3003–3004.
+The 16 development worlds were created successfully before training. These scores
+are separate from the official 120 cases and from teacher recovery success.
+
+The broader [input and initialization protocol](native_input_comparison.json)
+contains 32 trainings: two input representations, two core initializations, two
+history settings, two policy types, and two training seeds. Inherited and random
+cores have the same architecture and action grid; only core weights are inherited,
+and native input projections and action heads are newly initialized. The frozen
+semantic input uses SigLIP2 text features; these trajectories contain no images.
+All conditions receive the same 150/38 trajectories and optimizer-window budget.
+CDM and GRU have different internal computation costs. The existing
+[`train_suite`](train_suite.py) accepts this protocol and generates the matched
+random initializations. Cloud preparation and training are scheduled; a result
+table will be added after independent execution finishes.
+
 ### What the four frozen policies actually did
 
 All four ended at 0/120. Reading the [released action traces](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.18.0) identifies two different failures. Here a repeated action has the same verb **and arguments** in two adjacent steps of the same case. An accepted command means the native API returned success, not that the scientific task advanced.

@@ -1,0 +1,191 @@
+{
+  "study": "Native decisions: executed feedback, initialization and representation",
+  "initializations": [
+    {
+      "seed": 301,
+      "source": "parents/inherited201.pt"
+    },
+    {
+      "seed": 302,
+      "source": "parents/inherited202.pt"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "lexical_history0_inherited_cdm_",
+      "mode": "cdm",
+      "initialization": "inherited",
+      "training": {
+        "features": "lexical",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "lexical_history0_inherited_gru_",
+      "mode": "gru",
+      "initialization": "inherited",
+      "training": {
+        "features": "lexical",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "lexical_history0_random_cdm_",
+      "mode": "cdm",
+      "initialization": "random",
+      "training": {
+        "features": "lexical",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "lexical_history0_random_gru_",
+      "mode": "gru",
+      "initialization": "random",
+      "training": {
+        "features": "lexical",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "lexical_history8_inherited_cdm_",
+      "mode": "cdm",
+      "initialization": "inherited",
+      "training": {
+        "features": "lexical",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "lexical_history8_inherited_gru_",
+      "mode": "gru",
+      "initialization": "inherited",
+      "training": {
+        "features": "lexical",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "lexical_history8_random_cdm_",
+      "mode": "cdm",
+      "initialization": "random",
+      "training": {
+        "features": "lexical",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "lexical_history8_random_gru_",
+      "mode": "gru",
+      "initialization": "random",
+      "training": {
+        "features": "lexical",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "siglip_history0_inherited_cdm_",
+      "mode": "cdm",
+      "initialization": "inherited",
+      "training": {
+        "features": "siglip",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "siglip_history0_inherited_gru_",
+      "mode": "gru",
+      "initialization": "inherited",
+      "training": {
+        "features": "siglip",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "siglip_history0_random_cdm_",
+      "mode": "cdm",
+      "initialization": "random",
+      "training": {
+        "features": "siglip",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "siglip_history0_random_gru_",
+      "mode": "gru",
+      "initialization": "random",
+      "training": {
+        "features": "siglip",
+        "action_history": 0
+      }
+    },
+    {
+      "name": "siglip_history8_inherited_cdm_",
+      "mode": "cdm",
+      "initialization": "inherited",
+      "training": {
+        "features": "siglip",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "siglip_history8_inherited_gru_",
+      "mode": "gru",
+      "initialization": "inherited",
+      "training": {
+        "features": "siglip",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "siglip_history8_random_cdm_",
+      "mode": "cdm",
+      "initialization": "random",
+      "training": {
+        "features": "siglip",
+        "action_history": 8
+      }
+    },
+    {
+      "name": "siglip_history8_random_gru_",
+      "mode": "gru",
+      "initialization": "random",
+      "training": {
+        "features": "siglip",
+        "action_history": 8
+      }
+    }
+  ],
+  "training": {
+    "epochs": 8,
+    "batch_size": 4,
+    "sequence_length": 8,
+    "lr": 0.0003,
+    "core_lr": 3e-05,
+    "precision": "bfloat16",
+    "disable_cudnn_attention": true,
+    "refinements": 1,
+    "measurement_memory": true,
+    "object_relations": true,
+    "imitation_reduction": "action_run",
+    "allow_failed_actions": true,
+    "imitate_successful_episodes": true,
+    "outcome_weight": 0.5,
+    "immediate_weight": 0.0
+  },
+  "evaluation": {
+    "seeds": [
+      3003,
+      3004
+    ],
+    "difficulties": [
+      "Easy"
+    ],
+    "object_rng_seed": 73105
+  },
+  "data": "The same fixed 150 training and 38 development trajectories in all 32 trainings.",
+  "inheritance": "Only the continual core is inherited; native input and action interfaces are newly initialized.",
+  "comparison": "Matching trajectories and optimizer windows; GRU and CDM do not use equal inference compute.",
+  "final_checkpoint": "last.pt",
+  "status": "Scheduled comparison; no completed capability result yet"
+}

@@ -1,5 +1,27 @@
 # Research progress
 
+## 5 November: action feedback and recovery training are running
+
+The native policy can now receive the last eight executed actions together
+with their public feedback. Training, interaction learning, replay and independent
+execution use the same representation. Existing checkpoints keep their original
+inputs by default. This directly exposes which action produced a failed result,
+including when training samples an action the recurrent state cannot predict.
+
+CDM and GRU are training for eight epochs on the same fixed 150/38 demonstration
+split as the completed reference. In parallel, a frozen student executes eight
+initial actions on new training instances; Flash then attempts to recover and
+complete each task. Student actions supply outcome targets only. After collection,
+four student conditions continue learning and undergo independent execution from
+the initial state. The [implementation and experiment settings](experiments/discoveryworld/FULL_SUITE.md#learning-from-executed-actions-and-student-failures)
+separate these assisted training trajectories from student performance.
+
+A [32-training comparison](experiments/discoveryworld/native_input_comparison.json)
+also varies inherited versus random cores, lexical versus frozen semantic
+features, action history, and CDM versus GRU, with two training seeds. Its cloud
+workers are being prepared; it has no completed capability result. The previous
+official result remains 0/120 for each of the four released native policies.
+
 ## 5 November: native policies still favor fixed actions
 
 [Analysis of the released traces and a new fixed-weight handoff comparison](experiments/discoveryworld/FULL_SUITE.md#what-the-four-frozen-policies-actually-did)
