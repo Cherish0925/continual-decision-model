@@ -76,6 +76,54 @@ Freeze the resulting weights and evaluate all 120 cases, including failures. Com
 
 ## Native policy training
 
+### Completed autonomous and basic-operation comparison
+
+On 5 November, the four declared cloud conditions completed their full
+136-episode curriculum and all 120 official evaluation cases. Each endpoint
+uses seed 301; these are four conditions, not four independent seed repeats.
+Observations use fixed lexical/numeric features without a pretrained encoder.
+The policy parameters remain fixed during evaluation.
+
+| Initialization and policy | Training actions | Optimizer updates | Completed official cases |
+| --- | ---: | ---: | ---: |
+| Autonomous CDM | 71,200 | 1,117 | 0/120 |
+| Autonomous GRU | 71,200 | 1,117 | 0/120 |
+| Basic-operation CDM | 69,144 | 1,090 | 0/120 |
+| Basic-operation GRU | 70,141 | 1,107 | 0/120 |
+
+The completed evaluation has no runtime errors. Earlier attempts with
+post-reset RNG replay remain separate. The basic-operation models completed
+nine and eight training episodes, including the small-skills curriculum, but
+did not complete the scientific evaluation. These training successes do not
+establish transfer to the eight scientific themes.
+
+Repeated greedy actions motivated an additional fixed-weight comparison on
+eight new Easy development instances, seed 3001. Each endpoint ran once with
+greedy decoding and once with temperature-1 sampling, using policy seed 301.
+All eight combinations scored 0/8. Sampling increased mean progress in some
+conditions, without solving a task. Thus changing the execution rule alone
+does not resolve the current competence gap. Progress is the simulator's
+reported final score, which may include progress already present at reset.
+
+[Every case, training count and action summary](results/native_actor_comparison.json)
+is available. The native model and record archives on
+[v0.18.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.18.0)
+retain all four endpoints. The record archive includes the evaluation source
+used for the sampling comparison. After extracting both native archives,
+`python -m experiments.discoveryworld.compare_native_learning --runs native_actor --out comparison.json`
+recreates the summary. A model's `policy.json` can be passed to `full_suite run`
+with `--object-rng-seed 73105` for the official-case protocol.
+
+Full scientific demonstrations continue to be collected. In parallel, a fixed
+snapshot of 150 completed training demonstrations (16,015 teacher actions)
+and 38 development demonstrations trains CDM and GRU for eight imitation
+epochs. That comparison evaluates new Easy instances at seed 3002 and has no
+completed student result yet. It is separate from the final complete-data
+pipeline, which also evaluates the imitation and subsequent reinforcement
+endpoints independently.
+
+### Earlier inherited-core protocol
+
 The [training protocol](native_learning.json) now compares a shared CDM with a recurrent policy using the same received observations, candidate actions, source core, trajectories and epoch budget. Each condition is trained from two source cores. The recurrent policy uses less internal computation; this comparison matches training exposure rather than FLOPs.
 
 Two separate questions determine the data split:

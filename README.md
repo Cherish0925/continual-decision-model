@@ -25,10 +25,12 @@ advantage over its recurrent and kernel alternatives.
 The current [eight-theme study](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
 compares one native-action CDM and a recurrent policy. New runs separate
 autonomous learning, basic-operation instruction and complete-solution
-distillation. Basic-operation supervision has completed; students are learning
-from their own actions while broader scientific demonstrations are collected.
-Student task results from this comparison are pending; the
-[progress record](HANDOFF.md) includes interrupted runs and current execution.
+distillation. The four autonomous/basic-operation models completed training
+and each scored **0/120** in complete native evaluation. The
+[case records](experiments/discoveryworld/results/native_actor_comparison.json)
+include the unsuccessful results. Broader scientific demonstrations and two
+completed-data student trainings are in progress; the
+[progress record](HANDOFF.md) distinguishes these from the completed comparison.
 The task scores below remain the v0.17.0 results.
 
 The completed [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)

@@ -28,7 +28,7 @@ class LearnedPolicy:
                  device: str = "cpu", feature_device: str | None = None,
                  encoder_path: str | Path | None = None, restart_state: bool | None = None, restart_workspace: bool | None = None,
                  mode: str | None = None, refinements: int | None = None,
-                 temperature: float = 0.0):
+                 temperature: float = 0.0, sampling_seed: int | None = None):
         self.model, self.checkpoint = load_checkpoint(checkpoint, device)
         self.model.eval()
         if self.checkpoint['training_args'].get('disable_cudnn_attention', False):
@@ -40,10 +40,13 @@ class LearnedPolicy:
         self.persistent = not (self.checkpoint["training_args"].get("restart_state", False) if restart_state is None else restart_state)
         self.restart_workspace = self.checkpoint["training_args"].get("restart_workspace", False) if restart_workspace is None else restart_workspace
         self.refinements, self.temperature = refinements, temperature
+        self.sampling_seed = sampling_seed
         self.reset()
 
     def reset(self):
         self.state = self.model.initial(1, self.device)
+        self.generator = None if self.sampling_seed is None else \
+            torch.Generator(device=self.device).manual_seed(self.sampling_seed)
         self.memory = PublicObjectMemory()
         self.measurements = None
         if self.features.config.measurement_memory:
@@ -79,7 +82,8 @@ class LearnedPolicy:
                                                    predict_outcomes=False)
         logits = self.action_logits(logits, observation, candidates, actions)
         if self.temperature > 0:
-            selected = int(torch.multinomial((logits[0] / self.temperature).softmax(-1), 1))
+            selected = int(torch.multinomial((logits[0] / self.temperature).softmax(-1), 1,
+                                             generator=self.generator))
         else:
             selected = int(logits[0].argmax())
         # .item()/int above synchronize the selected action before timing it.

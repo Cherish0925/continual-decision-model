@@ -65,15 +65,31 @@ Post-reset RNG snapshots alone do not reproduce the unseeded native generators
 used during world construction and its first tick. A common initialization
 seed now controls those generators while preserving explicit simulator seeds.
 Five actual Space Sick cases reproduce their initial observations, RNG states
-and next action exactly. All four complete evaluations have restarted with
-that common protocol; earlier partial records remain available.
+and next action exactly. All four subsequent evaluations completed all 120
+cases without an error. Each model completed **0/120** scientific tasks.
+The [complete comparison](experiments/discoveryworld/results/native_actor_comparison.json)
+retains every case. Basic-operation initialization produced 9 and 8 training
+successes, including the small-skills curriculum, but did not produce success
+on the scientific evaluation.
+
+An exploratory comparison on eight new Easy development instances (seed 3001)
+kept these weights fixed and compared greedy execution with sampling from the
+trained policy (temperature 1, sampling seed 301). All eight policy/decoding
+combinations completed 0/8. Sampling increased mean progress in some conditions
+without teaching complete execution. These observations do not identify a
+single cause, but changing the execution rule alone does not resolve the gap.
 
 Hosted data collection resumed on 5 November from the completed cases.
 Unfinished attempts are retained separately. Independent background jobs now
 continue collection and queue the complete-solution CDM/GRU comparison on two
 GPUs: eight imitation epochs, autonomous interaction learning and teacher-free
 evaluation of both endpoints. This route still awaits its full collection;
-there is no completed complete-solution student result.
+there is no completed complete-solution student result. In parallel, two H100s
+are processing a fixed snapshot of 150 completed training demonstrations
+(16,015 teacher actions) and 38 development demonstrations. CDM and GRU each
+receive eight imitation epochs and independent Easy development evaluation
+at seed 3002. This completed-data comparison is separate from the final
+complete-collection route, and does not select an official-test endpoint.
 
 Lexical encoding now accumulates and normalizes features before creating a
 Torch tensor. It preserves all 98 checked observation vectors, including the
