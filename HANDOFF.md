@@ -1,5 +1,22 @@
 # Research progress
 
+## 5 November: native policies still favor fixed actions
+
+[Analysis of the released traces and a new fixed-weight handoff comparison](experiments/discoveryworld/FULL_SUITE.md#what-the-four-frozen-policies-actually-did)
+separates failed commands from unproductive accepted ones. Autonomous CDM used
+one identical action throughout each official case. Basic-operation CDM mostly
+alternated successful moves in opposite directions.
+
+In twelve new Reactor Lab Normal instances, a specialist first completed the
+experiment up to its last action. Autonomous CDM then completed 6/12 within
+32 steps, but only by repeatedly decreasing frequency by 1 Hz. Clearing its
+neural state preserves every action sequence and outcome. Basic-operation GRU
+completed 5/12 by repeatedly increasing frequency by 1 Hz; the other two
+native endpoints completed none. These assisted results do not change 0/120
+fresh-start performance. The next useful training examples require different
+actions in otherwise similar observed states, followed by successful
+continuations from the states the student actually visits.
+
 ## 4 November: 80 additional measured-reaction trainings completed
 
 The [measured-reaction study](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)

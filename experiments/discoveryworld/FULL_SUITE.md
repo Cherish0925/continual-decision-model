@@ -128,6 +128,52 @@ retain the unsuccessful outcomes. This imitation-only snapshot is separate
 from the final complete-data pipeline, which awaits the remaining scientific
 demonstrations and evaluates imitation and reinforcement endpoints separately.
 
+### What the four frozen policies actually did
+
+All four ended at 0/120. Reading the [released action traces](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.18.0) identifies two different failures. Here a repeated action has the same verb **and arguments** in two adjacent steps of the same case. An accepted command means the native API returned success, not that the scientific task advanced.
+
+| Official greedy policy | Cases using one identical action from start to finish | Repeated after a failed command / failed commands with a following step |
+| --- | ---: | ---: |
+| Autonomous CDM | 120/120 | 72,900/72,900 |
+| Autonomous GRU | 80/120 | 50,445/50,445 |
+| Basic-operation CDM | 35/120 | 23,628/23,628 |
+| Basic-operation GRU | 25/120 | 23,723/23,784 |
+
+The autonomous CDM issued `USE` on all 84,000 steps; within each case the object arguments never changed. The basic-operation CDM made 60,321 accepted moves. Of 60,236 adjacent pairs of accepted moves, 60,046 went in opposite directions. Its only other accepted commands were three object teleports. It did learn something on the training distribution: of nine training completions, six were elementary skills and three were scientific instances (two Archaeology Dating, one Space Sick). None transferred to a full official completion. On eight separate Easy development cases, sampling instead of taking the highest-scoring action broke the repetition but all four policies still scored 0/8.
+
+The [on-policy action loss](parallel_learning.py) uses subsequent changes in native task progress. In the autonomous CDM, 35 of 1,117 updates had a nonzero **sum** of the collected rewards; this is not a count of individual rewarding actions. The batched actor–critic run does not train the outcome predictor on each attempted action. The [supervised snapshot](results/native_demonstration_snapshot.json) is a different experiment: 16,015 training actions, 3,812 valid imitation labels from successful episodes, and 7/47 correct changes of expert action after repeated runs on validation. Exact action agreement is not an upper bound on task completion: another action can also be valid.
+
+To separate execution from long-horizon planning, hand control to a frozen policy within a successful experiment on development instances. To train recovery, collect continuations from states the student actually reaches after a failed interaction or an alternating walk. Keep the attempted command, bound objects, returned result, and the consequences of trying an alternative. Predicting whether an action will be accepted supplies a learning signal; acceptance alone would reward the unproductive walking above. Keep the action interface fixed when comparing random and inherited initialization, and select changes on new development instances.
+
+#### An executed handoff comparison
+
+The four v0.18.0 checkpoints were also tested on **12 new Reactor Lab Normal instances, seeds 5100–5111**. The public-history specialist completed all twelve in 214–225 native steps. Replay its history until immediately before its last action, then let a frozen student take up to 32 actions. All handoff states had 0.92 task progress and the specialist's final action was available among nine public dialogue choices. A uniform policy starts from the same states. No model was trained on these histories.
+
+| Frozen policy after the assisted prefix | First choice in all 12 states | Completions within 32 steps |
+| --- | --- | ---: |
+| Autonomous CDM | Decrease frequency by 1 Hz | 6/12 |
+| Same weights, reset neural state at handoff | Decrease frequency by 1 Hz | 6/12 |
+| Autonomous GRU | Exit dialogue | 0/12 |
+| Basic-operation CDM | Exit dialogue | 0/12 |
+| Basic-operation GRU | Increase frequency by 1 Hz | 5/12 |
+| Uniform public-action sampling | Varied | 0/12 |
+
+Every autonomous-CDM suffix repeats the same decrement; every basic-operation-GRU suffix repeats the same increment. Their completions can therefore be reproduced by fixed-direction adjustments from these specialist-prepared states. Resetting the autonomous CDM's GRU and workspace, while retaining the same public object/measurement histories, leaves **all twelve action sequences and completions unchanged**. This intervention concerns these handoff states, not every use of the architecture. Assisted completion is not fresh-start competence and does not establish a learned scientific strategy.
+
+The useful next training distinction is a pair of otherwise similar public situations that require opposite actions. For frequency control, collect real states above and below the same target; for failed interactions, collect the student's actual failure state and a successful continuation from it. Train the observation–action–returned-result connection on those cases, then move the handoff earlier until the student can complete new episodes independently. Retain the fixed-direction and independently trained recurrent policies as comparisons. Do not fit to these twelve development histories or the official 120 cases.
+
+The native simulator can depend on earlier worlds in the same interpreter even when their initial seeds match. Each reference and continuation above therefore starts in a fresh process with fixed hash and NumPy seeds, and every forced step must match the reference's public-observation hash and returned action result. During the forced prefix the unused action readout is omitted; GRU, workspace and adapter states were checked to equal full policy execution on replayed public events for both policy modes. The original attempts with mismatched histories are excluded from the final matched comparison.
+
+[Complete action analysis and handoff outcomes](results/native_action_behavior.json) · [Public reference actions and observation hashes](results/native_handoff_references.json.gz).
+
+```bash
+python -m experiments.discoveryworld.native_handoff prepare --root runs/native-handoff --seeds 5100 5101 5102 5103 5104 5105 5106 5107 5108 5109 5110 5111
+python -m experiments.discoveryworld.native_handoff run --root runs/native-handoff --models native_actor --label autonomous-cdm --seeds 5100 5101 5102 5103 5104 5105 5106 5107 5108 5109 5110 5111
+python -m experiments.discoveryworld.native_action_behavior --runs native_actor --handoffs runs/native-handoff --out native-action-behavior.json
+```
+
+Repeat the second command for `autonomous-gru`, `basic_operations-cdm`, `basic_operations-gru`, `uniform`, and `autonomous-cdm-reset` before combining results. Use the pinned DiscoveryWorld dependency. This comparison used CPU Torch 2.11.0; it did not change the running server jobs or any published checkpoint. Source archives: `native-actor-records.tar.gz`, SHA-256 `a45e108ab5b3fa7370126e01c9cc6385cd03995fcadb163be2c540d522a4c77d`; `native-actor-models.tar.gz`, SHA-256 `619864109c639cc8e6e575f18315f0c88425f8cee125999e161e7fc5dfb7d8b9`.
+
 ### Earlier inherited-core protocol
 
 The [training protocol](native_learning.json) now compares a shared CDM with a recurrent policy using the same received observations, candidate actions, source core, trajectories and epoch budget. Each condition is trained from two source cores. The recurrent policy uses less internal computation; this comparison matches training exposure rather than FLOPs.
