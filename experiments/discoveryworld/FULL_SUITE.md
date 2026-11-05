@@ -303,8 +303,28 @@ unchanged continuation, candidate reading alone, action-conditioned state alone
 and both together, for CDM and GRU, lexical and semantic inputs, and two seeds:
 32 final endpoints. Each four-way comparison starts from the same native
 checkpoint. Both decoding rules use new independent-execution seeds 3013–3014.
-These seeds do not establish unseen scientific laws. Completed results will
-be reported separately from the fixed-weight study above.
+These seeds do not establish unseen scientific laws. Each fixed continuation
+endpoint then enters teacher-free actor–critic learning on the same 64 Easy
+training instances (eight themes, seeds 5100–5107, at most 100 actions each).
+Outcome and transition prediction remain jointly trained. The imitation and
+interaction endpoints both receive greedy and sampled execution; neither is
+selected by their development scores. This stage provides up to 204,800 new
+student actions across 32 policies, with all early completions retained.
+Completed results will be reported separately from the fixed-weight study above.
+
+For one interaction continuation, after the declared four-epoch fit:
+
+```sh
+python -m experiments.discoveryworld.finetune \
+  --checkpoint runs/action-state/model/last.pt \
+  --output runs/action-state/model-interaction \
+  --feature-cache runs/native-features --device cuda:0 --workers 4 \
+  --native-suite all --difficulty Easy --seeds 5100 5101 5102 5103 5104 5105 5106 5107 \
+  --max-steps 100 --sequence-length 16 --lr 3e-5 --random-seed 911 \
+  --outcome-weight 0.5 --transition-weight 0.25
+```
+
+Semantic-input checkpoints additionally require `--encoder-path`.
 
 ### What the four frozen policies actually did
 

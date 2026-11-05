@@ -25,8 +25,12 @@ preserved before fitting the new residuals. CPU checks, H100 mixed-precision
 training and eight-theme batched interaction updates passed.
 [Implementation and continuation settings](experiments/discoveryworld/FULL_SUITE.md#action-conditioned-state-and-candidate-specific-memory).
 The 32-way continuation uses the same 182/38 trajectories for every condition,
-matched initial weights, four additional epochs and both decoding rules. It
-requires independent execution before a capability result can be claimed.
+matched initial weights, four additional epochs and both decoding rules.
+Every endpoint then receives the same teacher-free interaction curriculum:
+64 Easy training instances and up to 6,400 new native actions per policy.
+The two learning stages retain separate checkpoints and independent execution.
+The background workflow runs them in sequence without selecting models by
+execution scores. No new capability result is claimed before those runs finish.
 
 The earlier recovery-only and complete-solution pipelines continue separately;
 their checkpoints and unsuccessful attempts are preserved. The next comparison

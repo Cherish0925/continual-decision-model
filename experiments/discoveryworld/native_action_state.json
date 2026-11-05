@@ -253,5 +253,27 @@
     "initialization": "Identical native checkpoint within feature/mode/seed; new output residuals initialized to zero",
     "effect": "Two-factor comparison of candidate-specific memory access and action-conditioned prediction/correction",
     "scope": "New execution instances; unseen scientific rules and equal wall-clock compute are not asserted"
+  },
+  "followup_interaction": {
+    "native_suite": "all",
+    "difficulty": "Easy",
+    "seeds": [
+      5100,
+      5101,
+      5102,
+      5103,
+      5104,
+      5105,
+      5106,
+      5107
+    ],
+    "max_steps": 100,
+    "sequence_length": 16,
+    "workers": 4,
+    "lr": 3e-05,
+    "outcome_weight": 0.5,
+    "transition_weight": 0.25,
+    "random_seed": 911,
+    "endpoint": "Final checkpoint after the same 64 training instances per policy; retain the imitation endpoint separately"
   }
 }
