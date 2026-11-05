@@ -45,8 +45,11 @@ class FeatureConfig:
     object_relations: bool = False
     mask_object_relations: bool = False
     action_history: int = 0
+    action_interface: str = 'native'
 
     def __post_init__(self):
+        if self.action_interface not in ('native', 'object_requests_v1'):
+            raise ValueError('Unknown action interface')
         if self.action_history < 0:
             raise ValueError("action_history must be nonnegative")
         if self.object_relations and not self.measurement_memory:
@@ -170,6 +173,8 @@ class FeatureCache:
         self.encoder_path = str(encoder_path) if encoder_path else None
         self.encode_batch_size = encode_batch_size
         identity = {"schema": FEATURE_SCHEMA, **asdict(config)}
+        if config.action_interface == 'native':
+            identity.pop('action_interface')
         # Preserve the existing tower/event cache when the new input is off.
         if not config.measurement_memory:
             identity.pop("measurement_memory")
@@ -180,7 +185,7 @@ class FeatureCache:
         if not config.action_history:
             identity.pop("action_history")
         tower_identity = {key: value for key, value in identity.items()
-                          if key not in ("measurement_memory", "object_relations", "mask_object_relations", "action_history")}
+                          if key not in ("measurement_memory", "object_relations", "mask_object_relations", "action_history", "action_interface")}
         self.tower_directory = Path(directory) / _digest(tower_identity)[:20]
         self.tower_directory.mkdir(parents=True, exist_ok=True)
         self.directory = Path(directory) / _digest(identity)[:20]

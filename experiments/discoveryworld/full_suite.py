@@ -125,7 +125,10 @@ def run_case(job):
         with (path / "environment.log").open("w") as log, redirect_stdout(log), \
                 seeded_object_initialization(cfg.get("object_rng_seed")):
             limit = 1 if cfg["mode"] == "probe" else case["max_steps"]
-            if cfg["observation"] == "structured":
+            if cfg.get('object_requests'):
+                from .request_environment import RequestEnvironment
+                env = RequestEnvironment(path,limit,max_request_actions=cfg.get('max_request_actions',12))
+            elif cfg["observation"] == "structured":
                 env = StructuredDiscoveryWorldEnv(path, limit)
             else:
                 env = DiscoveryWorldEnv(path, limit, observation_mode="png")
@@ -175,6 +178,8 @@ def run_case(job):
                            task_metrics=scores, knowledge_score=None,
                            rollout_seconds=perf_counter()-started,
                            decision_seconds=sum(decisions), environment_seconds=sum(execution))
+                if cfg.get('object_requests'):
+                    row['requests'] = env.decision_steps
                 if callable(getattr(agent, "get_knowledge", None)):
                     write_json(path / "submitted_knowledge.json", agent.get_knowledge())
                 elif getattr(agent, "model_authored_notes", None) is not None:
@@ -211,6 +216,10 @@ def main():
                    help="Official evaluation uses 0--4; use separate seeds for development")
     p.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), default=list(LIMITS),
                    help="Development may use a subset; the official suite includes all three")
+    p.add_argument('--themes', nargs='+', choices=THEMES, default=THEMES)
+    p.add_argument('--object-requests', action='store_true')
+    p.add_argument('--max-request-actions',type=int,default=12)
+    p.add_argument('--max-steps',type=int,help='Explicit development action cap below the native limit')
     p.add_argument("--observation", choices=("structured", "png"), default="structured")
     p.add_argument("--policy", help="module:factory; weights load once per worker, state resets per case")
     p.add_argument("--policy-config", type=Path, help="JSON passed to the factory")
@@ -219,7 +228,12 @@ def main():
     p.add_argument("--object-rng-seed", type=int,
                    help="Seed native object noise before world construction; use the same value in paired runs")
     args = p.parse_args()
-    cases = [case for case in official_cases(args.seeds) if case['difficulty'] in args.difficulties]
+    cases = [case for case in official_cases(args.seeds)
+             if case['difficulty'] in args.difficulties and case['theme'] in args.themes]
+    if args.max_steps is not None:
+        if args.max_steps < 1:
+            p.error('--max-steps must be positive')
+        cases = [{**case,'max_steps':min(case['max_steps'],args.max_steps)} for case in cases]
     if args.mode == "list":
         print(json.dumps(cases, indent=2))
         return
@@ -239,13 +253,16 @@ def main():
     path.mkdir(parents=True, exist_ok=False)
     cfg = dict(mode=args.mode, output=str(path), observation=args.observation, policy=args.policy,
                config=config, rng_from=str(args.rng_from.resolve()) if args.rng_from else None,
-               object_rng_seed=args.object_rng_seed)
+               object_rng_seed=args.object_rng_seed,object_requests=args.object_requests,
+               max_request_actions=args.max_request_actions)
     meta = dict(mode=args.mode, simulator=build, target_revision=UPSTREAM_REVISION,
-                official_instances=args.seeds == list(range(5)) and set(args.difficulties) == set(LIMITS),
+                official_instances=args.seeds == list(range(5)) and set(args.difficulties) == set(LIMITS) and set(args.themes)==set(THEMES),
                 observation=args.observation, policy=args.policy, policy_id=args.policy_id,
                 policy_config_sha256=sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(),
                 rng_from=cfg["rng_from"], cases=cases)
     meta["object_rng_seed"] = args.object_rng_seed
+    meta['action_interface'] = 'object_requests_v1' if args.object_requests else 'native'
+    meta['max_request_actions'] = args.max_request_actions if args.object_requests else None
     write_json(path / "run.json", meta)
     jobs = [(case, cfg) for case in cases]
     if args.workers == 1:

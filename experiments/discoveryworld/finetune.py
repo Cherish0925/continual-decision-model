@@ -209,7 +209,7 @@ def training_schedule(args, source):
             raise ValueError("The source policy already trained on an excluded theme; use its six-theme counterpart")
         cases = [(t, d, seed, min(LIMITS[d], args.max_steps or LIMITS[d]))
                  for seed in args.seeds for d in (LIMITS if args.difficulty is None else [args.difficulty])
-                 for t in THEMES if t not in held_out]
+                 for t in THEMES if t not in held_out and (not getattr(args,'themes',None) or t in args.themes)]
         if args.small_skills_first:
             cases = [(t, "Normal", seed, min(100, args.max_steps or 100))
                      for seed in args.seeds for t in SKILLS] + cases
@@ -246,6 +246,10 @@ def parse_args(argv=None):
     parser.add_argument("--feature-device")
     parser.add_argument("--threads", type=int, default=4)
     parser.add_argument("--workers", type=int, default=1, help="Independent native worlds per batched policy update")
+    parser.add_argument('--object-requests',action='store_true',help='Use shared execution when initializing a random policy')
+    parser.add_argument('--themes',nargs='+',choices=THEMES)
+    parser.add_argument('--max-request-actions',type=int,default=12)
+    parser.add_argument('--native-action-cost',type=float,default=.001)
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--gamma", type=float, default=.99)
     parser.add_argument("--value-weight", type=float, default=.5)
@@ -270,6 +274,8 @@ def parse_args(argv=None):
         parser.error("--small-skills-first requires --native-suite")
     if args.workers > 1 and not args.native_suite:
         parser.error("Parallel learning requires --native-suite")
+    if args.themes and not args.native_suite:
+        parser.error('--themes requires --native-suite')
     if not 0 <= args.gamma <= 1 or args.lr <= 0 or min(args.value_weight, args.entropy_weight) < 0:
         parser.error("Use gamma in [0,1], positive learning rate and nonnegative loss weights")
     if any((args.output / name).exists() for name in ("training.jsonl", "last.pt", "initial.pt")):
@@ -285,7 +291,9 @@ def main(argv=None):
     torch.manual_seed(args.random_seed)
     source_path = args.checkpoint
     if source_path is None:
-        feature_config = FeatureConfig(mode="lexical", measurement_memory=True, object_relations=True)
+        feature_config = FeatureConfig(mode="lexical", measurement_memory=True, object_relations=True,
+            action_interface='object_requests_v1' if args.object_requests else 'native',
+            action_history=8 if args.object_requests else 0)
         specification = argparse.Namespace(width=args.random_native_width, slots=8, heads=4, refinements=1,
             initial_checkpoint=None, measurement_memory=True, object_relations=True)
         model = create_model(specification, feature_config.lexical_dim, feature_config.lexical_dim).to(args.device)
@@ -310,6 +318,10 @@ def main(argv=None):
     # Legacy checkpoints predate explicit clock metadata. Keep their original
     # input meaning; new checkpoints specify native world_steps/schema 2.
     feature_config = FeatureConfig(**{"schema": 1, "time_basis": "wall_clock", **source["features"]})
+    if feature_config.action_interface == 'object_requests_v1' and args.workers <= 1:
+        raise ValueError('Object-request training uses the parallel environment path; set --workers >= 2')
+    if args.object_requests and feature_config.action_interface != 'object_requests_v1':
+        raise ValueError('The checkpoint uses a different action interface')
     cache = FeatureCache(args.feature_cache, feature_config,
                          args.feature_device or args.device, args.encoder_path)
     source = {**source, "features": asdict(feature_config)}
@@ -324,6 +336,10 @@ def main(argv=None):
                 "training_phase": "on_policy_actor_critic", "policy_updates_per_window": 1,
                 "refinements": model.config.refinements, "critic": "separate_training_state_head",
                 "truncation": "bootstrap_next_public_observation", "termination": "zero_bootstrap"}
+    if feature_config.action_interface == 'object_requests_v1':
+        metadata.update(truncation='finite action budget; zero terminal potential and bootstrap',
+            reward='success + gamma**native_actions * next_potential - previous_potential - native_action_cost * native_actions',
+            discount='gamma per native operation; requests can have different durations')
     (args.output / "config.json").write_text(json.dumps(metadata, indent=2) + "\n")
     episodes = []
     try:

@@ -61,7 +61,8 @@ def environment_worker(pipe):
             if command[0] == "close":
                 break
             if command[0] == "reset":
-                case, root, resume, rng_source = command[1:]
+                case, root, resume, rng_source = command[1:5]
+                request_settings = command[5] if len(command) > 5 else None
                 path = Path(root) / case["id"]
                 path.mkdir(parents=True, exist_ok=resume)
                 recorded = path / 'trajectory.jsonl'
@@ -76,7 +77,11 @@ def environment_worker(pipe):
                 started = perf_counter()
                 restored_steps = len(prior)
                 with redirect_stdout(log):
-                    env = StructuredDiscoveryWorldEnv(path, case["max_steps"])
+                    if request_settings:
+                        from .request_environment import RequestEnvironment
+                        env = RequestEnvironment(path, case["max_steps"], **request_settings)
+                    else:
+                        env = StructuredDiscoveryWorldEnv(path, case["max_steps"])
                     observation = env.reset(case["theme"], case["difficulty"], case["seed"])
                     if reuse:
                         env.restore_initial_rng(path / "initial_rng.json.gz")
@@ -85,10 +90,14 @@ def environment_worker(pipe):
                         if rng_source:
                             env.restore_initial_rng(Path(rng_source) / case["id"] / "initial_rng.json.gz")
                         env.save_initial_rng(path / "initial_rng.json.gz")
+                    if request_settings:
+                        env.record_native = False
                     for row in prior:
                         replayed = env.step(row['action'])
                         if replayed['action_result'] != row['action_result'] or replayed['next_observation']['ui'] != row['next_observation']['ui']:
                             raise ValueError(f"Native replay differs at {case['id']} step {row['index']}")
+                    if request_settings:
+                        env.record_native = True
                     observation = env.policy_input()
                     config = dict(env.configuration, policy="frozen_batched_language_teacher",
                         action_descriptions=env.actions, teleport_locations=env.teleports,
@@ -103,7 +112,7 @@ def environment_worker(pipe):
             elif command[0] == "step":
                 generated = command[1]
                 with (path / "teacher.jsonl").open("a") as stream:
-                    stream.write(json.dumps(dict(step=env.steps, **generated), ensure_ascii=False)+"\n")
+                    stream.write(json.dumps(dict(step=getattr(env, 'decision_steps', env.steps), **generated), ensure_ascii=False)+"\n")
                 if "error" in generated:
                     pipe.send(dict(done=True, summary=finish("policy_error", generated["error"])))
                     continue
@@ -144,7 +153,11 @@ def collect(args):
     hosted = getattr(args, "deepseek_flash", False) or getattr(args, "bailian_flash", False)
     if hosted:
         from .deepseek_teacher import DeepSeekFlashTeacher
-        teacher = DeepSeekFlashTeacher(**shared,
+        teacher_type = DeepSeekFlashTeacher
+        if getattr(args, 'object_requests', False):
+            from .request_teacher import RequestTeacher
+            teacher_type = RequestTeacher
+        teacher = teacher_type(**shared,
             provider="bailian" if getattr(args, "bailian_flash", False) else "deepseek",
             model=getattr(args, "teacher_model", None),
             action_corrections=getattr(args, "action_corrections", 0))
@@ -157,7 +170,7 @@ def collect(args):
     rng_source = str(args.rng_from.resolve()) if getattr(args, "rng_from", None) else None
     if earlier and (hosted or earlier.get("teacher", {}).get("inference_backend") in
                     ("DeepSeek API", "Alibaba Cloud Bailian API")):
-        if (not args.resume or earlier.get("teacher") != teacher.configuration
+        if (not args.resume or (earlier.get("teacher") != teacher.configuration and not getattr(args,'teacher_continuation',False))
                 or earlier.get("cases") != cases or earlier.get("rng_from") != rng_source):
             raise ValueError("Use a separate collection for a different teacher, case list or hosted configuration")
     interrupted = list(earlier.get('interrupted_episodes', []))
@@ -244,7 +257,10 @@ def collect(args):
         case = pending[next_case]
         next_case += 1
         worker['case'] = case
-        send(worker, ("reset", case, str(args.output), args.resume, rng_source))
+        reset = ("reset", case, str(args.output), args.resume, rng_source)
+        if getattr(args, 'object_requests', False):
+            reset += (dict(max_request_actions=args.max_request_actions),)
+        send(worker, reset)
         message = receive(worker)
         if "error" in message:
             raise RuntimeError(message["error"])
@@ -340,6 +356,8 @@ def main():
     tasks.add_argument("--small-skills", action="store_true", help="Collect the ten native basic-operation tasks, capped at 100 actions")
     p.add_argument("--max-steps", type=int, help="Optional collection cap below the native per-episode limit")
     p.add_argument("--workers", type=int, default=8)
+    p.add_argument("--object-requests", action="store_true", help="Use the shared executor with hosted planners")
+    p.add_argument("--max-request-actions", type=int, default=12)
     p.add_argument("--max-new-tokens", type=int, default=1024)
     p.add_argument("--max-input-tokens", type=int, default=22000)
     p.add_argument("--dequantize", action="store_true")
@@ -357,12 +375,18 @@ def main():
     p.add_argument("--model-source", default="unsloth/gpt-oss-20b")
     p.add_argument("--temperature", type=float, default=.7)
     p.add_argument("--resume", action="store_true")
+    p.add_argument('--teacher-continuation',action='store_true',
+                   help='With --resume, record a changed teacher configuration and continue recorded unfinished worlds')
     p.add_argument("--restart-interrupted", action="store_true",
                    help="With --resume, preserve unfinished trajectories separately and start fresh episodes")
     p.add_argument("--rng-from", type=Path, help="Use another teacher collection's initial simulator RNG snapshots")
     args=p.parse_args()
+    if args.object_requests and not (args.deepseek_flash or args.bailian_flash):
+        p.error('--object-requests requires a hosted planner')
     if args.restart_interrupted and not args.resume:
         p.error('--restart-interrupted requires --resume')
+    if args.teacher_continuation and not args.resume:
+        p.error('--teacher-continuation requires --resume')
     try:
         collect(args)
     except Exception as error:

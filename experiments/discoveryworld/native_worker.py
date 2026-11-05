@@ -54,7 +54,11 @@ def serve(pipe):
                 log = (folder / 'simulator.log').open('w')
                 started = perf_counter()
                 with redirect_stdout(log):
-                    env = StructuredDiscoveryWorldEnv(folder, limit)
+                    if settings.get('features',{}).get('action_interface') == 'object_requests_v1':
+                        from .request_environment import RequestEnvironment
+                        env = RequestEnvironment(folder,limit,max_request_actions=settings.get('max_request_actions',12))
+                    else:
+                        env = StructuredDiscoveryWorldEnv(folder, limit)
                     observation = env.reset(theme, difficulty, seed)
                     env.save_initial_rng(folder / 'initial_rng.json.gz')
                     configuration = dict(env.configuration, policy='batched_on_policy_actor_critic',
@@ -64,6 +68,7 @@ def serve(pipe):
                 pipe.send({'observation': observation})
             elif command == 'step':
                 action, behavior = payload
+                potential_before = sum(m['progress'] for m in env.metrics)/len(env.metrics)
                 with redirect_stdout(log):
                     transition = env.step(action)
                     writer.append({**transition, **behavior})
@@ -71,10 +76,16 @@ def serve(pipe):
                          ('action', 'action_result', 'index', 'training_reward', 'terminated', 'truncated')}
                 reply['observation'] = env.policy_input()
                 reply['done'] = env.ended
+                if 'executor' in transition:
+                    reply.update(executor=transition['executor'], potential_before=potential_before,
+                        potential_after=sum(m['progress'] for m in env.metrics)/len(env.metrics),
+                        completed_successfully=all(m['completed_successfully'] for m in env.metrics))
                 if env.ended:
                     summary = dict(scenario=case[0], difficulty=case[1], seed=case[2], steps=env.steps,
                         completed_successfully=all(m['completed_successfully'] for m in env.metrics),
                         task_metrics=env.metrics, elapsed_seconds=perf_counter()-started)
+                    if 'executor' in transition:
+                        summary['requests'] = env.decision_steps
                     (folder / 'summary.json').write_text(json.dumps(summary, indent=2)+'\n')
                     reply['summary'] = summary
                     writer.close(); writer = None

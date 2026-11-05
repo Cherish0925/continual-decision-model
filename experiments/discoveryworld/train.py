@@ -45,6 +45,7 @@ class PreparedStep:
     run_weight: float = 1.0
     repeated_run_exit: bool = False
     next_numeric: list[float] | None = None
+    request_stages: list[tuple[str, int]] | None = None
 
 
 @dataclass
@@ -162,6 +163,10 @@ def action_run_weights(transitions: list[dict]) -> tuple[list[float], list[bool]
 
 def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_failed_actions=False,
                      imitate_successful_episodes=False) -> list[PreparedEpisode]:
+    if cache.config.action_interface == 'object_requests_v1':
+        from .request_learning import prepare_requests
+        return prepare_requests(episodes, cache, allow_failed_actions=allow_failed_actions,
+                                imitate_successful_episodes=imitate_successful_episodes)
     prepared = []
     for episode in episodes:
         steps = []
@@ -279,17 +284,28 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     run_weights = torch.tensor([step.run_weight for step in steps], device=device)
                     ce_weights = run_weights * run_scales if imitation_reduction == "action_run" else torch.ones_like(run_weights)
                     exit_mask = torch.tensor([step.repeated_run_exit for step in steps], device=device) & alive
-                    logits, next_state, predicted = model(obs, candidates, state,
-                                                          persistent=persistent, mode=mode, restart_workspace=restart_workspace,
-                                                          outcome_indices=executed.clamp_min(0))
-                    imitation = F.cross_entropy(logits, targets, reduction="none")
+                    if steps[0].request_stages is not None:
+                        from .request_learning import score_requests
+                        logits, next_state, predicted, imitation, correct = score_requests(
+                            model, steps, obs, candidates, state, mode=mode, persistent=persistent,
+                            restart_workspace=restart_workspace)
+                    else:
+                        logits, next_state, predicted = model(obs, candidates, state,
+                            persistent=persistent, mode=mode, restart_workspace=restart_workspace,
+                            outcome_indices=executed.clamp_min(0))
+                        imitation = F.cross_entropy(logits, targets, reduction="none")
+                        correct = logits.argmax(-1) == targets
                     outcome = received_outcome_loss(predicted, outcomes)
                     immediate = torch.zeros_like(imitation)
                     if immediate_weight and mode == "cdm" and model.config.refinements:
-                        early, _, _ = model(obs, candidates, state, persistent=persistent,
-                                            refinements=0, mode=mode, restart_workspace=restart_workspace,
-                                            predict_outcomes=False)
-                        immediate = F.cross_entropy(early, targets, reduction="none")
+                        if steps[0].request_stages is not None:
+                            _, _, _, immediate, _ = score_requests(model, steps, obs, candidates, state,
+                                mode=mode, persistent=persistent, restart_workspace=restart_workspace, refinements=0)
+                        else:
+                            early, _, _ = model(obs, candidates, state, persistent=persistent,
+                                                refinements=0, mode=mode, restart_workspace=restart_workspace,
+                                                predict_outcomes=False)
+                            immediate = F.cross_entropy(early, targets, reduction="none")
                     if imitation_reduction == "event":
                         loss = ((imitation + immediate_weight * immediate) * supervised).sum() / ce_count
                     else:
@@ -311,7 +327,6 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     totals["outcome_loss"] += float(outcome.detach()[observed].sum())
                     totals["transition_loss"] += float(transition_loss.detach()[observed].sum())
                     totals["immediate_loss"] += float((immediate.detach() * ce_weights)[supervised].sum())
-                    correct = logits.argmax(-1) == targets
                     totals["correct"] += int(correct[supervised].sum())
                     totals["run_correct"] += float((correct * run_weights)[supervised].sum())
                     totals["run_mass"] += float(run_weights[supervised].sum())
@@ -397,6 +412,7 @@ def parse_args(argv=None):
     parser.add_argument("--prepare-only", action="store_true", help="Populate shared frozen features without training")
     parser.add_argument("--action-history", type=int, default=None,
                         help="Number of executed action/feedback records; inherit checkpoint setting by default")
+    parser.add_argument('--action-interface', choices=('native','object_requests_v1'))
     parser.add_argument("--encoder-path", type=Path)
     parser.add_argument("--feature-device", default="cpu")
     parser.add_argument("--feature-batch-size", type=int, default=32)
@@ -470,7 +486,7 @@ def initialize_training(args):
             raise ValueError(f"Resumed checkpoint dimensions do not match this feature/target schema: {incompatible}")
     else:
         feature_config = FeatureConfig(mode=args.features or "siglip")
-    overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations", "action_history")
+    overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations", "action_history", "action_interface")
                  if getattr(args, key, None) is not None}
     if overrides:
         feature_config = replace(feature_config, **overrides)

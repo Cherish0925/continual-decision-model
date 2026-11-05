@@ -32,10 +32,12 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
     workers, episodes = [], []
     next_case = updates = interactions = 0
     model.train(); critic.train()
+    requests = cache.config.action_interface == 'object_requests_v1'
     kwargs = dict(mode=args.mode, persistent=not args.restart_state,
                   restart_workspace=args.restart_workspace, predict_outcomes=bool(args.outcome_weight))
     settings = dict(features=asdict(cache.config), mode=args.mode,
-                    refinements=model.config.refinements, supervision='returned_training_reward')
+                    refinements=model.config.refinements, supervision='returned_training_reward',
+                    max_request_actions=getattr(args,'max_request_actions',12))
 
     def assign(indices):
         nonlocal next_case, state
@@ -68,11 +70,17 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
         features, candidates = [], []
         for index in indices:
             worker = workers[index]
+            if requests:
+                worker['memory'].objects.update((o['uuid'],o) for o in worker['observation'].get('remembered_objects',[]))
             observation = with_measurement_records(worker['memory'].observe(worker['observation']),
                 worker['records'], object_relations=cache.config.object_relations)
-            worker['feature_observation'] = observation
             observation = worker['action_history'].augment(observation)
-            choices = public_candidates(observation)
+            worker['feature_observation'] = observation
+            if requests:
+                from .request_actions import request_candidates
+                choices = request_candidates(observation)
+            else:
+                choices = public_candidates(observation)
             features.append(load_features(str(cache.encode(observation, choices))))
             candidates.append(choices)
         return candidates, batch_features(features, device)
@@ -90,6 +98,7 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
             while any(w['active'] for w in workers):
                 optimizer.zero_grad(set_to_none=True)
                 log_probs, values, entropies, rewards, terminals, masks = [], [], [], [], [], []
+                discounts = []
                 prediction_losses = []
                 participating = [i for i,w in enumerate(workers) if w['active']]
                 for _ in range(args.sequence_length):
@@ -99,22 +108,31 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                     indices = torch.tensor(active, device=device)
                     choices, (obs, actions) = inputs(active)
                     selected_state = {k:v.index_select(0,indices) for k,v in state.items()}
-                    logits, next_state, predicted = model(obs, actions, selected_state, **kwargs)
-                    distribution = torch.distributions.Categorical(logits=logits)
-                    selected = distribution.sample()
-                    logp = distribution.log_prob(selected)
+                    if requests:
+                        from .request_learning import sample_requests, request_return
+                        commands,next_state,logp,entropy,predicted,forecast = sample_requests(
+                            model,[workers[i]['feature_observation'] for i in active],choices,obs,actions,
+                            selected_state,cache,**kwargs)
+                    else:
+                        logits, next_state, predicted = model(obs, actions, selected_state, **kwargs)
+                        distribution = torch.distributions.Categorical(logits=logits)
+                        selected = distribution.sample()
+                        logp,entropy = distribution.log_prob(selected),distribution.entropy()
+                        commands = [dict(rows[int(i)].action) for rows,i in zip(choices,selected)]
                     value = critic(model, next_state, args.mode)
-                    next_state, forecast = model.commit_action(obs, actions, next_state, selected, mode=args.mode)
+                    if not requests:
+                        next_state, forecast = model.commit_action(obs, actions, next_state, selected, mode=args.mode)
                     state = {k:v.index_copy(0,indices,next_state[k]) for k,v in state.items()}
                     zero = value.new_zeros(count)
                     log_probs.append(zero.index_copy(0,indices,logp))
                     values.append(zero.index_copy(0,indices,value))
-                    entropies.append(zero.index_copy(0,indices,distribution.entropy()))
+                    entropies.append(zero.index_copy(0,indices,entropy))
                     reward = torch.zeros(count,device=device)
                     terminal = torch.zeros(count,dtype=torch.bool,device=device)
+                    discount = torch.full((count,),args.gamma,device=device)
                     mask = torch.zeros(count,dtype=torch.bool,device=device); mask[indices]=True
                     for position,index in enumerate(active):
-                        workers[index]['pipe'].send(('step', (dict(choices[position][int(selected[position])].action),
+                        workers[index]['pipe'].send(('step', (commands[position],
                             {'behavior_log_probability':float(logp[position].detach()),
                              'critic_value':float(value[position].detach()),'policy_update':updates})))
                     for position, index in enumerate(active):
@@ -123,7 +141,7 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                         if args.outcome_weight:
                             target = torch.tensor([outcome_target({**reply, 'next_observation':reply['observation']})], device=device)
                             prediction_loss = args.outcome_weight * received_outcome_loss(
-                                predicted[position, selected[position]][None], target).mean()
+                                (predicted[position] if requests else predicted[position, selected[position]])[None], target).mean()
                         if forecast is not None:
                             target = torch.tensor(next_numeric_target(reply['observation'], worker['memory']), device=device)
                             prediction_loss = prediction_loss + args.transition_weight * F.smooth_l1_loss(forecast[position], target)
@@ -137,10 +155,16 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                         if worker['records'] is not None:
                             worker['records'].observe(reply['action'],reply['action_result'],reply['observation'],sequence=reply['index'])
                         reward[index]=reply['training_reward']; terminal[index]=reply['terminated']
+                        if requests:
+                            reward[index],discount[index] = request_return(
+                                reply['potential_before'],reply['potential_after'],success=reply['completed_successfully'],
+                                done=reply['done'],native_actions=reply['executor']['native_actions'],
+                                gamma=args.gamma,action_cost=args.native_action_cost)
+                            terminal[index] = reply['done']
                         if reply['done']:
                             worker['summary']=reply['summary']
                     interactions+=len(active)
-                    rewards.append(reward); terminals.append(terminal); masks.append(mask)
+                    rewards.append(reward); terminals.append(terminal); masks.append(mask); discounts.append(discount)
                 indices=torch.tensor(participating,device=device)
                 with torch.no_grad():
                     _,(obs,actions)=inputs(participating)
@@ -148,8 +172,8 @@ def train_parallel(model, critic, optimizer, cache, source, schedule, args, argu
                     bootstrap=critic(model,next_state,args.mode)
                     target=bootstrap.new_zeros(count).index_copy(0,indices,bootstrap)
                     returns=[]
-                    for reward,terminal,mask in zip(reversed(rewards),reversed(terminals),reversed(masks)):
-                        target=torch.where(mask,reward+args.gamma*target*(~terminal),target)
+                    for reward,terminal,mask,discount in zip(reversed(rewards),reversed(terminals),reversed(masks),reversed(discounts)):
+                        target=torch.where(mask,reward+discount*target*(~terminal),target)
                         returns.append(target)
                     returns=torch.stack(list(reversed(returns)))
                 valid=torch.stack(masks)

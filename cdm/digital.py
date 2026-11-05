@@ -163,6 +163,15 @@ def observation_text(observation: dict) -> str:
     parts.extend("Reply: " + _text(option) for option in (options.values() if isinstance(options, dict) else options))
     parts.append("Last result: " + _text(ui.get("lastActionMessage", "")))
     parts.append("Received message: " + _text(ui.get("extended_action_message", "")))
+    if 'execution' in observation:
+        parts.append('Remaining native operations: ' + str(observation['execution']['remaining_native_actions']))
+        for event in observation.get('execution_events', []):
+            action = event['action']
+            objects = _objects(observation)
+            names = [_object_text(objects[v]) if v in objects else str(v)
+                     for k,v in action.items() if k in ('arg1','arg2')]
+            parts.append('Executed ' + str(action.get('action','dialogue')) + ' ' + ' -> '.join(names)
+                         + ': ' + _text(event.get('feedback',{}).get('lastActionMessage','')))
     for post in ui.get("discoveryFeed", {}).get("posts", []):
         parts.append(_text(post.get("content", "")))
     return "\n".join(parts)

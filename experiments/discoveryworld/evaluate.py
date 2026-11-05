@@ -79,6 +79,9 @@ class LearnedPolicy:
 
     @torch.no_grad()
     def __call__(self, observation: dict) -> dict:
+        if self.features.config.action_interface == 'object_requests_v1':
+            from .request_policy import choose_request
+            return choose_request(self, observation)
         start = perf_counter()
         if self.measurements is not None:
             self.measurements.observe_initial(observation)
