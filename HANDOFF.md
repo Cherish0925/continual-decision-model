@@ -1,34 +1,36 @@
 # Research progress
 
-## 5 November: action feedback compared; recovery learning is running
+## 5 November: decoding and state effects measured; action-conditioned learning implemented
 
-The native policy can now receive the last eight executed actions together
-with their public feedback. Training, interaction learning, replay and independent
-execution use the same representation. Existing checkpoints keep their original
-inputs by default. This directly exposes which action produced a failed result,
-including when training samples an action the recurrent state cannot predict.
+All 32 input/initialization trainings are complete. Each final checkpoint was
+executed on the same 16 Easy instances with greedy and sampled decisions.
+Greedy execution succeeds once across the 32 endpoints; sampling succeeds 63
+times (0–6 per model). Uniform random actions score 0/16 in both repeats.
+These are repeated executions of 16 development instances, not a new official
+benchmark score. The original four official results remain 0/120.
 
-CDM and GRU completed eight epochs on the same fixed 150/38 demonstration
-split as the reference. Both scored **0/16** on independent Easy instances.
-At the fixed final epoch, demonstration action accuracy also did not improve.
-Both continued to repeat their command after every failed action with a following
-step. [Complete curves and execution records](experiments/discoveryworld/results/native_action_feedback.json)
-show that this added input alone did not resolve the competence gap.
+Replaying 49,304 decisions reproduces every recorded action. On sampled
+post-failure states, resetting neural state changes 119/1,156 decisions;
+removing explicit history changes none of 593. Thus persistent state does
+influence some choices, while the explicit history representation has little
+local influence. The actual label selector finds 230 after-failure labels in
+the original data, and 295 after adding recovery collection. The earlier claim
+that the student had never received such supervision is incorrect.
+[Complete comparison and interpretation](experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison).
 
-In parallel, a frozen student executes eight
-initial actions on new training instances; Flash then attempts to recover and
-complete each task. Student actions supply outcome targets only. After collection,
-four student conditions continue learning and undergo independent execution from
-the initial state. An initial fixed snapshot of completed recoveries is already
-training while the longer remaining cases continue. The [implementation and experiment settings](experiments/discoveryworld/FULL_SUITE.md#learning-from-executed-actions-and-student-failures)
-separate these assisted training trajectories from student performance.
+The optional model now connects candidate-specific memory access, executed-action
+state prediction, correction by actual feedback, and prediction-dependent action
+scores. Training and execution use the same action binding. Loaded behavior is
+preserved before fitting the new residuals. CPU checks, H100 mixed-precision
+training and eight-theme batched interaction updates passed.
+[Implementation and continuation settings](experiments/discoveryworld/FULL_SUITE.md#action-conditioned-state-and-candidate-specific-memory).
+The 32-way continuation uses the same 182/38 trajectories for every condition,
+matched initial weights, four additional epochs and both decoding rules. It
+requires independent execution before a capability result can be claimed.
 
-A [32-training comparison](experiments/discoveryworld/native_input_comparison.json)
-also varies inherited versus random cores, lexical versus frozen semantic
-features, action history, and CDM versus GRU, with two training seeds. All four
-eight-GPU workers have finished feature preparation and entered training.
-It has no completed capability result. The previous
-official result remains 0/120 for each of the four released native policies.
+The earlier recovery-only and complete-solution pipelines continue separately;
+their checkpoints and unsuccessful attempts are preserved. The next comparison
+changes the action/state connections rather than repeating the input study.
 
 ## 5 November: native policies still favor fixed actions
 

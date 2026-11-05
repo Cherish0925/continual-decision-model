@@ -1,0 +1,257 @@
+{
+  "study": "Candidate-specific memory and executed-action state updates",
+  "initializations": [
+    {
+      "seed": 301
+    },
+    {
+      "seed": 302
+    }
+  ],
+  "conditions": [
+    {
+      "name": "lexical_cdm_reference_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/lexical-cdm-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "lexical_cdm_candidate_read_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/lexical-cdm-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "lexical_cdm_action_state_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/lexical-cdm-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "lexical_cdm_combined_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/lexical-cdm-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "lexical_gru_reference_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/lexical-gru-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "lexical_gru_candidate_read_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/lexical-gru-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "lexical_gru_action_state_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/lexical-gru-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "lexical_gru_combined_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/lexical-gru-{seed}.pt",
+      "training": {
+        "features": "lexical",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "siglip_cdm_reference_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/siglip-cdm-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "siglip_cdm_candidate_read_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/siglip-cdm-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "siglip_cdm_action_state_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/siglip-cdm-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "siglip_cdm_combined_",
+      "mode": "cdm",
+      "resume": true,
+      "source": "parents/siglip-cdm-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "siglip_gru_reference_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/siglip-gru-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "siglip_gru_candidate_read_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/siglip-gru-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": false
+      }
+    },
+    {
+      "name": "siglip_gru_action_state_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/siglip-gru-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": false,
+        "action_conditioned": true
+      }
+    },
+    {
+      "name": "siglip_gru_combined_",
+      "mode": "gru",
+      "resume": true,
+      "source": "parents/siglip-gru-{seed}.pt",
+      "training": {
+        "features": "siglip",
+        "action_history": 8,
+        "candidate_read": true,
+        "action_conditioned": true
+      }
+    }
+  ],
+  "training": {
+    "epochs": 4,
+    "batch_size": 4,
+    "sequence_length": 8,
+    "lr": 0.0003,
+    "core_lr": 3e-05,
+    "precision": "bfloat16",
+    "disable_cudnn_attention": true,
+    "refinements": 1,
+    "measurement_memory": true,
+    "object_relations": true,
+    "imitation_reduction": "action_run",
+    "allow_failed_actions": true,
+    "imitate_successful_episodes": true,
+    "outcome_weight": 0.5,
+    "transition_weight": 0.25,
+    "immediate_weight": 0
+  },
+  "evaluation": {
+    "seeds": [
+      3013,
+      3014
+    ],
+    "difficulties": [
+      "Easy"
+    ],
+    "object_rng_seed": 73105
+  },
+  "decodings": [
+    {
+      "name": "greedy",
+      "temperature": 0
+    },
+    {
+      "name": "sampled",
+      "temperature": 1,
+      "sampling_seed": 911
+    }
+  ],
+  "data": {
+    "training_episodes": 182,
+    "development_episodes": 38,
+    "training_actions": 22758,
+    "imitation_labels": 4450,
+    "source": "Fixed demonstrations plus completed student-recovery collection; same trajectories for every condition"
+  },
+  "comparison": {
+    "endpoint": "Fourth continuation epoch; no selection by independent execution",
+    "initialization": "Identical native checkpoint within feature/mode/seed; new output residuals initialized to zero",
+    "effect": "Two-factor comparison of candidate-specific memory access and action-conditioned prediction/correction",
+    "scope": "New execution instances; unseen scientific rules and equal wall-clock compute are not asserted"
+  }
+}

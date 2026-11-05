@@ -1,0 +1,330 @@
+{
+  "completed_demonstrations_20261105": {
+    "episodes": 150,
+    "counts": {
+      "transitions": 16015,
+      "imitation_labels": 3812,
+      "failed_commands": 2239,
+      "received_outcome_targets": 15732,
+      "states_after_failure": 2237,
+      "labels_after_failure": 230,
+      "changed_action_labels_after_failure": 230
+    },
+    "themes": {
+      "Combinatorial Chemistry": {
+        "transitions": 819,
+        "imitation_labels": 733,
+        "failed_commands": 38,
+        "received_outcome_targets": 757,
+        "states_after_failure": 38,
+        "labels_after_failure": 33,
+        "changed_action_labels_after_failure": 33
+      },
+      "Archaeology Dating": {
+        "transitions": 896,
+        "imitation_labels": 676,
+        "failed_commands": 75,
+        "received_outcome_targets": 876,
+        "states_after_failure": 75,
+        "labels_after_failure": 59,
+        "changed_action_labels_after_failure": 59
+      },
+      "Plant Nutrients": {
+        "transitions": 59,
+        "imitation_labels": 48,
+        "failed_commands": 11,
+        "received_outcome_targets": 59,
+        "states_after_failure": 11,
+        "labels_after_failure": 5,
+        "changed_action_labels_after_failure": 5
+      },
+      "Reactor Lab": {
+        "transitions": 813,
+        "imitation_labels": 347,
+        "failed_commands": 161,
+        "received_outcome_targets": 802,
+        "states_after_failure": 160,
+        "labels_after_failure": 54,
+        "changed_action_labels_after_failure": 54
+      },
+      "Lost in Translation": {
+        "transitions": 3339,
+        "imitation_labels": 314,
+        "failed_commands": 374,
+        "received_outcome_targets": 3303,
+        "states_after_failure": 374,
+        "labels_after_failure": 24,
+        "changed_action_labels_after_failure": 24
+      },
+      "Space Sick": {
+        "transitions": 113,
+        "imitation_labels": 112,
+        "failed_commands": 1,
+        "received_outcome_targets": 112,
+        "states_after_failure": 1,
+        "labels_after_failure": 1,
+        "changed_action_labels_after_failure": 1
+      },
+      "Proteomics": {
+        "transitions": 313,
+        "imitation_labels": 312,
+        "failed_commands": 1,
+        "received_outcome_targets": 312,
+        "states_after_failure": 1,
+        "labels_after_failure": 1,
+        "changed_action_labels_after_failure": 1
+      },
+      "It's (not) Rocket Science!": {
+        "transitions": 7206,
+        "imitation_labels": 94,
+        "failed_commands": 1499,
+        "received_outcome_targets": 7082,
+        "states_after_failure": 1498,
+        "labels_after_failure": 10,
+        "changed_action_labels_after_failure": 10
+      },
+      "Small Skills: Dialog Test": {
+        "transitions": 49,
+        "imitation_labels": 46,
+        "failed_commands": 3,
+        "received_outcome_targets": 46,
+        "states_after_failure": 3,
+        "labels_after_failure": 3,
+        "changed_action_labels_after_failure": 3
+      },
+      "Small Skills: Pick and Place Test": {
+        "transitions": 32,
+        "imitation_labels": 32,
+        "failed_commands": 0,
+        "received_outcome_targets": 32
+      },
+      "Small Skills: Pick and Give Test": {
+        "transitions": 33,
+        "imitation_labels": 33,
+        "failed_commands": 0,
+        "received_outcome_targets": 33
+      },
+      "Small Skills: Instrument Measurement Test": {
+        "transitions": 51,
+        "imitation_labels": 51,
+        "failed_commands": 0,
+        "received_outcome_targets": 51
+      },
+      "Small Skills: Doors Test": {
+        "transitions": 591,
+        "imitation_labels": 308,
+        "failed_commands": 7,
+        "received_outcome_targets": 589,
+        "states_after_failure": 7,
+        "labels_after_failure": 5,
+        "changed_action_labels_after_failure": 5
+      },
+      "Small Skills: Doors with Keys Test": {
+        "transitions": 330,
+        "imitation_labels": 291,
+        "failed_commands": 39,
+        "received_outcome_targets": 326,
+        "states_after_failure": 39,
+        "labels_after_failure": 27,
+        "changed_action_labels_after_failure": 27
+      },
+      "Small Skills: Navigation in a House Test": {
+        "transitions": 387,
+        "imitation_labels": 80,
+        "failed_commands": 1,
+        "received_outcome_targets": 386,
+        "states_after_failure": 1,
+        "labels_after_failure": 0
+      },
+      "Small Skills: Search Test": {
+        "transitions": 281,
+        "imitation_labels": 180,
+        "failed_commands": 4,
+        "received_outcome_targets": 280,
+        "states_after_failure": 4,
+        "labels_after_failure": 1,
+        "changed_action_labels_after_failure": 1
+      },
+      "Small Skills: Discovery Feed Test": {
+        "transitions": 37,
+        "imitation_labels": 37,
+        "failed_commands": 0,
+        "received_outcome_targets": 37
+      },
+      "Small Skills: Moving Agents Test": {
+        "transitions": 666,
+        "imitation_labels": 118,
+        "failed_commands": 25,
+        "received_outcome_targets": 649,
+        "states_after_failure": 25,
+        "labels_after_failure": 7,
+        "changed_action_labels_after_failure": 7
+      }
+    },
+    "scope": "Immediate previous command failed. Valid teacher actions in successful episodes supply imitation; student actions do not."
+  },
+  "recovery_training_20261105": {
+    "episodes": 182,
+    "counts": {
+      "transitions": 22758,
+      "imitation_labels": 4450,
+      "failed_commands": 3107,
+      "received_outcome_targets": 22245,
+      "states_after_failure": 3102,
+      "labels_after_failure": 295,
+      "changed_action_labels_after_failure": 295
+    },
+    "themes": {
+      "Combinatorial Chemistry": {
+        "transitions": 1890,
+        "imitation_labels": 776,
+        "failed_commands": 72,
+        "received_outcome_targets": 1746,
+        "states_after_failure": 72,
+        "labels_after_failure": 37,
+        "changed_action_labels_after_failure": 37
+      },
+      "Archaeology Dating": {
+        "transitions": 1139,
+        "imitation_labels": 801,
+        "failed_commands": 109,
+        "received_outcome_targets": 1115,
+        "states_after_failure": 109,
+        "labels_after_failure": 68,
+        "changed_action_labels_after_failure": 68
+      },
+      "Plant Nutrients": {
+        "transitions": 1181,
+        "imitation_labels": 137,
+        "failed_commands": 74,
+        "received_outcome_targets": 1163,
+        "states_after_failure": 74,
+        "labels_after_failure": 15,
+        "changed_action_labels_after_failure": 15
+      },
+      "Reactor Lab": {
+        "transitions": 2013,
+        "imitation_labels": 347,
+        "failed_commands": 392,
+        "received_outcome_targets": 1985,
+        "states_after_failure": 390,
+        "labels_after_failure": 54,
+        "changed_action_labels_after_failure": 54
+      },
+      "Lost in Translation": {
+        "transitions": 4140,
+        "imitation_labels": 479,
+        "failed_commands": 474,
+        "received_outcome_targets": 4092,
+        "states_after_failure": 474,
+        "labels_after_failure": 43,
+        "changed_action_labels_after_failure": 43
+      },
+      "Space Sick": {
+        "transitions": 1166,
+        "imitation_labels": 149,
+        "failed_commands": 167,
+        "received_outcome_targets": 1084,
+        "states_after_failure": 165,
+        "labels_after_failure": 3,
+        "changed_action_labels_after_failure": 3
+      },
+      "Proteomics": {
+        "transitions": 435,
+        "imitation_labels": 399,
+        "failed_commands": 20,
+        "received_outcome_targets": 432,
+        "states_after_failure": 20,
+        "labels_after_failure": 6,
+        "changed_action_labels_after_failure": 6
+      },
+      "It's (not) Rocket Science!": {
+        "transitions": 8337,
+        "imitation_labels": 186,
+        "failed_commands": 1720,
+        "received_outcome_targets": 8199,
+        "states_after_failure": 1719,
+        "labels_after_failure": 26,
+        "changed_action_labels_after_failure": 26
+      },
+      "Small Skills: Dialog Test": {
+        "transitions": 49,
+        "imitation_labels": 46,
+        "failed_commands": 3,
+        "received_outcome_targets": 46,
+        "states_after_failure": 3,
+        "labels_after_failure": 3,
+        "changed_action_labels_after_failure": 3
+      },
+      "Small Skills: Pick and Place Test": {
+        "transitions": 32,
+        "imitation_labels": 32,
+        "failed_commands": 0,
+        "received_outcome_targets": 32
+      },
+      "Small Skills: Pick and Give Test": {
+        "transitions": 33,
+        "imitation_labels": 33,
+        "failed_commands": 0,
+        "received_outcome_targets": 33
+      },
+      "Small Skills: Instrument Measurement Test": {
+        "transitions": 51,
+        "imitation_labels": 51,
+        "failed_commands": 0,
+        "received_outcome_targets": 51
+      },
+      "Small Skills: Doors Test": {
+        "transitions": 591,
+        "imitation_labels": 308,
+        "failed_commands": 7,
+        "received_outcome_targets": 589,
+        "states_after_failure": 7,
+        "labels_after_failure": 5,
+        "changed_action_labels_after_failure": 5
+      },
+      "Small Skills: Doors with Keys Test": {
+        "transitions": 330,
+        "imitation_labels": 291,
+        "failed_commands": 39,
+        "received_outcome_targets": 326,
+        "states_after_failure": 39,
+        "labels_after_failure": 27,
+        "changed_action_labels_after_failure": 27
+      },
+      "Small Skills: Navigation in a House Test": {
+        "transitions": 387,
+        "imitation_labels": 80,
+        "failed_commands": 1,
+        "received_outcome_targets": 386,
+        "states_after_failure": 1,
+        "labels_after_failure": 0
+      },
+      "Small Skills: Search Test": {
+        "transitions": 281,
+        "imitation_labels": 180,
+        "failed_commands": 4,
+        "received_outcome_targets": 280,
+        "states_after_failure": 4,
+        "labels_after_failure": 1,
+        "changed_action_labels_after_failure": 1
+      },
+      "Small Skills: Discovery Feed Test": {
+        "transitions": 37,
+        "imitation_labels": 37,
+        "failed_commands": 0,
+        "received_outcome_targets": 37
+      },
+      "Small Skills: Moving Agents Test": {
+        "transitions": 666,
+        "imitation_labels": 118,
+        "failed_commands": 25,
+        "received_outcome_targets": 649,
+        "states_after_failure": 25,
+        "labels_after_failure": 7,
+        "changed_action_labels_after_failure": 7
+      }
+    },
+    "scope": "Immediate previous command failed. Valid teacher actions in successful episodes supply imitation; student actions do not."
+  }
+}

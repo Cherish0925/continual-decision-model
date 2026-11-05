@@ -5,6 +5,25 @@ import json
 from pathlib import Path
 
 
+def uniform(config):
+    """Untrained reference over the same public candidate-action constructor."""
+    import random
+    from cdm.digital import PublicObjectMemory, public_candidates
+
+    class UniformPolicy:
+        def reset(self):
+            self.memory = PublicObjectMemory()
+            self.rng = random.Random(config.get('sampling_seed', 301))
+
+        def __call__(self, observation):
+            choices = public_candidates(self.memory.observe(observation))
+            return dict(self.rng.choice(choices).action)
+
+    policy = UniformPolicy()
+    policy.reset()
+    return policy
+
+
 def lines(path):
     with path.open() as stream:
         return [json.loads(line) for line in stream]

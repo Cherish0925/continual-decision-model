@@ -62,11 +62,12 @@ def commands(args):
         for condition in protocol['conditions']:
             name = f"{condition['name']}{initial['seed']}"
             checkpoint = (args.output / 'initializations' / f"random{initial['seed']}.pt"
-                          if condition.get('initialization') == 'random' else args.source_root / initial['source'])
+                          if condition.get('initialization') == 'random' else args.source_root /
+                          condition.get('source', initial.get('source', '')).format(seed=initial['seed']))
             command = [sys.executable, '-m', 'experiments.discoveryworld.train',
                        '--train-trajectories', *map(str, args.train_trajectories),
                        '--validation-trajectories', *map(str, args.validation_trajectories),
-                       '--initial-checkpoint', str(checkpoint),
+                       '--resume-checkpoint' if condition.get('resume', False) else '--initial-checkpoint', str(checkpoint),
                        '--output', str(args.output / name),
                        '--feature-cache', str(args.feature_cache),
                        '--encoder-path', str(args.encoder_path),
@@ -149,23 +150,33 @@ def main():
             if process.returncode:
                 break
             if args.evaluate:
-                policy = args.output / (job['name'] + '-policy.json')
-                policy.write_text(json.dumps(dict(checkpoint=str(args.output / job['name'] / 'last.pt'),
-                    feature_cache=str(args.feature_cache), device='cuda:0',
-                    encoder_path=str(args.encoder_path)), indent=2) + '\n')
-                with (args.output / (job['name'] + '-evaluation.log')).open('x') as log:
-                    evaluation_command = [sys.executable, '-m', 'experiments.discoveryworld.full_suite',
-                        'run', '--policy', 'experiments.discoveryworld.evaluate:create',
-                        '--policy-config', str(policy), '--policy-id', job['name'],
-                        '--workers', str(args.evaluation_workers), '--threads', '1',
-                        '--output', str(args.output / (job['name'] + '-evaluation'))]
-                    for key, value in protocol.get('evaluation', {}).items():
-                        evaluation_command += ['--'+key.replace('_','-')]
-                        evaluation_command += list(map(str, value)) if isinstance(value, list) else [str(value)]
-                    evaluation = subprocess.run(evaluation_command,
-                        env=env, stdout=log, stderr=subprocess.STDOUT)
-                row['evaluation_exit_code'] = evaluation.returncode
-                if evaluation.returncode:
+                previous_evaluation = None
+                for decoding in protocol.get('decodings', [dict(name='evaluation', temperature=0.)]):
+                    evaluation_name = job['name'] + '-' + decoding['name']
+                    policy = args.output / (evaluation_name + '-policy.json')
+                    policy.write_text(json.dumps(dict(checkpoint=str(args.output / job['name'] / 'last.pt'),
+                        feature_cache=str(args.feature_cache), device='cuda:0',
+                        encoder_path=str(args.encoder_path), temperature=decoding['temperature'],
+                        sampling_seed=decoding.get('sampling_seed', 301)), indent=2) + '\n')
+                    destination = args.output / evaluation_name
+                    with (args.output / (evaluation_name + '.log')).open('x') as log:
+                        evaluation_command = [sys.executable, '-m', 'experiments.discoveryworld.full_suite',
+                            'run', '--policy', 'experiments.discoveryworld.evaluate:create',
+                            '--policy-config', str(policy), '--policy-id', evaluation_name,
+                            '--workers', str(args.evaluation_workers), '--threads', '1',
+                            '--output', str(destination)]
+                        for key, value in protocol.get('evaluation', {}).items():
+                            evaluation_command += ['--'+key.replace('_','-')]
+                            evaluation_command += list(map(str, value)) if isinstance(value, list) else [str(value)]
+                        if previous_evaluation is not None:
+                            evaluation_command += ['--rng-from', str(previous_evaluation)]
+                        evaluation = subprocess.run(evaluation_command,
+                            env=env, stdout=log, stderr=subprocess.STDOUT)
+                    row['evaluation_exit_code'] = evaluation.returncode
+                    if evaluation.returncode:
+                        break
+                    previous_evaluation = destination
+                if row['evaluation_exit_code']:
                     break
         return results
 

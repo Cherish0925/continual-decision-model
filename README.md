@@ -32,7 +32,12 @@ include the unsuccessful results. A subsequent eight-epoch fit on 150 completed
 demonstrations also scored [0/8 for both policies](experiments/discoveryworld/results/native_demonstration_snapshot.json)
 on new Easy development instances. Broader scientific collection continues; the
 [progress record](HANDOFF.md) distinguishes these from the completed comparison.
-The task scores below remain the v0.17.0 results.
+A subsequent [32-model comparison](experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison)
+finds that sampling improves execution on Easy development instances, while
+explicit action history has little local influence on choices. Neural state
+changes some decisions. These measurements now guide action-conditioned state
+learning and candidate-specific memory access. The task scores below remain
+the v0.17.0 results.
 
 The completed [joint-learning comparison](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)
 trains response hypotheses from subsequent action returns together with the

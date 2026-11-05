@@ -212,10 +212,99 @@ semantic input uses SigLIP2 text features; these trajectories contain no images.
 All conditions receive the same 150/38 trajectories and optimizer-window budget.
 CDM and GRU have different internal computation costs. The existing
 [`train_suite`](train_suite.py) accepts this protocol and generates the matched
-random initializations. All four eight-GPU workers have finished feature
-preparation and entered training. Final weights, curves and native execution
-records are collected automatically. A result table will be added after
-independent execution finishes.
+random initializations. All 32 trainings and their paired greedy/sampled
+executions are complete. The comparison below retains every final endpoint.
+
+### Input, state and decoding: completed comparison
+
+Each model runs on the same 16 Easy development instances, seeds 3003–3004.
+The table reports temperature-1 sampling; each cell gives the two training
+seeds, 301 and 302, as successful tasks out of 16.
+
+| Inputs | History | Policy | Inherited core | Random core |
+| --- | ---: | --- | ---: | ---: |
+| Lexical | 0 | CDM | 2, 2 | 2, 4 |
+| Lexical | 0 | GRU | 6, 2 | 2, 3 |
+| Lexical | 8 | CDM | 2, 1 | 1, 3 |
+| Lexical | 8 | GRU | 2, 5 | 5, 5 |
+| Frozen SigLIP text | 0 | CDM | 2, 2 | 0, 0 |
+| Frozen SigLIP text | 0 | GRU | 2, 1 | 1, 1 |
+| Frozen SigLIP text | 8 | CDM | 1, 0 | 1, 1 |
+| Frozen SigLIP text | 8 | GRU | 0, 1 | 2, 1 |
+
+Greedy decoding completes one task in one condition (lexical, no history,
+inherited CDM, seed 301); all other conditions complete none. Across the 32
+endpoints, sampling yields 63 successful executions versus one for greedy.
+These are repeated evaluations of **16 instances**, not 512 independent tasks
+or the official 120-case benchmark. Sampling success spans five themes:
+Plant Nutrients, Archaeology Dating, Proteomics, Space Sick and Chemistry.
+Uniform random selection from the same public candidate constructor completes
+0/16 for each of two random seeds. The learned distribution therefore contains
+some useful execution bias, but no consistent CDM advantage is established.
+The frozen semantic encoder also provides no advantage in this comparison.
+
+All **49,304 recorded greedy decisions reproduce exactly** with their original
+weights and actual preceding actions. Fixed-observation interventions then give:
+
+| Intervention after a failed command | Sampled states | Changed selected action | Mean action-distribution change (total variation) |
+| --- | ---: | ---: | ---: |
+| Remove explicit history (history-enabled models only) | 593 | 0 | 0.00064 |
+| Reset incoming neural state | 1,156 | 119 | 0.07508 |
+| Skip assimilation of the current observation | 1,156 | 152 | 0.12245 |
+
+The neural state influences decisions in some models. Explicit history has much
+smaller local effects, even when its removal changes scores. This excludes the
+blanket explanation that all repeated commands arise from an unused neural
+state. Among 25,860 states after failed commands, every encoded input changes,
+but only 2,551 change after explicit clock fields are excluded; 1,236 of those
+still repeat the command. Reassimilating a frozen observation changes the first
+choice within 32 updates in 23/301 tested states. This measures local state
+stability, not useful planning or an environment rollout.
+
+[Full curves, every execution and every intervention](results/native_input_comparison.json)
+and the [supervision counts](results/native_supervision_coverage.json) are
+machine-readable. The [interpretation](../../research/NATIVE_EXECUTION_DIAGNOSIS.md)
+explains the limits of the interventions and corrects the earlier claim that
+no successful imitation label followed a failed command.
+
+```sh
+python -m experiments.discoveryworld.compare_native_feedback \
+  --input-study runs/native-input/collected \
+  --uniform-runs runs/native-input/uniform-301 runs/native-input/uniform-302 \
+  --output runs/native-input/comparison.json
+```
+
+### Action-conditioned state and candidate-specific memory
+
+The optional model update connects four computations in the native policy.
+Each candidate can attend directly to observed tokens and workspace slots.
+The executed action predicts a residual next state and the next 32 public
+numeric observation fields. On receipt of the next observation, the difference
+from that prediction corrects state. Candidate-specific outcome and observation
+predictions also enter the action score. These are compact learned predictions,
+not a full simulator or an explicit posterior over physical laws.
+
+`--candidate-read` and `--action-conditioned` enable the two changes separately.
+The latter binds the **executed** action, including an intervention, through
+`commit_action`; it never substitutes a teacher suggestion for the actual
+command. Imitation, serial and parallel interaction learning, prefix replay and
+independent execution use that same path. The new output residuals start at
+zero when extending an existing checkpoint, preserving its initial behavior.
+
+CPU checks establish unchanged loaded decisions, dependence on the executed
+command, and gradients from action choice into prediction. H100 mixed-precision
+training on real recorded transitions and 64 native actions across eight themes
+also completed, including eight batched policy updates and checkpoint saving.
+These are implementation checks, not new capability scores.
+
+The [continuation protocol](native_action_state.json) fixes four additional
+epochs on 182 training and 38 demonstration-development episodes. It compares
+unchanged continuation, candidate reading alone, action-conditioned state alone
+and both together, for CDM and GRU, lexical and semantic inputs, and two seeds:
+32 final endpoints. Each four-way comparison starts from the same native
+checkpoint. Both decoding rules use new independent-execution seeds 3013–3014.
+These seeds do not establish unseen scientific laws. Completed results will
+be reported separately from the fixed-weight study above.
 
 ### What the four frozen policies actually did
 

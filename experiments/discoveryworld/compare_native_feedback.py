@@ -188,6 +188,64 @@ def inspect_decisions(checkpoint, evaluation, cache_path, *, device='cpu', encod
         history_capacity=agent.features.config.action_history, features=agent.features.config.mode)
 
 
+def summarize_input_study(root, uniform_roots=()):
+    """Collect complete endpoints and paired decoding without selecting models."""
+    conditions, counts = {}, Counter()
+    history_samples, all_samples, fixed = [], [], []
+    for path in sorted(root.glob('node*/*-feedback.json')):
+        inspection = json.loads(path.read_text())
+        name = path.name.removesuffix('-feedback.json')
+        folder = path.parent
+        epochs = [json.loads(line) for line in (folder/name/'training.jsonl').read_text().splitlines()]
+        greedy = json.loads((folder/(name+'-development')/'cases.json').read_text())
+        if len(epochs) != 8 or epochs[-1]['stage_epoch'] != 8:
+            raise ValueError('Expected the declared eight-epoch endpoint')
+        if len(greedy) != 16 or any(row['status'] != 'evaluated' for row in greedy):
+            raise ValueError('Expected all 16 greedy cases')
+        original = dict(epochs=epochs, cases=greedy, successes=sum(row['success'] for row in greedy), evaluated=16)
+        sampled = json.loads((folder / (name + '-sampled') / 'cases.json').read_text())
+        if len(sampled) != 16 or any(row['status'] != 'evaluated' for row in sampled):
+            raise ValueError('Expected all 16 paired sampled cases')
+        if {row['id'] for row in sampled} != {row['id'] for row in original['cases']}:
+            raise ValueError('Greedy and sampled execution must use the same cases')
+        measured = inspection['counts']
+        if measured['replayed_decisions'] != measured['replay_matches_recorded_greedy']:
+            raise ValueError('Resolve replay differences before interpreting interventions')
+        label = f"{inspection['features']}_history{inspection['history_capacity']}_{name}"
+        conditions[label] = dict(greedy=original, sampled=dict(cases=sampled,
+            successes=sum(row['success'] for row in sampled), evaluated=len(sampled)), inspection=inspection)
+        counts.update(measured)
+        all_samples.extend(inspection['samples'])
+        if inspection['history_capacity']:
+            history_samples.extend(inspection['samples'])
+        fixed.extend(inspection['fixed_input'])
+    if len(conditions) != 32:
+        raise ValueError('All 32 declared endpoints must be present')
+    interventions = {}
+    for key in ('without_history', 'reset_state', 'without_current_state_update'):
+        samples = history_samples if key == 'without_history' else all_samples
+        interventions[key] = dict(states=len(samples),
+            selected_action_changes=sum(row['baseline']['selected'] != row['interventions'][key]['selected'] for row in samples),
+            mean_total_variation=sum(row['interventions'][key]['probability_total_variation'] for row in samples)/len(samples),
+            mean_absolute_margin_change=sum(abs(row['interventions'][key]['margin_change']) for row in samples)/len(samples))
+    uniform = {}
+    for folder in uniform_roots:
+        cases = json.loads((folder/'cases.json').read_text())
+        if len(cases) != 16 or any(row['status'] != 'evaluated' for row in cases):
+            raise ValueError('Expected all 16 uniform-reference cases')
+        uniform[folder.name] = dict(successes=sum(row['success'] for row in cases), evaluated=16, cases=cases)
+    return dict(scope='32 trained endpoints on the same 16 Easy development instances; not the official benchmark.',
+        training=dict(episodes=150, development_episodes=38, epochs=8, seeds=[301,302]),
+        decoding=dict(greedy_temperature=0, sampled_temperature=1,
+            sampled_seed='training seed', object_initialization_seed=73105,
+            pairing='Identical instance identities and saved initial simulator RNG states'),
+        total=dict(counts=dict(counts), interventions=interventions,
+            frozen_input=dict(cases=len(fixed), changed_within_32=sum(row['first_change'] is not None for row in fixed)),
+            greedy_successes=sum(row['greedy']['successes'] for row in conditions.values()),
+            sampled_successes=sum(row['sampled']['successes'] for row in conditions.values()), executions_per_decoding=512),
+        conditions=conditions, uniform_reference=uniform)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline', type=Path)
@@ -201,9 +259,17 @@ def main():
     parser.add_argument('--states-per-case', type=int, default=4)
     parser.add_argument('--fixed-steps', type=int, default=32)
     parser.add_argument('--coverage', type=Path)
+    parser.add_argument('--input-study', type=Path, help='Completed 32-endpoint study with fixed-weight and sampled records')
+    parser.add_argument('--uniform-runs', type=Path, nargs='*', default=[])
     parser.add_argument('--data-root', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
+    if args.input_study:
+        result = summarize_input_study(args.input_study, args.uniform_runs)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
+        print(json.dumps(result['total']))
+        return
     if args.coverage or args.checkpoint:
         import torch
         torch.set_num_threads(args.threads)

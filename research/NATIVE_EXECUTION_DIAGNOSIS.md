@@ -1,138 +1,121 @@
-# Why the native policies repeat, and what separates the candidate causes
+# What repeated native actions do and do not establish
 
-Written 5 November 2026 against `cc4f4f7`, reading the completed
-[native policy training](../experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
-records. Three independent routes — autonomous interaction, basic-operation
-instruction, and fixed-snapshot imitation with and without action history —
-all produced policies that repeat a failed command indefinitely. The records
-already establish that this is neither a teacher defect nor a device fault.
-This note adds what the existing measurements cannot yet separate, and the
-measurements that would separate it.
+The four released native policies completed 0/120 official instances. Their
+traces show repeated failed commands and unproductive accepted movements.
+These are behavior measurements; several causes can produce the same behavior.
+The [execution record](../experiments/discoveryworld/FULL_SUITE.md#what-the-four-frozen-policies-actually-did)
+separates these results from earlier specialized controllers and assisted handoffs.
 
-## The repetition statistic measures two things at once
+## Action choice and score changes
 
-Training samples from the action distribution
-([`parallel_learning.py:102`](../experiments/discoveryworld/parallel_learning.py)).
-Independent execution takes the highest-scoring candidate
-([`predictive_actions.py:159`](../experiments/discoveryworld/predictive_actions.py),
-`temperature = 0`). The scores are a deterministic function of the observation,
-the candidate set, the belief and the recurrent state
-([`predictive_actions.py:63`](../experiments/discoveryworld/predictive_actions.py)).
+Interaction training samples an action distribution. The default independent
+[policy](../experiments/discoveryworld/evaluate.py) takes its maximum. A policy
+can change its probabilities after feedback while retaining the same highest
+scoring action. Conversely, sampling can change actions without learning to
+recover. The earlier sampled 0/8 result demonstrates that breaking a loop alone
+does not establish task competence.
 
-A failed command leaves the world unchanged. Between two such steps the only
-input that changes is the recurrent state, and — with `--action-history` — the
-history record. Under the greedy rule the action therefore changes only if that
-one changing input moves the argmax. Under sampling it changes whenever the
-distribution has mass elsewhere.
+A failed operation also does not imply an unchanged observation. The native
+adapter advances the world clock; messages, elapsed processes, object access and
+public records may change. The new analysis therefore compares the actual
+encoded observations and candidates, both including and excluding explicit
+clock fields, before counting repeated commands.
 
-So "repeats after a failed command" conflates two different facts:
+The 32-condition input/initialization study measures independent completion and
+progress as well as repetition. Those comparisons remain useful. Repetition
+alone cannot attribute their outcomes to semantic understanding, neural state
+or feedback processing.
 
-1. the policy has not learned that a failed command should not be retried;
-2. the state update is too weak to move the argmax, whatever the policy knows.
+## Supervision after a failed command
 
-Every repetition count in the current records is greedy-only: 72,900/72,900 for
-the autonomous CDM, 978/978 and 1,114/1,114 in the action-history comparison.
-The eight-case sampled comparison shows the repetition breaks under sampling
-without any task being solved, which is consistent with both facts and
-distinguishes neither.
+Re-running the actual imitation-label selection gives:
 
-This matters now because the repetition count is the primary diagnostic in the
-32-training input and initialization protocol currently running. Without
-separating the two facts, that protocol returns 32 numbers that cannot be
-attributed.
+| Training set | Executed actions | Imitation labels | States following a failed command | Labels in those states |
+| --- | ---: | ---: | ---: | ---: |
+| Original fixed demonstrations | 16,015 | 3,812 | 2,237 | 230 |
+| Demonstrations plus completed recovery collection | 22,758 | 4,450 | 3,102 | 295 |
 
-**Report repetition conditioned on the input having changed**, and report both
-decoding rules for the same weights. The weights are already final; this is a
-re-analysis of recorded traces plus one extra evaluation pass, not new training.
+In both sets every labeled action immediately after a failed command differs
+from that failed command. These examples constitute 6.03% and 6.63% of the
+imitation labels. Thus, the earlier explanation that the model was never shown
+recovery from failure is incorrect. Coverage can still be insufficient, but its
+causal role has not been established. The new collection adds 65 such labels;
+it is not thousands of distinct demonstrations of recovery.
 
-## Why explicit action feedback changed nothing
+Labels come from valid teacher actions in successful episodes. Student-prefix
+actions remain available for outcome prediction without becoming imitation
+answers. Failed teacher episodes also supply outcome targets. The counts concern
+an immediately preceding failed command, not every longer-term recovery need.
 
-The history input is visible and separately encoded
-([`cdm/digital.py:135`](../cdm/digital.py)), yet imitation accuracy fell
-slightly (CDM 29.44% → 28.73%, GRU 28.99% → 27.95%) and repetition was total.
-An input that carries information but has no learned effect is the expected
-outcome when the training distribution never rewards using it.
+The [coverage calculation](../experiments/discoveryworld/compare_native_feedback.py)
+uses the training code's label selector. The two data snapshots fix which
+trajectories are counted; they are not selected by student evaluation scores.
 
-Of 16,015 teacher actions, 3,812 carry imitation labels, and labels exist only
-for valid actions in **successful** episodes. A successful teacher episode
-contains almost no failed commands. The supervised distribution therefore
-contains close to zero after-failure states, so the history feature is
-uninformative under that loss, and a near-zero learned weight is the correct
-fit. The policy is not ignoring feedback it was taught to use; it was never
-shown a state where the feedback predicts anything.
+## Fixed-weight comparisons
 
-This yields a falsifiable prediction for the recovery collection, which places
-the student in exactly these missing states: if after-failure coverage is the
-binding constraint, the history input acquires a measurable effect once
-recovery transitions enter training, and the history-enabled and history-free
-arms separate. If they still do not separate, the constraint is elsewhere and
-the input representation should be dropped rather than extended.
+The following analyses use each final checkpoint without further training:
 
-## The measurement that distinguishes the remaining causes
+- Replay its recorded execution with the actual previous actions. Verify that
+  reconstructed greedy decisions match the recorded decisions.
+- At sampled states after failure, remove action-history records while keeping
+  the observation, candidate set and incoming neural state fixed. Separately
+  reset neural state, or skip assimilation of the current observation.
+- Report the failed action's probability, its score margin over the best
+  alternative, changes in the full action distribution, and whether the
+  selected action changes.
+- Hold the encoded observation, time and candidate set fixed and repeatedly
+  assimilate that input, recording the first different greedy choice up to
+  32 updates. A missing change is reported as censored at that limit.
+- Execute the same checkpoint with sampling temperature 1 on the same 16
+  development instances and initial environment RNG states used by greedy
+  execution. Report both completion and operation behavior.
 
-Counting repeats cannot say whether an input is unused or used and overridden.
-The score function is differentiable and the checkpoints are final, so measure
-it directly:
+An unchanged margin at these sampled states does not prove zero learned weights
+or global irrelevance of an input. Clearing history or resetting state may also
+create inputs outside the training distribution. These interventions measure
+local reliance. Reassimilating one frozen observation tests stability of that
+computation; it is not an environment rollout, useful planning, or a proof about
+all persistent-state mechanisms. The existing 700-action traces cannot substitute
+for it because their observations were not held fixed.
 
-- **Sensitivity.** On recorded after-failure observations, compare the candidate
-  scores with the history record present and with it cleared. Report the change
-  in score margin between the repeated action and the runner-up. A margin that
-  does not move means the input carries no learned weight; a margin that moves
-  but does not cross means the policy prefers the failed action for other
-  reasons. The same comparison on the recurrent state — current state against
-  the state carried in from the previous step — gives the state's contribution
-  on the same scale.
-- **Steps to change.** Hold the observation fixed and step the policy
-  repeatedly, recording when the argmax first changes. Report the distribution
-  over cases. The autonomous CDM's traces say the answer is "never" within 700
-  steps; measuring it on the demonstration and recovery endpoints gives a
-  single comparable number for every arm of the protocol.
+## Completed measurements
 
-Both run on existing weights in minutes and produce one scalar per condition.
-They belong next to the repetition counts in
-[`compare_native_feedback`](../experiments/discoveryworld/compare_native_feedback.py),
-which already reads the traces.
+The [32-endpoint comparison](../experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison)
+reproduces all 49,304 recorded choices. Resetting state changes 119/1,156 sampled
+choices, and skipping the current state update changes 152/1,156. Removing
+explicit history changes none of 593 choices; its mean distribution change is
+0.00064 in total variation. Thus state use and history use are measurably
+different in these trained models. No single explanation covers all endpoints.
 
-## The claim the project has not yet tested
+Freezing the input and clock changes the first choice within 32 further updates
+in 23/301 sampled states. Sampling at temperature 1 yields 63 successful
+executions across the 32 models, versus one with greedy decoding. Each model
+runs the same 16 development instances; the count is not a single model's
+score. Uniform random actions complete 0/16 under each of two seeds. These
+results support further learning from the existing weights, without establishing
+that sampled execution provides a competent general scientific policy.
 
-Everything measured so far concerns the action interface: which command is
-emitted, whether it is accepted, whether it repeats. CDM's claim is about
-state — that inference carried across events changes the next decision. The
-native records contain the strongest available evidence on that claim, and it
-is negative: with `persistent = True`
-([`parallel_learning.py:34`](../experiments/discoveryworld/parallel_learning.py);
-`restart_state` defaults to false), after dozens of identical failures the
-evolving state never moved the argmax.
+The [full label counts](../experiments/discoveryworld/results/native_supervision_coverage.json)
+and [per-state measurements](../experiments/discoveryworld/results/native_input_comparison.json)
+allow these calculations to be reproduced.
 
-The "steps to change" measurement above is the direct test. It is cheaper than
-any further training and its result governs what to do next. If the carried
-state does not move the decision on this task, then the native benchmark is
-measuring an action-decoding problem and should not be read as evidence about
-persistent inference either way; the
-[process lifetimes](../experiments/lifetime/README.md), where carried state and
-deployed updates demonstrably change behaviour, remain the setting where the
-claim holds.
+## Implications for the next implementation
 
-## What the evidence does not support doing
+The result predictor currently receives supervision but is separate from the
+native action readout. The next optional model connects candidate-specific
+memory access, action-conditioned state prediction, observation correction and
+prediction-dependent action scores. It keeps the loaded policy unchanged at
+initialization and requires independent task execution after training.
 
-- **Adding conditions to the protocol before the decoding confound is removed.**
-  More arms multiply unattributable numbers.
-- **Adding inputs.** Action history was the natural candidate and had no effect;
-  the constraint is label coverage, not observability.
-- **Reading 0/120 as a capability regression.** The earlier 30/30 is a
-  single-theme chemistry development set with a specialized execution
-  interface, recorded as such in
-  [`FULL_SUITE.md`](../experiments/discoveryworld/FULL_SUITE.md) and
-  [`continual_chemistry`](../experiments/continual_chemistry/README.md). The two
-  numbers share no task, interface or protocol.
+Outcome prediction and latent dynamics for control have established antecedents,
+including [PlaNet](https://arxiv.org/abs/1811.04551) and
+[DreamerV3](https://arxiv.org/abs/2301.04104). Connecting these computations in CDM
+is a concrete implementation hypothesis, not a novelty claim or an established
+performance improvement. Fixed-weight measurements and matched training serve
+different questions and should inform the same implementation.
 
-## One result worth keeping in view
-
-In the handoff experiment the autonomous CDM completes 6/12 and the
-basic-operation GRU 5/12, against 0/12 for uniform selection
-([`native_action_behavior.json`](../experiments/discoveryworld/results/native_action_behavior.json)).
-Handoff is one action before specialist completion with nine candidates, so this
-establishes only that terminal action selection is better than chance. It does
-not show that a task can be completed, and it should not be summarized as such.
-It does show the learned scoring is not uniformly degenerate, which is the
-reason to localize the failure rather than restart the route.
+The earlier handoff successes—6/12 and 5/12, versus 0/12 in the recorded uniform
+comparison—came from fixed adjustment directions near completion. They do not
+show a complete experimental procedure or state-dependent reasoning. Likewise,
+the old 30/30 chemistry result used a different task set and a specialized
+execution interface; it cannot be compared directly with native 0/120.
