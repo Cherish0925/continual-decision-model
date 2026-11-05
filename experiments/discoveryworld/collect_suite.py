@@ -94,7 +94,10 @@ def environment_worker(pipe):
                         env.record_native = False
                     for row in prior:
                         replayed = env.step(row['action'])
-                        if replayed['action_result'] != row['action_result'] or replayed['next_observation']['ui'] != row['next_observation']['ui']:
+                        # Native dialogue option keys are integers; JSON logs
+                        # store the same keys as strings. Compare wire values.
+                        replayed_public = json.loads(json.dumps([replayed['action_result'],replayed['next_observation']['ui']]))
+                        if replayed_public != [row['action_result'],row['next_observation']['ui']]:
                             raise ValueError(f"Native replay differs at {case['id']} step {row['index']}")
                     if request_settings:
                         env.record_native = True

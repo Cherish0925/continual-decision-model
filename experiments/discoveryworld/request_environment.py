@@ -19,6 +19,14 @@ class RequestEnvironment:
     def decision_steps(self):
         return self.executor.requests
 
+    @property
+    def episode_id(self):
+        return self.native.episode_id
+
+    @episode_id.setter
+    def episode_id(self, value):
+        self.native.episode_id = value
+
     def reset(self, scenario, difficulty, seed):
         # Seed construction itself: post-reset RNG restoration alone cannot
         # recover object UUIDs or attributes sampled during world creation.

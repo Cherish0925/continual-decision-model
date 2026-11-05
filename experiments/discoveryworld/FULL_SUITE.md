@@ -1,5 +1,10 @@
 # DiscoveryWorld: all eight themes
 
+The [current shared-executor study](COMMON_EXECUTION.md) compares scientific
+requests across five themes. Collection and paired model training are running.
+Its request interface and development budgets are reported separately from the
+native-action benchmark below.
+
 The [published benchmark](https://allenai.github.io/discoveryworld/) crosses eight themes with Easy, Normal and Challenge difficulty and API seeds 0–4. The [official protocol](https://github.com/allenai/discoveryworld/blob/fd591323920be0d3786ef350955de1945aa571e5/agents/README.md) allows 100 actions per Easy instance and 1,000 per Normal or Challenge instance. The 120 instances exclude the tutorial and the ten small-skills tests.
 
 | Theme | What the agent must do across this theme |

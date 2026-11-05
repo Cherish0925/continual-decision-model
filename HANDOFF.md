@@ -1,5 +1,25 @@
 # Research progress
 
+## 5 November: shared execution implemented; paired planner training running
+
+The common executor performs declared object operations, returns actual feedback
+and charges every native prerequisite. CDM and GRU select operations and arguments
+through a shared interface; each complete request updates persistent state once.
+Supervised training, autonomous gradient updates and independent learned-policy
+execution have run in the native simulator.
+
+The fixed study has four arms (CDM/GRU, with/without demonstrations) and eight
+initializations per arm. Sixteen self-learning runs have produced real updates.
+Sixteen demonstration runs wait for the common 80-instance training and
+20-instance development collection, then automatically train and evaluate.
+The first teacher collection includes successful chemistry, archaeology, plant
+and proteomics episodes. Student comparative results are pending.
+
+Measurement-context duplication was corrected before continuing interrupted
+collections. A 24-request, 29-operation reactor prefix was replayed with identical
+public feedback. See [execution, learning and the fixed comparison](experiments/discoveryworld/COMMON_EXECUTION.md)
+and the [settings](experiments/discoveryworld/common_execution.json).
+
 ## 5 November: both continuation stages completed; experiment-choice comparison defined
 
 All 32 four-epoch imitation continuations and their 1,024 native executions
@@ -29,8 +49,8 @@ The next main scientific comparison holds execution fixed and compares a
 language-model planner, a trained recurrent planner and CDM choosing experiments
 from the same public information. The executor performs declared operations;
 experiment choice and scientific memory remain with the planner. This separates
-procedural operation from feedback-dependent scientific decisions. It is a
-specified next experiment, not an implemented or measured result.
+procedural operation from feedback-dependent scientific decisions. The running
+implementation is described above; comparative model outcomes are pending.
 
 The earlier input-factor totals do not identify procedural knowledge as the
 sole cause of failure: history and inheritance have mixed signs across paired

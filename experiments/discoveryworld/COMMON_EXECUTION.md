@@ -1,0 +1,114 @@
+# Scientific decisions with shared execution
+
+The current study compares a language planner, CDM and a GRU planner through
+the same object-request interface. Each planner chooses the operation,
+instrument, sample, recipe component and control-menu answer. A deterministic
+executor reaches and acquires the declared objects. Every underlying operation
+consumes the native action budget and remains in the recorded trajectory.
+
+**Status, 5 November 2026:** collection and training are running. Supervised
+learning, autonomous gradient updates and independent learned-policy execution
+have run in the native simulator. Sixteen self-learning runs have produced
+updates on four compute nodes. Sixteen paired demonstration runs wait for the
+shared collection. Full comparative scores are pending.
+
+## Execution and learning
+
+[The executor](request_executor.py) preserves all requested arguments. It does
+not substitute instruments, select experiments, infer a response law or choose
+a control setting. Unachievable requests return their actual failure. Each
+request can consume at most twelve native operations. The shared registry
+contains previously visible objects; scientific hypotheses and neural state
+belong to the planners.
+
+Inputs are public text, structured observations, measurements and operation
+feedback. The native `TALK` documentation is clarified for every planner: it
+opens an object's dialogue or control menu, including interactive devices. No
+device identity or correct menu choice is supplied.
+
+[Learned policies](request_policy.py) select an operation, then its arguments,
+avoiding a quadratic list of object pairs. The core assimilates the external
+observation **once per complete request**. Successive argument scores read the
+same continuing state.
+
+Supervised learning imitates fulfilled requests, excluding failed terminal
+answers. Failed operations and unsuccessful episodes remain outcome targets and
+history. Autonomous updates use the complete request's joint log probability.
+The objective rewards completion and charges actual native operations. Progress
+provides potential-based shaping, with zero potential at every episode ending,
+including failure and exhausted budget. A request taking `k` operations
+discounts subsequent value by `gamma ** k`. Partial progress therefore cannot
+leave a terminal bonus for an incorrect final answer. Raw simulator rewards
+remain in the records alongside the optimization objective.
+
+## Fixed comparison
+
+The [configuration](common_execution.json) fixes the study before evaluation:
+
+| Item | Setting |
+| --- | --- |
+| Themes | Chemistry, archaeology, plant nutrients, reactor, proteomics |
+| Difficulties | Easy and Normal |
+| Demonstrations | 80 training instances; 20 separate development instances |
+| Learned arms | CDM and GRU, each with and without demonstrations |
+| Initializations | Eight per arm; 32 runs |
+| Core | Width 512, four attention heads, eight workspace slots |
+| Demonstration stage | Eight epochs, followed by autonomous interaction |
+| Autonomous stage | The same 80 fresh training instances per run |
+| Evaluation | The same 20 fresh instances per fixed endpoint |
+| Native budget | 100 operations for Easy; 300 for Normal |
+
+Each demonstration arm loads its paired self-learning arm's **initial** weights,
+before interaction updates. CDM and GRU share experience, initialization seeds
+and native interaction limits. Their computation differs; equal interaction
+budgets do not establish equal FLOPs.
+
+Final interaction policies use both greedy and sampled decoding. Resetting
+neural state between requests is a same-weight intervention. Demonstration arms
+also evaluate the fixed final supervised checkpoint. These repeated executions
+do not increase the count of unique tasks. Language-planner inference usage is
+recorded separately from student inference and shared execution cost.
+
+Instance identities are disjoint; scientific response laws may repeat across
+seeds. Unseen-law transfer, returning-rule memory, real-time operation, adaptive
+computation and recursive self-improvement require their own experiments in the
+[continual model program](../../research/CONTINUAL_AGENT.md). This five-theme
+study also leaves the official eight-theme native benchmark as a separate goal.
+
+## Run
+
+With DiscoveryWorld installed and hosted credentials in environment variables:
+
+```sh
+python -m experiments.discoveryworld.collect_suite \
+  --bailian-flash --object-requests --output runs/common/train \
+  --seeds 6200 6201 6202 6203 6204 6205 6206 6207 \
+  --difficulties Easy Normal \
+  --themes 'Combinatorial Chemistry' 'Archaeology Dating' \
+    'Plant Nutrients' 'Reactor Lab' 'Proteomics' \
+  --workers 32 --max-steps 300 --max-input-tokens 49152 \
+  --max-new-tokens 16384 --reasoning-effort low --action-corrections 2
+```
+
+Collect development seeds 6300 and 6301 with identical settings. Mark the
+finished common collection with `runs/common/data-ready.json`. For each mode
+and seed in the configuration, launch on separate devices:
+
+```sh
+CUDA_VISIBLE_DEVICES=0 python -m experiments.discoveryworld.request_study \
+  --root runs/common --arm self --mode cdm --seed 401
+CUDA_VISIBLE_DEVICES=1 python -m experiments.discoveryworld.request_study \
+  --root runs/common --arm demonstrations --mode cdm --seed 401
+```
+
+The demonstration command waits for data and paired initial weights, then runs
+imitation, interaction learning and fixed evaluations. Commands, optimizer
+curves, checkpoints, requests and native operations remain separate. A failed
+stage stops that job and preserves its files.
+
+The first collection attempt redundantly included full scene conditions with
+each scalar measurement, causing API context-budget errors. The corrected
+projection retains measurements, bindings, units and feedback without repeating
+the scene. Unfinished worlds continue under a recorded new prompt version;
+completed instances and earlier attempts are retained. They are teacher records,
+not completed student evaluations.

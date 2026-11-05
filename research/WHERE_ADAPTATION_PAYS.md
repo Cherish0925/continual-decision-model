@@ -7,6 +7,11 @@ navigation and instrument operation. Native operation learning remains an
 application goal; its current low completion rate has not established the
 limits of CDM or the cause of every failure.
 
+The [shared object-request implementation and paired training](../experiments/discoveryworld/COMMON_EXECUTION.md)
+are now running. Execution, supervised learning, autonomous gradient updates and
+independent policy rollout have been exercised. Comparative outcomes are pending;
+initial teacher successes are separate from student performance.
+
 ## What the completed studies establish
 
 In [process lifetimes](../experiments/lifetime/RESULTS.md#second-round-training-through-deployment),
@@ -76,7 +81,7 @@ Chemistry and Reactor Lab. These provide varied experimental outcomes. They
 are an initial subset, not the only themes requiring inference. Retain
 eight-theme native evaluation as the broader application target.
 
-Use the same executor model, prompt, tools and action limits in three arms:
+Use the same executor implementation, documented tools and action limits in three arms:
 
 | Decision policy | Execution | Question |
 | --- | --- | --- |
