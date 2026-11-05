@@ -11,6 +11,8 @@ learning, autonomous gradient updates and independent learned-policy execution
 have run in the native simulator. Sixteen self-learning runs have produced
 updates on four compute nodes. Sixteen paired demonstration runs wait for the
 shared collection. Full comparative scores are pending.
+The [dated run snapshot](results/common_execution_status.json) separates actual
+optimizer updates, unfinished teacher attempts and pending model comparisons.
 
 ## Execution and learning
 
