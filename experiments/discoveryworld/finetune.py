@@ -207,8 +207,9 @@ def training_schedule(args, source):
         held_out = set(protocol["theme_holdout"]) if args.native_suite == "holdout" else set()
         if held_out.intersection(row[0] for row in source.get("train_instances", [])):
             raise ValueError("The source policy already trained on an excluded theme; use its six-theme counterpart")
+        difficulties = getattr(args, 'difficulties', None) or ([args.difficulty] if args.difficulty else LIMITS)
         cases = [(t, d, seed, min(LIMITS[d], args.max_steps or LIMITS[d]))
-                 for seed in args.seeds for d in (LIMITS if args.difficulty is None else [args.difficulty])
+                 for seed in args.seeds for d in difficulties
                  for t in THEMES if t not in held_out and (not getattr(args,'themes',None) or t in args.themes)]
         if args.small_skills_first:
             cases = [(t, "Normal", seed, min(100, args.max_steps or 100))
@@ -237,7 +238,9 @@ def parse_args(argv=None):
                        help="Train one shared policy across eight themes or the six non-held-out themes")
     parser.add_argument("--small-skills-first", action="store_true",
                         help="Learn the ten basic-operation tasks from environment rewards before the scientific suite")
-    parser.add_argument("--difficulty", choices=tuple(LIMITS), help="Default: all difficulties for a suite, Normal otherwise")
+    difficulty = parser.add_mutually_exclusive_group()
+    difficulty.add_argument("--difficulty", choices=tuple(LIMITS), help="Default: all difficulties for a suite, Normal otherwise")
+    difficulty.add_argument("--difficulties", nargs="+", choices=tuple(LIMITS), help="Explicit suite difficulty levels")
     parser.add_argument("--seeds", nargs="+", type=int, required=True, help="Training seeds; official 0--4 are reserved")
     parser.add_argument("--episodes", type=int, help="Single scenario only: cycle through supplied training seeds")
     parser.add_argument("--max-steps", type=int, help="Per-episode cap (default: native suite limits, or 100 for one scenario)")
@@ -276,6 +279,8 @@ def parse_args(argv=None):
         parser.error("Parallel learning requires --native-suite")
     if args.themes and not args.native_suite:
         parser.error('--themes requires --native-suite')
+    if args.difficulties and not args.native_suite:
+        parser.error('--difficulties requires --native-suite')
     if not 0 <= args.gamma <= 1 or args.lr <= 0 or min(args.value_weight, args.entropy_weight) < 0:
         parser.error("Use gamma in [0,1], positive learning rate and nonnegative loss weights")
     if any((args.output / name).exists() for name in ("training.jsonl", "last.pt", "initial.pt")):

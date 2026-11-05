@@ -99,8 +99,9 @@ before treating this component as competent in the comparison.
 
 All planners receive the same public experiment descriptions, available object
 bindings and measurement record. CDM and GRU receive identical training
-experience and interaction budgets. Keep executor memory within the current
-request, so scientific memory belongs to the compared planners. Record native
+experience and interaction budgets. The executor retains the same public object
+address catalogue for all planners; scientific beliefs and decisions stay with
+the planners. Record native
 operations to establish what the executor actually contributed. The
 language-model planner's inference cost is measured separately.
 

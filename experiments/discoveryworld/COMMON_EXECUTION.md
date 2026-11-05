@@ -8,9 +8,10 @@ consumes the native action budget and remains in the recorded trajectory.
 
 **Status, 5 November 2026:** collection and training are running. Supervised
 learning, autonomous gradient updates and independent learned-policy execution
-have run in the native simulator. Sixteen self-learning runs have produced
-updates on four compute nodes. Sixteen paired demonstration runs begin with the
-fixed Easy collection while longer tasks continue. Full comparative scores are pending.
+have run in the native simulator. All sixteen self-learning runs finished
+their interaction schedules on four compute nodes. All sixteen paired demonstration runs completed
+four initial epochs on the fixed Easy collection while longer tasks continue.
+Full comparative scores are pending.
 The [dated run snapshot](results/common_execution_status.json) separates actual
 optimizer updates, unfinished teacher attempts and pending model comparisons.
 
@@ -50,15 +51,15 @@ The [configuration](common_execution.json) fixes the study before evaluation:
 | Item | Setting |
 | --- | --- |
 | Themes | Chemistry, archaeology, plant nutrients, reactor, proteomics |
-| Difficulties | Easy and Normal |
+| Demonstration and evaluation difficulties | Easy and Normal |
 | Demonstrations | 80 training instances; 20 separate development instances |
 | Learned arms | CDM and GRU, each with and without demonstrations |
 | Initializations | Eight per arm; 32 runs |
 | Core | Width 512, four attention heads, eight workspace slots |
 | Demonstration stage | Four epochs on the first Easy records, eight on the full collection, then autonomous interaction |
-| Autonomous stage | The same 80 fresh training instances per run |
+| Autonomous stage | The same 120 fresh training instances per run: Easy, Normal and Challenge |
 | Evaluation | The same 20 fresh instances per fixed endpoint |
-| Native budget | 100 operations for Easy; 300 for Normal |
+| Native budget | 100 operations for Easy; 300 for Normal and Challenge |
 
 Each demonstration arm loads its paired self-learning arm's **initial** weights,
 before interaction updates. CDM and GRU share experience, initialization seeds
@@ -69,6 +70,35 @@ The initial course uses all forty training and ten development Easy trajectories
 including recorded unsuccessful or interrupted prefixes. Selection is by
 difficulty, not success. This fixed early snapshot permits training while Normal
 collection continues. The complete data subsequently includes resumed prefixes.
+
+The submitted interaction command selected all three difficulties. Its
+120-instance schedule is retained for every arm. The earlier description of
+this stage as eighty instances was incorrect; difficulty selection is now
+explicit in the configuration and command.
+
+## Initial development execution
+
+The sixteen self-learning runs completed 1,920 training episodes, 446,727 native
+operations and 8,075 optimizer updates. Seven training episodes completed their
+scientific task. Greedy execution on twenty fresh Easy/Normal instances per
+initialization completes 0/160 for CDM and 0/160 for GRU. Sampled and state-reset
+evaluations are still running. This autonomous curriculum has not produced
+reliable task completion within its fixed interaction budget.
+
+All sixteen demonstration models finished four epochs on the same 678 training requests.
+Each then executed the same ten Easy development instances with two decoding
+methods. Each table entry aggregates eight initializations; it is eighty
+executions of ten worlds.
+
+| Model | Greedy completion | Sampled completion |
+| --- | ---: | ---: |
+| CDM | 0/80 | 7/80 |
+| GRU | 0/80 | 3/80 |
+
+These starting policies do not yet execute the tasks reliably. Full imitation,
+autonomous learning and the fresh-instance comparison remain pending. The
+initial weights are fixed, and these development outcomes do not select a model
+or replace the planned final endpoints. See the [per-instance results](results/common_execution.json).
 
 Final interaction policies use both greedy and sampled decoding. Resetting
 neural state between requests is a same-weight intervention. Demonstration arms
@@ -93,7 +123,7 @@ python -m experiments.discoveryworld.collect_suite \
   --difficulties Easy Normal \
   --themes 'Combinatorial Chemistry' 'Archaeology Dating' \
     'Plant Nutrients' 'Reactor Lab' 'Proteomics' \
-  --workers 32 --max-steps 300 --max-input-tokens 49152 \
+  --workers 32 --max-steps 300 --max-input-tokens 131072 \
   --max-new-tokens 16384 --reasoning-effort low --action-corrections 2
 ```
 
@@ -118,6 +148,17 @@ stage stops that job and preserves its files.
 The first collection attempt redundantly included full scene conditions with
 each scalar measurement, causing API context-budget errors. The corrected
 projection retains measurements, bindings, units and feedback without repeating
-the scene. Unfinished worlds continue under a recorded new prompt version;
+the scene. Repeated object domains in the action schema also share one enum;
+all previously available objects and requests remain available.
+Continuation permits up to 131,072 input tokens for large public object
+registries; the first attempts used 49,152. Provider-reported usage is retained.
+Unfinished worlds continue under a recorded new prompt version;
 completed instances and earlier attempts are retained. They are teacher records,
 not completed student evaluations.
+
+Summarize collected model directories and teacher records with:
+
+```sh
+python -m experiments.discoveryworld.summarize_request_study \
+  --records runs/common/models --collections runs/common --output runs/common/results
+```

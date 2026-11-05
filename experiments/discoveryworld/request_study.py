@@ -64,6 +64,7 @@ def main():
 
     options=['--output',job/'interaction','--feature-cache',cache,
         '--native-suite','all','--themes',*plan['themes'],'--seeds',*plan['interaction_seeds'],
+        '--difficulties',*plan['interaction_difficulties'],
         '--max-steps',plan['native_action_limit'],'--max-request-actions',plan['request_native_action_limit'],
         '--sequence-length',plan['sequence_length'],'--workers',plan['interaction_workers'],
         '--device','cuda:0','--threads',2,'--mode',args.mode,'--random-seed',args.seed,

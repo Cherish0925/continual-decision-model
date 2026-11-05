@@ -9,12 +9,22 @@ Supervised training, autonomous gradient updates and independent learned-policy
 execution have run in the native simulator.
 
 The fixed study has four arms (CDM/GRU, with/without demonstrations) and eight
-initializations per arm. Sixteen self-learning runs have produced real updates.
-Sixteen demonstration runs start with four epochs on the fixed Easy records,
-then eight epochs on the full 80-instance training and 20-instance development
-collection before autonomous learning and evaluation.
-The first teacher collection includes successful chemistry, archaeology, plant
-and proteomics episodes. Student comparative results are pending.
+initializations per arm. All sixteen self-learning runs completed their
+120-world interaction schedules and started fixed-weight evaluation. Seven of
+their 1,920 training episodes completed the scientific task.
+Their completed greedy evaluations each give 0/160 executions for CDM and GRU,
+repeating twenty fresh instances across eight initializations.
+All sixteen demonstration runs completed four epochs on the same 678 Easy
+training requests. On ten Easy development instances per initialization,
+sampled execution completes 7/80 for CDM and 3/80 for GRU; greedy execution
+completes 0/80 for both. These repeated executions do not establish reliable
+scientific task capability.
+
+Eight epochs on the complete common collection, autonomous learning and the
+fresh-instance comparison remain pending. Demonstrations cover eighty training
+and twenty development worlds. The actual autonomous schedule includes
+Challenge and therefore has 120 worlds per model; the earlier eighty-world
+description of that stage was incorrect. Both arms retain the submitted schedule.
 
 Measurement-context duplication was corrected before continuing interrupted
 collections. A 24-request, 29-operation reactor prefix was replayed with identical

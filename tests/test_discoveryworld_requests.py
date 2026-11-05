@@ -67,6 +67,9 @@ class RequestTests(unittest.TestCase):
         self.assertNotIn('error',result)
         self.assertTrue(teacher.public_proposal(json.loads(output),state['output_schema']))
         self.assertFalse(teacher.public_proposal(dict(action='USE',arg1=11,arg2=11,memory=''),state['output_schema']))
+        properties = next(x['properties'] for x in state['output_schema']['anyOf']
+                          if x['properties'].get('action', {}).get('enum') == ['USE'])
+        self.assertEqual(properties['arg1'], {'$ref':'#/$defs/observed_object'})
 
     def test_terminal_progress_cannot_reward_a_failed_completion(self):
         first,discount=request_return(.2,.8,success=False,done=False,native_actions=3,gamma=1.,action_cost=.01)

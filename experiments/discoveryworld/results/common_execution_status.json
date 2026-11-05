@@ -1,123 +1,415 @@
 {
-  "as_of_utc": "2026-11-05T12:50:20.332111+00:00",
+  "as_of_utc": "2026-11-05T13:37:14.652930+00:00",
   "status": "running",
   "planned_models": 32,
-  "models_with_recorded_updates": 16,
-  "demonstration_models_waiting_for_common_data": 16,
+  "models_with_recorded_updates": 32,
+  "completed_initial_imitation": 16,
+  "completed_models": 0,
   "models": [
     {
       "model": "self_cdm_s401",
-      "optimizer_updates": 144,
-      "sampled_requests": 4488,
-      "elapsed_seconds": 844.4024151689373
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 499,
+      "sampled_requests": 15238,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 27793,
+      "complete": false
     },
     {
       "model": "self_cdm_s402",
-      "optimizer_updates": 150,
-      "sampled_requests": 4679,
-      "elapsed_seconds": 845.6984997908585
-    },
-    {
-      "model": "self_gru_s401",
-      "optimizer_updates": 145,
-      "sampled_requests": 4526,
-      "elapsed_seconds": 848.1492270450108
-    },
-    {
-      "model": "self_gru_s402",
-      "optimizer_updates": 146,
-      "sampled_requests": 4556,
-      "elapsed_seconds": 847.0190071519464
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 512,
+      "sampled_requests": 15608,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
     },
     {
       "model": "self_cdm_s403",
-      "optimizer_updates": 144,
-      "sampled_requests": 4523,
-      "elapsed_seconds": 839.0228943713009
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 496,
+      "sampled_requests": 15220,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 27826,
+      "complete": false
     },
     {
       "model": "self_cdm_s404",
-      "optimizer_updates": 144,
-      "sampled_requests": 4510,
-      "elapsed_seconds": 843.9693333599716
-    },
-    {
-      "model": "self_gru_s403",
-      "optimizer_updates": 148,
-      "sampled_requests": 4611,
-      "elapsed_seconds": 838.2839179839939
-    },
-    {
-      "model": "self_gru_s404",
-      "optimizer_updates": 151,
-      "sampled_requests": 4679,
-      "elapsed_seconds": 844.7744217268191
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 509,
+      "sampled_requests": 15573,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
     },
     {
       "model": "self_cdm_s405",
-      "optimizer_updates": 150,
-      "sampled_requests": 4692,
-      "elapsed_seconds": 821.6232484066859
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 508,
+      "sampled_requests": 15555,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 27930,
+      "complete": false
     },
     {
       "model": "self_cdm_s406",
-      "optimizer_updates": 144,
-      "sampled_requests": 4489,
-      "elapsed_seconds": 822.0961928409524
-    },
-    {
-      "model": "self_gru_s405",
-      "optimizer_updates": 145,
-      "sampled_requests": 4536,
-      "elapsed_seconds": 817.5644840137102
-    },
-    {
-      "model": "self_gru_s406",
-      "optimizer_updates": 144,
-      "sampled_requests": 4491,
-      "elapsed_seconds": 820.9743521101773
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 506,
+      "sampled_requests": 15413,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
     },
     {
       "model": "self_cdm_s407",
-      "optimizer_updates": 142,
-      "sampled_requests": 4403,
-      "elapsed_seconds": 835.6962789562531
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 507,
+      "sampled_requests": 15570,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
     },
     {
       "model": "self_cdm_s408",
-      "optimizer_updates": 149,
-      "sampled_requests": 4633,
-      "elapsed_seconds": 838.4981391727924
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 496,
+      "sampled_requests": 15149,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 27955,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s401",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s402",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s403",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s404",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s405",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s406",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s407",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_cdm_s408",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s401",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 502,
+      "sampled_requests": 15328,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 2,
+      "native_actions_in_finished_episodes": 27788,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s402",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 508,
+      "sampled_requests": 15525,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 27808,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s403",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 497,
+      "sampled_requests": 15218,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 27928,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s404",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 508,
+      "sampled_requests": 15486,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 1,
+      "native_actions_in_finished_episodes": 27921,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s405",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 509,
+      "sampled_requests": 15573,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
+    },
+    {
+      "model": "self_gru_s406",
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 508,
+      "sampled_requests": 15524,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 28000,
+      "complete": false
     },
     {
       "model": "self_gru_s407",
-      "optimizer_updates": 145,
-      "sampled_requests": 4505,
-      "elapsed_seconds": 834.3661147593521
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 507,
+      "sampled_requests": 15480,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 27861,
+      "complete": false
     },
     {
       "model": "self_gru_s408",
-      "optimizer_updates": 147,
-      "sampled_requests": 4581,
-      "elapsed_seconds": 835.9573935279623
+      "initial_imitation_epochs": 0,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 503,
+      "sampled_requests": 15306,
+      "finished_interaction_episodes": 120,
+      "interaction_training_complete": true,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 27917,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s401",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s402",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s403",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s404",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s405",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s406",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s407",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
+    },
+    {
+      "model": "demonstrations_gru_s408",
+      "initial_imitation_epochs": 4,
+      "full_imitation_epochs": 0,
+      "optimizer_updates": 0,
+      "sampled_requests": 0,
+      "finished_interaction_episodes": 0,
+      "interaction_training_complete": false,
+      "interaction_training_successes": 0,
+      "native_actions_in_finished_episodes": 0,
+      "complete": false
     }
   ],
   "collections": {
     "train": {
       "planned_instances": 80,
-      "finished_attempts": 70,
-      "successful_instances": 36,
-      "policy_errors_awaiting_continuation": 30,
-      "status": "in_progress"
+      "latest_recorded_attempts": 79,
+      "successful_instances": 38,
+      "policy_errors": 34
     },
     "development": {
       "planned_instances": 20,
-      "finished_attempts": 18,
-      "successful_instances": 9,
-      "policy_errors_awaiting_continuation": 9,
-      "status": "in_progress"
+      "latest_recorded_attempts": 20,
+      "successful_instances": 15,
+      "policy_errors": 5
+    },
+    "reference": {
+      "planned_instances": 20,
+      "latest_recorded_attempts": 18,
+      "successful_instances": 12,
+      "policy_errors": 4
     }
   },
-  "student_comparative_results": null,
-  "scope": "Requests and updates measure execution progress; teacher completions are not student scores."
+  "scope": "Teacher completions are not student scores. Repeated model executions share instance identities. Counts may lag running processes."
 }

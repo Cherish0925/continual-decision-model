@@ -28,7 +28,7 @@ operation the arguments must be different. No task-specific solution is given.
 class RequestTeacher(DeepSeekFlashTeacher):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.configuration.update(prompt_version='object_requests_controls_v3',
+        self.configuration.update(prompt_version='object_requests_controls_v4',
                                   action_interface='object_requests_v1')
 
     @staticmethod
@@ -41,6 +41,8 @@ class RequestTeacher(DeepSeekFlashTeacher):
         state['objects'].observe(observation)
         state['measurements'].observe_initial(public)
         objects = deepcopy(observation.get('remembered_objects', []))
+        handles = [obj['uuid'] for obj in objects]
+        handle_set = set(handles)
         alternatives = []
         for choice in request_candidates(observation):
             properties = {key: {'enum':[value]} for key,value in choice.action.items()}
@@ -50,14 +52,19 @@ class RequestTeacher(DeepSeekFlashTeacher):
             if args:
                 domains = request_candidates(observation, prefix)
                 first = args[0]
-                properties[first] = {'enum':[c.action[first] for c in domains]}
+                values = [c.action[first] for c in domains]
+                # Object registries can contain hundreds of visible handles.
+                # Repeating that same domain for every operation adds context
+                # without adding information or changing eligible requests.
+                properties[first] = ({'$ref':'#/$defs/observed_object'}
+                    if set(values) == handle_set else {'enum':values})
                 if len(args) > 1:
                     properties[args[1]] = {'$ref':'#/$defs/observed_object'}
             properties['memory'] = {'type':'string','maxLength':1000}
             alternatives.append(dict(type='object', properties=properties,
                 required=list(properties), additionalProperties=False))
         schema = {'anyOf':alternatives, '$defs':{'observed_object':
-            {'enum':[o['uuid'] for o in objects]}}}
+            {'enum':handles}}}
         payload = dict(public, remembered_objects=objects,
             execution=observation['execution'], execution_events=observation.get('execution_events',[]),
             actual_history=state['history'][-8:], notebook=state['notebook'],

@@ -20,6 +20,20 @@ from experiments.discoveryworld.train import load_checkpoint
 
 
 class FineTuneTests(unittest.TestCase):
+    def test_request_study_has_distinct_demonstration_and_interaction_schedules(self):
+        plan = json.loads((Path(__file__).parents[1] / 'experiments/discoveryworld/common_execution.json').read_text())
+        with TemporaryDirectory() as folder:
+            common = ['--random-native-width','32','--output',folder,'--feature-cache',folder,
+                      '--native-suite','all','--themes',*plan['themes'],
+                      '--seeds',*map(str,plan['interaction_seeds']),'--max-steps','300']
+            explicit = training_schedule(parse_args(common + ['--difficulties',*plan['interaction_difficulties']]), {})
+            original = training_schedule(parse_args(common), {})
+            self.assertEqual(explicit, original)
+            self.assertEqual(len(explicit), 120)
+            selected = training_schedule(parse_args(common + ['--difficulties','Easy','Normal']), {})
+            self.assertEqual(len(selected), 80)
+            self.assertNotIn('Challenge', {d for _,d,_,_ in selected})
+
     @unittest.skipUnless(find_spec("discoveryworld"), "Install the pinned DiscoveryWorld simulator")
     def test_parallel_native_feedback_trains_one_model_without_losing_episodes(self):
         with TemporaryDirectory() as folder:
