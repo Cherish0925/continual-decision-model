@@ -407,7 +407,6 @@ def parse_args(argv=None):
     parser.add_argument("--outcome-weight", type=float, default=.5)
     parser.add_argument("--immediate-weight", type=float, default=.25)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args(argv)
     if min(args.epochs, args.batch_size, args.sequence_length, args.threads, args.feature_batch_size) <= 0:
         parser.error("Epochs, batch sizes, sequence length and threads must be positive")
@@ -493,12 +492,6 @@ def main(argv=None):
     train_prepared = prepare_episodes(train, cache, **preparation)
     validation_prepared = prepare_episodes(validation, cache, **preparation)
     cache.close()
-    if args.prepare_only:
-        result = dict(training_episodes=len(train_prepared), validation_episodes=len(validation_prepared),
-                      transitions=sum(len(row.steps) for row in train_prepared + validation_prepared),
-                      feature_seconds=perf_counter() - start, features=asdict(feature_config))
-        (args.output / "prepared.json").write_text(json.dumps(result, indent=2) + "\n")
-        return result
     model = (model if model is not None else create_model(args, cache.text_dim, cache.image_dim)).to(args.device)
     resume = None if source is None else {"path": str(args.resume_checkpoint.resolve()),
                                          "sha256": sha256(args.resume_checkpoint.read_bytes()).hexdigest(),
@@ -530,12 +523,18 @@ def main(argv=None):
                 "action_run_window_normalization": "fixed batch event count divided by number of BPTT windows",
                 "outcome_reduction": "unchanged equal weighting per real event",
                 "repeated_run_exit_definition": "first changed expert action after a consecutive run of length greater than one",
-                "revision": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
-                                             text=True, check=True).stdout.strip(),
+                "revision": (Path(__file__).resolve().parents[2] / "SOURCE_REVISION").read_text().strip()
+                    if (Path(__file__).resolve().parents[2] / "SOURCE_REVISION").exists() else
+                    subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                                   text=True, check=True).stdout.strip(),
                 "parameters": sum(parameter.numel() for parameter in model.parameters()),
                 "feature_seconds": perf_counter() - start}
     (args.output / "config.json").write_text(json.dumps(metadata, indent=2) + "\n")
     if args.prepare_only:
+        (args.output / "prepared.json").write_text(json.dumps(dict(training_episodes=len(train_prepared),
+            validation_episodes=len(validation_prepared),
+            transitions=sum(len(row.steps) for row in train_prepared + validation_prepared),
+            feature_seconds=metadata["feature_seconds"], features=asdict(feature_config)), indent=2) + "\n")
         return
     parameters = model.parameters() if args.core_lr is None else [
         {'params': model.core.parameters(), 'lr': args.core_lr},
