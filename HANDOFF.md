@@ -53,13 +53,27 @@ eight native themes before these trainings started; full results are pending.
 
 The local autonomous CDM subsequently stopped with a segmentation fault at
 32,608 interactions. Its last checkpoint, completed episodes and unfinished
-trajectory records remain intact. Two matched cloud CDM runs (autonomous and
-basic-operation initialization) have begun updating under independent resources.
-Transfers for their GRU counterparts are pending. The cloud schedule retains
-the same initial weights, 136 training episodes, eight worlds per update and
-fixed training budget. Each completed endpoint is queued for the 120 official
-cases with the common saved initial world states. Keep cloud and local results
-separate until the full paired cloud comparison is complete.
+trajectory records remain intact. By 5 November, all four matched cloud runs
+had completed the 136-episode curriculum. Autonomous CDM and GRU each executed
+71,200 actions; basic-operation CDM and GRU executed 69,144 and 70,141. These
+cloud results remain separate from interrupted local attempts.
+
+The first evaluation completed 118, 115, 116 and 116 of the 120 cases, with
+no successes among the recorded cases. Remaining cases failed before policy
+execution because Space Sick could construct a different initial object set.
+Post-reset RNG snapshots alone do not reproduce the unseeded native generators
+used during world construction and its first tick. A common initialization
+seed now controls those generators while preserving explicit simulator seeds.
+Five actual Space Sick cases reproduce their initial observations, RNG states
+and next action exactly. All four complete evaluations have restarted with
+that common protocol; earlier partial records remain available.
+
+Hosted data collection resumed on 5 November from the completed cases.
+Unfinished attempts are retained separately. Independent background jobs now
+continue collection and queue the complete-solution CDM/GRU comparison on two
+GPUs: eight imitation epochs, autonomous interaction learning and teacher-free
+evaluation of both endpoints. This route still awaits its full collection;
+there is no completed complete-solution student result.
 
 Lexical encoding now accumulates and normalizes features before creating a
 Torch tensor. It preserves all 98 checked observation vectors, including the

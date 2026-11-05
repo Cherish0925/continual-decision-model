@@ -15,9 +15,12 @@ complete-solution distillation, each with CDM and GRU. Bailian demonstrations
 are running; both basic-operation students completed eight supervised epochs
 and entered interaction learning. Native-library crashes interrupted several
 reinforcement attempts, including the local autonomous CDM under Torch 2.14.
-Two matched cloud CDM reruns are updating; their GRU counterparts await data
-transfer. Local records and the remaining workers are preserved. No new
-official-case student score is available.
+All four matched cloud trainings completed their 136 episodes. Their first
+evaluations recorded 115–118 cases each without a success; world-initialization
+errors prevented complete scores. Full evaluations now use reproducible native
+initialization. Hosted collection and the complete-solution training queue
+resumed on 5 November, independently of an interactive terminal. Complete
+official-case student scores remain pending.
 [Current execution](HANDOFF.md).
 
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)

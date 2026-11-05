@@ -41,7 +41,18 @@ python -m experiments.discoveryworld.full_suite run --observation png \
   --policy-id native-policy-run-1 --output runs/dw-policy
 ```
 
-Each case starts with fresh agent state. The agent receives the public UI and action outcomes; `png` also supplies images. The runner records native actions, task success (the simulator's `completedSuccessfully`) and normalized progress for all 24 theme/difficulty combinations. It saves a policy's submitted scientific notes separately: explanatory knowledge needs [its own scoring procedure](https://github.com/allenai/discoveryworld/blob/fd591323920be0d3786ef350955de1945aa571e5/scripts/knowledgeScorer.py). A missing answer or a run error is not a measured score. To compare two policies with the same initial simulator random streams, pass the first scored output directory as `--rng-from`.
+Each case starts with fresh agent state. The agent receives the public UI and action outcomes; `png` also supplies images. The runner records native actions, task success (the simulator's `completedSuccessfully`) and normalized progress for all 24 theme/difficulty combinations. It saves a policy's submitted scientific notes separately: explanatory knowledge needs [its own scoring procedure](https://github.com/allenai/discoveryworld/blob/fd591323920be0d3786ef350955de1945aa571e5/scripts/knowledgeScorer.py). A missing answer or a run error is not a measured score.
+
+For paired runs, use the same `--object-rng-seed 73105` for every policy. This
+sets otherwise unseeded native generators before world construction and the
+initial tick, while preserving seeds explicitly set by the simulator. It
+changes no task rule or policy input. The value is recorded with the run.
+Post-reset snapshots (`--rng-from`) alone are insufficient for every theme:
+Space Sick can create different initial objects before those states are
+restored. Earlier partial evaluations retain that error. Five Space Sick
+instances now reproduce initial observations, RNG states and the next native
+action across independent resets. Full-suite comparisons using the new
+initialization are separate from earlier scored runs.
 
 ## Published comparisons
 
@@ -210,7 +221,7 @@ python -m experiments.discoveryworld.train_demonstrations \
   --wait-for-collections --evaluate
 ```
 
-Use the same files and initial checkpoint for GRU. `--scope basic_operations` rejects scientific solution trajectories. For the complete-solution comparison, choose `--scope complete_solutions` and include scientific collections. The pipeline snapshots completed data, trains eight imitation epochs, learns from the student's actions, and optionally evaluates both final endpoints on all 120 official cases with no teacher. Checkpoints are chosen by the declared endpoint, not test performance. `full_suite probe` also saves initial simulator random streams; `--evaluation-rng-from` reuses them across models.
+Use the same files and initial checkpoint for GRU. `--scope basic_operations` rejects scientific solution trajectories. For the complete-solution comparison, choose `--scope complete_solutions` and include scientific collections. The pipeline snapshots completed data, trains eight imitation epochs, learns from the student's actions, and optionally evaluates both final endpoints on all 120 official cases with no teacher. Checkpoints are chosen by the declared endpoint, not test performance. Use the same `--evaluation-object-rng-seed 73105` across endpoints to reproduce native initialization.
 
 The first pair of eight-epoch basic-operation fits is complete; autonomous and post-imitation interaction learning are in progress. Native-library faults interrupted several Torch 2.11.0+cu128 attempts. Their records and checkpoints are retained. The four current trainings share a separate Torch 2.14.0+cu130 / NumPy 2.3.5 runtime, the same starting weights and equivalent lexical features, with independent CPU simulator workers. Earlier attempts are separate from this comparison. The final reinforcement and official-case scores remain pending. The complete-solution pair waits for its separate scientific collection and uses the same runtime. These are one-initialization feasibility runs, not an established architecture result.
 

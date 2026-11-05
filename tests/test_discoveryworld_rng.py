@@ -30,6 +30,33 @@ class FeedbackPolicy:
 
 @unittest.skipUnless(find_spec("discoveryworld"), "Install the pinned DiscoveryWorld simulator")
 class NativeRNGTests(unittest.TestCase):
+    def test_space_sick_initial_tick_and_next_action_reproduce(self):
+        from experiments.discoveryworld.full_suite import seeded_object_initialization
+        from experiments.discoveryworld.structured_observation import StructuredDiscoveryWorldEnv
+        original = random.Random.__init__
+        global_state = random.getstate()
+        with TemporaryDirectory() as temporary, contextlib.redirect_stdout(io.StringIO()):
+            root = Path(temporary)
+            for seed in range(5):
+                snapshots, observations, steps = [], [], []
+                for repeat in range(2):
+                    with seeded_object_initialization(73105):
+                        env = StructuredDiscoveryWorldEnv(root / f'{seed}-{repeat}', 2)
+                        obs = env.reset('Space Sick', 'Normal', seed)
+                        path = root / f'{seed}-{repeat}.gz'
+                        env.save_initial_rng(path)
+                        snapshots.append(path.read_bytes())
+                        observations.append(obs['ui'])
+                        if repeat:
+                            env.restore_initial_rng(root / f'{seed}-0.gz')
+                        step = env.step({'action': 'DISCOVERY_FEED_GET_UPDATES'})
+                        steps.append((step['action_result'], step['next_observation']['ui']))
+                self.assertEqual(snapshots[0], snapshots[1])
+                self.assertEqual(observations[0], observations[1])
+                self.assertEqual(steps[0], steps[1])
+        self.assertIs(random.Random.__init__, original)
+        self.assertEqual(random.getstate(), global_state)
+
     def test_noisy_reference_prefix_replays_exactly_and_then_takes_over(self):
         with TemporaryDirectory() as temporary:
             root = Path(temporary)

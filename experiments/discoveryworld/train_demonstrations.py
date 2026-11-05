@@ -41,6 +41,8 @@ def main():
     p.add_argument('--evaluation-workers', type=int, default=2)
     p.add_argument('--evaluation-rng-from', type=Path,
                    help='Use common initial simulator random streams for endpoint comparisons')
+    p.add_argument('--evaluation-object-rng-seed', type=int,
+                   help='Seed otherwise unseeded native generators before world construction')
     p.add_argument('--learning-seeds', nargs='+', type=int, default=[1000,1001,1002,1003])
     args = p.parse_args()
     if args.wait_for_collections:
@@ -90,6 +92,8 @@ def main():
                 '--output',str(args.output/(stage+'-evaluation'))]
             if args.evaluation_rng_from:
                 command.extend(('--rng-from',str(args.evaluation_rng_from)))
+            if args.evaluation_object_rng_seed is not None:
+                command.extend(('--object-rng-seed',str(args.evaluation_object_rng_seed)))
             subprocess.run(command,check=True)
 
 

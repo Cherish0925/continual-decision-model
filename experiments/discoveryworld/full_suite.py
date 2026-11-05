@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ProcessPoolExecutor
-from contextlib import redirect_stdout
+from contextlib import contextmanager, redirect_stdout
 from hashlib import sha256
 from importlib import import_module, metadata
 import json
 import multiprocessing
 from pathlib import Path
 import platform
+import random
 import subprocess
 from time import perf_counter
 import traceback
@@ -37,6 +38,34 @@ def official_cases(seeds=range(5)):
 
 
 _POLICIES = {}
+
+
+@contextmanager
+def seeded_object_initialization(seed):
+    """Make native object noise reproducible, including the initial world tick.
+
+    Native objects and building generators construct unseeded RNGs. A
+    post-reset snapshot cannot undo changes during world construction and its
+    first tick. Each worker runs one case at a time. Explicit simulator seeds
+    retain precedence; only otherwise unseeded generators receive a seed.
+    """
+    if seed is None:
+        yield
+        return
+    original = random.Random.__init__
+    seeds = random.Random(seed)
+    global_state = random.getstate()
+
+    def initialize(generator, x=None):
+        original(generator, seeds.getrandbits(256) if x is None else x)
+
+    random.Random.__init__ = initialize
+    random.seed(f"discoveryworld:{seed}")
+    try:
+        yield
+    finally:
+        random.Random.__init__ = original
+        random.setstate(global_state)
 
 
 def initialize_worker(threads):
@@ -93,7 +122,8 @@ def run_case(job):
     row = dict(case)
     try:
         # The simulator prints asset and world-history messages on every episode/tick.
-        with (path / "environment.log").open("w") as log, redirect_stdout(log):
+        with (path / "environment.log").open("w") as log, redirect_stdout(log), \
+                seeded_object_initialization(cfg.get("object_rng_seed")):
             limit = 1 if cfg["mode"] == "probe" else case["max_steps"]
             if cfg["observation"] == "structured":
                 env = StructuredDiscoveryWorldEnv(path, limit)
@@ -186,6 +216,8 @@ def main():
     p.add_argument("--policy-config", type=Path, help="JSON passed to the factory")
     p.add_argument("--policy-id", help="Checkpoint revision or run name recorded with the results")
     p.add_argument("--rng-from", type=Path, help="Reuse an earlier scored run's initial simulator RNG snapshots")
+    p.add_argument("--object-rng-seed", type=int,
+                   help="Seed native object noise before world construction; use the same value in paired runs")
     args = p.parse_args()
     cases = [case for case in official_cases(args.seeds) if case['difficulty'] in args.difficulties]
     if args.mode == "list":
@@ -206,12 +238,14 @@ def main():
     path = args.output.resolve()
     path.mkdir(parents=True, exist_ok=False)
     cfg = dict(mode=args.mode, output=str(path), observation=args.observation, policy=args.policy,
-               config=config, rng_from=str(args.rng_from.resolve()) if args.rng_from else None)
+               config=config, rng_from=str(args.rng_from.resolve()) if args.rng_from else None,
+               object_rng_seed=args.object_rng_seed)
     meta = dict(mode=args.mode, simulator=build, target_revision=UPSTREAM_REVISION,
                 official_instances=args.seeds == list(range(5)) and set(args.difficulties) == set(LIMITS),
                 observation=args.observation, policy=args.policy, policy_id=args.policy_id,
                 policy_config_sha256=sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(),
                 rng_from=cfg["rng_from"], cases=cases)
+    meta["object_rng_seed"] = args.object_rng_seed
     write_json(path / "run.json", meta)
     jobs = [(case, cfg) for case in cases]
     if args.workers == 1:
