@@ -48,7 +48,7 @@ def prepare_requests(episodes, cache, *, allow_failed_actions, imitate_successfu
 
 
 def score_requests(model, steps, obs, final_candidates, state, *, mode, persistent,
-                   restart_workspace, refinements=None):
+                   restart_workspace, refinements=None, prepared_stages=None):
     device = obs['numeric'].device
     event,state = model.assimilate(obs,state,persistent=persistent,restart_workspace=restart_workspace)
     if mode == 'cdm':
@@ -58,9 +58,12 @@ def score_requests(model, steps, obs, final_candidates, state, *, mode, persiste
     loss = torch.zeros(len(steps),device=device)
     correct = torch.ones(len(steps),dtype=torch.bool,device=device)
     for stage in range(max(stage_counts)):
-        entries = [s.request_stages[min(stage,len(s.request_stages)-1)] for s in steps]
-        _,actions = batch_features([load_features(path) for path,index in entries],device)
-        targets = torch.tensor([index for path,index in entries],device=device)
+        if prepared_stages is None:
+            entries = [s.request_stages[min(stage,len(s.request_stages)-1)] for s in steps]
+            _,actions = batch_features([load_features(path) for path,index in entries],device)
+            targets = torch.tensor([index for path,index in entries],device=device)
+        else:
+            actions, targets = prepared_stages[stage]
         logits,_ = model.readout(event,actions,state,mode=mode,predict_outcomes=False)
         alive = stage < lengths
         loss = loss + F.cross_entropy(logits,targets,reduction='none')*alive/lengths
@@ -68,6 +71,51 @@ def score_requests(model, steps, obs, final_candidates, state, *, mode, persiste
     selected = torch.tensor([s.executed_target for s in steps],device=device)
     logits,outcomes = model.readout(event,final_candidates,state,mode=mode,outcome_indices=selected)
     return logits,state,outcomes,loss,correct
+
+
+def prepare_request_window(model, step_groups, device):
+    """Prepare observed inputs in parallel; leave state updates to the caller.
+
+    Features contain only the observation before that event. Demonstrated
+    arguments remain conditional imitation targets, as in score_requests.
+    Future feature rows cannot be read by an earlier event's policy.
+    """
+    frames, fields, text_fields = [], [], []
+    for steps in step_groups:
+        obs, final = batch_features([load_features(s.feature_path) for s in steps], 'cpu')
+        stages = []
+        for stage in range(max(len(s.request_stages) for s in steps)):
+            entries = [s.request_stages[min(stage, len(s.request_stages) - 1)] for s in steps]
+            _, actions = batch_features([load_features(path) for path, _ in entries], 'cpu')
+            targets = {'target': torch.tensor([index for _, index in entries])}
+            stages.append((actions, targets))
+            fields.extend((actions, targets))
+        fields.extend((obs, final))
+        frames.append((obs, final, stages))
+    if model.config.text_backbone:
+        for field in fields:
+            for key in ('text', 'measurement_text'):
+                if key in field:
+                    text_fields.append((field, key, field.pop(key)))
+        embeddings = model.text_encoder.forward_many([ids for _, _, ids in text_fields])
+        for (field, key, _), embedding in zip(text_fields, embeddings):
+            field[key + '_embedding'] = embedding
+    # One transfer per dtype for the remaining window, including request
+    # targets and measurement relations. Views preserve their original shapes.
+    grouped = {}
+    for field in fields:
+        for key, value in field.items():
+            if key.endswith('_embedding'):
+                continue
+            grouped.setdefault(value.dtype, []).append((field, key, value))
+    for entries in grouped.values():
+        packed = torch.cat([value.reshape(-1) for _, _, value in entries]).to(device)
+        offset = 0
+        for field, key, value in entries:
+            field[key] = packed[offset:offset + value.numel()].reshape(value.shape)
+            offset += value.numel()
+    return [(obs, final, [(actions, target['target']) for actions, target in stages])
+            for obs, final, stages in frames]
 
 
 def sample_requests(model, observations, choices, obs, actions, state, cache, *, mode,

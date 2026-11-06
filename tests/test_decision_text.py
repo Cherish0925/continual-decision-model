@@ -1,5 +1,6 @@
 """Language parameters must receive decision gradients and survive deployment."""
 from dataclasses import asdict
+from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -84,6 +85,35 @@ class DecisionTextTests(unittest.TestCase):
                 self.assertIsNone(new.grad)
             else:
                 torch.testing.assert_close(new.grad,old.grad,rtol=1e-4,atol=1e-6)
+
+    def test_window_encoding_preserves_each_view_and_its_gradients(self):
+        torch.set_num_threads(1)
+        cfg=BertConfig(vocab_size=32,hidden_size=16,num_hidden_layers=2,
+                       num_attention_heads=4,intermediate_size=32,max_position_embeddings=64,
+                       hidden_dropout_prob=0.,attention_probs_dropout_prob=0.)
+        torch.manual_seed(17)
+        inputs=[torch.randint(1,32,(2,3,48)),torch.randint(1,32,(2,4,2,48)),
+                torch.zeros(2,1,48,dtype=torch.long)]
+        inputs[0][...,8:]=0
+        inputs[1][...,35:]=0
+        inputs[1][0,1]=inputs[1][0,0]
+        inputs[1][1,3]=0
+        for trainable in (False,True):
+            old=DecisionTextEncoder(cfg.to_dict(),trainable,batch_size=2)
+            new=deepcopy(old)
+            expected=[old(ids) for ids in inputs]
+            actual=new.forward_many(inputs)
+            for a,b in zip(actual,expected):
+                torch.testing.assert_close(a,b,rtol=1e-5,atol=1e-6)
+            if trainable:
+                sum(x[...,0].sum() for x in expected).backward()
+                sum(x[...,0].sum() for x in actual).backward()
+                for a,b in zip(old.parameters(),new.parameters()):
+                    if a.grad is not None:
+                        torch.testing.assert_close(a.grad,b.grad,rtol=1e-4,atol=2e-6)
+            changed=[x.clone() for x in inputs]
+            changed[1][0,0,0,:5]=1
+            torch.testing.assert_close(new.forward_many(changed)[0],actual[0])
 
 
 if __name__=='__main__':

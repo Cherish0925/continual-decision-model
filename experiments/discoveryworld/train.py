@@ -241,10 +241,13 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
               sequence_length: int, device: str | torch.device, mode: str = "cdm",
               persistent: bool = True, restart_workspace: bool = False, outcome_weight: float = .5, immediate_weight: float = .25,
               optimizer=None, shuffle_seed: int = 0, imitation_reduction: str = "event", precision="float32",
-              transition_weight: float = .25) -> dict:
+              transition_weight: float = .25, window_text: bool = False,
+              state_gradient_length: int | None = None) -> dict:
     if imitation_reduction not in ("event", "action_run"):
         raise ValueError("imitation_reduction must be event or action_run")
     training = optimizer is not None
+    if state_gradient_length is not None and state_gradient_length < 1:
+        raise ValueError('State gradient length must be positive')
     model.train(training)
     order = list(range(len(episodes)))
     if training:
@@ -252,6 +255,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
     totals = {key: 0.0 for key in ("imitation_loss", "outcome_loss", "immediate_loss", "correct", "count", "supervised_count", "outcome_count",
                                   "raw_imitation_loss", "run_correct", "run_mass", "exit_correct", "exit_count", "ce_mass", "transition_loss")}
     device = torch.device(device)
+    optimizer_updates = 0
     for start in range(0, len(order), batch_size):
         batch = [episodes[i] for i in order[start:start + batch_size]]
         state = model.initial(len(batch), device)
@@ -273,10 +277,20 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
             window_loss = None
             with torch.set_grad_enabled(training), torch.autocast(
                     device.type, dtype=torch.bfloat16, enabled=precision == 'bfloat16'):
+                step_groups = [[episode.steps[min(t, len(episode.steps) - 1)] for episode in batch]
+                               for t in range(window, stop)]
+                packed_window = None
+                if window_text and step_groups[0][0].request_stages is not None:
+                    from .request_learning import prepare_request_window
+                    packed_window = prepare_request_window(model, step_groups, device)
                 for t in range(window, stop):
                     alive = torch.tensor([t < len(episode.steps) for episode in batch], device=device)
-                    steps = [episode.steps[min(t, len(episode.steps) - 1)] for episode in batch]
-                    obs, candidates = batch_features([load_features(step.feature_path) for step in steps], device)
+                    steps = step_groups[t - window]
+                    stages = None
+                    if packed_window is None:
+                        obs, candidates = batch_features([load_features(step.feature_path) for step in steps], device)
+                    else:
+                        obs, candidates, stages = packed_window[t - window]
                     targets = torch.tensor([step.expert_target for step in steps], device=device)
                     executed = torch.tensor([step.executed_target for step in steps], device=device)
                     supervised, observed = alive & (targets >= 0), alive & (executed >= 0)
@@ -288,7 +302,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                         from .request_learning import score_requests
                         logits, next_state, predicted, imitation, correct = score_requests(
                             model, steps, obs, candidates, state, mode=mode, persistent=persistent,
-                            restart_workspace=restart_workspace)
+                            restart_workspace=restart_workspace, prepared_stages=stages)
                     else:
                         logits, next_state, predicted = model(obs, candidates, state,
                             persistent=persistent, mode=mode, restart_workspace=restart_workspace,
@@ -300,7 +314,8 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     if immediate_weight and mode == "cdm" and model.config.refinements:
                         if steps[0].request_stages is not None:
                             _, _, _, immediate, _ = score_requests(model, steps, obs, candidates, state,
-                                mode=mode, persistent=persistent, restart_workspace=restart_workspace, refinements=0)
+                                mode=mode, persistent=persistent, restart_workspace=restart_workspace,
+                                refinements=0, prepared_stages=stages)
                         else:
                             early, _, _ = model(obs, candidates, state, persistent=persistent,
                                                 refinements=0, mode=mode, restart_workspace=restart_workspace,
@@ -321,6 +336,8 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     # Finished episodes contribute neither loss nor artificial state updates.
                     state = {key: torch.where(alive.reshape((-1,) + (1,) * (value.ndim - 1)), value, state[key])
                              for key, value in next_state.items()}
+                    if state_gradient_length and (t - window + 1) % state_gradient_length == 0:
+                        state = _detach(state)
                     # Keep bookkeeping on the device until the epoch ends.
                     # Boolean indexing and float(tensor) otherwise synchronize
                     # the host repeatedly at every recurrent event.
@@ -343,6 +360,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     window_loss.backward()
                     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                     optimizer.step()
+                    optimizer_updates += 1
             # This is truncated BPTT, not an episode reset: values of h/z survive.
             state = _detach(state)
     totals = dict(zip(totals, torch.stack([torch.as_tensor(value, device=device, dtype=torch.float64)
@@ -361,6 +379,7 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
             "action_run_weighted_accuracy": totals["run_correct"] / max(1e-8, totals["run_mass"]),
             "repeated_run_exit_accuracy": totals["exit_correct"] / totals["exit_count"] if totals["exit_count"] else None,
             "repeated_run_exits": int(totals["exit_count"]), "transitions": int(totals["count"]),
+            "optimizer_updates": optimizer_updates,
             "supervised_actions": int(totals["supervised_count"]), "observed_outcomes": int(totals["outcome_count"])}
 
 
@@ -451,6 +470,10 @@ def parse_args(argv=None):
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--sequence-length", type=int, default=32)
+    parser.add_argument('--window-text', action=argparse.BooleanOptionalAction, default=False,
+                        help='Encode a complete observed request window before causal state updates')
+    parser.add_argument('--state-gradient-length', type=int,
+                        help='Detach state this often within an optimizer window; default keeps its full graph')
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--core-lr", type=float, help="Optional separate learning rate for the inherited continual core")
     parser.add_argument("--precision", choices=('float32', 'bfloat16'), default='float32')
@@ -475,6 +498,8 @@ def parse_args(argv=None):
         parser.error("Epochs, batch sizes, sequence length and threads must be positive")
     if args.text_batch_size is not None and args.text_batch_size <= 0:
         parser.error('Text encoding batch size must be positive')
+    if args.state_gradient_length is not None and args.state_gradient_length <= 0:
+        parser.error('State gradient length must be positive')
     if (args.output / "training.jsonl").exists():
         parser.error("Choose a new output directory; an existing training log would be overwritten")
     return args
@@ -649,16 +674,27 @@ def main(argv=None):
                   mode=args.mode, persistent=not args.restart_state, restart_workspace=args.restart_workspace,
                   outcome_weight=args.outcome_weight,
                   immediate_weight=args.immediate_weight, imitation_reduction=args.imitation_reduction,
-                  precision=args.precision, transition_weight=args.transition_weight)
+                  precision=args.precision, transition_weight=args.transition_weight,
+                  window_text=args.window_text, state_gradient_length=args.state_gradient_length)
     best = float("inf")
     source_epoch = source["epoch"] if source else 0
     train_instances = historical_train | {episode.identity for episode in train}
     validation_instances = historical_validation | {episode.identity for episode in validation}
     with (args.output / "training.jsonl").open("x") as log:
         for epoch in range(args.epochs):
+            if torch.device(args.device).type == 'cuda':
+                torch.cuda.reset_peak_memory_stats(args.device)
+            epoch_start = perf_counter()
             training = run_epoch(model, train_prepared, optimizer=optimizer, shuffle_seed=args.seed + epoch, **kwargs)
+            training_seconds = perf_counter() - epoch_start
+            validation_start = perf_counter()
             validation_stats = run_epoch(model, validation_prepared, **kwargs)
+            validation_seconds = perf_counter() - validation_start
             row = {"epoch": source_epoch + epoch + 1, "stage_epoch": epoch + 1, "training": training, "validation": validation_stats,
+                   "training_seconds": training_seconds, "validation_seconds": validation_seconds,
+                   "training_events_per_second": training['transitions'] / training_seconds,
+                   "peak_allocated_bytes": torch.cuda.max_memory_allocated(args.device)
+                       if torch.device(args.device).type == 'cuda' else None,
                    "elapsed_seconds": perf_counter() - start}
             log.write(json.dumps(row) + "\n")
             log.flush()

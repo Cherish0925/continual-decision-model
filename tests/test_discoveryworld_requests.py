@@ -14,8 +14,8 @@ from experiments.discoveryworld.features import FeatureCache, FeatureConfig, bat
 from experiments.discoveryworld.request_actions import request_stages
 from experiments.discoveryworld.request_executor import ObjectRequestExecutor
 from experiments.discoveryworld.request_teacher import RequestTeacher
-from experiments.discoveryworld.request_learning import score_requests, request_return
-from experiments.discoveryworld.train import Episode, prepare_episodes, run_epoch
+from experiments.discoveryworld.request_learning import score_requests, request_return, prepare_request_window
+from experiments.discoveryworld.train import Episode, PreparedStep, PreparedEpisode, prepare_episodes, run_epoch
 
 
 class Laboratory:
@@ -104,6 +104,69 @@ class RequestTests(unittest.TestCase):
                 optimizer=torch.optim.AdamW(model.parameters(),lr=1e-3))
             self.assertEqual(result['transitions'],1)
             self.assertTrue(torch.isfinite(torch.tensor(result['loss'])))
+
+            # Preparing a whole window cannot add another state assimilation,
+            # expose a future observation, or disconnect a decision gradient.
+            baseline=deepcopy(model)
+            packed=deepcopy(model)
+            before=run_epoch(baseline,prepared,batch_size=1,sequence_length=2,device='cpu',
+                optimizer=torch.optim.SGD(baseline.parameters(),lr=.01),immediate_weight=0.)
+            after=run_epoch(packed,prepared,batch_size=1,sequence_length=2,device='cpu',
+                optimizer=torch.optim.SGD(packed.parameters(),lr=.01),immediate_weight=0.,window_text=True)
+            self.assertAlmostEqual(before['loss'],after['loss'],places=6)
+            for a,b in zip(baseline.parameters(),packed.parameters()):
+                torch.testing.assert_close(a,b)
+
+    def test_text_window_is_causal_and_preserves_sequence_gradients(self):
+        from transformers import BertConfig
+        cfg=BertConfig(vocab_size=32,hidden_size=16,num_hidden_layers=1,num_attention_heads=4,
+                       intermediate_size=32,max_position_embeddings=32,
+                       hidden_dropout_prob=0.,attention_probs_dropout_prob=0.)
+        torch.manual_seed(20)
+        with TemporaryDirectory() as directory:
+            root=Path(directory)
+            steps=[]
+            for i in range(4):
+                text=torch.randint(1,32,(3,16));text[:,7:]=0
+                candidates=torch.randint(1,32,(3,1,16));candidates[...,5:]=0
+                path=root/f'{i}.pt'
+                torch.save(dict(observation=dict(numeric=torch.randn(32),timing=torch.zeros(3),text=text),
+                                candidates=dict(text=candidates,numeric=torch.randn(3,8))),path)
+                steps.append(PreparedStep(str(path),i%3,i%3,[0.]*14,request_stages=[(str(path),i%3)]))
+            prepared=[PreparedEpisode(Episode(root/'a',{},[]),steps[:3]),
+                      PreparedEpisode(Episode(root/'b',{},[]),steps[:2])]
+            model=DigitalPolicy(DigitalConfig(width=16,text_dim=16,image_dim=16,outcome_dim=14,
+                text_backbone=cfg.to_dict(),train_text_backbone=True,candidate_read=True),
+                ContinualCore(CoreConfig(width=16,heads=4,slots=4,event_dim=16,record_dim=8,actions=1),torch.zeros(1,1)))
+            baseline,packed=deepcopy(model),deepcopy(model)
+            kwargs=dict(batch_size=2,sequence_length=3,device='cpu',immediate_weight=0.,outcome_weight=.1)
+            before=run_epoch(baseline,prepared,optimizer=torch.optim.SGD(baseline.parameters(),lr=.01),**kwargs)
+            after=run_epoch(packed,prepared,optimizer=torch.optim.SGD(packed.parameters(),lr=.01),window_text=True,**kwargs)
+            self.assertAlmostEqual(before['loss'],after['loss'],places=6)
+            self.assertEqual(before['transitions'],5)
+            for a,b in zip(baseline.parameters(),packed.parameters()):
+                torch.testing.assert_close(a,b,atol=2e-6,rtol=1e-4)
+            model.eval()
+            first=prepare_request_window(model,[[steps[0]],[steps[1]]],'cpu')[0]
+            changed=prepare_request_window(model,[[steps[0]],[steps[3]]],'cpu')[0]
+            def score(frame):
+                obs,actions,stages=frame
+                return score_requests(model,[steps[0]],obs,actions,model.initial(1,'cpu'),
+                    mode='cdm',persistent=True,restart_workspace=False,prepared_stages=stages)[0]
+            torch.testing.assert_close(score(first),score(changed))
+            # Same forward trajectory and update count, different temporal
+            # gradient span: the short condition retains state values.
+            full,short=deepcopy(model),deepcopy(model)
+            full_optimizer=torch.optim.SGD(full.parameters(),lr=0.)
+            short_optimizer=torch.optim.SGD(short.parameters(),lr=0.)
+            with patch.object(full_optimizer,'step',wraps=full_optimizer.step) as f, \
+                 patch.object(short_optimizer,'step',wraps=short_optimizer.step) as s:
+                a=run_epoch(full,prepared,optimizer=full_optimizer,window_text=True,**kwargs)
+                b=run_epoch(short,prepared,optimizer=short_optimizer,window_text=True,state_gradient_length=1,**kwargs)
+                self.assertEqual(f.call_count,s.call_count)
+                self.assertAlmostEqual(a['loss'],b['loss'],places=6)
+            self.assertTrue(any(not torch.allclose(a.grad,b.grad) for a,b in zip(full.parameters(),short.parameters())
+                                if a.grad is not None and b.grad is not None))
 
 
 if __name__=='__main__':

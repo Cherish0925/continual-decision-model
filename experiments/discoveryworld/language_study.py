@@ -22,12 +22,21 @@ def main():
     p.add_argument('--mode', choices=('cdm', 'gru'), required=True)
     p.add_argument('--seed', type=int, choices=SEEDS, required=True)
     p.add_argument('--encoder-path', type=Path, required=True)
+    p.add_argument('--output', type=Path, help='Job directory; defaults to root/models/condition_mode_seed')
+    p.add_argument('--epochs', type=int, default=32)
+    p.add_argument('--batch-size', type=int, default=4)
+    p.add_argument('--sequence-length', type=int, default=8)
+    p.add_argument('--state-gradient-length', type=int)
+    p.add_argument('--window-text', action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument('--lr', type=float, default=3e-4)
+    p.add_argument('--development-seeds', nargs='+', type=int, default=(6300,6301))
+    p.add_argument('--evaluation-seeds', nargs='+', type=int, default=(6800,6801))
     p.add_argument('--text-batch-size',type=int,default=64,
                    help='Text chunks per encoder call; independent of the four-episode training batch')
     p.add_argument('--text-checkpointing',action=argparse.BooleanOptionalAction,default=True)
     args = p.parse_args()
     root = args.root.resolve()
-    job = root/'models'/f'{args.condition}_{args.mode}_s{args.seed}'
+    job = args.output.resolve() if args.output else root/'models'/f'{args.condition}_{args.mode}_s{args.seed}'
     job.mkdir(parents=True, exist_ok=True)
     cache = root/'features'/args.condition
 
@@ -42,6 +51,10 @@ def main():
         marker.write_text(json.dumps({'stage':stage,'completed':True})+'\n')
 
     options = ['--features', 'lexical' if args.condition == 'lexical' else 'tokens']
+    if args.window_text:
+        options += ['--window-text']
+    if args.state_gradient_length is not None:
+        options += ['--state-gradient-length', args.state_gradient_length]
     if args.condition != 'lexical':
         options += ['--encoder-path', args.encoder_path,
                     '--text-initialization', 'random' if args.condition == 'random_text' else 'pretrained',
@@ -54,9 +67,9 @@ def main():
         '--output', job/'imitation', '--feature-cache', cache, *options,
         '--action-interface','object_requests_v1','--measurement-memory','--object-relations',
         '--action-history',8,'--candidate-read','--width',512,'--heads',4,'--slots',8,
-        '--mode',args.mode,'--epochs',32,'--batch-size',4,'--sequence-length',8,
+        '--mode',args.mode,'--epochs',args.epochs,'--batch-size',args.batch_size,'--sequence-length',args.sequence_length,
         '--allow-failed-actions','--immediate-weight',0,'--outcome-weight',.1,
-        '--lr',3e-4,'--text-lr',2e-5,'--precision','bfloat16','--disable-cudnn-attention',
+        '--lr',args.lr,'--text-lr',2e-5,'--precision','bfloat16','--disable-cudnn-attention',
         '--device','cuda:0','--threads',2,'--seed',args.seed])
 
     def evaluate(stage, checkpoint, seeds, temperature=0., reset=False):
@@ -72,8 +85,8 @@ def main():
             '--object-rng-seed',73106])
 
     weight=job/'imitation/last.pt'
-    evaluate('imitation_development',weight,(6300,6301))
-    evaluate('imitation_greedy',weight,(6800,6801))
+    evaluate('imitation_development',weight,args.development_seeds)
+    evaluate('imitation_greedy',weight,args.evaluation_seeds)
     run('interaction','experiments.discoveryworld.finetune',[
         '--checkpoint',weight,'--output',job/'interaction','--feature-cache',cache,
         '--encoder-path',args.encoder_path,'--native-suite','all','--themes',*THEMES,
@@ -83,7 +96,7 @@ def main():
         '--mode',args.mode,'--random-seed',args.seed,'--gamma',.999,'--native-action-cost',.001,
         '--outcome-weight',.1,'--text-lr',1e-5])
     for stage,temperature,reset in [('interaction_greedy',0.,False),('interaction_sampled',1.,False),('interaction_reset',0.,True)]:
-        evaluate(stage,job/'interaction/last.pt',(6800,6801),temperature,reset)
+        evaluate(stage,job/'interaction/last.pt',args.evaluation_seeds,temperature,reset)
     (job/'complete.json').write_text(json.dumps(dict(condition=args.condition,mode=args.mode,seed=args.seed))+'\n')
 
 

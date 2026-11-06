@@ -463,9 +463,11 @@ class DigitalPolicy(nn.Module):
             tokens.append(self.time(torch.log1p(features["timing"].to(dtype)))[:, None] + self.modality[1])
             masks.append(torch.ones(n, 1, dtype=torch.bool, device=device))
         for name, projection, modality in (("text", self.text, 2), ("image", self.image, 3)):
-            if features.get(name) is None:
+            if features.get(name) is None and features.get(name + '_embedding') is None:
                 continue
-            value = self.text_encoder(features[name]) if name == "text" and self.config.text_backbone else features[name].detach()
+            value = features.get(name + '_embedding')
+            if value is None:
+                value = self.text_encoder(features[name]) if name == "text" and self.config.text_backbone else features[name].detach()
             value = value.unsqueeze(1) if value.ndim == 2 else value
             tokens.append(projection(value.to(dtype)) + self.modality[modality])
             mask = features.get(name + "_present")
@@ -480,7 +482,9 @@ class DigitalPolicy(nn.Module):
                 raise ValueError("Measurement record columns must match the source core record schema")
             age = features["measurement_age"].to(dtype).unsqueeze(-1)
             record = self.core.record(torch.cat((numbers, age), -1))
-            label = self.text_encoder(features["measurement_text"]) if self.config.text_backbone else features["measurement_text"].detach()
+            label = features.get('measurement_text_embedding')
+            if label is None:
+                label = self.text_encoder(features["measurement_text"]) if self.config.text_backbone else features["measurement_text"].detach()
             label = self.text(label.to(dtype))
             tokens.append(record + label + self.modality[0])
             masks.append(features["measurement_present"].bool())
@@ -572,7 +576,9 @@ class DigitalPolicy(nn.Module):
         h, z = state["h"], state["z"]
         features = self.core.state_features(h, z) if mode == "cdm" else \
             torch.cat((self.core.norm_h(h), torch.zeros_like(h)), -1)
-        text = self.text_encoder(candidate_features["text"]) if self.config.text_backbone else candidate_features["text"].detach()
+        text = candidate_features.get('text_embedding')
+        if text is None:
+            text = self.text_encoder(candidate_features["text"]) if self.config.text_backbone else candidate_features["text"].detach()
         candidate = self.candidate_norm(self.candidate_text(text.to(h.dtype))
                                         + self.candidate_numeric(candidate_features["numeric"].to(h.dtype)))
         if self.config.object_relations:
