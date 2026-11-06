@@ -1,6 +1,6 @@
 # Where to test sustained adaptation
 
-Updated 5 November 2026. The next main comparison should hold a capable
+Updated 6 November 2026. The main comparison holds a capable
 executor fixed while learning which experiment to request and how its result
 changes subsequent decisions. This separates scientific decisions from
 navigation and instrument operation. Native operation learning remains an
@@ -8,9 +8,15 @@ application goal; its current low completion rate has not established the
 limits of CDM or the cause of every failure.
 
 The [shared object-request implementation and paired training](../experiments/discoveryworld/COMMON_EXECUTION.md)
-are now running. Execution, supervised learning, autonomous gradient updates and
-independent policy rollout have been exercised. Comparative outcomes are pending;
-initial teacher successes are separate from student performance.
+have completed their first study. After demonstration and interaction learning,
+CDM completes 6/160 repeated evaluations and GRU 2/160; resetting CDM neural
+state gives 8/160. Shared execution alone has not established reliable scientific
+decisions or a persistent-state benefit. The next comparison trains the text
+representation jointly with the decision model, alongside frozen, random-text
+and lexical controls. Recovery demonstrations start from states reached by the
+students. These changes address learning the recorded operations and responding
+to student-generated histories. Deployment-time parameter adaptation remains a
+separate uncompleted comparison.
 
 ## What the completed studies establish
 

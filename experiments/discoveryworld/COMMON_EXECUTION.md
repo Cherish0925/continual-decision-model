@@ -169,15 +169,15 @@ computation and recursive self-improvement require their own experiments in the
 [continual model program](../../research/CONTINUAL_AGENT.md). This five-theme
 study also leaves the official eight-theme native benchmark as a separate goal.
 
-## Run
-
-### Learning the request representation
+## Learning the request representation
 
 The completed demonstration models also fit their training requests poorly.
-Across eight initializations, final complete-request imitation accuracy averages
+Across eight initializations, last-epoch complete-request imitation accuracy averages
 17.47% for CDM and 14.83% for GRU; development accuracy averages 14.40% and
 11.43%. These scores require all request arguments to match the demonstration
-at its recorded state. They do not measure independent task execution. The
+at its recorded state during training. Frozen-checkpoint fitting is measured
+separately by [imitation_fit.py](imitation_fit.py); neither metric measures
+independent task execution. The
 observations already have separate lexical vectors per text line and explicit
 measurement-to-object links. The new comparison tests how these observations
 are represented and learned.
@@ -245,7 +245,7 @@ collection for a subsequent learning comparison. They never change the frozen
 data used by the 32 representation runs. These assisted trajectories measure
 training-data collection, not independent student completion.
 
-### Reproduce the preceding shared-executor comparison
+## Run the preceding shared-executor comparison
 
 With DiscoveryWorld installed and hosted credentials in environment variables:
 
