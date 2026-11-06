@@ -43,6 +43,18 @@ class DiscoveryWorldLearningTests(unittest.TestCase):
     def setUpClass(cls):
         torch.set_num_threads(1)
 
+    def test_parallel_preparation_preserves_history_targets_and_episode_order(self):
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            data = [episode(root/'a', 110, 3), episode(root/'b', 111, 2)]
+            data[0].transitions[0]['action_result']['success'] = False
+            cache = FeatureCache(root/'cache', FeatureConfig(mode='lexical', action_history=2))
+            parallel = prepare_episodes(data, cache, allow_failed_actions=True, workers=2)
+            serial = prepare_episodes(data, cache, allow_failed_actions=True)
+            self.assertEqual([row.episode.identity for row in parallel], [row.identity for row in data])
+            self.assertEqual([[asdict(s) for s in e.steps] for e in parallel],
+                             [[asdict(s) for s in e.steps] for e in serial])
+
     def test_action_feedback_history_uses_executed_action_and_only_past_feedback(self):
         with TemporaryDirectory() as folder:
             root = Path(folder)

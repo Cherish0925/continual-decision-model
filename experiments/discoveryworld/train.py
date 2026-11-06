@@ -8,10 +8,12 @@ scientific task completion; evaluate.py executes the learned policy.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict, dataclass, replace
 from hashlib import sha256
 import json
 import math
+import multiprocessing
 from pathlib import Path
 import random
 import subprocess
@@ -161,8 +163,30 @@ def action_run_weights(transitions: list[dict]) -> tuple[list[float], list[bool]
         start = stop
     return weights, exits
 
+def _start_feature_worker(cache_args, options):
+    global _worker_cache, _worker_preparation
+    torch.set_num_threads(1)
+    _worker_cache = FeatureCache(*cache_args)
+    _worker_preparation = options
+
+
+def _prepare_feature_episode(episode):
+    # Return only the prepared index, not a second copy of the raw trajectory.
+    return prepare_episodes([episode], _worker_cache, **_worker_preparation)[0].steps
+
+
 def prepare_episodes(episodes: list[Episode], cache: FeatureCache, *, allow_failed_actions=False,
-                     imitate_successful_episodes=False) -> list[PreparedEpisode]:
+                     imitate_successful_episodes=False, workers=1) -> list[PreparedEpisode]:
+    if workers > 1:
+        if cache.device.type != 'cpu':
+            raise ValueError('Parallel feature preparation uses CPU workers; choose a CPU feature device')
+        cache_args = (cache.directory.parent, cache.config, 'cpu', cache.encoder_path, cache.encode_batch_size)
+        options = dict(allow_failed_actions=allow_failed_actions,
+                       imitate_successful_episodes=imitate_successful_episodes)
+        with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context('spawn'),
+                                 initializer=_start_feature_worker, initargs=(cache_args, options)) as pool:
+            return [PreparedEpisode(episode, steps) for episode, steps in
+                    zip(episodes, pool.map(_prepare_feature_episode, episodes))]
     if cache.config.action_interface == 'object_requests_v1':
         from .request_learning import prepare_requests
         return prepare_requests(episodes, cache, allow_failed_actions=allow_failed_actions,
@@ -448,6 +472,8 @@ def parse_args(argv=None):
                         help="Zero object identity relations with the same record reader; requires object relations; inherit checkpoint setting")
     parser.add_argument("--feature-cache", type=Path, required=True)
     parser.add_argument("--prepare-only", action="store_true", help="Populate shared frozen features without training")
+    parser.add_argument('--prepare-workers', type=int, default=1,
+                        help='CPU processes for independent trajectory preparation; preserve event order inside each trajectory')
     parser.add_argument("--action-history", type=int, default=None,
                         help="Number of executed action/feedback records; inherit checkpoint setting by default")
     parser.add_argument('--action-interface', choices=('native','object_requests_v1'))
@@ -494,7 +520,7 @@ def parse_args(argv=None):
                         help="Use executed actions for state prediction and feed predicted results into decisions")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args(argv)
-    if min(args.epochs, args.batch_size, args.sequence_length, args.threads, args.feature_batch_size) <= 0:
+    if min(args.epochs, args.batch_size, args.sequence_length, args.threads, args.feature_batch_size, args.prepare_workers) <= 0:
         parser.error("Epochs, batch sizes, sequence length and threads must be positive")
     if args.text_batch_size is not None and args.text_batch_size <= 0:
         parser.error('Text encoding batch size must be positive')
@@ -603,7 +629,8 @@ def main(argv=None):
                          args.encoder_path, args.feature_batch_size)
     start = perf_counter()
     preparation = dict(allow_failed_actions=args.allow_failed_actions,
-                       imitate_successful_episodes=args.imitate_successful_episodes)
+                       imitate_successful_episodes=args.imitate_successful_episodes,
+                       workers=args.prepare_workers)
     train_prepared = prepare_episodes(train, cache, **preparation)
     validation_prepared = prepare_episodes(validation, cache, **preparation)
     cache.close()

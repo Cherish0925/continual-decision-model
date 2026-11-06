@@ -3,11 +3,20 @@ import argparse
 from collections import defaultdict
 from datetime import datetime, timezone
 import json
+import math
 from pathlib import Path
 
 
 def read_rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
+
+
+def finite_json(value):
+    if isinstance(value, dict):
+        return {key: finite_json(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [finite_json(item) for item in value]
+    return None if isinstance(value, float) and not math.isfinite(value) else value
 
 
 def summarize(records, collections, study='shared_execution'):
@@ -41,6 +50,7 @@ def summarize(records, collections, study='shared_execution'):
                     interaction_training_complete=(job/'interaction.done.json').exists(),
                     interaction_training_successes=sum(x['completed_successfully'] for x in episodes),
                     native_actions_in_finished_episodes=sum(x['steps'] for x in episodes),
+                    nonfinite_imitation=any(not math.isfinite(row['training']['loss']) for row in imitation),
                     last_imitation=imitation[-1] if imitation else None,
                     complete=(job/'complete.json').exists()))
                 for case_file in sorted(job.glob('*/cases.json')):
@@ -89,7 +99,8 @@ def summarize(records, collections, study='shared_execution'):
     if study == 'language':
         status.pop('completed_initial_imitation')
         results['endpoint'] = 'Fixed 32-epoch supervised weights, then fixed 120-world interaction weights. No test score selects a checkpoint.'
-    return status, results
+    status['nonfinite_metrics'] = 'Nonfinite numeric values are null; nonfinite_imitation identifies affected models. Original logs are retained.'
+    return finite_json(status), finite_json(results)
 
 
 def main():
@@ -103,7 +114,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=True)
     prefix = 'language_learning' if args.study == 'language' else 'common_execution'
     for name, value in ((prefix+'_status', status), (prefix, results)):
-        (args.output/(name+'.json')).write_text(json.dumps(value,indent=2)+'\n')
+        (args.output/(name+'.json')).write_text(json.dumps(value,indent=2,allow_nan=False)+'\n')
     print(json.dumps(dict(models=status['models_with_recorded_updates'],groups=results['groups'])))
 
 

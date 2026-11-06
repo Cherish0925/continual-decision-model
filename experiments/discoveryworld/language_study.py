@@ -29,6 +29,7 @@ def main():
     p.add_argument('--state-gradient-length', type=int)
     p.add_argument('--window-text', action=argparse.BooleanOptionalAction, default=False)
     p.add_argument('--lr', type=float, default=3e-4)
+    p.add_argument('--prepare-workers', type=int, default=1)
     p.add_argument('--development-seeds', nargs='+', type=int, default=(6300,6301))
     p.add_argument('--evaluation-seeds', nargs='+', type=int, default=(6800,6801))
     p.add_argument('--text-batch-size',type=int,default=64,
@@ -68,6 +69,7 @@ def main():
         '--action-interface','object_requests_v1','--measurement-memory','--object-relations',
         '--action-history',8,'--candidate-read','--width',512,'--heads',4,'--slots',8,
         '--mode',args.mode,'--epochs',args.epochs,'--batch-size',args.batch_size,'--sequence-length',args.sequence_length,
+        '--prepare-workers',args.prepare_workers,
         '--allow-failed-actions','--immediate-weight',0,'--outcome-weight',.1,
         '--lr',args.lr,'--text-lr',2e-5,'--precision','bfloat16','--disable-cudnn-attention',
         '--device','cuda:0','--threads',2,'--seed',args.seed])
