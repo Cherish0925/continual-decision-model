@@ -296,6 +296,8 @@ class DigitalConfig:
     action_conditioned: bool = False
     text_backbone: dict | None = None
     train_text_backbone: bool = False
+    text_batch_size: int = 64
+    text_checkpointing: bool = True
 
 
 class DigitalPolicy(nn.Module):
@@ -335,7 +337,8 @@ class DigitalPolicy(nn.Module):
         self.outcome = nn.Sequential(nn.Linear(3 * w, w), nn.GELU(), nn.Linear(w, c.outcome_dim))
         if c.text_backbone is not None:
             from cdm.text_encoder import DecisionTextEncoder
-            self.text_encoder = DecisionTextEncoder(c.text_backbone, c.train_text_backbone)
+            self.text_encoder = DecisionTextEncoder(c.text_backbone, c.train_text_backbone,
+                batch_size=c.text_batch_size, checkpointing=c.text_checkpointing)
         if c.object_relations:
             self._init_object_relations()
         if c.candidate_read:

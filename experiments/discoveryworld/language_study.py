@@ -22,6 +22,9 @@ def main():
     p.add_argument('--mode', choices=('cdm', 'gru'), required=True)
     p.add_argument('--seed', type=int, choices=SEEDS, required=True)
     p.add_argument('--encoder-path', type=Path, required=True)
+    p.add_argument('--text-batch-size',type=int,default=64,
+                   help='Text chunks per encoder call; independent of the four-episode training batch')
+    p.add_argument('--text-checkpointing',action=argparse.BooleanOptionalAction,default=True)
     args = p.parse_args()
     root = args.root.resolve()
     job = root/'models'/f'{args.condition}_{args.mode}_s{args.seed}'
@@ -41,7 +44,9 @@ def main():
     options = ['--features', 'lexical' if args.condition == 'lexical' else 'tokens']
     if args.condition != 'lexical':
         options += ['--encoder-path', args.encoder_path,
-                    '--text-initialization', 'random' if args.condition == 'random_text' else 'pretrained']
+                    '--text-initialization', 'random' if args.condition == 'random_text' else 'pretrained',
+                    '--text-batch-size',args.text_batch_size,
+                    '--text-checkpointing' if args.text_checkpointing else '--no-text-checkpointing']
         if args.condition != 'frozen_text':
             options += ['--train-text-backbone']
     run('imitation', 'experiments.discoveryworld.train', [

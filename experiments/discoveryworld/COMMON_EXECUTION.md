@@ -261,6 +261,46 @@ collection for a subsequent learning comparison. They never change the frozen
 data used by the 32 representation runs. These assisted trajectories measure
 training-data collection, not independent student completion.
 
+### Training throughput
+
+The token policy in this comparison has 38,343,587 parameters. Its text encoder
+is called for observation lines, measurement records and each request field.
+Small recurrent batches therefore produce many encoder calls; parameter count
+alone does not describe the amount of text processed per decision.
+
+Training now assembles candidate fields on the CPU before transferring each
+field once, and accumulates epoch metrics on the GPU without reading every
+scalar after each event. Text microbatch size and activation recomputation are
+explicit settings, saved in the model configuration and inherited by evaluation
+and interaction training. Existing checkpoints retain their original defaults:
+64 text chunks per call and activation recomputation for trainable text.
+
+A local H100 measurement used the same four recorded training episodes, eight
+events per episode, width 512, bfloat16, and one optimizer update. Weights were
+initialized with seed 501; these timings do not measure trained task performance.
+Each row reports the median of three timed repetitions after a warmup:
+
+| Execution | Seconds per 32-event window | Peak allocated GiB |
+| --- | ---: | ---: |
+| Original, 64 text chunks, recomputation | 2.161 | 6.62 |
+| Batched transfers and deferred metrics, 64 chunks, recomputation | 2.168 | 6.62 |
+| Batched transfers and deferred metrics, 256 chunks, recomputation | 1.254 | 6.66 |
+| Batched transfers and deferred metrics, 64 chunks, no recomputation | 1.118 | 48.06 |
+
+The 256-chunk setting improves this window's throughput by 1.72 times while
+retaining recomputation's memory benefit. Larger text microbatches can assign
+dropout draws differently; they keep the episode batch, targets and update
+count unchanged. Tests compare text outputs and gradients with dropout disabled
+and verify that execution settings survive checkpoint loading. Removing
+recomputation preserved this window's loss, but its memory use makes a single
+window insufficient to choose that setting for every episode. Full-epoch
+measurements are required before changing the end-to-end duration estimate.
+
+Use `--text-batch-size 256` with either the training command or the study driver
+to select the larger encoder batches. `--no-text-checkpointing` trades memory
+for compute explicitly. The already-running comparison retains its frozen source
+and settings; it is not silently changed by these implementation updates.
+
 ## Run the preceding shared-executor comparison
 
 With DiscoveryWorld installed and hosted credentials in environment variables:

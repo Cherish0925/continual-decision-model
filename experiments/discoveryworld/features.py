@@ -434,20 +434,22 @@ def batch_features(features: list[dict], device: torch.device | str) -> tuple[di
     count = max(len(row["text"]) for row in candidates)
     token_input = candidates[0]['text'].ndim == 3
     text_shape = (max(row['text'].shape[1] for row in candidates), candidates[0]['text'].shape[-1]) if token_input else (candidates[0]['text'].shape[-1],)
-    actions = {'text': torch.zeros(len(features), count, *text_shape, dtype=candidates[0]['text'].dtype, device=device),
-               'numeric': torch.zeros(len(features), count, candidates[0]['numeric'].shape[-1], device=device)}
-    actions["present"] = torch.zeros(len(features), count, dtype=torch.bool, device=device)
+    # Cached rows are CPU tensors. Assemble each complete field before one
+    # transfer instead of copying every row into a separate device slice.
+    actions = {'text': torch.zeros(len(features), count, *text_shape, dtype=candidates[0]['text'].dtype),
+               'numeric': torch.zeros(len(features), count, candidates[0]['numeric'].shape[-1])}
+    actions["present"] = torch.zeros(len(features), count, dtype=torch.bool)
     if any("measurement_relations" in row for row in candidates):
-        actions["measurement_relations"] = torch.zeros(len(features), count, length, 8, device=device)
+        actions["measurement_relations"] = torch.zeros(len(features), count, length, 8)
     for index, row in enumerate(candidates):
         n = len(row["text"])
         for key in ("text", "numeric"):
             if key == 'text' and token_input:
-                actions[key][index, :n, :row[key].shape[1]] = row[key].to(device)
+                actions[key][index, :n, :row[key].shape[1]] = row[key]
             else:
-                actions[key][index, :n] = row[key].to(device)
+                actions[key][index, :n] = row[key]
         actions["present"][index, :n] = True
         if "measurement_relations" in row:
             relations = row["measurement_relations"]
-            actions["measurement_relations"][index, :n, :relations.shape[1]] = relations.to(device)
-    return obs, actions
+            actions["measurement_relations"][index, :n, :relations.shape[1]] = relations
+    return obs, {key: value.to(device) for key, value in actions.items()}

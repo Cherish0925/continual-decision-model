@@ -9,6 +9,7 @@ from transformers import BertConfig, BertTokenizerFast
 
 from cdm.core import ContinualCore, CoreConfig
 from cdm.digital import DigitalConfig, DigitalPolicy
+from cdm.text_encoder import DecisionTextEncoder
 from experiments.discoveryworld.features import FeatureCache, FeatureConfig, batch_features, load_features
 from experiments.discoveryworld.request_actions import request_candidates
 from experiments.discoveryworld.train import load_checkpoint
@@ -38,7 +39,8 @@ class DecisionTextTests(unittest.TestCase):
                 torch.manual_seed(4)
                 core = ContinualCore(CoreConfig(width=16,heads=4,slots=4,event_dim=16,record_dim=8,actions=1),torch.zeros(1,1))
                 model = DigitalPolicy(DigitalConfig(width=16,text_dim=16,image_dim=16,outcome_dim=14,
-                    text_backbone=cfg.to_dict(),train_text_backbone=trainable,candidate_read=True),core).train()
+                    text_backbone=cfg.to_dict(),train_text_backbone=trainable,candidate_read=True,
+                    text_batch_size=8,text_checkpointing=False),core).train()
                 logits, _, _ = model(obs, actions, model.initial(1,'cpu'), predict_outcomes=False)
                 torch.nn.functional.cross_entropy(logits, torch.tensor([1])).backward()
                 encoder_grad = sum(float(p.grad.abs().sum()) for p in model.text_encoder.parameters() if p.grad is not None)
@@ -50,6 +52,8 @@ class DecisionTextTests(unittest.TestCase):
                 torch.save(dict(model=model.state_dict(),core_config=asdict(core.config),
                     digital_config=asdict(model.config),features=asdict(features)),path)
                 restored,_=load_checkpoint(path)
+                self.assertEqual(restored.text_encoder.batch_size,8)
+                self.assertFalse(restored.text_encoder.backbone.is_gradient_checkpointing)
                 restored.eval()
                 actual=restored(obs,actions,restored.initial(1,'cpu'),predict_outcomes=False)[0]
                 torch.testing.assert_close(actual,expected,rtol=0,atol=0)
@@ -57,6 +61,29 @@ class DecisionTextTests(unittest.TestCase):
             ids = cache.texts(['sample ' * 40 + 'temperature'])[0]
             self.assertGreater(len(ids),1)
             self.assertIn(words.index('temperature'),ids[-1].tolist())
+
+    def test_execution_batches_preserve_text_values_and_gradients(self):
+        torch.set_num_threads(1)
+        cfg=BertConfig(vocab_size=32,hidden_size=16,num_hidden_layers=2,
+                       num_attention_heads=4,intermediate_size=32,max_position_embeddings=32,
+                       hidden_dropout_prob=0.,attention_probs_dropout_prob=0.)
+        torch.manual_seed(5)
+        ids=torch.randint(1,32,(2,3,2,16))
+        ids[...,9:]=0
+        ids[0,1]=ids[0,0]
+        ids[1,2,1]=0
+        reference=DecisionTextEncoder(cfg.to_dict(),True,batch_size=1,checkpointing=True)
+        batched=DecisionTextEncoder(cfg.to_dict(),True,batch_size=8,checkpointing=False)
+        batched.load_state_dict(reference.state_dict())
+        expected,actual=reference(ids),batched(ids)
+        torch.testing.assert_close(actual,expected)
+        expected[...,0].sum().backward()
+        actual[...,0].sum().backward()
+        for old,new in zip(reference.parameters(),batched.parameters()):
+            if old.grad is None:
+                self.assertIsNone(new.grad)
+            else:
+                torch.testing.assert_close(new.grad,old.grad,rtol=1e-4,atol=1e-6)
 
 
 if __name__=='__main__':

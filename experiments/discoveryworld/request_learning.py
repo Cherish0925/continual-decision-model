@@ -53,10 +53,11 @@ def score_requests(model, steps, obs, final_candidates, state, *, mode, persiste
     event,state = model.assimilate(obs,state,persistent=persistent,restart_workspace=restart_workspace)
     if mode == 'cdm':
         state = model.refine_state(event,state,model.config.refinements if refinements is None else refinements)
-    lengths = torch.tensor([len(s.request_stages) for s in steps],device=device)
+    stage_counts = [len(s.request_stages) for s in steps]
+    lengths = torch.tensor(stage_counts,device=device)
     loss = torch.zeros(len(steps),device=device)
     correct = torch.ones(len(steps),dtype=torch.bool,device=device)
-    for stage in range(int(lengths.max())):
+    for stage in range(max(stage_counts)):
         entries = [s.request_stages[min(stage,len(s.request_stages)-1)] for s in steps]
         _,actions = batch_features([load_features(path) for path,index in entries],device)
         targets = torch.tensor([index for path,index in entries],device=device)

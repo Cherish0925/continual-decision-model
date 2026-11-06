@@ -5,13 +5,16 @@ import torch.nn.functional as F
 
 
 class DecisionTextEncoder(nn.Module):
-    def __init__(self, config: dict, trainable: bool):
+    def __init__(self, config: dict, trainable: bool, *, batch_size: int = 64, checkpointing: bool = True):
         super().__init__()
         from transformers import BertConfig, BertModel
         self.backbone = BertModel(BertConfig(**config))
         self.trainable = trainable
+        if batch_size < 1:
+            raise ValueError('Text encoding batch size must be positive')
+        self.batch_size = batch_size
         self.backbone.requires_grad_(trainable)
-        if trainable:
+        if trainable and checkpointing:
             self.backbone.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         self.train(self.training)
 
@@ -34,7 +37,7 @@ class DecisionTextEncoder(nn.Module):
         valid = present.any(-1)
         source = unique[valid]
         vectors = []
-        for batch in source.split(64):
+        for batch in source.split(self.batch_size):
             mask = batch.ne(0)
             with torch.set_grad_enabled(torch.is_grad_enabled() and self.trainable):
                 hidden = self.backbone(input_ids=batch, attention_mask=mask, return_dict=True).last_hidden_state

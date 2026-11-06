@@ -321,26 +321,32 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
                     # Finished episodes contribute neither loss nor artificial state updates.
                     state = {key: torch.where(alive.reshape((-1,) + (1,) * (value.ndim - 1)), value, state[key])
                              for key, value in next_state.items()}
-                    totals["imitation_loss"] += float((imitation.detach() * ce_weights)[supervised].sum())
-                    totals["raw_imitation_loss"] += float(imitation.detach()[supervised].sum())
-                    totals["ce_mass"] += float(ce_weights[supervised].sum())
-                    totals["outcome_loss"] += float(outcome.detach()[observed].sum())
-                    totals["transition_loss"] += float(transition_loss.detach()[observed].sum())
-                    totals["immediate_loss"] += float((immediate.detach() * ce_weights)[supervised].sum())
-                    totals["correct"] += int(correct[supervised].sum())
-                    totals["run_correct"] += float((correct * run_weights)[supervised].sum())
-                    totals["run_mass"] += float(run_weights[supervised].sum())
-                    totals["exit_correct"] += int(correct[exit_mask & supervised].sum())
-                    totals["exit_count"] += int((exit_mask & supervised).sum())
-                    totals["count"] += int(alive.sum())
-                    totals["supervised_count"] += int(supervised.sum())
-                    totals["outcome_count"] += int(observed.sum())
+                    # Keep bookkeeping on the device until the epoch ends.
+                    # Boolean indexing and float(tensor) otherwise synchronize
+                    # the host repeatedly at every recurrent event.
+                    masked_sum = lambda value, mask: value.masked_fill(~mask, 0).sum().double()
+                    totals["imitation_loss"] += masked_sum(imitation.detach() * ce_weights, supervised)
+                    totals["raw_imitation_loss"] += masked_sum(imitation.detach(), supervised)
+                    totals["ce_mass"] += masked_sum(ce_weights, supervised)
+                    totals["outcome_loss"] += masked_sum(outcome.detach(), observed)
+                    totals["transition_loss"] += masked_sum(transition_loss.detach(), observed)
+                    totals["immediate_loss"] += masked_sum(immediate.detach() * ce_weights, supervised)
+                    totals["correct"] += masked_sum(correct, supervised)
+                    totals["run_correct"] += masked_sum(correct * run_weights, supervised)
+                    totals["run_mass"] += masked_sum(run_weights, supervised)
+                    totals["exit_correct"] += masked_sum(correct, exit_mask & supervised)
+                    totals["exit_count"] += (exit_mask & supervised).sum().double()
+                    totals["count"] += alive.sum().double()
+                    totals["supervised_count"] += supervised.sum().double()
+                    totals["outcome_count"] += observed.sum().double()
                 if training:
                     window_loss.backward()
                     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                     optimizer.step()
             # This is truncated BPTT, not an episode reset: values of h/z survive.
             state = _detach(state)
+    totals = dict(zip(totals, torch.stack([torch.as_tensor(value, device=device, dtype=torch.float64)
+                                          for value in totals.values()]).cpu().tolist()))
     count, ce_mass = max(1, totals["supervised_count"]), max(1e-8, totals["ce_mass"])
     result = {"imitation_loss": totals["imitation_loss"] / ce_mass,
               "outcome_loss": totals["outcome_loss"] / max(1, totals["outcome_count"]),
@@ -365,7 +371,9 @@ def create_model(args, text_dim: int, image_dim: int, text_backbone=None):
                             candidate_read=bool(getattr(args, "candidate_read", False)),
                             action_conditioned=bool(getattr(args, "action_conditioned", False)),
                             text_backbone=text_backbone,
-                            train_text_backbone=bool(getattr(args, 'train_text_backbone', False)))
+                            train_text_backbone=bool(getattr(args, 'train_text_backbone', False)),
+                            text_batch_size=getattr(args, 'text_batch_size', None) or 64,
+                            text_checkpointing=getattr(args, 'text_checkpointing', None) is not False)
     if args.initial_checkpoint:
         saved = torch.load(args.initial_checkpoint, map_location="cpu", weights_only=True)
         if saved.get("kind") == "shared_experiment_core_v1":
@@ -407,6 +415,10 @@ def parse_args(argv=None):
     parser.add_argument('--train-text-backbone', action=argparse.BooleanOptionalAction, default=None,
                         help='Adapt the pretrained text encoder jointly with the decision policy')
     parser.add_argument('--text-lr', type=float, default=2e-5)
+    parser.add_argument('--text-batch-size', type=int,
+                        help='Independent text chunks per encoder call; defaults to 64 or the resumed setting')
+    parser.add_argument('--text-checkpointing', action=argparse.BooleanOptionalAction, default=None,
+                        help='Recompute text activations during backward to reduce memory; inherited on resume')
     parser.add_argument('--text-initialization', choices=('pretrained', 'random'), default='pretrained',
                         help='Same text architecture with pretrained or random weights')
     parser.add_argument("--measurement-memory", action=argparse.BooleanOptionalAction, default=None,
@@ -461,6 +473,8 @@ def parse_args(argv=None):
     args = parser.parse_args(argv)
     if min(args.epochs, args.batch_size, args.sequence_length, args.threads, args.feature_batch_size) <= 0:
         parser.error("Epochs, batch sizes, sequence length and threads must be positive")
+    if args.text_batch_size is not None and args.text_batch_size <= 0:
+        parser.error('Text encoding batch size must be positive')
     if (args.output / "training.jsonl").exists():
         parser.error("Choose a new output directory; an existing training log would be overwritten")
     return args
@@ -504,6 +518,14 @@ def initialize_training(args):
         model.config = replace(model.config, train_text_backbone=trainable)
         model.text_encoder.trainable = trainable
         model.text_encoder.backbone.requires_grad_(trainable)
+        batch_size = model.config.text_batch_size if args.text_batch_size is None else args.text_batch_size
+        checkpointing = model.config.text_checkpointing if args.text_checkpointing is None else args.text_checkpointing
+        model.config = replace(model.config, text_batch_size=batch_size, text_checkpointing=checkpointing)
+        model.text_encoder.batch_size = batch_size
+        if trainable and checkpointing:
+            model.text_encoder.backbone.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
+        else:
+            model.text_encoder.backbone.gradient_checkpointing_disable()
     overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations", "action_history", "action_interface")
                  if getattr(args, key, None) is not None}
     if overrides:
