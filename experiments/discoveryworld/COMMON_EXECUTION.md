@@ -6,16 +6,13 @@ instrument, sample, recipe component and control-menu answer. A deterministic
 executor reaches and acquires the declared objects. Every underlying operation
 consumes the native action budget and remains in the recorded trajectory.
 
-**Status, 6 November 2026:** the autonomous comparison and full-data supervised
-endpoints are complete; demonstration-initialized interaction training is running.
-It resumed after a data-delivery interruption. Supervised
-learning, autonomous gradient updates and independent learned-policy execution
-have run in the native simulator. All sixteen self-learning runs finished
-their interaction schedules on four compute nodes. All sixteen paired demonstration runs completed
-four initial epochs on the fixed Easy collection while longer tasks continue.
-Full comparative scores are pending.
-The [dated run snapshot](results/common_execution_status.json) separates actual
-optimizer updates, unfinished teacher attempts and pending model comparisons.
+**Status, 6 November 2026:** all 32 student runs and their fixed-endpoint
+evaluations are complete. Demonstration-initialized interaction learning gives
+CDM 6/160 and GRU 2/160 greedy completions. Resetting CDM's neural state gives
+8/160. Reliable task execution and a completion benefit from persistent state
+have not emerged. The [dated run snapshot](results/common_execution_status.json)
+separates completed student comparisons from teacher attempts, some of which
+ended with provider errors.
 
 ## Execution and learning
 
@@ -90,7 +87,7 @@ The submitted interaction command selected all three difficulties. Its
 this stage as eighty instances was incorrect; difficulty selection is now
 explicit in the configuration and command.
 
-## Completed autonomous comparison and initial demonstration execution
+## Completed comparisons
 
 The sixteen self-learning runs completed 1,920 training episodes, 446,727 native
 operations and 8,075 optimizer updates. Seven training episodes completed their
@@ -110,8 +107,26 @@ All sixteen demonstration models subsequently completed eight epochs on the
 fixed full collection. Independent greedy execution gives CDM 0/160 and GRU
 0/160 on the same twenty evaluation instances. CDM's mean task progress is
 0.0617; GRU's is 0.0371. Task completion remains absent at this supervised
-endpoint. Autonomous interaction training from these weights is running;
-its final evaluations have not completed.
+endpoint.
+
+The subsequent interaction stage completed another 1,920 training episodes,
+421,667 native actions and 8,595 optimizer updates. Seventy-four training
+episodes completed their task. Training took 36.4–47.3 minutes per parallel run.
+Its fixed endpoints give:
+
+| Model initialized with demonstrations | Greedy | Sampled | Greedy, state reset |
+| --- | ---: | ---: | ---: |
+| CDM | 6/160 | 3/160 | 8/160 |
+| GRU | 2/160 | 0/160 | 2/160 |
+
+CDM's six greedy successes are repeated executions of three Easy instances:
+one plant-nutrient instance and two archaeology instances. No Normal instance
+is solved. CDM mean task progress rises from 0.0617 at the supervised endpoint
+to 0.2357 after interaction learning; GRU rises from 0.0371 to 0.1583. This
+progress measure is not a task completion rate. Neither the low completion
+counts nor the state-reset comparison establish a persistent-state advantage.
+The fixed curriculum is complete; another unchanged sweep is not supported by
+these results.
 
 All sixteen demonstration models finished four epochs on the same 678 training requests.
 Each then executed the same ten Easy development instances with two decoding
@@ -123,9 +138,8 @@ executions of ten worlds.
 | CDM | 0/80 | 7/80 |
 | GRU | 0/80 | 3/80 |
 
-These starting policies do not yet execute the tasks reliably. Full imitation,
-autonomous learning and the fresh-instance comparison remain pending. The
-initial weights are fixed, and these development outcomes do not select a model
+These starting policies did not execute the tasks reliably. Their initial
+weights were fixed, and these development outcomes did not select a model
 or replace the planned final endpoints. See the [per-instance results](results/common_execution.json).
 
 Final interaction policies use both greedy and sampled decoding. Resetting

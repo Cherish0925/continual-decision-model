@@ -1,6 +1,28 @@
 # Research progress
 
-## 6 November: demonstration endpoints evaluated; interaction training running
+## 6 November: all 32 shared-executor comparisons complete
+
+All planned student training and fixed-endpoint evaluations finished by
+17:33 UTC on 5 November (01:33 on 6 November, UTC+8). The demonstration-initialized
+interaction stage added 1,920 episodes, 421,667 native actions and 8,595 optimizer
+updates; each run took 36.4–47.3 minutes. Its final results are:
+
+| Demonstration-initialized model after interaction learning | Greedy | Sampled | Greedy, state reset |
+| --- | ---: | ---: | ---: |
+| CDM | 6/160 | 3/160 | 8/160 |
+| GRU | 2/160 | 0/160 | 2/160 |
+
+Each entry repeats the same twenty evaluation instances across eight
+initializations. CDM's six greedy successes cover only three Easy instances
+in archaeology and plant nutrients; all Normal instances remain unsolved.
+The preceding supervised endpoints scored 0/160. Interaction learning improves
+some behavior, but reliable task execution and a benefit from preserving neural
+state are still absent. These results do not justify another unchanged sweep.
+
+All 32 model/record directories have been copied back from the training nodes.
+The scheduled study has ended; no follow-up training is running as of the
+6 November status check. Current measurements and per-instance outcomes are
+linked below.
 
 All sixteen autonomous runs completed training and three fixed evaluations.
 CDM completes 0/160 with greedy actions, 0/160 with sampled actions and 0/160
@@ -17,7 +39,7 @@ episodes are retained. Later teacher continuations run separately and cannot
 change these training inputs. All four nodes received the same snapshot and
 resumed the sixteen jobs. All sixteen completed eight full-data epochs. Their
 fixed supervised endpoints each complete 0/160 with greedy execution (CDM and
-GRU); subsequent autonomous interaction training is running. Completed epochs
+GRU); subsequent autonomous interaction training and evaluation are now complete. Completed epochs
 and optimizer updates remain in the
 [dated status](experiments/discoveryworld/results/common_execution_status.json).
 
