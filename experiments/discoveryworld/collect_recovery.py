@@ -34,26 +34,36 @@ def run_case(job):
     row = dict(case, student_steps=0, teacher_steps=0)
     torch.set_num_threads(config["threads"])
     try:
-        student = LearnedPolicy(config["checkpoint"], config["feature_cache"], device="cpu",
+        student = LearnedPolicy(config["checkpoint"], config["feature_cache"], device=config['device'],
+                                encoder_path=config['encoder_path'],
                                 temperature=config["student_temperature"], sampling_seed=case["seed"])
-        teacher = DeepSeekFlashTeacher(provider=config["provider"], model=config["teacher_model"],
+        shared = student.features.config.action_interface == 'object_requests_v1'
+        if shared:
+            from .request_teacher import RequestTeacher
+            from .request_environment import RequestEnvironment
+        teacher_class = RequestTeacher if shared else DeepSeekFlashTeacher
+        teacher = teacher_class(provider=config["provider"], model=config["teacher_model"],
             max_input_tokens=config["max_input_tokens"], max_new_tokens=config["max_new_tokens"],
             reasoning_effort=config["reasoning_effort"], temperature=0., action_corrections=2)
         state = teacher.initial()
         np.random.seed((config["object_rng_seed"] + case["seed"]) % 2**32)
         with (path / "environment.log").open("w") as log, redirect_stdout(log), \
                 seeded_object_initialization(config["object_rng_seed"]):
-            env = StructuredDiscoveryWorldEnv(path, case["max_steps"])
+            env = (RequestEnvironment(path, case['max_steps'], max_request_actions=config['max_request_actions'])
+                   if shared else StructuredDiscoveryWorldEnv(path, case["max_steps"]))
             obs = env.reset(case["theme"], case["difficulty"], case["seed"])
             env.save_initial_rng(path / "initial_rng.json.gz")
             metadata = dict(env.configuration, action_descriptions=env.actions,
                 teleport_locations=env.teleports, initial_task_metrics=env.metrics,
                 policy="student_prefix_teacher_continuation", student_steps=config["student_steps"],
+                student_requests=config['student_requests'],
                 student_epoch=student.checkpoint["epoch"],
                 teacher={k: v for k, v in teacher.configuration.items() if k != "endpoint"})
             with TrajectoryWriter(path, metadata) as writer, (path / "teacher.jsonl").open("w") as replies:
                 while not env.ended:
-                    student_turn = env.steps < config["student_steps"]
+                    student_turn = (env.decision_steps < config['student_requests']
+                                    if config['student_requests'] is not None
+                                    else env.steps < config["student_steps"])
                     if student_turn:
                         state["objects"].observe(obs)
                         state["measurements"].observe_initial(obs)
@@ -75,6 +85,9 @@ def run_case(job):
             row.update(status="evaluated", steps=env.steps, task_metrics=env.metrics,
                        success=all(task["completed_successfully"] for task in env.metrics),
                        progress=sum(task["progress"] for task in env.metrics) / len(env.metrics))
+            if shared:
+                row['requests'] = env.decision_steps
+                row['controller_step_unit'] = 'object_requests'
     except Exception:
         row.update(status="error", error=traceback.format_exc())
     row["seconds"] = perf_counter() - started
@@ -91,6 +104,11 @@ def main(argv=None):
     p.add_argument("--difficulties", nargs="+", choices=("Easy", "Normal", "Challenge"), default=["Easy", "Normal"])
     p.add_argument("--themes", nargs="+", choices=THEMES, default=list(THEMES))
     p.add_argument("--student-steps", type=int, default=8)
+    p.add_argument('--student-requests', type=int,
+                   help='For shared execution, hand over after this many complete student requests')
+    p.add_argument('--max-request-actions', type=int, default=12)
+    p.add_argument('--device', default='cpu')
+    p.add_argument('--encoder-path', type=Path)
     p.add_argument("--student-temperature", type=float, default=0.)
     p.add_argument("--max-steps", type=int)
     p.add_argument("--workers", type=int, default=16)
@@ -103,11 +121,14 @@ def main(argv=None):
     p.add_argument("--reasoning-effort", choices=("none", "low", "medium", "high"), default="high")
     p.add_argument("--resume", action="store_true", help="Keep completed cases; interrupted cases require a separate output")
     args = p.parse_args(argv)
-    if min(args.workers, args.threads) < 1 or args.student_steps < 0:
+    if min(args.workers, args.threads, args.max_request_actions) < 1 or args.student_steps < 0 or (
+            args.student_requests is not None and args.student_requests < 0):
         p.error("Use positive workers/threads and nonnegative student steps")
     cases = training_cases(args.seeds, args.difficulties, args.themes, args.max_steps)
     # Source model development instances must not enter the training collection.
     source = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
+    if args.student_requests is not None and source['features'].get('action_interface') != 'object_requests_v1':
+        raise ValueError('--student-requests requires a shared-executor checkpoint')
     validation = {tuple(item) for item in source["validation_instances"]}
     if any((case["theme"], case["difficulty"], case["seed"]) in validation for case in cases):
         raise ValueError("Recovery training overlaps the student's development instances")

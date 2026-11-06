@@ -179,8 +179,8 @@ Across eight initializations, final complete-request imitation accuracy averages
 11.43%. These scores require all request arguments to match the demonstration
 at its recorded state. They do not measure independent task execution. The
 observations already have separate lexical vectors per text line and explicit
-measurement-to-object links; missing a single observation-wide vector split
-does not explain these results.
+measurement-to-object links. The new comparison tests how these observations
+are represented and learned.
 
 The next comparison changes the learned text representation while keeping the
 same frozen 80-world demonstration collection and shared executor:
@@ -233,6 +233,17 @@ The other conditions are `lexical`, `frozen_text` and `random_text`; `--mode gru
 uses the same request interface and training data. This study evaluates whether
 better learned input representations enable the existing decision process. It
 does not yet test deployment-time parameter adaptation or recursive improvement.
+
+Teacher recovery also uses the same request interface. The
+[collector](collect_recovery.py) lets a frozen student make four or twelve
+requests, then gives its actual state and operation feedback to the teacher.
+Student requests remain history and outcome targets and receive no imitation
+label. The teacher attempts the remaining task using public observations and
+the same executor. Successful and unsuccessful continuations are retained.
+CDM and GRU both supply starting states; their resulting records form a common
+collection for a subsequent learning comparison. They never change the frozen
+data used by the 32 representation runs. These assisted trajectories measure
+training-data collection, not independent student completion.
 
 ### Reproduce the preceding shared-executor comparison
 
