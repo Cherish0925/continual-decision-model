@@ -1,5 +1,17 @@
 # Research progress
 
+## 6 November: faster text execution measured
+
+The current token policy has 38.34 million parameters. A four-episode,
+eight-event training window improves from 2.161 to 1.254 seconds on H100 when
+text chunks are processed in batches of 256, alongside batched transfers and
+deferred metric reads. Peak allocated memory remains 6.66 GiB. The same data,
+episode batch and update count are retained; text dropout draws can differ.
+Execution settings survive checkpoint loading; 27 relevant tests pass.
+An independent full-epoch comparison is running on two devices. Its results
+are pending, and the active 32-run study retains its original frozen code.
+[Measurements and execution options](experiments/discoveryworld/COMMON_EXECUTION.md#training-throughput).
+
 ## 6 November: representation learning and student-state recovery running
 
 The next 32-run comparison has started on four training nodes: lexical,
