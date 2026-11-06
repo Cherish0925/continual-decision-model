@@ -174,15 +174,26 @@ study also leaves the official eight-theme native benchmark as a separate goal.
 The completed demonstration models also fit their training requests poorly.
 Across eight initializations, last-epoch complete-request imitation accuracy averages
 17.47% for CDM and 14.83% for GRU; development accuracy averages 14.40% and
-11.43%. These scores require all request arguments to match the demonstration
-at its recorded state during training. Frozen-checkpoint fitting is measured
-separately by [imitation_fit.py](imitation_fit.py); neither metric measures
-independent task execution. The
+11.43%. Freezing all sixteen supervised checkpoints and replaying the recorded
+states gives the following [complete measurements](results/common_execution_fit.json):
+
+| Frozen policy | Training request agreement | Development request agreement |
+| --- | ---: | ---: |
+| CDM, eight initializations | 15.90% | 14.28% |
+| GRU, eight initializations | 12.95% | 11.44% |
+
+All request fields must agree with the demonstration; argument scores receive
+the demonstrated preceding fields. Each training score uses 5,296 labeled
+requests among 5,542 observed requests. The earlier trajectories remain the
+inputs, so the low training fit precedes autonomous rollout distribution shift.
+Agreement with one demonstration does not identify every valid alternative.
+[imitation_fit.py](imitation_fit.py) reproduces this measurement without changing
+weights. These metrics are distinct from independent task completion. The
 observations already have separate lexical vectors per text line and explicit
 measurement-to-object links. The new comparison tests how these observations
 are represented and learned.
 
-The next comparison changes the learned text representation while keeping the
+The running comparison changes the learned text representation while keeping the
 same frozen 80-world demonstration collection and shared executor:
 
 | Representation | Initialization | Text parameters during training |
@@ -233,6 +244,11 @@ The other conditions are `lexical`, `frozen_text` and `random_text`; `--mode gru
 uses the same request interface and training data. This study evaluates whether
 better learned input representations enable the existing decision process. It
 does not yet test deployment-time parameter adaptation or recursive improvement.
+
+The [dated training record](results/language_learning_status.json) contains
+completed epochs and losses. Source, data and models have been delivered to
+four training nodes; all 32 runs are executing. Full supervised, interaction
+and independent-execution results remain pending.
 
 Teacher recovery also uses the same request interface. The
 [collector](collect_recovery.py) lets a frozen student make four or twelve

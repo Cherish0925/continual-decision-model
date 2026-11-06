@@ -1,5 +1,38 @@
 # Research progress
 
+## 6 November: representation learning and student-state recovery running
+
+The next 32-run comparison has started on four training nodes: lexical,
+frozen pretrained text, jointly adapted pretrained text and jointly trained
+random text, each with CDM/GRU and four initializations. The original core,
+public observation records and shared executor remain available. Candidate
+reading and the training schedule are identical across the new conditions.
+All 32 devices have entered training; the first lexical epochs are recorded.
+Each job continues through its fixed supervised endpoint, native execution,
+autonomous interaction updates and final comparisons without a terminal session.
+
+A completed fixed-weight measurement sharpens the preceding failure: the eight
+supervised CDM checkpoints average **15.90%** complete-request agreement on
+their training states and **14.28%** on development states; GRU averages
+**12.95%** and **11.44%**. Poor imitation fit is already present before students
+depart from the demonstration trajectories. Independent task completion remains
+the earlier 0/160 at that endpoint; these agreement scores are a different metric.
+[Frozen fitting results](experiments/discoveryworld/results/common_execution_fit.json).
+
+In parallel, teacher recovery now starts from states actually reached by CDM
+and GRU through the shared executor. Four or twelve student requests precede
+teacher continuation. The collection schedules 160 assisted trajectories with
+32 concurrent environments. Student operations are history/outcome targets,
+never imitation labels. These records are kept separate from the fixed data
+used by the 32 representation runs. A completed native pilot confirms the
+handover and teacher continuation; it is not independent student success.
+
+The new representation has run supervised GPU learning, saved-weight native
+execution and actual on-policy updates. New formal task results, deployment-time
+parameter adaptation and recursive improvement are not yet demonstrated.
+[Method and commands](experiments/discoveryworld/COMMON_EXECUTION.md#learning-the-request-representation)
+· [dated training progress](experiments/discoveryworld/results/language_learning_status.json).
+
 ## 6 November: all 32 shared-executor comparisons complete
 
 All planned student training and fixed-endpoint evaluations finished by
@@ -20,9 +53,8 @@ some behavior, but reliable task execution and a benefit from preserving neural
 state are still absent. These results do not justify another unchanged sweep.
 
 All 32 model/record directories have been copied back from the training nodes.
-The scheduled study has ended; no follow-up training is running as of the
-6 November status check. Current measurements and per-instance outcomes are
-linked below.
+That scheduled study ended before the representation comparison described above
+started. Its completed measurements and per-instance outcomes are linked below.
 
 All sixteen autonomous runs completed training and three fixed evaluations.
 CDM completes 0/160 with greedy actions, 0/160 with sampled actions and 0/160
