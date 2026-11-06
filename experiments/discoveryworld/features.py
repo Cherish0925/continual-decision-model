@@ -1,9 +1,11 @@
-"""Frozen public-observation features shared by trajectory training and acting.
+"""Public-observation features shared by trajectory training and acting.
 
 SigLIP sees every text chunk, including late instrument results. Frozen tower
 outputs are cached independently of the trainable policy projections. The
 lexical mode is an explicit image-masked bag-of-words ablation, not a substitute
 pretrained encoder and not random synthetic input.
+Token mode caches complete tokenized text; its encoder lives in the policy so
+decision and outcome gradients can adapt the representation during training.
 """
 from __future__ import annotations
 
@@ -46,6 +48,7 @@ class FeatureConfig:
     mask_object_relations: bool = False
     action_history: int = 0
     action_interface: str = 'native'
+    text_context: int = 128
 
     def __post_init__(self):
         if self.action_interface not in ('native', 'object_requests_v1'):
@@ -165,14 +168,16 @@ class FeatureCache:
     def __init__(self, directory: str | Path, config: FeatureConfig,
                  device: str = "cpu", encoder_path: str | Path | None = None,
                  encode_batch_size: int = 32):
-        if config.mode not in ("siglip", "lexical"):
-            raise ValueError("Feature mode must be siglip or lexical")
+        if config.mode not in ("siglip", "lexical", "tokens"):
+            raise ValueError("Feature mode must be siglip, lexical or tokens")
         if config.time_basis not in ("world_steps", "wall_clock"):
             raise ValueError("time_basis must be world_steps or wall_clock")
         self.config, self.device = config, torch.device(device)
         self.encoder_path = str(encoder_path) if encoder_path else None
         self.encode_batch_size = encode_batch_size
         identity = {"schema": FEATURE_SCHEMA, **asdict(config)}
+        if config.mode != 'tokens':
+            identity.pop('text_context')
         if config.action_interface == 'native':
             identity.pop('action_interface')
         # Preserve the existing tower/event cache when the new input is off.
@@ -201,7 +206,19 @@ class FeatureCache:
             {**metadata, "text_truncation": False,
              "timing_clock": config.time_basis}, indent=2) + "\n")
         self.model = self.processor = None
+        self.tokenizer = None
         self.text_dim = self.image_dim = 768 if config.mode == "siglip" else config.lexical_dim
+        if config.mode == 'tokens':
+            from transformers import AutoConfig, AutoTokenizer
+            source = self.encoder_path or config.encoder_id
+            options = {'local_files_only': True} if self.encoder_path else {'revision': config.encoder_revision}
+            self.encoder_config = AutoConfig.from_pretrained(source, **options)
+            if self.encoder_config.model_type != 'bert' or self.encoder_config.pad_token_id != 0:
+                raise ValueError('Token features require a BERT encoder with padding ID zero')
+            self.tokenizer = AutoTokenizer.from_pretrained(source, **options)
+            if not 2 < config.text_context <= self.encoder_config.max_position_embeddings:
+                raise ValueError('text_context must fit the pretrained encoder')
+            self.text_dim = self.image_dim = self.encoder_config.hidden_size
 
     def _load_encoder(self):
         if self.model is not None:
@@ -230,6 +247,16 @@ class FeatureCache:
                 # One token per public line retains separately visible objects/results.
                 lines = [line for line in text.splitlines() if line.strip()] or [""]
                 _save(torch.stack([lexical_features(line, self.text_dim) for line in lines]), name)
+        elif missing and self.config.mode == 'tokens':
+            for name, text in missing.items():
+                rows = []
+                capacity = self.config.text_context - self.tokenizer.num_special_tokens_to_add(False)
+                for line in text.splitlines() or ['']:
+                    ids = self.tokenizer.encode(line, add_special_tokens=False)
+                    for start in range(0, max(1, len(ids)), capacity):
+                        chunk = self.tokenizer.build_inputs_with_special_tokens(ids[start:start + capacity])
+                        rows.append(chunk + [0] * (self.config.text_context - len(chunk)))
+                _save(torch.tensor(rows, dtype=torch.long), name)
         elif missing:
             self._load_encoder()
             tokenizer = self.processor.tokenizer
@@ -268,7 +295,7 @@ class FeatureCache:
 
     @torch.no_grad()
     def image(self, payload: bytes | None) -> torch.Tensor | None:
-        if self.config.mode == "lexical" or payload is None:
+        if self.config.mode != "siglip" or payload is None:
             return None
         path = self._path("image", sha256(payload).hexdigest())
         if not path.exists():
@@ -340,11 +367,11 @@ class FeatureCache:
                 observation_features["image"] = image
             if measurements:
                 labels = self.texts([row[0] for row in measurements])
-                observation_features["measurement_text"] = torch.stack([part.float().mean(0) for part in labels])
+                observation_features["measurement_text"] = _stack_chunks(labels) if self.config.mode == 'tokens' else torch.stack([part.float().mean(0) for part in labels])
                 values = torch.tensor([row[1] for row in measurements], dtype=torch.float32)
                 observation_features["measurement_numeric"] = values.sign() * values.abs().log1p() / 10
                 observation_features["measurement_age"] = torch.tensor([row[2] for row in measurements], dtype=torch.float32)
-            candidate_features = {"text": torch.stack([part.float().mean(0) for part in encoded_text[1:]]),
+            candidate_features = {"text": _stack_chunks(encoded_text[1:]) if self.config.mode == 'tokens' else torch.stack([part.float().mean(0) for part in encoded_text[1:]]),
                                   "numeric": torch.tensor([c.numeric for c in candidates], dtype=torch.float32)}
             if relations is not None:
                 candidate_features["measurement_relations"] = relations
@@ -359,6 +386,13 @@ class FeatureCache:
                 torch.cuda.empty_cache()
 
 
+def _stack_chunks(parts):
+    result = parts[0].new_zeros(len(parts), max(len(part) for part in parts), parts[0].shape[-1])
+    for i, part in enumerate(parts):
+        result[i, :len(part)] = part
+    return result
+
+
 def batch_features(features: list[dict], device: torch.device | str) -> tuple[dict, dict]:
     """Pad variable public text/images and dynamic action sets without exposing padding."""
     device = torch.device(device)
@@ -371,7 +405,7 @@ def batch_features(features: list[dict], device: torch.device | str) -> tuple[di
         if not available:
             continue
         length, width = max(part.shape[0] for part in available), available[0].shape[-1]
-        tensor = torch.zeros(len(features), length, width)
+        tensor = torch.zeros(len(features), length, width, dtype=available[0].dtype)
         present = torch.zeros(len(features), length, dtype=torch.bool)
         for index, row in enumerate(observations):
             if modality in row:
@@ -381,28 +415,37 @@ def batch_features(features: list[dict], device: torch.device | str) -> tuple[di
         obs[modality], obs[modality + "_present"] = tensor.to(device), present.to(device)
     length = max((len(row.get("measurement_numeric", [])) for row in observations), default=0)
     if length:
-        width = next(row["measurement_text"].shape[-1] for row in observations if "measurement_text" in row)
-        for key, shape in (("measurement_text", (len(features), length, width)),
+        text_rows = [row['measurement_text'] for row in observations if 'measurement_text' in row]
+        text_shape = (max(row.shape[1] for row in text_rows), text_rows[0].shape[-1]) if text_rows[0].ndim == 3 else (text_rows[0].shape[-1],)
+        for key, shape in (("measurement_text", (len(features), length, *text_shape)),
                            ("measurement_numeric", (len(features), length, 8)),
                            ("measurement_age", (len(features), length))):
-            value = torch.zeros(shape)
+            value = torch.zeros(shape, dtype=text_rows[0].dtype if key == 'measurement_text' else torch.float32)
             for index, row in enumerate(observations):
                 if key in row:
-                    value[index, :len(row[key])] = row[key]
+                    if key == 'measurement_text' and row[key].ndim == 3:
+                        value[index, :len(row[key]), :row[key].shape[1]] = row[key]
+                    else:
+                        value[index, :len(row[key])] = row[key]
             obs[key] = value.to(device)
         obs["measurement_present"] = torch.tensor(
             [[j < len(row.get("measurement_numeric", [])) for j in range(length)] for row in observations],
             dtype=torch.bool, device=device)
     count = max(len(row["text"]) for row in candidates)
-    actions = {key: torch.zeros(len(features), count, candidates[0][key].shape[-1], device=device)
-               for key in ("text", "numeric")}
+    token_input = candidates[0]['text'].ndim == 3
+    text_shape = (max(row['text'].shape[1] for row in candidates), candidates[0]['text'].shape[-1]) if token_input else (candidates[0]['text'].shape[-1],)
+    actions = {'text': torch.zeros(len(features), count, *text_shape, dtype=candidates[0]['text'].dtype, device=device),
+               'numeric': torch.zeros(len(features), count, candidates[0]['numeric'].shape[-1], device=device)}
     actions["present"] = torch.zeros(len(features), count, dtype=torch.bool, device=device)
     if any("measurement_relations" in row for row in candidates):
         actions["measurement_relations"] = torch.zeros(len(features), count, length, 8, device=device)
     for index, row in enumerate(candidates):
         n = len(row["text"])
         for key in ("text", "numeric"):
-            actions[key][index, :n] = row[key].to(device)
+            if key == 'text' and token_input:
+                actions[key][index, :n, :row[key].shape[1]] = row[key].to(device)
+            else:
+                actions[key][index, :n] = row[key].to(device)
         actions["present"][index, :n] = True
         if "measurement_relations" in row:
             relations = row["measurement_relations"]

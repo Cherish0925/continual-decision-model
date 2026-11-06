@@ -254,6 +254,7 @@ def parse_args(argv=None):
     parser.add_argument('--max-request-actions',type=int,default=12)
     parser.add_argument('--native-action-cost',type=float,default=.001)
     parser.add_argument("--lr", type=float, default=3e-5)
+    parser.add_argument('--text-lr', type=float, default=1e-5)
     parser.add_argument("--gamma", type=float, default=.99)
     parser.add_argument("--value-weight", type=float, default=.5)
     parser.add_argument("--entropy-weight", type=float, default=.01)
@@ -319,7 +320,10 @@ def main(argv=None):
     args.restart_workspace = training.get("restart_workspace", False) if args.restart_workspace is None else args.restart_workspace
     schedule = training_schedule(args, source)
     critic = StateCritic(model.config.width).to(args.device)
-    optimizer = torch.optim.AdamW([*model.parameters(), *critic.parameters()], lr=args.lr)
+    language = [p for n,p in model.named_parameters() if n.startswith('text_encoder.') and p.requires_grad]
+    decision = [p for n,p in model.named_parameters() if not n.startswith('text_encoder.') and p.requires_grad]
+    optimizer = torch.optim.AdamW([{'params':decision + list(critic.parameters()),'lr':args.lr},
+                                  {'params':language,'lr':args.text_lr}], lr=args.lr)
     # Legacy checkpoints predate explicit clock metadata. Keep their original
     # input meaning; new checkpoints specify native world_steps/schema 2.
     feature_config = FeatureConfig(**{"schema": 1, "time_basis": "wall_clock", **source["features"]})

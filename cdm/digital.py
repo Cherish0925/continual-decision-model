@@ -294,6 +294,8 @@ class DigitalConfig:
     object_relations: bool = False
     candidate_read: bool = False
     action_conditioned: bool = False
+    text_backbone: dict | None = None
+    train_text_backbone: bool = False
 
 
 class DigitalPolicy(nn.Module):
@@ -331,6 +333,9 @@ class DigitalPolicy(nn.Module):
         self.state_query = nn.Linear(2 * w, w)
         self.score = nn.Sequential(nn.GELU(), nn.Linear(w, w), nn.GELU(), nn.Linear(w, 1))
         self.outcome = nn.Sequential(nn.Linear(3 * w, w), nn.GELU(), nn.Linear(w, c.outcome_dim))
+        if c.text_backbone is not None:
+            from cdm.text_encoder import DecisionTextEncoder
+            self.text_encoder = DecisionTextEncoder(c.text_backbone, c.train_text_backbone)
         if c.object_relations:
             self._init_object_relations()
         if c.candidate_read:
@@ -457,7 +462,7 @@ class DigitalPolicy(nn.Module):
         for name, projection, modality in (("text", self.text, 2), ("image", self.image, 3)):
             if features.get(name) is None:
                 continue
-            value = features[name].detach()
+            value = self.text_encoder(features[name]) if name == "text" and self.config.text_backbone else features[name].detach()
             value = value.unsqueeze(1) if value.ndim == 2 else value
             tokens.append(projection(value.to(dtype)) + self.modality[modality])
             mask = features.get(name + "_present")
@@ -472,7 +477,8 @@ class DigitalPolicy(nn.Module):
                 raise ValueError("Measurement record columns must match the source core record schema")
             age = features["measurement_age"].to(dtype).unsqueeze(-1)
             record = self.core.record(torch.cat((numbers, age), -1))
-            label = self.text(features["measurement_text"].detach().to(dtype))
+            label = self.text_encoder(features["measurement_text"]) if self.config.text_backbone else features["measurement_text"].detach()
+            label = self.text(label.to(dtype))
             tokens.append(record + label + self.modality[0])
             masks.append(features["measurement_present"].bool())
         present = torch.cat(masks, 1)
@@ -563,7 +569,8 @@ class DigitalPolicy(nn.Module):
         h, z = state["h"], state["z"]
         features = self.core.state_features(h, z) if mode == "cdm" else \
             torch.cat((self.core.norm_h(h), torch.zeros_like(h)), -1)
-        candidate = self.candidate_norm(self.candidate_text(candidate_features["text"].detach().to(h.dtype))
+        text = self.text_encoder(candidate_features["text"]) if self.config.text_backbone else candidate_features["text"].detach()
+        candidate = self.candidate_norm(self.candidate_text(text.to(h.dtype))
                                         + self.candidate_numeric(candidate_features["numeric"].to(h.dtype)))
         if self.config.object_relations:
             relations = candidate_features["measurement_relations"]

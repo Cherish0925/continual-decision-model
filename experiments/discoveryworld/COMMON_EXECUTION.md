@@ -171,6 +171,71 @@ study also leaves the official eight-theme native benchmark as a separate goal.
 
 ## Run
 
+### Learning the request representation
+
+The completed demonstration models also fit their training requests poorly.
+Across eight initializations, final complete-request imitation accuracy averages
+17.47% for CDM and 14.83% for GRU; development accuracy averages 14.40% and
+11.43%. These scores require all request arguments to match the demonstration
+at its recorded state. They do not measure independent task execution. The
+observations already have separate lexical vectors per text line and explicit
+measurement-to-object links; missing a single observation-wide vector split
+does not explain these results.
+
+The next comparison changes the learned text representation while keeping the
+same frozen 80-world demonstration collection and shared executor:
+
+| Representation | Initialization | Text parameters during training |
+| --- | --- | --- |
+| Lexical control | Existing signed word and word-pair features | Fixed features |
+| Frozen text | Pretrained MiniLM-L6 | Frozen |
+| Adapted text | The same pretrained MiniLM-L6 | Jointly updated |
+| Random text | The same MiniLM-L6 architecture | Jointly updated from random weights |
+
+The [text encoder](../../cdm/text_encoder.py) reads complete tokenized text,
+splitting long lines into windows without discarding later feedback. Candidate
+operations and arguments use the same encoder. Decision and outcome gradients
+reach the adaptable encoder, the continuous core and the action readout.
+The pretrained source is
+[all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
+Its weights are retained inside each trained policy checkpoint. This is a
+pretrained language representation, not a language planner used at evaluation.
+
+Each representation trains CDM and GRU with four independent seeds (501–504):
+32 runs. All use width 512, candidate-specific reading, the same measurement
+records and eight recent action-feedback records. Thirty-two supervised epochs
+are followed by the same 120-world interaction schedule as the preceding study.
+The core/action learning rate is 0.0003 during imitation; adaptable text uses
+0.00002. Interaction learning uses 0.00003 and 0.00001 respectively. This
+comparison matches experience and update schedules, not parameter count or
+FLOPs. Candidate-specific reading and the longer training schedule are present
+in the new lexical control too.
+
+Development worlds remain 6300–6301. Fixed final endpoints execute new instance
+seeds 6800–6801 in all five themes at Easy and Normal difficulty, with the same
+100/300 native-operation budgets and a common object-initialization seed.
+Each cell therefore contains four executions of twenty worlds. The final
+interaction policy is evaluated greedily, by sampling, and with neural state
+reset between requests. No test score selects a checkpoint. New instance seeds
+do not guarantee new scientific laws.
+
+[The study driver](language_study.py) runs training, native execution,
+interaction learning and final comparisons in sequence:
+
+```sh
+python -m experiments.discoveryworld.language_study \
+  --root runs/semantic_requests --condition adapted_text --mode cdm --seed 501 \
+  --encoder-path models/all-MiniLM-L6-v2
+```
+
+The run root contains the fixed `train/` and `development/` trajectory trees.
+The other conditions are `lexical`, `frozen_text` and `random_text`; `--mode gru`
+uses the same request interface and training data. This study evaluates whether
+better learned input representations enable the existing decision process. It
+does not yet test deployment-time parameter adaptation or recursive improvement.
+
+### Reproduce the preceding shared-executor comparison
+
 With DiscoveryWorld installed and hosted credentials in environment variables:
 
 ```sh

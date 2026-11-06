@@ -358,12 +358,14 @@ def run_epoch(model: DigitalPolicy, episodes: list[PreparedEpisode], *, batch_si
             "supervised_actions": int(totals["supervised_count"]), "observed_outcomes": int(totals["outcome_count"])}
 
 
-def create_model(args, text_dim: int, image_dim: int):
+def create_model(args, text_dim: int, image_dim: int, text_backbone=None):
     digital = DigitalConfig(width=args.width, text_dim=text_dim, image_dim=image_dim,
                             refinements=args.refinements, outcome_dim=14,
                             object_relations=args.object_relations,
                             candidate_read=bool(getattr(args, "candidate_read", False)),
-                            action_conditioned=bool(getattr(args, "action_conditioned", False)))
+                            action_conditioned=bool(getattr(args, "action_conditioned", False)),
+                            text_backbone=text_backbone,
+                            train_text_backbone=bool(getattr(args, 'train_text_backbone', False)))
     if args.initial_checkpoint:
         saved = torch.load(args.initial_checkpoint, map_location="cpu", weights_only=True)
         if saved.get("kind") == "shared_experiment_core_v1":
@@ -401,7 +403,12 @@ def parse_args(argv=None):
     parser.add_argument("--exclude-themes", nargs="*", default=[],
                         help="Remove these complete themes from both training and development data")
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--features", choices=("siglip", "lexical"), help="Defaults to checkpoint mode on resume, otherwise siglip")
+    parser.add_argument("--features", choices=("siglip", "lexical", "tokens"), help="Defaults to checkpoint mode on resume, otherwise siglip")
+    parser.add_argument('--train-text-backbone', action=argparse.BooleanOptionalAction, default=None,
+                        help='Adapt the pretrained text encoder jointly with the decision policy')
+    parser.add_argument('--text-lr', type=float, default=2e-5)
+    parser.add_argument('--text-initialization', choices=('pretrained', 'random'), default='pretrained',
+                        help='Same text architecture with pretrained or random weights')
     parser.add_argument("--measurement-memory", action=argparse.BooleanOptionalAction, default=None,
                         help="Include prior public measurement summaries; inherit checkpoint setting by default")
     parser.add_argument("--object-relations", action=argparse.BooleanOptionalAction, default=None,
@@ -477,7 +484,7 @@ def initialize_training(args):
             defaults[key] = value
         for key in ("mode", "restart_state", "restart_workspace"):
             defaults[key] = source["training_args"].get(key, defaults[key])
-        dimension = 768 if feature_config.mode == "siglip" else feature_config.lexical_dim
+        dimension = model.config.text_dim if feature_config.mode == 'tokens' else 768 if feature_config.mode == "siglip" else feature_config.lexical_dim
         expected = {"text_dim": dimension, "image_dim": dimension, "numeric_dim": 32,
                     "candidate_numeric_dim": 8, "outcome_dim": 14}
         incompatible = {key: (getattr(model.config, key), value) for key, value in expected.items()
@@ -485,7 +492,18 @@ def initialize_training(args):
         if incompatible:
             raise ValueError(f"Resumed checkpoint dimensions do not match this feature/target schema: {incompatible}")
     else:
-        feature_config = FeatureConfig(mode=args.features or "siglip")
+        if args.features == 'tokens':
+            feature_config = FeatureConfig(mode='tokens', encoder_id='sentence-transformers/all-MiniLM-L6-v2',
+                                           encoder_revision='1110a243fdf4706b3f48f1d95db1a4f5529b4d41')
+        else:
+            feature_config = FeatureConfig(mode=args.features or "siglip")
+    if args.train_text_backbone and feature_config.mode != 'tokens':
+        raise ValueError('Trainable text requires token features')
+    if model is not None and feature_config.mode == 'tokens':
+        trainable = model.config.train_text_backbone if args.train_text_backbone is None else args.train_text_backbone
+        model.config = replace(model.config, train_text_backbone=trainable)
+        model.text_encoder.trainable = trainable
+        model.text_encoder.backbone.requires_grad_(trainable)
     overrides = {key: getattr(args, key) for key in ("measurement_memory", "object_relations", "mask_object_relations", "action_history", "action_interface")
                  if getattr(args, key, None) is not None}
     if overrides:
@@ -542,7 +560,19 @@ def main(argv=None):
     train_prepared = prepare_episodes(train, cache, **preparation)
     validation_prepared = prepare_episodes(validation, cache, **preparation)
     cache.close()
-    model = (model if model is not None else create_model(args, cache.text_dim, cache.image_dim)).to(args.device)
+    if model is None:
+        backbone = cache.encoder_config.to_dict() if feature_config.mode == 'tokens' else None
+        if backbone is not None:
+            backbone['_name_or_path'] = ''
+        model = create_model(args, cache.text_dim, cache.image_dim, backbone)
+        if backbone is not None and args.text_initialization == 'pretrained':
+            from transformers import AutoModel
+            location = args.encoder_path or feature_config.encoder_id
+            options = {'local_files_only': True} if args.encoder_path else {'revision': feature_config.encoder_revision}
+            pretrained = AutoModel.from_pretrained(location, **options)
+            model.text_encoder.backbone.load_state_dict(pretrained.state_dict(), strict=True)
+            del pretrained
+    model = model.to(args.device)
     resume = None if source is None else {"path": str(args.resume_checkpoint.resolve()),
                                          "sha256": sha256(args.resume_checkpoint.read_bytes()).hexdigest(),
                                          "source_epoch": source["epoch"], "optimizer_state": "fresh",
@@ -586,10 +616,12 @@ def main(argv=None):
             transitions=sum(len(row.steps) for row in train_prepared + validation_prepared),
             feature_seconds=metadata["feature_seconds"], features=asdict(feature_config)), indent=2) + "\n")
         return
-    parameters = model.parameters() if args.core_lr is None else [
-        {'params': model.core.parameters(), 'lr': args.core_lr},
-        {'params': [parameter for name, parameter in model.named_parameters() if not name.startswith('core.')],
-         'lr': args.lr}]
+    groups = {}
+    for name, parameter in model.named_parameters():
+        if parameter.requires_grad:
+            rate = args.text_lr if name.startswith('text_encoder.') else args.core_lr if name.startswith('core.') and args.core_lr is not None else args.lr
+            groups.setdefault(rate, []).append(parameter)
+    parameters = [{'params': values, 'lr': rate} for rate, values in groups.items()]
     optimizer = torch.optim.AdamW(parameters, lr=args.lr)
     kwargs = dict(batch_size=args.batch_size, sequence_length=args.sequence_length, device=args.device,
                   mode=args.mode, persistent=not args.restart_state, restart_workspace=args.restart_workspace,
