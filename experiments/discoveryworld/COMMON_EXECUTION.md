@@ -246,9 +246,11 @@ better learned input representations enable the existing decision process. It
 does not yet test deployment-time parameter adaptation or recursive improvement.
 
 The [dated training record](results/language_learning_status.json) contains
-completed epochs and losses. Source, data and models have been delivered to
-four training nodes; all 32 runs are executing. Full supervised, interaction
-and independent-execution results remain pending.
+completed epochs and losses. At the 6 November 11:41 UTC snapshot, fifteen complete pipelines are recorded,
+sixteen continue training, and one frozen-text GRU pipeline has stopped after
+nonfinite supervised losses. Its failed run is retained. The completed lexical
+and frozen-text conditions still have weak native results; partial groups are
+not a completed comparison of all representations.
 
 Teacher recovery also uses the same request interface. The
 [collector](collect_recovery.py) lets a frozen student make four or twelve
@@ -263,43 +265,160 @@ training-data collection, not independent student completion.
 
 ### Training throughput
 
-The token policy in this comparison has 38,343,587 parameters. Its text encoder
-is called for observation lines, measurement records and each request field.
-Small recurrent batches therefore produce many encoder calls; parameter count
-alone does not describe the amount of text processed per decision.
+The token policy has 38,343,587 parameters. Observation lines, measurement
+records and request arguments previously invoked the text encoder separately
+at each event. The new `--window-text` path prepares an observed window on the
+CPU, groups text by length, encodes it in larger batches, and restores each
+field's embedding before the causal state loop. Inputs are transferred by dtype;
+epoch statistics remain on the GPU until their final read.
 
-Training now assembles candidate fields on the CPU before transferring each
-field once, and accumulates epoch metrics on the GPU without reading every
-scalar after each event. Text microbatch size and activation recomputation are
-explicit settings, saved in the model configuration and inherited by evaluation
-and interaction training. Existing checkpoints retain their original defaults:
-64 text chunks per call and activation recomputation for trainable text.
+Each text row attends only within its own string. A later event cannot enter an
+earlier decision. Text occurrences in different original encoder calls retain
+independent dropout, although batching changes random-number assignment.
+Learned embeddings retain gradients and are recomputed after every parameter
+update. Token tensors are cached; this is not a cross-update embedding cache.
+Tests cover output/gradient agreement with dropout disabled, all-padding inputs,
+future-event independence and state-gradient truncation without a state reset.
 
-A local H100 measurement used the same four recorded training episodes, eight
-events per episode, width 512, bfloat16, and one optimizer update. Weights were
-initialized with seed 501; these timings do not measure trained task performance.
-Each row reports the median of three timed repetitions after a warmup:
+The following H100 measurement uses the same four episodes, eight events per
+episode, bfloat16 and one optimizer update. The median is taken over three
+repetitions after warmup, starting from random weights. It measures execution,
+not trained task capability.
 
 | Execution | Seconds per 32-event window | Peak allocated GiB |
 | --- | ---: | ---: |
 | Original, 64 text chunks, recomputation | 2.161 | 6.62 |
-| Batched transfers and deferred metrics, 64 chunks, recomputation | 2.168 | 6.62 |
-| Batched transfers and deferred metrics, 256 chunks, recomputation | 1.254 | 6.66 |
-| Batched transfers and deferred metrics, 64 chunks, no recomputation | 1.118 | 48.06 |
+| Batched transfers and deferred metrics, 64 chunks | 2.168 | 6.62 |
+| Batched transfers and deferred metrics, 256 chunks | 1.254 | 6.66 |
+| Window text encoding, 256 chunks | **0.611** | **2.67** |
+| 64 chunks, no activation recomputation | 1.118 | 48.06 |
 
-The 256-chunk setting improves this window's throughput by 1.72 times while
-retaining recomputation's memory benefit. Larger text microbatches can assign
-dropout draws differently; they keep the episode batch, targets and update
-count unchanged. Tests compare text outputs and gradients with dropout disabled
-and verify that execution settings survive checkpoint loading. Removing
-recomputation preserved this window's loss, but its memory use makes a single
-window insufficient to choose that setting for every episode. Full-epoch
-measurements are required before changing the end-to-end duration estimate.
+The first three rows and window encoding retain activation recomputation.
+A longer eight-episode, 32-step window takes 3.859 seconds and 15.52 GiB; it
+contains 144 real events and padded slots, so it is not a 256-event measurement.
 
-Use `--text-batch-size 256` with either the training command or the study driver
-to select the larger encoder batches. `--no-text-checkpointing` trades memory
-for compute explicitly. The already-running comparison retains its frozen source
-and settings; it is not silently changed by these implementation updates.
+A complete first epoch uses all 5,542 training requests and 1,420 validation
+requests, the same seed, four-episode batch, eight-step optimizer window, and
+fixed update count. No score selects a timing endpoint.
+
+| Execution | Training plus validation | Input/model preparation | Reported elapsed |
+| --- | ---: | ---: | ---: |
+| Original | 931.83 s | 329.08 s | 1260.92 s |
+| Larger encoder batches and transfers | 534.08 s | 328.54 s | 862.62 s |
+| Window encoding | **338.14 s** | 183.50 s | 521.64 s |
+
+Window encoding reduces the training-plus-validation phase by **2.76 times**.
+Its training portion is 317.76 seconds and validation is 20.37 seconds; peak
+allocated memory is 5.21 GiB. Preparation was measured on different warm-cache
+runs and is unchanged by window encoding. Its shorter measured time must not be
+attributed to this implementation. The one-epoch training losses are 1.9825,
+1.9808 and 1.9802; these are timing checks, not evidence of improved task quality.
+The logs now separate training/validation duration, actual event throughput,
+optimizer updates and peak allocation. A full first epoch at batch eight and
+sequence length thirty-two also finishes: 371.17 seconds of training, 28.76
+seconds of validation and 31.21 GiB peak allocation. It has seventy optimizer
+updates and a different training batch, so it is a capacity measurement rather
+than the matched short-window timing comparison.
+
+[Recorded measurements](results/request_training_throughput.json) include the
+execution revisions and PyTorch version. The window experiment is reproducible
+with the [benchmark command](benchmark_requests.py):
+
+```sh
+python -m experiments.discoveryworld.benchmark_requests \
+  --root runs/semantic_requests --encoder-path models/all-MiniLM-L6-v2 \
+  --output runs/throughput/window --text-batch-size 256 --window-text
+```
+
+Use `--no-window-text --text-batch-size 64` for the current stepwise path.
+`--no-text-checkpointing` trades memory for computation. Existing checkpoints
+retain their original execution defaults. The earlier 32-run study continues
+on its frozen source, so no trained endpoint silently changes implementation.
+
+CPU preparation can now process independent trajectories in separate workers;
+events inside a trajectory retain their original order. On the same eighty
+training and twenty validation trajectories with warm feature files,
+`--prepare-workers 8` reduces preparation from **184.99 to 43.57 seconds**
+(4.25 times). A parallel-versus-serial check preserves all prepared history,
+labels, outcome targets and episode ordering. The already-running A100 jobs
+keep their original source. This preparation measurement is separate from the
+full-epoch timing above; their speedups should not be multiplied.
+
+### Recovery data and matched gradient spans
+
+The student-state collection has finished 160 attempted continuations over forty
+training instances: CDM/GRU starting policies, each handed over after four or
+twelve requests. The teacher-assisted continuations complete 124 attempts; nine
+end with provider errors. Their valid prefixes are retained. This collection
+contains 11,657 requests, including 9,698 fulfilled teacher requests and 1,243
+student requests. Student requests have no imitation labels. Terminal failed
+requests are also excluded from imitation by the existing preparation rule.
+Teacher-assisted completions are not student completion scores.
+
+A separate learning-rate comparison reran four divergent lexical initializations
+at 1e-4 and 3e-5 with the original data and fixed 32 epochs. All eight are finite.
+At 1e-4, the two CDM runs complete 1/20 and 6/20 development instances; GRU
+completes 5/20 and 4/20. The initializations were selected for divergent training
+loss, and the CDM/GRU seed subsets differ. These results motivate the lower rate;
+they do not establish a recurrent-architecture advantage.
+[All eight runs and case outcomes](results/request_stability.json).
+
+The next fixed comparison uses the union of the original 80 trajectories and
+160 recoveries: **240 trajectories, 120 distinct instance identities and 17,199
+requests**. Every condition receives this exact snapshot. Development fitting
+retains the original twenty instances. Native development uses seeds 7000/7001,
+and fixed final evaluation uses 7200/7201, over the same five themes at Easy and
+Normal difficulty. Seeds alone are not a claim of held-out scientific laws.
+
+| Variable | Values |
+| --- | --- |
+| Input | Lexical; jointly adapted pretrained text |
+| Decision model | CDM; GRU |
+| Initialization | 501; 502 |
+| State gradient span | 8; 32 events |
+| Optimizer window | 32 events in both span conditions |
+| Episode batch | 8 |
+| Supervised endpoint | 16 complete epochs; main learning rate 1e-4, text rate 2e-5 |
+| Text execution | Window encoding, microbatch 256, activation recomputation |
+
+All sixteen jobs have entered training on the two nodes freed by earlier runs.
+An initial text-cache path error was fixed before any update; failed startup
+records remain available. The other sixteen representation runs continue on
+their original code. New task results are pending. Two additional H100 queues run the pretrained-text
+condition at initialization 503: one queue per gradient span, CDM followed by
+GRU. This adds four specified replications, two active at a time. They use the
+same learning computation and data with the new parallel preparation option;
+their source revision and hardware are recorded separately.
+[Current learning records](results/request_window_status.json) retain each
+completed epoch and distinguish queued replications from started work.
+
+The state is detached after eight or thirty-two events **without resetting its
+value**. Both conditions accumulate losses over the same 32-step optimizer
+window, use the same batches and perform the same number of parameter updates.
+This comparison tests the gradient horizon rather than conflating it with a
+change in update count. The dataset and learning rate also differ from the old
+study, so an old-versus-new gain cannot be assigned solely to a longer horizon.
+
+```sh
+python -m experiments.discoveryworld.language_study \
+  --root runs/window_learning --output runs/window_learning/models/adapted_cdm_s501_g32 \
+  --condition adapted_text --mode cdm --seed 501 \
+  --encoder-path models/all-MiniLM-L6-v2 \
+  --epochs 16 --batch-size 8 --sequence-length 32 --state-gradient-length 32 \
+  --window-text --text-batch-size 256 --lr 0.0001 \
+  --development-seeds 7000 7001 --evaluation-seeds 7200 7201
+```
+
+Replace the span by eight for its matched control. Each pipeline proceeds from
+the supervised endpoint through native evaluation, the existing 120-world
+on-policy interaction schedule, and greedy/sampled/state-reset evaluations.
+Only the supervised phase changes gradient span; the subsequent interaction
+schedule is held fixed. The pipeline runs independently of the terminal, with
+small progress records collected separately from large artifacts.
+
+This work changes offline learning execution and its temporal gradient horizon.
+It does not yet implement asynchronous off-policy learning, deployment-time
+weight consolidation, or a learned incremental-inference schedule.
 
 ## Run the preceding shared-executor comparison
 

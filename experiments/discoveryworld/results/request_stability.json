@@ -1,0 +1,1710 @@
+{
+  "selection": "Four original runs selected for divergent training loss, not development score. Each rerun starts from the same initialization with lr 1e-4 or 3e-5; all other original settings and fixed 32 epochs retained.",
+  "comparison": "The CDM and GRU seed subsets differ. Twenty development instances repeat across runs; these results do not establish an architecture advantage.",
+  "models": [
+    {
+      "model": "lexical_cdm_s502_lr0.00003",
+      "epochs": 32,
+      "training_loss": 0.863599703663346,
+      "validation_request_agreement": 0.38685586258401794,
+      "development": {
+        "executions": 20,
+        "successes": 1,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 235
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 239
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 7,
+          "requests": 6
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 7,
+          "requests": 6
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 285
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 98
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 34,
+          "requests": 34
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 18,
+          "requests": 18
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 21,
+          "requests": 18
+        }
+      ]
+    },
+    {
+      "model": "lexical_cdm_s502_lr0.0001",
+      "epochs": 32,
+      "training_loss": 0.8399243534509659,
+      "validation_request_agreement": 0.4398805078416729,
+      "development": {
+        "executions": 20,
+        "successes": 1,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 98
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 98
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 244
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 232
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 8,
+          "requests": 7
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 8,
+          "requests": 7
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 283
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 40,
+          "requests": 39
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 15,
+          "requests": 14
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 24,
+          "requests": 20
+        }
+      ]
+    },
+    {
+      "model": "lexical_cdm_s504_lr0.00003",
+      "epochs": 32,
+      "training_loss": 0.8878525846821993,
+      "validation_request_agreement": 0.4189693801344287,
+      "development": {
+        "executions": 20,
+        "successes": 3,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 13,
+          "requests": 13
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 12,
+          "requests": 12
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 295
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 11,
+          "requests": 9
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 10,
+          "requests": 9
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 96
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 294
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 11,
+          "requests": 9
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 96
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 182,
+          "requests": 168
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 271
+        }
+      ]
+    },
+    {
+      "model": "lexical_cdm_s504_lr0.0001",
+      "epochs": 32,
+      "training_loss": 0.8401916228943762,
+      "validation_request_agreement": 0.48244958924570575,
+      "development": {
+        "executions": 20,
+        "successes": 6,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 12,
+          "requests": 12
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 12,
+          "requests": 12
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 15,
+          "requests": 14
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 23,
+          "requests": 22
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 28,
+          "requests": 27
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 16,
+          "requests": 15
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 98
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 15,
+          "requests": 12
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 83,
+          "requests": 78
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 116,
+          "requests": 85
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 112,
+          "requests": 91
+        }
+      ]
+    },
+    {
+      "model": "lexical_gru_s501_lr0.00003",
+      "epochs": 32,
+      "training_loss": 0.9018022321560278,
+      "validation_request_agreement": 0.4144884241971621,
+      "development": {
+        "executions": 20,
+        "successes": 0,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 93
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 94
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 18,
+          "requests": 18
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 18,
+          "requests": 18
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 91
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 294
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 296
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 18,
+          "requests": 17
+        }
+      ]
+    },
+    {
+      "model": "lexical_gru_s501_lr0.0001",
+      "epochs": 32,
+      "training_loss": 0.8632961371371831,
+      "validation_request_agreement": 0.4368932038834951,
+      "development": {
+        "executions": 20,
+        "successes": 5,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 14,
+          "requests": 14
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 14,
+          "requests": 14
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 78,
+          "requests": 67
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 15,
+          "requests": 14
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 14,
+          "requests": 12
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 25,
+          "requests": 22
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 93
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 94
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 295
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 39,
+          "requests": 36
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 9,
+          "requests": 8
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 284
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 293
+        }
+      ]
+    },
+    {
+      "model": "lexical_gru_s503_lr0.00003",
+      "epochs": 32,
+      "training_loss": 0.8858881202833899,
+      "validation_request_agreement": 0.4152352501867065,
+      "development": {
+        "executions": 20,
+        "successes": 0,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 6,
+          "requests": 6
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 6,
+          "requests": 6
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 97
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 299
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 298
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 20,
+          "requests": 20
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 16,
+          "requests": 16
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 200
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 18,
+          "requests": 16
+        }
+      ]
+    },
+    {
+      "model": "lexical_gru_s503_lr0.0001",
+      "epochs": 32,
+      "training_loss": 0.7963233237875377,
+      "validation_request_agreement": 0.47348767737117253,
+      "development": {
+        "executions": 20,
+        "successes": 4,
+        "errors": 0
+      },
+      "cases": [
+        {
+          "id": "01-easy-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-easy-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 95
+        },
+        {
+          "id": "01-normal-6300",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "01-normal-6301",
+          "theme": "Combinatorial Chemistry",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "02-easy-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "02-easy-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 84
+        },
+        {
+          "id": "02-normal-6300",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 15,
+          "requests": 15
+        },
+        {
+          "id": "02-normal-6301",
+          "theme": "Archaeology Dating",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 79,
+          "requests": 71
+        },
+        {
+          "id": "03-easy-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 6,
+          "requests": 5
+        },
+        {
+          "id": "03-easy-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 6,
+          "requests": 5
+        },
+        {
+          "id": "03-normal-6300",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "03-normal-6301",
+          "theme": "Plant Nutrients",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 300
+        },
+        {
+          "id": "04-easy-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-easy-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 100
+        },
+        {
+          "id": "04-normal-6300",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 297
+        },
+        {
+          "id": "04-normal-6301",
+          "theme": "Reactor Lab",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 300,
+          "requests": 284
+        },
+        {
+          "id": "07-easy-6300",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 9,
+          "requests": 8
+        },
+        {
+          "id": "07-easy-6301",
+          "theme": "Proteomics",
+          "difficulty": "Easy",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": false,
+          "steps": 100,
+          "requests": 99
+        },
+        {
+          "id": "07-normal-6300",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6300,
+          "status": "evaluated",
+          "success": true,
+          "steps": 23,
+          "requests": 23
+        },
+        {
+          "id": "07-normal-6301",
+          "theme": "Proteomics",
+          "difficulty": "Normal",
+          "seed": 6301,
+          "status": "evaluated",
+          "success": true,
+          "steps": 24,
+          "requests": 23
+        }
+      ]
+    }
+  ]
+}

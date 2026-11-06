@@ -1,16 +1,34 @@
 # Research progress
 
-## 6 November: faster text execution measured
+## 6 November: window training and longer-gradient comparison
 
-The current token policy has 38.34 million parameters. A four-episode,
-eight-event training window improves from 2.161 to 1.254 seconds on H100 when
-text chunks are processed in batches of 256, alongside batched transfers and
-deferred metric reads. Peak allocated memory remains 6.66 GiB. The same data,
-episode batch and update count are retained; text dropout draws can differ.
-Execution settings survive checkpoint loading; 27 relevant tests pass.
-An independent full-epoch comparison is running on two devices. Its results
-are pending, and the active 32-run study retains its original frozen code.
-[Measurements and execution options](experiments/discoveryworld/COMMON_EXECUTION.md#training-throughput).
+Window encoding now separates parallel perception from causal state updates.
+On the same complete first epoch (5,542 training and 1,420 validation requests),
+training plus validation drops from **931.83 to 338.14 seconds: 2.76 times faster**.
+Peak allocated memory is 5.21 GiB. Dropout-free parity, causal independence and
+state-gradient handling pass the relevant checks. This is an execution result;
+new independent task results are pending.
+[Implementation, measurements and commands](experiments/discoveryworld/COMMON_EXECUTION.md#training-throughput).
+
+Sixteen new jobs have entered training with eight episodes per batch and 32 events
+per optimizer update. They compare CDM/GRU, lexical/adapted text, two seeds, and
+8/32-event state gradients at the **same update budget**. Their common snapshot
+contains the original demonstrations and completed student-state recoveries:
+240 trajectories, 120 instance identities, 17,199 requests. A startup cache-path
+error in the text jobs was corrected before any parameter updates. Final native
+evaluation and autonomous interaction training follow automatically. Two H100
+queues add pretrained-text initialization 503, each running CDM then its GRU
+control. The CPU preparation option used by these queues reduces the measured
+100-trajectory preparation time from 184.99 to 43.57 seconds.
+[Exact comparison](experiments/discoveryworld/COMMON_EXECUTION.md#recovery-data-and-matched-gradient-spans).
+
+The preceding 32 representation jobs retain their frozen implementation. At the
+11:41 UTC snapshot, fifteen pipelines are complete, sixteen are training, and
+one frozen-text GRU has failed after nonfinite losses. Eight separate lower-rate
+reruns are complete and numerically stable: at 1e-4, CDM completes 1/20 and 6/20
+development instances, GRU 5/20 and 4/20. Those seed subsets differ and were
+selected for divergent training loss; they do not establish a CDM advantage.
+[Completed reruns](experiments/discoveryworld/results/request_stability.json).
 
 ## 6 November: representation learning and student-state recovery running
 
