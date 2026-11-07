@@ -45,11 +45,14 @@ git checkout v0.19.0
 gh release download v0.19.0 --repo Cherish0925/continual-decision-model \
   --pattern 'cdm-request-window-*' --pattern 'cdm-request-inputs-records*' \
   --pattern 'models.json' --pattern '*LICENSE*' --dir artifacts/v0.19.0
-# For each unsplit archive:
-zstd -dc --long=30 artifacts/v0.19.0/cdm-request-inputs-records.tar.zst | tar -x
-# For a split archive, join all pieces in filename order before extracting:
-cat artifacts/v0.19.0/cdm-request-window-inference.tar.zst.part* | zstd -dc --long=30 | tar -x
-# Extract the window records in the same way, then:
+for archive_name in cdm-request-inputs-records cdm-request-window-inference cdm-request-window-records; do
+  archive_path="artifacts/v0.19.0/$archive_name.tar.zst"
+  if [ -f "$archive_path" ]; then
+    zstd -dc --long=30 "$archive_path" | tar -x
+  else
+    cat "$archive_path".part* | zstd -dc --long=30 | tar -x
+  fi
+done
 python -m experiments.discoveryworld.summarize_request_study \
   --study window --stopped \
   --records runs/discoveryworld/window_learning_20261106/models \
