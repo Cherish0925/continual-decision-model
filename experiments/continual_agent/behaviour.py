@@ -36,7 +36,7 @@ def main(argv=None):
     model = load(args.model, device)
     if model.config.mode in ("carry", "restart", "goal_restart"):
         model.config = replace(model.config, memory_size=0)
-    blob = torch.load(args.policy, map_location=device, weights_only=False)
+    blob = torch.load(args.policy, map_location=device, weights_only=True)
     run_args = argparse.Namespace(**blob["args"])
     policy = Policy(blob["policy"]["norm.weight"].shape[0]).to(device)
     policy.load_state_dict(blob["policy"])
