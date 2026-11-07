@@ -4,6 +4,11 @@ This study trains a model to choose experiments and retain useful experience acr
 
 Measured policy results, workspace interventions and paired learning comparisons are in [RESULTS.md](RESULTS.md).
 
+The latest [shared-executor request studies](COMMON_EXECUTION.md#completed-window-comparison)
+compare CDM and GRU under matched inputs and training schedules. Their completed,
+failed and paused stages are recorded separately. [v0.19.0](RELEASE.md#request-learning-and-sequence-training-v0190)
+provides the saved weights, training inputs and execution records.
+
 The [active-measurement method](ACTIVE_LEARNING.md) trains the continuing core
 jointly with its experimental decisions; calibration rehearsal improves native
 coverage across two matched training repetitions. The [task-stream study](ACTIVE_STREAM.md)

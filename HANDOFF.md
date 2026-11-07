@@ -1,6 +1,51 @@
 # Research progress
 
-## 6 November: window training and longer-gradient comparison
+## 7 November: completed request studies and saved partial training
+
+The eight lexical window comparisons completed all scheduled stages. On the
+same twenty test instances, repeated over two initializations per row:
+
+| Policy / state-gradient span | Supervised endpoint | After interaction learning | After interaction, neural state reset |
+| --- | ---: | ---: | ---: |
+| CDM / 8 events | 4/40 | 0/40 | 1/40 |
+| CDM / 32 events | 0/40 | 1/40 | 1/40 |
+| GRU / 8 events | 3/40 | 0/40 | 0/40 |
+| GRU / 32 events | 2/40 | 0/40 | 0/40 |
+
+CDM's supervised complete-request agreement averages 50.63% on training
+states and 44.03% on demonstration validation states; GRU reaches 50.17% and
+43.80%. These are action agreement scores, not task completion. One CDM
+supervised endpoint completes a Normal proteomics instance; GRU also completes
+that instance. Across the eight models, supervised greedy completion is 9/160;
+after 960 fresh training episodes and 214,532 native actions, it is 1/160.
+Mean task progress declines as well. The current interaction continuation does
+not preserve the supervised behavior, and neither longer state gradients nor
+CDM establishes a stable advantage.
+
+The preceding 32-model representation study has 30 complete pipelines. One
+frozen-text GRU stops with nonfinite training; one adapted-text GRU completes
+training and greedy/sampled evaluation but has an interrupted state-reset
+evaluation. All sixteen CDM endpoints have final greedy results, totaling
+2/320 repeated executions. No Normal test instance is completed by that group.
+The study includes 3,720 completed interaction episodes and 823,644 native actions.
+
+Ten new text runs were saved before their planned endpoint: eight at epoch
+9/16 and two additional CDM repetitions at 10/16. Two queued GRU repetitions
+were not started. No task score is assigned to these unfinished models. GPU
+training is paused; completed records and saved models remain available.
+Supervised snapshots preserve weights and configuration, not optimizer/RNG state.
+
+[Detailed comparisons and reproduction](experiments/discoveryworld/COMMON_EXECUTION.md#completed-window-comparison)
+· [Every recorded evaluation](experiments/discoveryworld/results/request_window.json)
+· [Model architecture actually enabled](DESIGN.md#trained-request-policy-configuration-7-november)
+· [Model and record downloads](experiments/discoveryworld/RELEASE.md#request-learning-and-sequence-training-v0190).
+
+The next learning question is why the fixed on-policy continuation erodes task
+behavior learned from demonstrations. The current results do not establish
+that a missing module or a specific backbone is the sole cause. The broader
+continuous-operation objective remains unchanged.
+
+## 6 November launch record: window training and longer-gradient comparison
 
 Window encoding now separates parallel perception from causal state updates.
 On the same complete first epoch (5,542 training and 1,420 validation requests),
@@ -30,7 +75,7 @@ development instances, GRU 5/20 and 4/20. Those seed subsets differ and were
 selected for divergent training loss; they do not establish a CDM advantage.
 [Completed reruns](experiments/discoveryworld/results/request_stability.json).
 
-## 6 November: representation learning and student-state recovery running
+## 6 November launch record: representation learning and student-state recovery
 
 The next 32-run comparison has started on four training nodes: lexical,
 frozen pretrained text, jointly adapted pretrained text and jointly trained

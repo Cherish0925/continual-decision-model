@@ -2,6 +2,73 @@
 
 [Downloads](https://github.com/Cherish0925/continual-decision-model/releases) · [Results](RESULTS.md) · [Joint training](../continual_experiment/README.md)
 
+## Request learning and sequence training: v0.19.0
+
+[Download v0.19.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.19.0)
+· [Comparisons and results](COMMON_EXECUTION.md#completed-window-comparison)
+· [Saved architecture](../../DESIGN.md#trained-request-policy-configuration-7-november)
+
+This release collects the shared-executor, text-representation and sequence
+studies. The shared-executor study has 32 complete pipelines. The representation
+study has 30 complete pipelines, one nonfinite supervised run, and one completed
+training with an interrupted state-reset evaluation. Its eight separate
+learning-rate reruns are also included. The sequence study has eight complete
+lexical pipelines, ten saved partial text trainings, and two unstarted jobs.
+The accompanying `models.json` identifies each condition and its saved stage.
+
+The latest eight completed models improve demonstration-state fitting, but
+greedy completion falls from 9/160 after supervision to 1/160 after interaction
+learning. Each model evaluates the same twenty instances. Neither longer state
+gradients nor CDM yields a stable task advantage in this comparison. These
+request policies and cohorts differ from the earlier specialized scientific
+models and the official 120-instance benchmark.
+
+| Archive prefix | Contents |
+| --- | --- |
+| `cdm-common-inference` / `cdm-common-records` | Shared-executor initial and fixed endpoint weights, commands, training and execution records |
+| `cdm-request-language-inference` / `cdm-request-language-records` | Representation comparison and separate learning-rate reruns, including failed and interrupted stages |
+| `cdm-request-window-inference` / `cdm-request-window-records` | Completed sequence comparisons and saved partial models with their actual epochs |
+| `cdm-request-inputs-records` | Frozen original demonstrations, student-state recoveries and development trajectories used by these studies |
+
+Archives use `.tar.zst`, split into `.part00`, `.part01`, etc. when needed.
+Companion `*-files.txt` inventories and `SHA256SUMS` identify their contents.
+Extract at the repository root. Models retain every weight tensor and model
+configuration; inference bundles omit optimizer state. Supervised checkpoints
+did not save optimizer/RNG state, so a weight warm start is not an exact resume.
+Caches, duplicated best checkpoints and machine-management files are omitted.
+Identical simulator initializations are stored as archive hard links.
+
+For example, restore the sequence study and recompute its published counts:
+
+```bash
+git checkout v0.19.0
+gh release download v0.19.0 --repo Cherish0925/continual-decision-model \
+  --pattern 'cdm-request-window-*' --pattern 'cdm-request-inputs-records*' \
+  --pattern 'models.json' --pattern '*LICENSE*' --dir artifacts/v0.19.0
+# For each unsplit archive:
+zstd -dc --long=30 artifacts/v0.19.0/cdm-request-inputs-records.tar.zst | tar -x
+# For a split archive, join all pieces in filename order before extracting:
+cat artifacts/v0.19.0/cdm-request-window-inference.tar.zst.part* | zstd -dc --long=30 | tar -x
+# Extract the window records in the same way, then:
+python -m experiments.discoveryworld.summarize_request_study \
+  --study window --stopped \
+  --records runs/discoveryworld/window_learning_20261106/models \
+  --additional-records runs/discoveryworld/window_learning_20261106/local_models \
+  --collections runs/discoveryworld/window_learning_20261106 \
+  --output runs/recomputed-window-results
+```
+
+Each model directory preserves its stage commands and policy configurations.
+For fresh execution, use a new output directory and select the available device.
+Text policies require the tokenizer for
+`sentence-transformers/all-MiniLM-L6-v2`, revision
+`1110a243fdf4706b3f48f1d95db1a4f5529b4d41`; set the policy configuration's
+`encoder_path` to its local directory. Learned text weights are in the model
+checkpoint. Frozen-backbone conditions also require the original pretrained
+weights. [Training and evaluation commands](COMMON_EXECUTION.md#recovery-data-and-matched-gradient-spans)
+specify the interface and budgets. The previous measured-reaction and native
+actor bundles remain available in [v0.18.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.18.0).
+
 ## Joint prediction and action training: v0.17.0
 
 [Download v0.17.0](https://github.com/Cherish0925/continual-decision-model/releases/tag/v0.17.0)

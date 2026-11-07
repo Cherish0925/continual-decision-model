@@ -245,12 +245,27 @@ uses the same request interface and training data. This study evaluates whether
 better learned input representations enable the existing decision process. It
 does not yet test deployment-time parameter adaptation or recursive improvement.
 
-The [dated training record](results/language_learning_status.json) contains
-completed epochs and losses. At the 6 November 11:41 UTC snapshot, fifteen complete pipelines are recorded,
-sixteen continue training, and one frozen-text GRU pipeline has stopped after
-nonfinite supervised losses. Its failed run is retained. The completed lexical
-and frozen-text conditions still have weak native results; partial groups are
-not a completed comparison of all representations.
+The [final campaign record](results/language_learning_status.json) has thirty
+complete pipelines, one failed frozen-text GRU, and one adapted-text GRU paused
+during its last state-reset evaluation. All 32 supervised stages reached their
+scheduled endpoint; the failed pipeline subsequently stopped on nonfinite
+values. Thirty-one interaction stages completed 120 worlds each: 3,720 episodes,
+823,644 native actions and 18,386 optimizer updates.
+
+| Representation | CDM greedy after interaction | GRU greedy after interaction |
+| --- | ---: | ---: |
+| Lexical | 1/80 | 0/80 |
+| Frozen MiniLM | 1/80 | 1/60 |
+| Adapted MiniLM | 0/80 | 0/80 |
+| Random MiniLM | 0/80 | 2/80 |
+
+Each four-seed group repeats the same twenty Easy/Normal instances; the
+frozen-text GRU row has three evaluated initializations because one failed.
+Missing endpoints are not silently scored as zero. All successful greedy
+executions are Easy. Sampling and state-reset results, along with every
+instance, are retained in [the complete recorded comparisons](results/language_learning.json).
+The result does not establish improved scientific execution from this text
+representation change.
 
 Teacher recovery also uses the same request interface. The
 [collector](collect_recovery.py) lets a frozen student make four or twelve
@@ -381,16 +396,13 @@ Normal difficulty. Seeds alone are not a claim of held-out scientific laws.
 | Supervised endpoint | 16 complete epochs; main learning rate 1e-4, text rate 2e-5 |
 | Text execution | Window encoding, microbatch 256, activation recomputation |
 
-All sixteen jobs have entered training on the two nodes freed by earlier runs.
-An initial text-cache path error was fixed before any update; failed startup
-records remain available. The other sixteen representation runs continue on
-their original code. New task results are pending. Two additional H100 queues run the pretrained-text
-condition at initialization 503: one queue per gradient span, CDM followed by
-GRU. This adds four specified replications, two active at a time. They use the
-same learning computation and data with the new parallel preparation option;
-their source revision and hardware are recorded separately.
-[Current learning records](results/request_window_status.json) retain each
-completed epoch and distinguish queued replications from started work.
+The eight lexical pipelines completed all stages. The eight adapted-text
+pipelines were saved at epoch 9/16 when compute was reallocated. Additional
+text CDM repetitions at initialization 503 were saved at 10/16; their two GRU
+controls were queued but never started. Their final task evaluations are absent,
+not failed. The startup cache-path error preceded all parameter updates and
+is not a model result. [The final status](results/request_window_status.json)
+records all twenty planned configurations and each completed training stage.
 
 The state is detached after eight or thirty-two events **without resetting its
 value**. Both conditions accumulate losses over the same 32-step optimizer
@@ -419,6 +431,61 @@ small progress records collected separately from large artifacts.
 This work changes offline learning execution and its temporal gradient horizon.
 It does not yet implement asynchronous off-policy learning, deployment-time
 weight consolidation, or a learned incremental-inference schedule.
+
+### Completed window comparison
+
+Every lexical model completed sixteen supervised epochs and 120 subsequent
+interaction worlds. The following scores repeat twenty fixed test instances
+(seeds 7200/7201, five themes, Easy/Normal) across two initializations per row.
+They are not official 120-instance scores or forty distinct scientific tasks.
+
+| Model / gradient events | Supervised greedy | Interaction greedy | Interaction sampled | Interaction greedy, neural state reset |
+| --- | ---: | ---: | ---: | ---: |
+| CDM / 8 | 4/40 | 0/40 | 2/40 | 1/40 |
+| CDM / 32 | 0/40 | 1/40 | 1/40 | 1/40 |
+| GRU / 8 | 3/40 | 0/40 | 2/40 | 0/40 |
+| GRU / 32 | 2/40 | 0/40 | 2/40 | 0/40 |
+
+The four CDM models average 50.63% complete-request agreement on training
+states and 44.03% on validation states; GRU averages 50.17% and 43.80%.
+These are demonstration-state metrics. Supervised greedy CDM success totals
+4/80, including Normal Proteomics at instance 7200; GRU totals 5/80, including
+the same Normal instance. After interaction training the totals are 1/80 and
+0/80. Mean progress drops from 0.3742 to 0.1503 for CDM and from 0.4038 to
+0.1612 for GRU. These comparisons use the same instances before and after
+interaction. Greedy state reset reaches 2/80 for CDM and 0/80 for GRU, leaving
+no established completion benefit from retained neural state.
+
+The eight interaction runs contribute 960 training episodes, 214,532 native
+actions and 4,104 optimizer updates. More interaction under the present loss
+and schedule erodes the supervised behavior. The experiment does not isolate
+why: it changes the policy through actor-critic updates, with a different
+state distribution and task objective. The results support revising this
+continuation before another unchanged training expansion.
+
+New training inputs, the lower learning rate and the longer optimizer window
+all differ from the preceding representation study. Their combined fitting
+improvement cannot be attributed to one change. Within the matched window
+study, a 32-event state gradient has no stable completion advantage over eight.
+The uncompleted text arms remain open comparisons.
+
+[Per-instance results](results/request_window.json) and
+[training status](results/request_window_status.json) can be rebuilt from the
+released records without running a model:
+
+```sh
+python -m experiments.discoveryworld.summarize_request_study \
+  --study window --stopped \
+  --records runs/discoveryworld/window_learning_20261106/models \
+  --additional-records runs/discoveryworld/window_learning_20261106/local_models \
+  --collections runs/discoveryworld/window_learning_20261106 \
+  --output runs/recomputed-window-results
+```
+
+Use `--study language` with the corresponding `semantic_requests_20261106`
+model and collection directories for the earlier representation comparison.
+The [release guide](RELEASE.md#request-learning-and-sequence-training-v0190)
+identifies every completed and partial model, the input data, and archive paths.
 
 ## Run the preceding shared-executor comparison
 

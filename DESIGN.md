@@ -5,6 +5,44 @@ For the **current state representation and implementation direction**, read
 This document preserves the first multimodal configuration and its interface
 choices; it is a reference configuration, not a final architecture claim.
 
+## Trained request-policy configuration, 7 November
+
+The latest common-executor experiments use `DigitalPolicy` over
+`ContinualCore`. These saved configurations are smaller and different from the
+historical multimodal reference below:
+
+| Component | Enabled in the saved request policies |
+| --- | --- |
+| Inputs | Public text, numeric observations, object relationships, measurement records and eight recent action/feedback records |
+| Text | Fixed 256-dimensional lexical features; or MiniLM-L6-v2, six layers, width 384, jointly trained in the newer text arm |
+| Fast state | Width-512 GRU, preceded by attention over the received event |
+| Persistent workspace | Eight width-512 slots, four attention heads, one shared Transformer block; one refinement per request |
+| Action readout | Each candidate reads relevant event/measurement tokens and, for CDM, workspace slots; a shared scorer selects request fields |
+| Execution | The common executor performs the declared operation and its necessary native prerequisites; the model selects operation, objects and parameters |
+| Auxiliary prediction | Fourteen returned-outcome targets; the latest run has `action_conditioned=false`, so these predictions do not directly enter action scores or state correction |
+
+The saved lexical CDM contains **15,433,763 parameters**; the text CDM contains
+**38,343,587**, including **22,713,216** in its text encoder. These totals include
+retained modules that are not invoked by this execution path. Neither run
+uses image features, Qwen, a language decoder or a teacher at evaluation.
+Eight workspace slots are eight persistent vectors, not eight Transformer layers.
+
+The candidate reader and measurement/object binding are enabled. The separate
+action-conditioned correction variant was implemented and compared earlier;
+it is not silently enabled here. This native path uses fixed refinement depth
+and fixed evaluation weights. Learned compute allocation, deployed neural
+parameter updates, asynchronous observation scheduling and long-term
+consolidation remain distinct integration work.
+
+Training now encodes observed text windows in batches before the causal state
+loop. Both gradient-span conditions accumulate loss over 32 events; state is
+detached after eight or thirty-two events without resetting its value. These
+execution/training improvements do not themselves establish a new capability.
+[Exact configuration and results](experiments/discoveryworld/COMMON_EXECUTION.md#completed-window-comparison)
+· [Machine-readable architecture](experiments/discoveryworld/results/request_architecture.json).
+
+The remaining sections preserve the original multimodal reference design.
+
 **Selected on 19 October; pretrained reuse extended on 20 October 2026.** CDM is a persistent, goal-conditioned model that learns actions and the use of observation, computation and experience. This document fixes the first integrated architecture. [STATUS.md](STATUS.md) records implementation and measured behavior; [TRAINING.md](TRAINING.md) defines optimization.
 
 The main path is **pretrained perception → recurrent state ↔ persistent Transformer workspace → action and activity policies**, with action-conditioned prediction, episodic memory and parameter learning connected to the same state. A frozen vision-language model supplies semantic context on demand; an offline teacher supplies training trajectories. The continual core remains responsible for state, actions and activity choices.

@@ -1,5 +1,7 @@
 # CDM: objective, implementation, and results
 
+**7 November:** the latest [request-learning results](experiments/discoveryworld/COMMON_EXECUTION.md#completed-window-comparison) and [saved configurations](DESIGN.md#trained-request-policy-configuration-7-november) are available. Eight lexical pipelines completed; ten text runs paused at saved epochs and two planned repetitions did not start. The preceding representation study completed thirty pipelines, with one training failure and one interrupted final state-reset evaluation. Training is paused. Completed outcomes do not establish reliable scientific execution or a stable CDM advantage. [Full progress](HANDOFF.md) · [Downloads](experiments/discoveryworld/RELEASE.md#request-learning-and-sequence-training-v0190).
+
 **Completed, 4 November:** [80 additional measured-reaction models](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)
 were trained across 32 A100 GPUs, using 40,960,000 recorded-data lookups.
 All endpoints have development and external-laboratory comparisons. Replacing
@@ -9,7 +11,7 @@ Roche and Perera. Stable superiority over the matched GRU or the learned
 kernel remains unestablished. The seven final source reaction types are
 reserved. [Paired results](experiments/measured_reactions/results/comparison.json).
 
-**In progress, 4 November:** [native policy learning across eight themes](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
+**Earlier study, 4 November:** [native policy learning across eight themes](experiments/discoveryworld/FULL_SUITE.md#native-policy-training)
 now compares autonomous interaction learning, basic-operation instruction and
 complete-solution distillation, each with CDM and GRU. Bailian demonstrations
 are running; both basic-operation students completed eight supervised epochs
@@ -25,7 +27,7 @@ resumed on 5 November independently of an interactive terminal. The fixed
 150-demonstration comparison on two H100s has also completed: after eight
 imitation epochs, both policies scored 0/8 on new Easy development cases.
 [Curves and case results](experiments/discoveryworld/results/native_demonstration_snapshot.json)
-are retained. The full-collection imitation-plus-reinforcement route remains pending.
+are retained. The subsequent common-executor imitation-plus-reinforcement comparisons are now complete and reported in the current progress entry.
 [Current execution](HANDOFF.md).
 
 **Completed comparison, 4 November:** [joint response/action learning](experiments/continual_experiment/FUNCTION_BELIEF.md#completed-joint-learning-results)

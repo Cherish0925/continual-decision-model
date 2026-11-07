@@ -48,22 +48,24 @@ def files(root, runs=(), base="runs/discoveryworld"):
                 yield path
 
 
-def portable(value, root):
+def portable(value, root, replacements=()):
     if isinstance(value, str):
+        for old, new in replacements:
+            value = value.replace(old, new)
         # Task worktrees share the same project-relative runs directory.
         value = re.sub(re.escape(str(root)) + r"/\.worktrees/[^/]+/", "", value)
         value = value.replace(str(root) + "/.venv/bin/python", "python")
         return value.replace(str(root) + "/", "").replace(str(root), ".")
     if isinstance(value, dict):
-        return {k: portable(v, root) for k, v in value.items()}
+        return {k: portable(v, root, replacements) for k, v in value.items()}
     if isinstance(value, list):
-        return [portable(v, root) for v in value]
+        return [portable(v, root, replacements) for v in value]
     if isinstance(value, tuple):
-        return tuple(portable(v, root) for v in value)
+        return tuple(portable(v, root, replacements) for v in value)
     return value
 
 
-def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld", exclude=(), tensor_files=()):
+def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/discoveryworld", exclude=(), tensor_files=(), replacements=()):
     import torch
 
     output.mkdir(parents=True, exist_ok=True)
@@ -109,7 +111,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/disco
                     candidates.append(path)
                 if checkpoint:
                     # Change metadata paths only; tensor values and training results stay intact.
-                    saved = portable(torch.load(path, map_location="cpu", weights_only=True), root)
+                    saved = portable(torch.load(path, map_location="cpu", weights_only=True), root, replacements)
                     if kind == "inference":
                         saved.pop("optimizer", None)
                     with tempfile.TemporaryFile() as stream:
@@ -128,7 +130,7 @@ def package(root, output, kind, runs=(), name="cdm-scientific", base="runs/disco
                     if SECRET.search(content):
                         raise ValueError(f"Credential-like content in {relative}; exclude before publication")
                     if path.suffix in TEXT or compressed:
-                        data = portable(content.decode("utf-8"), root).encode("utf-8")
+                        data = portable(content.decode("utf-8"), root, replacements).encode("utf-8")
                     if compressed:
                         data = original if data == content else gzip.compress(data, compresslevel=6, mtime=0)
                     info.size = len(data)
@@ -172,5 +174,8 @@ if __name__ == "__main__":
                         help="Omit a repository-relative pattern when the same asset is supplied separately")
     parser.add_argument("--tensor-file", action="append", default=[],
                         help="Explicit repository-relative tensor file to include in the model bundle")
+    parser.add_argument("--path-map", type=Path,
+                        help="Local JSON object mapping source path prefixes to portable paths; not included in archives")
     args = parser.parse_args()
-    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base, args.exclude, args.tensor_file)
+    replacements = sorted(json.loads(args.path_map.read_text()).items(), key=lambda x: -len(x[0])) if args.path_map else ()
+    package(Path.cwd().resolve(), args.output, args.kind, args.run, args.name, args.base, args.exclude, args.tensor_file, replacements)

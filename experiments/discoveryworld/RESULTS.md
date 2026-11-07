@@ -1,5 +1,15 @@
 # Scientific-task learning
 
+The latest [request-learning and sequence comparisons](COMMON_EXECUTION.md#completed-window-comparison)
+were updated on 7 November. Eight complete lexical models fit demonstrations
+better, but subsequent interaction training reduces greedy completion from
+9/160 to 1/160 repeated executions. The same twenty instances are reused per
+model. [Per-instance results](results/request_window.json),
+[saved architecture](../../DESIGN.md#trained-request-policy-configuration-7-november)
+and [models with reproducibility records](RELEASE.md#request-learning-and-sequence-training-v0190)
+include the preceding representation study and saved partial trainings.
+The specialized scientific-task results below retain their original protocols.
+
 These experiments connect the continuing core to visual observations, object-directed
 actions, instrument returns and numerical learning. Autonomous execution from
 reset and takeover after supplied experimental evidence are measured separately.

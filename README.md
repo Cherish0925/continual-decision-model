@@ -10,6 +10,17 @@ An observation can become outdated while inference is still running. The researc
 
 ## Current research
 
+**7 November — request learning and sequence training.** Eight complete window
+comparisons improve demonstration-state fitting, but subsequent autonomous
+interaction reduces greedy task completion from 9/160 to 1/160 repeated
+executions across CDM and GRU. The same twenty instances are reused per model.
+The preceding representation study has thirty complete pipelines; ten newer
+text models are saved before their planned endpoint. No stable CDM advantage
+is established. [Results and fixed comparisons](experiments/discoveryworld/COMMON_EXECUTION.md#completed-window-comparison)
+· [Actual trained architecture](DESIGN.md#trained-request-policy-configuration-7-november)
+· [Models, inputs and records](experiments/discoveryworld/RELEASE.md#request-learning-and-sequence-training-v0190).
+
+
 The [measured-reaction comparison](experiments/measured_reactions/README.md#larger-training-and-a-representation-comparison)
 adds 80 trained models on 32 A100 GPUs and evaluations on three published
 laboratory datasets. It tests how an observed result changes untried actions,
@@ -30,8 +41,8 @@ and each scored **0/120** in complete native evaluation. The
 [case records](experiments/discoveryworld/results/native_actor_comparison.json)
 include the unsuccessful results. A subsequent eight-epoch fit on 150 completed
 demonstrations also scored [0/8 for both policies](experiments/discoveryworld/results/native_demonstration_snapshot.json)
-on new Easy development instances. Broader scientific collection continues; the
-[progress record](HANDOFF.md) distinguishes these from the completed comparison.
+on new Easy development instances. The [progress record](HANDOFF.md) covers the
+completed collection and subsequent request-learning studies.
 A subsequent [32-model comparison](experiments/discoveryworld/FULL_SUITE.md#input-state-and-decoding-completed-comparison)
 finds that sampling improves execution on Easy development instances, while
 explicit action history has little local influence on choices. Neural state
